@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Common code for all FAB projects",
   "main": "index.js",
-  "repository": "https://github.com/fab-spec/fab",
+  "repository": "fab-spec/fab",
+  "homepage": "https://github.com/fab-spec/fab",
   "author": "Glen Maddern",
   "license": "MIT",
   "private": false

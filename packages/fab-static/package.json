@@ -6,7 +6,7 @@
   "bin": {
     "fab-static": "./bin/run"
   },
-  "bugs": "https://github.com/https://github.com/fab-spec/fab/fab/issues",
+  "bugs": "https://github.com/fab-spec/fab/issues",
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -31,7 +31,7 @@
     "/bin",
     "/lib"
   ],
-  "homepage": "https://github.com/https://github.com/fab-spec/fab/fab",
+  "homepage": "https://github.com/fab-spec/fab",
   "keywords": [
     "oclif"
   ],
@@ -40,7 +40,7 @@
   "oclif": {
     "bin": "fab-static"
   },
-  "repository": "https://github.com/fab-spec/fab/fab",
+  "repository": "fab-spec/fab",
   "scripts": {
     "prepack": "rm -rf lib && tsc -b",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
