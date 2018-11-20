@@ -1,4 +1,5 @@
 import { Command, flags } from '@oclif/command'
+import Server from './Server'
 
 class FabServe extends Command {
   static description = 'Host a FAB in a local Express server'
@@ -11,7 +12,8 @@ class FabServe extends Command {
     port: flags.string({
       description: 'Port to use',
       env: 'PORT',
-      default: '3000'
+      default: '3000',
+      required: true
     })
   }
 
@@ -27,6 +29,8 @@ class FabServe extends Command {
     }
 
     this.log(`Serving ${file} on http://localhost:${port}`)
+
+    await Server.start(file, port)
   }
 }
 
