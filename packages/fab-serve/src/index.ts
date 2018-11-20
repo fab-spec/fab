@@ -1,28 +1,32 @@
-import {Command, flags} from '@oclif/command'
+import { Command, flags } from '@oclif/command'
 
 class FabServe extends Command {
-  static description = 'describe the command here'
+  static description = 'Host a FAB in a local Express server'
 
   static flags = {
     // add --version flag to show CLI version
-    version: flags.version({char: 'v'}),
-    help: flags.help({char: 'h'}),
+    version: flags.version({ char: 'v' }),
+    help: flags.help({ char: 'h' }),
     // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
-    // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    port: flags.string({
+      description: 'Port to use',
+      env: 'PORT',
+      default: '3000'
+    })
   }
 
-  static args = [{name: 'file'}]
+  static args = [{ name: 'file' }]
 
   async run() {
-    const {args, flags} = this.parse(FabServe)
+    const { args, flags } = this.parse(FabServe)
+    const {port} = flags
+    const { file } = args
 
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from ./src/index.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    if (!file) {
+      this.error(`You must provide a FAB file to run`)
     }
+
+    this.log(`Serving ${file} on http://localhost:${port}`)
   }
 }
 
