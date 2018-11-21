@@ -28,9 +28,9 @@ class FabServe extends Command {
       this.error(`You must provide a FAB file to run`)
     }
 
-    this.log(`Serving ${file} on http://localhost:${port}`)
-
     await Server.start(file, port)
+
+    this.log(`Serving ${file} on http://localhost:${port}`)
   }
 }
 
