@@ -1,0 +1,49 @@
+{
+  "name": "@fab/afterjs",
+  "description": "FAB compiler for After.js projects",
+  "version": "0.0.0",
+  "author": "Glen Maddern @geelen",
+  "bin": {
+    "fab-afterjs": "./bin/run"
+  },
+  "bugs": "https://github.com/fab-spec/fab/issues",
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^2",
+    "tslib": "^1"
+  },
+  "devDependencies": {
+    "@oclif/test": "^1",
+    "@types/chai": "^4",
+    "@types/mocha": "^5",
+    "@types/node": "^10",
+    "chai": "^4",
+    "mocha": "^5",
+    "nyc": "^13",
+    "ts-node": "^7",
+    "typescript": "^3.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib"
+  ],
+  "homepage": "https://github.com/fab-spec/fab",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "bin": "fab-afterjs"
+  },
+  "repository": "fab-spec/fab",
+  "scripts": {
+    "prepack": "rm -rf lib && tsc -b",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+  },
+  "types": "lib/index.d.ts"
+}

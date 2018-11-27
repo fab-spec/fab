@@ -77,7 +77,6 @@ export default class Server {
                 injected: 'variables',
                 should: 'work!'
               })
-              console.log({ fetch_res })
               res.writeHead(
                 fetch_res.status,
                 fetch_res.statusText,
