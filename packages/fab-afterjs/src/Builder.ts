@@ -1,6 +1,10 @@
-import * as fs from 'async-file'
+import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as webpack from 'webpack'
+import * as util from 'util'
+// @ts-ignore
+import * as _zip from 'deterministic-zip'
+const zip = util.promisify(_zip)
 
 export default class Builder {
   static async start(directory: string) {
@@ -13,7 +17,7 @@ export default class Builder {
         `Missing asset manifest in ${assets_path}. The path may be incorrect, or you haven't run 'npm run build' on this project yet.`
       )
 
-    return await new Promise((resolve, reject) =>
+    await new Promise((resolve, reject) =>
       webpack(
         {
           mode: 'production',
@@ -29,8 +33,8 @@ export default class Builder {
             }
           },
           output: {
-            path: path.resolve(directory, 'fab'),
-            filename: 'runtime.js',
+            path: path.resolve(directory, 'fab/server'),
+            filename: 'bundle.js',
             library: 'server',
             libraryTarget: 'commonjs2'
           },
@@ -51,5 +55,12 @@ export default class Builder {
         }
       )
     )
+
+    const zipfile = path.resolve(directory, 'fab/fab.zip')
+    const options = {
+      includes: ['./server/**', './_assets/**'],
+      cwd: path.resolve(directory, 'fab'),
+    }
+    await zip(path.resolve(directory, 'fab'), zipfile, options)
   }
 }

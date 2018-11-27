@@ -1,14 +1,12 @@
-const render = require('app-index').default;
+const render_app = require('app-index').default
 
-render({
-  url: '/',
-  method: 'GET',
-  headers: {
-    host: 'localhost:3000',
-    'user-agent': 'curl/7.54.0',
-    accept: '*/*'
-  }
-}).then(response => {
-  console.log("GOT RESPONSE")
-  console.log(response)
-})
+const render = async (req, settings) => {
+  settings.random = Math.random()
+  const response = await render_app(req, {}, settings)
+
+  return new Response(response, {
+    status: 200,
+  })
+}
+
+module.exports = { render }

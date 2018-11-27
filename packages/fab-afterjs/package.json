@@ -11,8 +11,11 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@types/fs-extra": "^5.0.4",
     "@types/webpack": "^4.4.19",
     "async-file": "^2.0.2",
+    "deterministic-zip": "^1.0.5",
+    "fs-extra": "^7.0.1",
     "memfs": "^2.14.0",
     "tslib": "^1",
     "webpack": "^4.26.1"
