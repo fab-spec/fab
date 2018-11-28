@@ -19,7 +19,7 @@ $ npm install -g @fab/afterjs
 $ fab-afterjs COMMAND
 running command...
 $ fab-afterjs (-v|--version|version)
-@fab/afterjs/0.0.0 darwin-x64 node-v11.1.0
+@fab/afterjs/0.0.1-0 darwin-x64 node-v11.1.0
 $ fab-afterjs --help [COMMAND]
 USAGE
   $ fab-afterjs COMMAND
@@ -30,8 +30,8 @@ USAGE
 <!-- commands -->
 * [`fab-afterjs build [DIRECTORY]`](#fab-afterjs-build-directory)
 * [`fab-afterjs help [COMMAND]`](#fab-afterjs-help-command)
-* [`fab-afterjs setup [FILE]`](#fab-afterjs-setup-file)
-* [`fab-afterjs teardown [FILE]`](#fab-afterjs-teardown-file)
+* [`fab-afterjs setup [DIRECTORY]`](#fab-afterjs-setup-directory)
+* [`fab-afterjs teardown [DIRECTORY]`](#fab-afterjs-teardown-directory)
 
 ## `fab-afterjs build [DIRECTORY]`
 
@@ -46,11 +46,10 @@ OPTIONS
   -v, --version  show CLI version
 
 EXAMPLE
-  $ fab-afterjs build
-  hello world from ./src/hello.ts!
+  $ fab-afterjs build ~/src/my-project
 ```
 
-_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.0/src/commands/build.ts)_
+_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.1-0/src/commands/build.ts)_
 
 ## `fab-afterjs help [COMMAND]`
 
@@ -69,35 +68,32 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
 
-## `fab-afterjs setup [FILE]`
+## `fab-afterjs setup [DIRECTORY]`
 
 describe the command here
 
 ```
 USAGE
-  $ fab-afterjs setup [FILE]
+  $ fab-afterjs setup [DIRECTORY]
 
 OPTIONS
   -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help   show CLI help
 ```
 
-_See code: [src/commands/setup.ts](https://github.com/fab-spec/fab/blob/v0.0.0/src/commands/setup.ts)_
+_See code: [src/commands/setup.ts](https://github.com/fab-spec/fab/blob/v0.0.1-0/src/commands/setup.ts)_
 
-## `fab-afterjs teardown [FILE]`
+## `fab-afterjs teardown [DIRECTORY]`
 
 describe the command here
 
 ```
 USAGE
-  $ fab-afterjs teardown [FILE]
+  $ fab-afterjs teardown [DIRECTORY]
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  show CLI help
 ```
 
-_See code: [src/commands/teardown.ts](https://github.com/fab-spec/fab/blob/v0.0.0/src/commands/teardown.ts)_
+_See code: [src/commands/teardown.ts](https://github.com/fab-spec/fab/blob/v0.0.1-0/src/commands/teardown.ts)_
 <!-- commandsstop -->
