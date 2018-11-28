@@ -22,7 +22,7 @@ export default class Builder {
         {
           mode: 'production',
           target: 'webworker',
-          entry: path.resolve(__dirname, 'fab-wrapper.js'),
+          entry: path.resolve(__dirname, 'files/fab-wrapper.js'),
           optimization: {
             minimize: false
           },

@@ -1,7 +1,7 @@
 {
   "name": "@fab/afterjs",
   "description": "FAB compiler for After.js projects",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-afterjs": "./bin/run"
@@ -59,7 +59,7 @@
   "repository": "fab-spec/fab",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf lib && tsc -b && cp -R src/files lib/files && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },

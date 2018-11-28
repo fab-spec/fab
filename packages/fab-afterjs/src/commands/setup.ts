@@ -52,7 +52,7 @@ export default class Setup extends Command {
       )
     } else {
       await fs.copy(
-        path.resolve(__dirname, '../index.fab.js'),
+        path.resolve(__dirname, '../files/index.fab.js'),
         path.resolve(directory, 'src/index.fab.js'),
         { overwrite: true }
       )
