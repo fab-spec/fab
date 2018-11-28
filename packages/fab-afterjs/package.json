@@ -1,7 +1,7 @@
 {
   "name": "@fab/afterjs",
   "description": "FAB compiler for After.js projects",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-afterjs": "./bin/run"
