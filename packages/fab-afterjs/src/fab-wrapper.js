@@ -1,3 +1,11 @@
+/*
+* FAB Wrapper
+*
+* Entry point for the FAB Webpack build
+* Maps the simplified index.fab.js to the FAB spec
+*
+* */
+
 const render_app = require('app-index').default
 
 const render = async (req, settings) => {

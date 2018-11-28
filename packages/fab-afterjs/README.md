@@ -9,7 +9,95 @@ FAB compiler for After.js projects
 [![License](https://img.shields.io/npm/l/@fab/afterjs.svg)](https://github.com/fab-spec/fab/blob/master/package.json)
 
 <!-- toc -->
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
 # Usage
 <!-- usage -->
+```sh-session
+$ npm install -g @fab/afterjs
+$ fab-afterjs COMMAND
+running command...
+$ fab-afterjs (-v|--version|version)
+@fab/afterjs/0.0.0 darwin-x64 node-v11.1.0
+$ fab-afterjs --help [COMMAND]
+USAGE
+  $ fab-afterjs COMMAND
+...
+```
+<!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`fab-afterjs build [DIRECTORY]`](#fab-afterjs-build-directory)
+* [`fab-afterjs help [COMMAND]`](#fab-afterjs-help-command)
+* [`fab-afterjs setup [FILE]`](#fab-afterjs-setup-file)
+* [`fab-afterjs teardown [FILE]`](#fab-afterjs-teardown-file)
+
+## `fab-afterjs build [DIRECTORY]`
+
+describe the command here
+
+```
+USAGE
+  $ fab-afterjs build [DIRECTORY]
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --version  show CLI version
+
+EXAMPLE
+  $ fab-afterjs build
+  hello world from ./src/hello.ts!
+```
+
+_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.0/src/commands/build.ts)_
+
+## `fab-afterjs help [COMMAND]`
+
+display help for fab-afterjs
+
+```
+USAGE
+  $ fab-afterjs help [COMMAND]
+
+ARGUMENTS
+  COMMAND  command to show help for
+
+OPTIONS
+  --all  see all commands in CLI
+```
+
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
+
+## `fab-afterjs setup [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ fab-afterjs setup [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/setup.ts](https://github.com/fab-spec/fab/blob/v0.0.0/src/commands/setup.ts)_
+
+## `fab-afterjs teardown [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ fab-afterjs teardown [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/teardown.ts](https://github.com/fab-spec/fab/blob/v0.0.0/src/commands/teardown.ts)_
+<!-- commandsstop -->

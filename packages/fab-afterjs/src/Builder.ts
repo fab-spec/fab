@@ -22,7 +22,7 @@ export default class Builder {
         {
           mode: 'production',
           target: 'webworker',
-          entry: path.resolve(__dirname, 'wrapper/index.js'),
+          entry: path.resolve(__dirname, 'fab-wrapper.js'),
           optimization: {
             minimize: false
           },
@@ -55,6 +55,8 @@ export default class Builder {
         }
       )
     )
+
+    await fs.copy(path.resolve(directory, 'build/public'), path.resolve(directory, 'fab/_assets'))
 
     const zipfile = path.resolve(directory, 'fab/fab.zip')
     const options = {

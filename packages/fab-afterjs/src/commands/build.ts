@@ -1,9 +1,14 @@
 import { Command, flags } from '@oclif/command'
-import Builder from './Builder'
+import Builder from '../Builder'
 import * as path from 'path'
 
-class FabAfterjs extends Command {
+class Build extends Command {
   static description = 'describe the command here'
+
+  static examples = [
+    `$ fab-afterjs build ~/src/my-project
+`,
+  ]
 
   static flags = {
     // add --version flag to show CLI version
@@ -19,10 +24,10 @@ class FabAfterjs extends Command {
   ]
 
   async run() {
-    const { args } = this.parse(FabAfterjs)
+    const { args } = this.parse(Build)
     const { directory } = args
     return await Builder.start(path.resolve(directory))
   }
 }
 
-export = FabAfterjs
+export = Build
