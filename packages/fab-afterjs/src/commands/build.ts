@@ -7,13 +7,19 @@ class Build extends Command {
 
   static examples = [
     `$ fab-afterjs build ~/src/my-project
-`,
+`
   ]
 
   static flags = {
     // add --version flag to show CLI version
     version: flags.version({ char: 'v' }),
-    help: flags.help({ char: 'h' })
+    help: flags.help({ char: 'h' }),
+    // flag with a value (-o, --output=VALUE)
+    output: flags.string({
+      char: 'o',
+      description: 'Output FAB directory',
+      default: '.fab'
+    })
   }
 
   static args = [
@@ -24,9 +30,10 @@ class Build extends Command {
   ]
 
   async run() {
-    const { args } = this.parse(Build)
+    const { args, flags } = this.parse(Build)
     const { directory } = args
-    return await Builder.start(path.resolve(directory))
+    const { output } = flags
+    return await Builder.start(path.resolve(directory), path.resolve(output!))
   }
 }
 

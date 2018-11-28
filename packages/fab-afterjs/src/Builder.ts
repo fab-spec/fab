@@ -7,10 +7,10 @@ import * as _zip from 'deterministic-zip'
 const zip = util.promisify(_zip)
 
 export default class Builder {
-  static async start(directory: string) {
-    console.log(`Building in ${directory}`)
+  static async start(dir: string, output_dir: string) {
+    console.log(`Building in ${dir}`)
 
-    const assets_path = path.join(directory, 'build', 'assets.json')
+    const assets_path = path.join(dir, 'build', 'assets.json')
     const assets_str = await fs.readFile(assets_path, 'utf8')
     if (!assets_str)
       throw new Error(
@@ -29,11 +29,11 @@ export default class Builder {
           resolve: {
             alias: {
               fs: 'memfs',
-              'app-index': path.resolve(directory, 'build/server.js'),
+              'app-index': path.resolve(dir, 'build/server.js'),
             }
           },
           output: {
-            path: path.resolve(directory, 'fab/server'),
+            path: path.resolve(output_dir, 'server'),
             filename: 'bundle.js',
             library: 'server',
             libraryTarget: 'commonjs2'
@@ -56,13 +56,13 @@ export default class Builder {
       )
     )
 
-    await fs.copy(path.resolve(directory, 'build/public'), path.resolve(directory, 'fab/_assets'))
+    await fs.copy(path.resolve(dir, 'build/public'), path.resolve(output_dir, '_assets'))
 
-    const zipfile = path.resolve(directory, 'fab/fab.zip')
+    const zipfile = path.resolve(output_dir, 'fab.zip')
     const options = {
       includes: ['./server/**', './_assets/**'],
-      cwd: path.resolve(directory, 'fab'),
+      cwd: output_dir,
     }
-    await zip(path.resolve(directory, 'fab'), zipfile, options)
+    await zip(output_dir, zipfile, options)
   }
 }
