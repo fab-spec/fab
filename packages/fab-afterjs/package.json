@@ -17,7 +17,8 @@
     "chalk": "^2.4.1",
     "deterministic-zip": "^1.0.5",
     "fs-extra": "^7.0.1",
-    "memfs": "^2.14.0",
+    "memfs": "2.12.1",
+    "mock-express-response": "^0.2.2",
     "tslib": "^1",
     "webpack": "^4.26.1"
   },

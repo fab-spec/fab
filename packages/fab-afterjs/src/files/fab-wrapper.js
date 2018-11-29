@@ -6,14 +6,15 @@
 *
 * */
 
+const MockExpressResponse = require('./mock-express-response')
 const render_app = require('app-index').default
 
 const render = async (req, settings) => {
-  settings.random = Math.random()
-  const response = await render_app(req, {}, settings)
-
-  return new Response(response, {
-    status: 200,
+  const res = new MockExpressResponse()
+  const body = await render_app(req, res, settings)
+  return new Response(body, {
+    status: res.statusCode,
+    headers: res._headers
   })
 }
 
