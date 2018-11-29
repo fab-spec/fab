@@ -83,11 +83,17 @@ export default class Server {
                 mapToObj(fetch_res.headers)
               )
               const blob = await fetch_res.arrayBuffer()
-              res.write(new Buffer(blob))
+              res.write(Buffer.from(blob))
               res.end()
             }
           } catch (e) {
-            reject(e)
+            console.log("ERROR")
+            console.log(e)
+            res.writeHead(
+              500,
+              'Internal Error',
+            )
+            res.end()
           }
         })
         .listen(this.port, resolve)
