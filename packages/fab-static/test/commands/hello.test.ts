@@ -1,18 +1,16 @@
 import {expect, test} from '@oclif/test'
 
-import cmd = require('../src')
-
-describe('@fab/static', () => {
+describe('hello', () => {
   test
     .stdout()
-    .do(() => cmd.run([]))
+    .command(['hello'])
     .it('runs hello', ctx => {
       expect(ctx.stdout).to.contain('hello world')
     })
 
   test
     .stdout()
-    .do(() => cmd.run(['--name', 'jeff']))
+    .command(['hello', '--name', 'jeff'])
     .it('runs hello --name jeff', ctx => {
       expect(ctx.stdout).to.contain('hello jeff')
     })
