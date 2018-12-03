@@ -46,10 +46,10 @@ OPTIONS
 
 EXAMPLE
   $ fab-static hello
-  hello world from ./src/hello.ts!
+  hello world from ./src/build.ts!
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/fab-spec/fab/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.0/src/commands/hello.ts)_
 
 ## `fab-static help [COMMAND]`
 
