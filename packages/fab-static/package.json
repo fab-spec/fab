@@ -11,6 +11,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "globby": "^8.0.1",
     "tslib": "^1"
   },
   "devDependencies": {

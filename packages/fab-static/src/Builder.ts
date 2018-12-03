@@ -15,6 +15,7 @@ export default class Builder {
       throw new Error(`Directory doesn't exist`)
     }
 
+    fs.remove(wip_dir)
 
   }
 }

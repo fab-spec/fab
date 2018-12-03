@@ -28,14 +28,17 @@ export default class Build extends Command {
 
   static args = [
     {
-      name: 'directory',
+      name: 'directory'
     }
   ]
 
   async run() {
     const { args, flags } = this.parse(Build)
 
-    if (!args.directory) throw new Error("You must supply a directory to build")
+    if (!args.directory) throw new Error('You must supply a directory to build')
+
+    if (flags['add-redirects'])
+      throw new Error(`We don't support redirects yet, sorry.`)
 
     return await Builder.start(
       path.resolve(args.directory),
