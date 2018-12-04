@@ -11,11 +11,15 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@types/get-stream": "^3.0.1",
     "@types/mime-types": "^2.1.0",
     "@types/node-fetch": "^2.1.4",
+    "@types/yauzl": "^2.9.0",
     "async-file": "^2.0.2",
+    "get-stream": "^4.1.0",
     "node-fetch": "^2.3.0",
-    "tslib": "^1"
+    "tslib": "^1",
+    "yauzl": "^2.10.0"
   },
   "devDependencies": {
     "@oclif/test": "^1",
