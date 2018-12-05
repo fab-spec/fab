@@ -1,10 +1,11 @@
 import * as fs from 'async-file'
-import * as path from 'path'
 import * as http from 'http'
 import * as url from 'url'
 import * as vm from 'vm'
 import * as mime from 'mime-types'
 import * as fetch from 'node-fetch'
+import * as yauzl from 'yauzl'
+import * as getStream from 'get-stream'
 
 const getContentType = (pathname: string) => {
   const mimeType = mime.lookup(pathname)
@@ -29,8 +30,27 @@ export default class Server {
   }
 
   async start() {
-    const dir = path.dirname(this.file)
-    const src = await fs.readFile(`${dir}/server/bundle.js`, 'utf8')
+    const files = {} as {[filename: string]: Buffer}
+    await new Promise((resolve, reject) => {
+      const promises: Array<Promise<any>> = []
+      yauzl.open(this.file, {},(err, zipfile) => {
+        if (err || !zipfile) return reject(err)
+        zipfile.on('entry', (entry: yauzl.Entry) => {
+          promises.push(new Promise((res, rej) => {
+            if (entry.fileName.endsWith('/')) return
+            zipfile.openReadStream(entry, async (err, stream) => {
+              if (err || !stream) return rej(err)
+              files[`/${entry.fileName}`] = await getStream.buffer(stream)
+              res()
+            })
+          }))
+        })
+        zipfile.once('end', () => Promise.all(promises).then(resolve, reject))
+      })
+    })
+    console.log(Object.keys(files))
+
+    const src = files['/server/bundle.js'].toString('utf8')
 
     const { Request } = fetch
 
@@ -62,9 +82,8 @@ export default class Server {
           try {
             const pathname = url.parse(req.url!).pathname!
             if (pathname.startsWith('/_assets')) {
-              const data = await fs.readFile(`${dir}${pathname}`)
               res.setHeader('Content-Type', getContentType(pathname))
-              res.end(data)
+              res.end(files[pathname])
             } else {
               const method = req.method
               const headers: any = req.headers

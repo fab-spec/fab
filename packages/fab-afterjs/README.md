@@ -19,7 +19,7 @@ $ npm install -g @fab/afterjs
 $ fab-afterjs COMMAND
 running command...
 $ fab-afterjs (-v|--version|version)
-@fab/afterjs/0.0.4 darwin-x64 node-v11.1.0
+@fab/afterjs/0.0.5 darwin-x64 node-v11.1.0
 $ fab-afterjs --help [COMMAND]
 USAGE
   $ fab-afterjs COMMAND
@@ -50,7 +50,7 @@ EXAMPLE
   $ fab-afterjs build ~/src/my-project
 ```
 
-_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.4/src/commands/build.ts)_
+_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.5/src/commands/build.ts)_
 
 ## `fab-afterjs help [COMMAND]`
 
@@ -82,7 +82,7 @@ OPTIONS
   -h, --help   show CLI help
 ```
 
-_See code: [src/commands/setup.ts](https://github.com/fab-spec/fab/blob/v0.0.4/src/commands/setup.ts)_
+_See code: [src/commands/setup.ts](https://github.com/fab-spec/fab/blob/v0.0.5/src/commands/setup.ts)_
 
 ## `fab-afterjs teardown [DIRECTORY]`
 
@@ -96,5 +96,5 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/teardown.ts](https://github.com/fab-spec/fab/blob/v0.0.4/src/commands/teardown.ts)_
+_See code: [src/commands/teardown.ts](https://github.com/fab-spec/fab/blob/v0.0.5/src/commands/teardown.ts)_
 <!-- commandsstop -->

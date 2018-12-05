@@ -1,7 +1,12 @@
 @fab/serve
 ==========
 
-A NodeJS express server for hosting FABs
+A NodeJS express server for hosting FABs.
+
+## Todos: 
+
+- [ ] Read the FAB file not the directory it lives in
+- [ ] Use a real express server to get things like req.protocol and gzipped output
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@fab/serve.svg)](https://npmjs.org/package/@fab/serve)
