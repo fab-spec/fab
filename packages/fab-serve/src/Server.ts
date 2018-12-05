@@ -37,11 +37,10 @@ export default class Server {
         if (err || !zipfile) return reject(err)
         zipfile.on('entry', (entry: yauzl.Entry) => {
           promises.push(new Promise((res, rej) => {
-            console.log(entry.fileName)
             if (entry.fileName.endsWith('/')) return
             zipfile.openReadStream(entry, async (err, stream) => {
               if (err || !stream) return rej(err)
-              files[entry.fileName] = await getStream.buffer(stream)
+              files[`/${entry.fileName}`] = await getStream.buffer(stream)
               res()
             })
           }))
@@ -51,7 +50,7 @@ export default class Server {
     })
     console.log(Object.keys(files))
 
-    const src = files['server/bundle.js'].toString('utf8')
+    const src = files['/server/bundle.js'].toString('utf8')
 
     const { Request } = fetch
 
