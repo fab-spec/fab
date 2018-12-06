@@ -2035,6 +2035,7 @@ detect-libc@^1.0.2:
 deterministic-zip@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/deterministic-zip/-/deterministic-zip-1.0.5.tgz#7b7c83813d94b807cf55dbc3f102599853b88c24"
+  integrity sha1-e3yDgT2UuAfPVdvD8QJZmFO4jCQ=
   dependencies:
     async "^2.1.4"
     crc32-stream "^1.0.1"
