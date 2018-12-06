@@ -17,6 +17,9 @@ export default class Builder {
         `Missing asset manifest in ${assets_path}. The path may be incorrect, or you haven't run 'npm run build' on this project yet.`
       )
 
+    // Can this just move (without compiling) files into place and let 'fab compile'
+    // do the actual webpacking?
+
     await new Promise((resolve, reject) =>
       webpack(
         {

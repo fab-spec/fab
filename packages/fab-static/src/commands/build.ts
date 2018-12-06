@@ -46,5 +46,34 @@ export default class Build extends Command {
       path.resolve(flags['working-dir']!),
       flags['add-redirects']
     )
+
+    /*
+
+    STATIC PART
+
+    - loads all the HTML templates
+    - compiles them into an intermediate format for runtime injection
+    - generates server/htmls.js with them inlined (or 'required' and webpack will do it)
+    - compiles them into server.js with a handler for injecting
+      - Runtime variables
+      - HTTP headers
+
+
+    Output structure:
+
+    - /_assets/*         (already fingerprinted, good to go)
+    - /_server/index.js  (about to be wrapped & webpacked)
+    - /_server/*         (any files referenced by index.js go here)
+    - /*                 (all extra files get shunted around)
+
+    COMPILE PART
+
+    - Move any non /_asset or server.js files into _assets
+    - Fingerprint them
+    - Record a manifest of /favicon.ico -> /_assets/favicon.a1b2c3d4.ico
+    - Wrap server.js in a handler that checks the manifest and rewrites
+      - The handler needs to specify cache headers
+
+    */
   }
 }
