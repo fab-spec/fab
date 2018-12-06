@@ -1,4 +1,3 @@
-import * as fs from 'async-file'
 import * as http from 'http'
 import * as url from 'url'
 import * as vm from 'vm'
