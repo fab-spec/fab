@@ -32,6 +32,18 @@ export default class Setup extends Command {
     const node_index_exists = await fs.pathExists(
       path.resolve(directory, 'src/index.node.js')
     )
+    const fab_index_exists = await fs.pathExists(
+      path.resolve(directory, 'src/index.fab.js')
+    )
+    const index_exists = await fs.pathExists(
+      path.resolve(directory, 'src/index.js')
+    )
+
+    if (node_index_exists && !fab_index_exists && index_exists) {
+      console.log(`✅ Looks like this has already run. Leaving index.node.js and index.js as they are.`)
+      return
+    }
+
     if (node_index_exists) {
       console.log(
         chalk.red(
@@ -41,9 +53,6 @@ export default class Setup extends Command {
       throw new Error('index.node.js exists')
     }
 
-    const fab_index_exists = await fs.pathExists(
-      path.resolve(directory, 'src/index.fab.js')
-    )
     if (fab_index_exists && !force) {
       console.log(
         `${chalk.green(
