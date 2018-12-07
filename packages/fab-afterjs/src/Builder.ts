@@ -59,44 +59,6 @@ export default class Builder {
     if (intermediate_only)
       return console.log(`--intermediate-only set. Stopping here.`)
 
-    await new Promise((resolve, reject) =>
-      webpack(
-        {
-          mode: 'production',
-          target: 'webworker',
-          entry: path.resolve(__dirname, 'files/fab-wrapper.js'),
-          optimization: {
-            minimize: false
-          },
-          resolve: {
-            alias: {
-              fs: 'memfs',
-              'app-index': path.resolve(dir, 'build/server.js')
-            }
-          },
-          output: {
-            path: path.resolve(output_dir, 'server'),
-            filename: 'bundle.js',
-            library: 'server',
-            libraryTarget: 'commonjs2'
-          },
-          node: {
-            path: true,
-            process: true,
-            net: 'empty'
-          }
-        },
-        (err, stats) => {
-          if (err || stats.hasErrors()) {
-            console.log('Build failed.')
-            console.log(err)
-            console.log(stats.toJson().errors.toString())
-            reject()
-          }
-          resolve()
-        }
-      )
-    )
 
     await fs.copy(
       path.resolve(dir, 'build/public'),

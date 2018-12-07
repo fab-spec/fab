@@ -7,16 +7,26 @@ class FabCompile extends Command {
   static flags = {
     // add --version flag to show CLI version
     version: flags.version({char: 'v'}),
-    help: flags.help({char: 'h'})
+    help: flags.help({char: 'h'}),
+    input: flags.string({
+      char: 'i',
+      description: 'Intermediate FAB directory',
+      default: '.fab/intermediate'
+    }),
+    output: flags.string({
+      char: 'o',
+      description: 'Output FAB directory',
+      default: '.fab/dist'
+    }),
   }
 
-  static args = [{name: 'directory'}]
+  static args = []
 
   async run() {
     const {args, flags} = this.parse(FabCompile)
-    const { directory } = args
+    const { input, output } = flags
 
-    await Compiler.compile(directory)
+    await Compiler.compile(input!, output!)
   }
 }
 

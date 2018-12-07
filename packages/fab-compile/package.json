@@ -12,7 +12,8 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@types/globby": "^8.0.0",
-    "tslib": "^1"
+    "tslib": "^1",
+    "webpack": "^4.27.1"
   },
   "devDependencies": {
     "@oclif/test": "^1",
