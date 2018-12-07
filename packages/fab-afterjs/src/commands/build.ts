@@ -19,7 +19,8 @@ class Build extends Command {
       char: 'o',
       description: 'Output FAB directory',
       default: '.fab'
-    })
+    }),
+    'intermediate-only': flags.boolean()
   }
 
   static args = [
@@ -32,8 +33,7 @@ class Build extends Command {
   async run() {
     const { args, flags } = this.parse(Build)
     const { directory } = args
-    const { output } = flags
-    return await Builder.start(path.resolve(directory), path.resolve(output!))
+    return await Builder.start(path.resolve(directory), path.resolve(flags.output!), flags['intermediate-only'])
   }
 }
 

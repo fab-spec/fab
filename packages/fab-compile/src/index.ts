@@ -1,4 +1,5 @@
 import {Command, flags} from '@oclif/command'
+import Compiler from './Compiler'
 
 class FabCompile extends Command {
   static description = 'describe the command here'
@@ -6,23 +7,16 @@ class FabCompile extends Command {
   static flags = {
     // add --version flag to show CLI version
     version: flags.version({char: 'v'}),
-    help: flags.help({char: 'h'}),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
-    // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    help: flags.help({char: 'h'})
   }
 
-  static args = [{name: 'file'}]
+  static args = [{name: 'directory'}]
 
   async run() {
     const {args, flags} = this.parse(FabCompile)
+    const { directory } = args
 
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from ./src/index.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
-    }
+    await Compiler.compile(directory)
   }
 }
 
