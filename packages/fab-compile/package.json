@@ -1,7 +1,7 @@
 {
   "name": "@fab/compile",
   "description": "Compiles a FAB intermediate directory into a single .FAB file",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-compile": "./bin/run"
@@ -46,7 +46,7 @@
   },
   "repository": "fab-spec/fab",
   "scripts": {
-    "prepack": "rm -rf lib && tsc -b",
+    "prepack": "rm -rf lib && tsc -b && cp -R src/files lib/files",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "types": "lib/index.d.ts"

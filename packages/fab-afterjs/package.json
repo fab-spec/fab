@@ -1,14 +1,14 @@
 {
   "name": "@fab/afterjs",
   "description": "FAB compiler for After.js projects",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-afterjs": "./bin/run"
   },
   "bugs": "https://github.com/fab-spec/fab/issues",
   "dependencies": {
-    "@fab/compile": "^0.0.1",
+    "@fab/compile": "^0.0.2",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
