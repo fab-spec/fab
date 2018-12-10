@@ -50,7 +50,7 @@ export default class Server {
         zipfile.once('end', () => Promise.all(promises).then(resolve, reject))
       })
     })
-    console.log(Object.keys(files))
+    // console.log(Object.keys(files))
 
     const src_buffer = files['/server.js']
     if (!src_buffer) {

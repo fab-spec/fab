@@ -10,8 +10,6 @@ const url = require('url')
 const render_app = require('app-index').render
 const rewrites = FAB_REWRITES
 
-console.log(rewrites)
-
 const render = async (req, settings) => {
   const parsed = url.parse(req.url)
   const rewrite = rewrites[parsed.path]
