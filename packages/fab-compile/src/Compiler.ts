@@ -7,6 +7,7 @@ import * as path from 'path'
 import * as _zip from 'deterministic-zip'
 import * as webpack from 'webpack'
 import * as hasha from 'hasha'
+
 const zip = util.promisify(_zip)
 
 const _log = (str: string) =>
@@ -17,7 +18,11 @@ const log = (str: string) => console.log(_log(str))
 const error = (str: string) => console.log(_log(chalk.red(str)))
 
 export default class Compiler {
-  static async compile(input_dir: string, build_dir: string, output_file: string) {
+  static async compile(
+    input_dir: string,
+    build_dir: string,
+    output_file: string
+  ) {
     const input_path = path.resolve(input_dir)
     const build_path = path.resolve(build_dir)
 
@@ -47,6 +52,22 @@ export default class Compiler {
       cwd: input_path
     })
 
+    log(`Copying fingerprinted _assets:`)
+    await fs.copy(assets_path, path.join(build_path, '_assets'), {
+      filter(src, dest) {
+        if (src.match(/\.\w+$/))
+          log(
+            `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
+              path.relative(input_path, src)
+            )} => ${chalk.gray(build_dir + '/')}/${chalk.yellow(
+              path.relative(build_path, dest)
+            )}`
+          )
+        return true
+      }
+    })
+    log(`Done!`)
+
     log(`Copying non-fingerprinted (public) assets:`)
     const renames: { [filename: string]: string } = {}
     await Promise.all(
@@ -64,9 +85,9 @@ export default class Compiler {
         )}`
         renames['/' + filename] = '/' + asset_path
         log(
-          `${input_dir}/${chalk.yellow(
+          `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
             filename
-          )} => ${build_dir}/${chalk.yellow(asset_path)}`
+          )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(asset_path)}`
         )
         await fs.copy(
           path.join(input_path, filename),
@@ -121,6 +142,9 @@ export default class Compiler {
       )
     )
 
+    const bundle_output = path.join(build_path,'server.js');
+    const stats1 = await fs.stat(bundle_output);
+    log(`    ${path.relative(process.cwd(), bundle_output)} (${chalk.green(Math.round(stats1.size / 1024) + 'KB')})`)
     log(`Done!`)
     log(`Zipping it up into a FAB`)
 
@@ -130,6 +154,8 @@ export default class Compiler {
       cwd: build_dir
     }
     await zip(build_dir, zipfile, options)
+    const stats2 = await fs.stat(zipfile);
+    log(`    ${path.relative(process.cwd(), zipfile)} (${chalk.green(Math.round(stats2.size / 1024) + 'KB')})`)
 
     log(chalk.green(`All done!`))
   }
