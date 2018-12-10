@@ -5,11 +5,12 @@ import * as globby from 'globby'
 import * as path from 'path'
 // @ts-ignore
 import * as _zip from 'deterministic-zip'
-import * as webpack from "webpack";
+import * as webpack from 'webpack'
+import * as hasha from 'hasha'
 const zip = util.promisify(_zip)
 
 const _log = (str: string) =>
-  `[FAB:Compile] ${str.split(/\n\s*/).join('\n              ')}`
+  `${chalk.gray(`[FAB:Compile]`)} ${str.split(/\n\s*/).join('\n              ')}`
 const log = (str: string) => console.log(_log(str))
 const error = (str: string) => console.log(_log(chalk.red(str)))
 
@@ -39,10 +40,41 @@ export default class Compiler {
         https://fab-spec.org/eh?no-server-dir`)
     }
 
-    const paths = await globby(['**/*', '!_static', '!_assets'], {
-      cwd: input_dir
+    await fs.emptyDir(output_path)
+    const paths = await globby(['**/*', '!_server', '!_assets'], {
+      cwd: input_path
     })
 
+    log(`Copying non-fingerprinted (public) assets:`)
+    const renames: {[filename: string]: string} = {}
+    await Promise.all(
+      paths.map(async filename => {
+        const full_hash = await hasha.fromFile(
+          path.join(input_path, filename),
+          {
+            algorithm: 'md5'
+          }
+        )
+        const hash = full_hash!.substring(0, 9)
+        const asset_path = `_assets/_public/${filename.replace(
+          /([^.]*)$/,
+          `${hash}.$1`
+        )}`
+        renames['/' + filename] = '/' + asset_path
+        log(
+          `${input_dir}/${chalk.yellow(
+            filename
+          )} => ${output_dir}/${chalk.yellow(asset_path)}`
+        )
+        await fs.copy(
+          path.join(input_path, filename),
+          path.join(output_path, asset_path)
+        )
+      })
+    )
+
+    log(`Done!`)
+    log(`Injecting FAB wrapper and compiling ${chalk.green(server_path)}`)
     await new Promise((resolve, reject) =>
       webpack(
         {
@@ -55,7 +87,7 @@ export default class Compiler {
           resolve: {
             alias: {
               fs: 'memfs',
-              'app-index': path.resolve(server_path, 'index.js'),
+              'app-index': path.resolve(server_path, 'index.js')
             }
           },
           output: {
@@ -71,7 +103,7 @@ export default class Compiler {
           },
           plugins: [
             new webpack.DefinePlugin({
-              FAB_REWRITES: JSON.stringify(paths)
+              FAB_REWRITES: JSON.stringify(renames)
             })
           ]
         },
@@ -82,7 +114,7 @@ export default class Compiler {
             console.log(stats.toJson().errors.toString())
             reject()
           }
-          console.log("SUCCESS")
+          console.log('SUCCESS')
           resolve()
         }
       )
