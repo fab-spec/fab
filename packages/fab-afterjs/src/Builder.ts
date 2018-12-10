@@ -4,7 +4,7 @@ import * as util from 'util'
 import * as globby from 'globby'
 // @ts-ignore
 import * as _zip from 'deterministic-zip'
-import Compiler from '../../fab-compile/src/Compiler'
+import Compiler from '@fab/compile/lib/Compiler'
 const zip = util.promisify(_zip)
 
 export default class Builder {

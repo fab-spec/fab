@@ -1,7 +1,7 @@
 {
   "name": "@fab/compile",
   "description": "Compiles a FAB intermediate directory into a single .FAB file",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-compile": "./bin/run"
