@@ -15,11 +15,17 @@ class Build extends Command {
     version: flags.version({ char: 'v' }),
     help: flags.help({ char: 'h' }),
     // flag with a value (-o, --output=VALUE)
+    'working-dir': flags.string({
+      char: 'w',
+      description: 'Working FAB directory',
+      default: '.fab'
+    }),
     output: flags.string({
       char: 'o',
-      description: 'Output FAB directory',
-      default: '.fab'
-    })
+      description: 'Output FAB file',
+      default: 'fab.zip'
+    }),
+    'intermediate-only': flags.boolean()
   }
 
   static args = [
@@ -32,8 +38,12 @@ class Build extends Command {
   async run() {
     const { args, flags } = this.parse(Build)
     const { directory } = args
-    const { output } = flags
-    return await Builder.start(path.resolve(directory), path.resolve(output!))
+    return await Builder.start(
+      path.resolve(directory),
+      flags['working-dir']!,
+      path.resolve(flags.output!),
+      flags['intermediate-only']
+    )
   }
 }
 

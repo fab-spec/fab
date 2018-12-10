@@ -6,7 +6,7 @@
 
 ```
 my-app.b1c53da6.fab
-  ├── runtime.js
+  ├── server.js
   ├── settings.json
   └── _assets
         ├── js
@@ -21,14 +21,14 @@ my-app.b1c53da6.fab
 
 A zip file created using `deterministic-zip` for content-addressable storage.
 
-### `runtime.js`
+### `server.js`
 
 A `V8:Isolate`-compatible single-file build of your server-side logic.
 
 Exposes a single entry point:
 
 ```js
-const renderGet = async (req, res, settings) => {
+const render = async (req, settings) => {
   // Literally everything goes here.
 }
 
