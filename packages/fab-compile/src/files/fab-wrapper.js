@@ -13,13 +13,12 @@ const rewrites = FAB_REWRITES
 console.log(rewrites)
 
 const render = async (req, settings) => {
-  const { path } = url.parse(req.url)
-  if (rewrites[path]) {
-    // const response = await fetch()
-    return new Response('NAHHHH', {
-      status: 404,
-      headers: {}
-    })
+  const parsed = url.parse(req.url)
+  const rewrite = rewrites[parsed.path]
+  if (rewrite) {
+    const response = await fetch(`${parsed.protocol}//${parsed.host}${rewrite}`)
+    response.headers.delete('cache-control')
+    return response
   }
   return await render_app(req, settings)
 }
