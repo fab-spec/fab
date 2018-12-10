@@ -49,7 +49,11 @@ export default class Server {
     })
     console.log(Object.keys(files))
 
-    const src = files['/server/bundle.js'].toString('utf8')
+    const src_buffer = files['/server.js'];
+    if (!src_buffer) {
+      throw new Error("Malformed FAB. Missing /server.js")
+    }
+    const src = src_buffer.toString('utf8')
 
     const { Request } = fetch
 

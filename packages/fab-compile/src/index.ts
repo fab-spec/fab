@@ -13,10 +13,15 @@ class FabCompile extends Command {
       description: 'Intermediate FAB directory',
       default: '.fab/intermediate'
     }),
+    'build-dir': flags.string({
+      char: 'b',
+      description: 'Working FAB directory',
+      default: '.fab/dist'
+    }),
     output: flags.string({
       char: 'o',
-      description: 'Output FAB directory',
-      default: '.fab/dist'
+      description: 'Output FAB file',
+      default: 'fab.zip'
     }),
   }
 
@@ -26,7 +31,7 @@ class FabCompile extends Command {
     const {args, flags} = this.parse(FabCompile)
     const { input, output } = flags
 
-    await Compiler.compile(input!, output!)
+    await Compiler.compile(input!, flags['build-dir']!, output!)
   }
 }
 

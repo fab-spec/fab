@@ -10,14 +10,16 @@ import * as hasha from 'hasha'
 const zip = util.promisify(_zip)
 
 const _log = (str: string) =>
-  `${chalk.gray(`[FAB:Compile]`)} ${str.split(/\n\s*/).join('\n              ')}`
+  `${chalk.gray(`[FAB:Compile]`)} ${str
+    .split(/\n\s*/)
+    .join('\n              ')}`
 const log = (str: string) => console.log(_log(str))
 const error = (str: string) => console.log(_log(chalk.red(str)))
 
 export default class Compiler {
-  static async compile(input_dir: string, output_dir: string) {
+  static async compile(input_dir: string, build_dir: string, output_file: string) {
     const input_path = path.resolve(input_dir)
-    const output_path = path.resolve(output_dir)
+    const build_path = path.resolve(build_dir)
 
     if (!(await fs.pathExists(input_path))) {
       error(`${input_path} doesn't exist!`)
@@ -40,13 +42,13 @@ export default class Compiler {
         https://fab-spec.org/eh?no-server-dir`)
     }
 
-    await fs.emptyDir(output_path)
+    await fs.emptyDir(build_path)
     const paths = await globby(['**/*', '!_server', '!_assets'], {
       cwd: input_path
     })
 
     log(`Copying non-fingerprinted (public) assets:`)
-    const renames: {[filename: string]: string} = {}
+    const renames: { [filename: string]: string } = {}
     await Promise.all(
       paths.map(async filename => {
         const full_hash = await hasha.fromFile(
@@ -64,11 +66,11 @@ export default class Compiler {
         log(
           `${input_dir}/${chalk.yellow(
             filename
-          )} => ${output_dir}/${chalk.yellow(asset_path)}`
+          )} => ${build_dir}/${chalk.yellow(asset_path)}`
         )
         await fs.copy(
           path.join(input_path, filename),
-          path.join(output_path, asset_path)
+          path.join(build_path, asset_path)
         )
       })
     )
@@ -91,8 +93,8 @@ export default class Compiler {
             }
           },
           output: {
-            path: output_path,
-            filename: 'bundle.js',
+            path: build_path,
+            filename: 'server.js',
             library: 'server',
             libraryTarget: 'commonjs2'
           },
@@ -114,10 +116,21 @@ export default class Compiler {
             console.log(stats.toJson().errors.toString())
             reject()
           }
-          console.log('SUCCESS')
           resolve()
         }
       )
     )
+
+    log(`Done!`)
+    log(`Zipping it up into a FAB`)
+
+    const zipfile = path.resolve(output_file)
+    const options = {
+      includes: ['./server.js', './_assets/**'],
+      cwd: build_dir
+    }
+    await zip(build_dir, zipfile, options)
+
+    log(chalk.green(`All done!`))
   }
 }

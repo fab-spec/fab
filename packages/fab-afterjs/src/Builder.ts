@@ -1,16 +1,17 @@
 import * as fs from 'fs-extra'
 import * as path from 'path'
-import * as webpack from 'webpack'
 import * as util from 'util'
 import * as globby from 'globby'
 // @ts-ignore
 import * as _zip from 'deterministic-zip'
+import Compiler from '../../fab-compile/src/Compiler'
 const zip = util.promisify(_zip)
 
 export default class Builder {
   static async start(
     dir: string,
-    output_dir: string,
+    working_dir: string,
+    output_file: string,
     intermediate_only: boolean
   ) {
     console.log(`Building in ${dir}`)
@@ -22,11 +23,8 @@ export default class Builder {
         `Missing asset manifest in ${assets_path}. The path may be incorrect, or you haven't run 'npm run build' on this project yet.`
       )
 
-    // Can this just move (without compiling) files into place and let 'fab compile'
-    // do the actual webpacking?
-
-    const int_dir = path.join(output_dir, 'intermediate')
-    await fs.emptyDir(int_dir)
+    await fs.emptyDir(working_dir)
+    const int_dir = path.join(working_dir, 'intermediate')
     await fs.ensureDir(path.join(int_dir, '_assets'))
     await fs.ensureDir(path.join(int_dir, '_server'))
 
@@ -38,10 +36,22 @@ export default class Builder {
       path.join(int_dir, '_assets', 'static')
     )
 
-    console.log(`Copying build/server.js to .fab/intermediate/_server/index.js`)
+    console.log(`Copying build/server.js to .fab/intermediate/_server/app.js`)
     await fs.copy(
       path.join(dir, 'build', 'server.js'),
+      path.join(int_dir, '_server', 'app.js')
+    )
+
+    console.log(`Copying fab-wrapper from @fab/afterjs to .fab/intermediate/_server/index.js`)
+    await fs.copy(
+      path.join(__dirname, 'files', 'fab-wrapper.js'),
       path.join(int_dir, '_server', 'index.js')
+    )
+
+    console.log(`Copying mock-express-response from @fab/afterjs to .fab/intermediate/_server`)
+    await fs.copy(
+      path.join(__dirname, 'files', 'mock-express-response'),
+      path.join(int_dir, '_server', 'mock-express-response')
     )
 
     console.log(`Copying remaining files to .fab/intermediate`)
@@ -59,17 +69,6 @@ export default class Builder {
     if (intermediate_only)
       return console.log(`--intermediate-only set. Stopping here.`)
 
-
-    await fs.copy(
-      path.resolve(dir, 'build/public'),
-      path.resolve(output_dir, '_assets')
-    )
-
-    const zipfile = path.resolve(output_dir, 'fab.zip')
-    const options = {
-      includes: ['./server/**', './_assets/**'],
-      cwd: output_dir
-    }
-    await zip(output_dir, zipfile, options)
+    Compiler.compile(int_dir, path.join(working_dir, 'build'), output_file)
   }
 }
