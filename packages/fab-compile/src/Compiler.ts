@@ -65,6 +65,9 @@ export default class Compiler {
     await Promise.all(
       paths.map(async filename => {
         try {
+          const stats = await fs.stat(path.join(input_path, filename))
+          if (stats.isDirectory()) return
+
           const full_hash = await hasha.fromFile(
             path.join(input_path, filename),
             {
@@ -88,6 +91,7 @@ export default class Compiler {
           )
         } catch (e) {
           error(`Error copying ${filename}: ${e}`)
+          throw e
         }
       })
     )
