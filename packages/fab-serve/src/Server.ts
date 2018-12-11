@@ -12,10 +12,15 @@ const getContentType = (pathname: string) => {
   return (mimeType && mime.contentType(mimeType)) || 'text/html; charset=utf-8'
 }
 
-export const mapToObj = (map: Map<string, string>) => {
+export const mapToObj = (
+  map: Map<string, string>,
+  options: { exclusions?: Array<string> } = {}
+) => {
+  const exclusions = new Set(options.exclusions || [])
   const obj: { [index: string]: string } = {}
   return [...map.entries()].reduce(
-    (obj, [key, value]) => ((obj[key] = value), obj),
+    (obj, [key, value]) =>
+      exclusions.has(key.toLowerCase()) ? obj : ((obj[key] = value), obj),
     obj
   )
 }
@@ -119,7 +124,7 @@ export default class Server {
             res.writeHead(
               fetch_res.status,
               fetch_res.statusText,
-              mapToObj(fetch_res.headers)
+              mapToObj(fetch_res.headers, { exclusions: ['content-encoding'] })
             )
             const blob = await fetch_res.arrayBuffer()
             res.write(Buffer.from(blob))
