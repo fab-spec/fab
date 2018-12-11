@@ -21,7 +21,8 @@ export default class Compiler {
   static async compile(
     input_dir: string,
     build_dir: string,
-    output_file: string
+    output_file: string,
+    post_webpack_side_effect?: () => Promise<void>
   ) {
     const input_path = path.resolve(input_dir)
     const build_path = path.resolve(build_dir)
@@ -99,13 +100,22 @@ export default class Compiler {
     log(`Done!`)
 
     const server_path = path.join(input_path, '_server', 'index.js')
-    const settings_path = path.join(input_path, '_server', 'production-settings.json')
+    const settings_path = path.join(
+      input_path,
+      '_server',
+      'production-settings.json'
+    )
     if (!(await fs.pathExists(server_path))) {
       log(`${chalk.yellow(`No _server/index.js file detected.`)}
         Your FAB will only have the simplest of webservers injected.
         If you want to host a static site, you probably want @fab/static
         https://fab-spec.org/eh?no-server-index`)
-      await this.webpack(path.resolve(__dirname, 'files/fallback-index.js'), settings_path, build_path, renames)
+      await this.webpack(
+        path.resolve(__dirname, 'files/fallback-index.js'),
+        settings_path,
+        build_path,
+        renames
+      )
     } else {
       log(`Injecting FAB wrapper and compiling ${chalk.green(server_path)}`)
       await this.webpack(server_path, settings_path, build_path, renames)
@@ -119,6 +129,11 @@ export default class Compiler {
       )})`
     )
     log(`Done!`)
+
+    if (post_webpack_side_effect) {
+      await post_webpack_side_effect()
+    }
+
     log(`Zipping it up into a FAB`)
 
     const zipfile = path.resolve(output_file)
@@ -145,7 +160,11 @@ export default class Compiler {
   ) {
     const settings_exists = await fs.pathExists(settings_path)
     if (settings_exists) {
-      log(`    Found production settings file at ${chalk.yellow(path.relative(process.cwd(), settings_path))}`)
+      log(
+        `    Found production settings file at ${chalk.yellow(
+          path.relative(process.cwd(), settings_path)
+        )}`
+      )
     }
     await new Promise((resolve, reject) =>
       webpack(
@@ -160,7 +179,12 @@ export default class Compiler {
             alias: {
               fs: 'memfs',
               'app-index': server_path,
-              'production-settings.json': settings_exists ? settings_path : path.resolve(__dirname, 'files/default-production-settings.json'),
+              'production-settings.json': settings_exists
+                ? settings_path
+                : path.resolve(
+                    __dirname,
+                    'files/default-production-settings.json'
+                  )
             }
           },
           output: {

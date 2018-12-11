@@ -4,6 +4,8 @@ import * as util from 'util'
 import * as globby from 'globby'
 import Compiler from '@fab/compile/lib/Compiler'
 import chalk from 'chalk'
+import generateIncludes from './generateIncludes'
+import rewriteWebpackEmptyContext from "./rewriteWebpackEmptyContext";
 
 const _log = (str: string) =>
   `${chalk.gray(`[FAB:NextJS]`)} ${str.split(/\n\s*/).join('\n             ')}`
@@ -40,19 +42,35 @@ export default class Builder {
     await fs.ensureDir(path.join(int_dir, '_assets'))
     await fs.ensureDir(path.join(int_dir, '_server'))
 
-    console.log(`Copying .next/static to .fab/intermediate/static`)
+    log(`Copying .next/static to .fab/intermediate/static`)
+    await fs.copy(path.join(next_dir, 'static'), path.join(int_dir, 'static'))
+
+    log(`Generating includes for the server files`)
+    await generateIncludes(dir, path.join(int_dir, '_server'))
+
+    console.log(`Copying server.js from @fab/nextjs to .fab/intermediate/_server/index.js`)
     await fs.copy(
-      path.join(next_dir, 'static'),
-      path.join(int_dir, 'static')
+      path.join(__dirname, 'files', 'server.js'),
+      path.join(int_dir, '_server', 'index.js')
     )
 
-    if (intermediate_only)
-      return console.log(`--intermediate-only set. Stopping here.`)
+    console.log(`Copying mock-express-response from @fab/nextjs to .fab/intermediate/_server`)
+    await fs.copy(
+      path.join(__dirname, 'files', 'mock-express-response'),
+      path.join(int_dir, '_server', 'mock-express-response')
+    )
 
+
+    if (intermediate_only) return log(`--intermediate-only set. Stopping here.`)
+
+    const build_path = path.join(working_dir, 'build');
     await Compiler.compile(
       int_dir,
-      path.join(working_dir, 'build'),
-      output_file
+      build_path,
+      output_file,
+      async () => {
+        await rewriteWebpackEmptyContext(path.join(build_path, 'server.js'))
+      }
     )
   }
 }
