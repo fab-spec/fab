@@ -1,7 +1,7 @@
 {
   "name": "@fab/serve",
   "description": "A NodeJS express server for hosting FABs",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-serve": "./bin/run"
