@@ -8,11 +8,14 @@
 
 const url = require('url')
 const render_app = require('app-index').render
+const production_settings = require('production-settings.json')
 const rewrites = FAB_REWRITES
 
 const render = async (req, settings) => {
   const parsed = url.parse(req.url)
-  const rewrite = rewrites[parsed.path]
+  const path = parsed.path
+  const rewrite =
+    rewrites[path] || (path.endsWith('/') && rewrites[path + 'index.html'])
   if (rewrite) {
     const response = await fetch(`${parsed.protocol}//${parsed.host}${rewrite}`)
     response.headers.delete('cache-control')
@@ -21,4 +24,9 @@ const render = async (req, settings) => {
   return await render_app(req, settings)
 }
 
-module.exports = { render }
+module.exports = {
+  render,
+  getProdSettings() {
+    return production_settings
+  }
+}

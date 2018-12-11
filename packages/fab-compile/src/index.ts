@@ -16,7 +16,7 @@ class FabCompile extends Command {
     'build-dir': flags.string({
       char: 'b',
       description: 'Working FAB directory',
-      default: '.fab/dist'
+      default: '.fab/build'
     }),
     output: flags.string({
       char: 'o',
