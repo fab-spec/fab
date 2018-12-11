@@ -80,6 +80,19 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@fab/compile@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@fab/compile/-/compile-0.0.2.tgz#ecb86c1a13f1c37f73d3ab70341e53e29fa56ee2"
+  dependencies:
+    "@oclif/command" "^1"
+    "@oclif/config" "^1"
+    "@oclif/plugin-help" "^2"
+    "@types/globby" "^8.0.0"
+    "@types/hasha" "^3.0.0"
+    hasha "^3.0.0"
+    tslib "^1"
+    webpack "^4.27.1"
+
 "@lerna/add@^3.4.1":
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.4.1.tgz#d41068317e30f530df48220d256b5e79690b1877"

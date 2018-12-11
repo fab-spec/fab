@@ -64,27 +64,31 @@ export default class Compiler {
     const renames: { [filename: string]: string } = {}
     await Promise.all(
       paths.map(async filename => {
-        const full_hash = await hasha.fromFile(
-          path.join(input_path, filename),
-          {
-            algorithm: 'md5'
-          }
-        )
-        const hash = full_hash!.substring(0, 9)
-        const asset_path = `_assets/_public/${filename.replace(
-          /([^.]*)$/,
-          `${hash}.$1`
-        )}`
-        renames['/' + filename] = '/' + asset_path
-        log(
-          `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
-            filename
-          )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(asset_path)}`
-        )
-        await fs.copy(
-          path.join(input_path, filename),
-          path.join(build_path, asset_path)
-        )
+        try {
+          const full_hash = await hasha.fromFile(
+            path.join(input_path, filename),
+            {
+              algorithm: 'md5'
+            }
+          )
+          const hash = full_hash!.substring(0, 9)
+          const asset_path = `_assets/_public/${filename.replace(
+            /([^.]*)$/,
+            `${hash}.$1`
+          )}`
+          renames['/' + filename] = '/' + asset_path
+          log(
+            `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
+              filename
+            )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(asset_path)}`
+          )
+          await fs.copy(
+            path.join(input_path, filename),
+            path.join(build_path, asset_path)
+          )
+        } catch (e) {
+          error(`Error copying ${filename}: ${e}`)
+        }
       })
     )
 
