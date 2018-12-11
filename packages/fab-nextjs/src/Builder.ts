@@ -64,6 +64,7 @@ export default class Builder {
     if (intermediate_only) return log(`--intermediate-only set. Stopping here.`)
 
     const build_path = path.join(working_dir, 'build');
+    console.log("ABOUT TO BUILD")
     await Compiler.compile(
       int_dir,
       build_path,
