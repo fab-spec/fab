@@ -99,10 +99,11 @@ export default class Server {
               method,
               headers
             })
-            const fetch_res = await renderer.render(fetch_req, {
+            const production_settings = renderer.getProdSettings ? renderer.getProdSettings() : {}
+            const fetch_res = await renderer.render(fetch_req, Object.assign({
               injected: 'variables',
               should: 'work!'
-            })
+            }, production_settings))
             res.writeHead(
               fetch_res.status,
               fetch_res.statusText,
