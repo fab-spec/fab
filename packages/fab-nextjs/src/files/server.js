@@ -1,10 +1,10 @@
 const next = require('next-server')
 const MockExpressResponse = require('./mock-express-response')
-const initFiles = require('./includes')
 const fs = require('fs')
 const url = require('url')
 
-global.NEXT_CACHE = {}
+const initFiles = require('./includes')
+global.NEXT_CACHE = require('./next-cache')
 
 let startup_promise
 const serverOptions = {}
@@ -14,10 +14,10 @@ const startup = () => {
   startup_promise = new Promise(async (resolve, reject) => {
     try {
       await initFiles()
-      const files = await new Promise(res =>
-        fs.readdir('/.next', (_, files) => res(files))
-      )
-      console.log(files)
+      //const files = await new Promise(res =>
+      //  fs.readdir('/.next', (_, files) => res(files))
+      //)
+      //console.log(files)
       const app = next(serverOptions)
       await app.prepare()
       resolve(app.getRequestHandler())
@@ -27,8 +27,10 @@ const startup = () => {
   })
   return startup_promise
 }
+startup().then(() => console.log(`Booted and ready!`))
 
 const render = async (req, settings) => {
+  console.log(`REQUEST! ${req.url}`)
   const requestHandler = await startup()
   const res = new MockExpressResponse()
   const req_url = url.parse(req.url)
@@ -38,8 +40,8 @@ const render = async (req, settings) => {
     method: req.method,
     headers: req.headers
   })
-  const body = await requestHandler(local_req, res)
-  return new Response(body, {
+  await requestHandler(local_req, res)
+  return new Response(res._getString(), {
     status: res.statusCode,
     headers: res._headers
   })
