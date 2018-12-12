@@ -19,7 +19,7 @@ $ npm install -g @fab/nextjs
 $ fab-nextjs COMMAND
 running command...
 $ fab-nextjs (-v|--version|version)
-@fab/nextjs/0.0.0 darwin-x64 node-v11.1.0
+@fab/nextjs/0.0.1 darwin-x64 node-v11.1.0
 $ fab-nextjs --help [COMMAND]
 USAGE
   $ fab-nextjs COMMAND
@@ -28,28 +28,29 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`fab-nextjs hello [FILE]`](#fab-nextjs-hello-file)
+* [`fab-nextjs build [DIRECTORY]`](#fab-nextjs-build-directory)
 * [`fab-nextjs help [COMMAND]`](#fab-nextjs-help-command)
 
-## `fab-nextjs hello [FILE]`
+## `fab-nextjs build [DIRECTORY]`
 
-describe the command here
+Build a NextJS project into a FAB
 
 ```
 USAGE
-  $ fab-nextjs hello [FILE]
+  $ fab-nextjs build [DIRECTORY]
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help                     show CLI help
+  -o, --output=output            [default: fab.zip] Output FAB file
+  -v, --version                  show CLI version
+  -w, --working-dir=working-dir  [default: .fab] Working FAB directory
+  --intermediate-only
 
 EXAMPLE
-  $ fab-nextjs hello
-  hello world from ./src/hello.ts!
+  $ fab-nextjs build
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/fab-spec/fab/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.1/src/commands/build.ts)_
 
 ## `fab-nextjs help [COMMAND]`
 
