@@ -2,6 +2,7 @@ const next = require('next-server')
 const MockExpressResponse = require('./mock-express-response')
 const initFiles = require('./includes')
 const fs = require('fs')
+const url = require('url')
 
 global.NEXT_CACHE = {}
 

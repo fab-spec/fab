@@ -3,7 +3,7 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 
 export default async function generateIncludes(includesDir: string, output_dir: string) {
-  const files = await globby(['.next/server/**/*'], { cwd: includesDir })
+  const files = await globby(['.next/**/*'], { cwd: includesDir })
   console.log(files)
   const contents = await Promise.all(
     files.map(file => fs.readFile(file, { encoding: 'base64' }))

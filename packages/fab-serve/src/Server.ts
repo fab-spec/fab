@@ -67,7 +67,8 @@ export default class Server {
       Headers: fetch.Headers,
       URL: URL,
       console: {
-        log: console.log
+        log: console.log,
+        error: console.error
       },
       NODE_ENV: 'server',
       process: {
@@ -75,25 +76,9 @@ export default class Server {
           NODE_ENV: 'server'
         }
       },
-      setTimeout: function(a: any, b: any) {
-        console.log("SETTING A TIMEOUT")
-        console.log({a,b})
-        console.log(typeof a)
-        if (typeof a == 'string') {
-          setTimeout(new Function(a), b)
-        } else {
-          setTimeout(() => {
-            console.log('INSIDE')
-            a()
-            console.log("DONE")
-          }, b)
-        }
-      },
-      setImmediate: function(fn: any, ...args: Array<any>) {
-        console.log("SET IMMEDIATE")
-        setImmediate(fn, ...args)
-        console.log("DONE")
-      }
+      setTimeout,
+      setImmediate,
+      clearTimeout
     }
 
     const script = new vm.Script(src)
