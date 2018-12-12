@@ -1,16 +1,17 @@
-const globby = require('globby')
-const path = require('path')
-const fse = require('fs-extra')
+import * as globby from 'globby'
+import * as fs from 'fs-extra'
+import * as path from 'path'
 
-export default async function run(includesDir: string) {
-  const files = await globby([
-    '.next/**/*'
-  ], { cwd: includesDir })
+export default async function generateIncludes(
+  includesDir: string,
+  output_dir: string
+) {
+  const files = await globby(['.next/**/*'], { cwd: includesDir })
   console.log(files)
   const contents = await Promise.all(
-    files.map(file => fse.readFile(file, { encoding: 'base64' }))
+    files.map(file => fs.readFile(file, { encoding: 'base64' }))
   )
-  const urls = {}
+  const urls: { [key: string]: string } = {}
   files.forEach((file, index) => {
     const bytes = `Buffer.from('${contents[index]}', 'base64')`
     urls[file] = `{ bytes: ${bytes}, headers: ${JSON.stringify({})} }`
@@ -24,7 +25,7 @@ export default async function run(includesDir: string) {
   
   const fs = require('fs')
   const path = require('path')
-  module.exports = ${async () => {
+  module.exports = async () => {
     for (const url of Object.keys(urls)) {
       await new Promise((resolve, reject) =>
         fs.mkdir(
@@ -42,8 +43,8 @@ export default async function run(includesDir: string) {
         )
       )
     }
-  }}
+  }
   `
 
-  await fse.writeFile(path.join(includesDir, 'build', '_includes.js'), code)
+  await fs.writeFile(path.join(output_dir, 'includes.js'), code)
 }

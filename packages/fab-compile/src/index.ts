@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command'
+import { Command, flags } from '@oclif/command'
 import Compiler from './Compiler'
 
 class FabCompile extends Command {
@@ -6,8 +6,8 @@ class FabCompile extends Command {
 
   static flags = {
     // add --version flag to show CLI version
-    version: flags.version({char: 'v'}),
-    help: flags.help({char: 'h'}),
+    version: flags.version({ char: 'v' }),
+    help: flags.help({ char: 'h' }),
     input: flags.string({
       char: 'i',
       description: 'Intermediate FAB directory',
@@ -23,15 +23,18 @@ class FabCompile extends Command {
       description: 'Output FAB file',
       default: 'fab.zip'
     }),
+    'compile-only': flags.boolean()
   }
 
   static args = []
 
   async run() {
-    const {args, flags} = this.parse(FabCompile)
+    const { args, flags } = this.parse(FabCompile)
     const { input, output } = flags
 
-    await Compiler.compile(input!, flags['build-dir']!, output!)
+    await Compiler.compile(input!, flags['build-dir']!, output!, {
+      compile_only: flags['compile-only']
+    })
   }
 }
 

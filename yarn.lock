@@ -80,19 +80,6 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@fab/compile@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@fab/compile/-/compile-0.0.2.tgz#ecb86c1a13f1c37f73d3ab70341e53e29fa56ee2"
-  dependencies:
-    "@oclif/command" "^1"
-    "@oclif/config" "^1"
-    "@oclif/plugin-help" "^2"
-    "@types/globby" "^8.0.0"
-    "@types/hasha" "^3.0.0"
-    hasha "^3.0.0"
-    tslib "^1"
-    webpack "^4.27.1"
-
 "@lerna/add@^3.4.1":
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.4.1.tgz#d41068317e30f530df48220d256b5e79690b1877"
@@ -719,6 +706,12 @@
 "@types/chai@^4", "@types/chai@^4.1.4":
   version "4.1.7"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.7.tgz#1b8e33b61a8c09cbe1f85133071baa0dbf9fa71a"
+
+"@types/chalk@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@types/chalk/-/chalk-2.2.0.tgz#b7f6e446f4511029ee8e3f43075fb5b73fbaa0ba"
+  dependencies:
+    chalk "*"
 
 "@types/connect@*":
   version "3.4.32"
@@ -1551,7 +1544,7 @@ chai@^4:
     pathval "^1.1.0"
     type-detect "^4.0.5"
 
-chalk@^2.0.0, chalk@^2.3.1, chalk@^2.4.1:
+chalk@*, chalk@^2.0.0, chalk@^2.3.1, chalk@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.1.tgz#18c49ab16a037b6eb0152cc83e3471338215b66e"
   dependencies:
@@ -2809,7 +2802,7 @@ globals@^11.1.0:
 
 globby@^8.0.1:
   version "8.0.1"
-  resolved "https://registry.yarnpkg.com/globby/-/globby-8.0.1.tgz#b5ad48b8aa80b35b814fc1281ecc851f1d2b5b50"
+  resolved "http://registry.npmjs.org/globby/-/globby-8.0.1.tgz#b5ad48b8aa80b35b814fc1281ecc851f1d2b5b50"
   dependencies:
     array-union "^1.0.1"
     dir-glob "^2.0.0"
@@ -4425,6 +4418,10 @@ password-prompt@^1.0.7:
 path-browserify@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-0.0.0.tgz#a0b870729aae214005b7d5032ec2cbbb0fb4451a"
+
+path-browserify@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.0.tgz#40702a97af46ae00b0ea6fa8998c0b03c0af160d"
 
 path-dirname@^1.0.0:
   version "1.0.2"

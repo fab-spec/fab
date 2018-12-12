@@ -17,15 +17,36 @@ const _log = (str: string) =>
 const log = (str: string) => console.log(_log(str))
 const error = (str: string) => console.log(_log(chalk.red(str)))
 
+type CompilerOpts = {
+  post_webpack_side_effect?: () => Promise<void>
+  compile_only?: boolean
+}
 export default class Compiler {
   static async compile(
     input_dir: string,
     build_dir: string,
-    output_file: string
+    output_file: string,
+    opts: CompilerOpts = {}
   ) {
     const input_path = path.resolve(input_dir)
     const build_path = path.resolve(build_dir)
 
+    if (opts.compile_only) {
+      console.log(`--compile-only set. Skipping build.`)
+    } else {
+      await this.build(input_path, build_path, input_dir, build_dir, opts)
+    }
+
+    await this.zip(build_dir, output_file)
+  }
+
+  private static async build(
+    input_path: string,
+    build_path: string,
+    input_dir: string,
+    build_dir: string,
+    opts: CompilerOpts
+  ) {
     if (!(await fs.pathExists(input_path))) {
       error(`${input_path} doesn't exist!`)
       throw new Error('Missing directory')
@@ -37,8 +58,8 @@ export default class Compiler {
     const assets_path = path.join(input_path, '_assets')
     if (!(await fs.pathExists(assets_path))) {
       log(`${chalk.yellow(`No _assets directory detected.`)}
-        This isn't necessarily a problem, but your FAB may be able to be optimised.
-        For more info, visit https://fab-spec.org/eh?no-assets-dir`)
+          This isn't necessarily a problem, but your FAB may be able to be optimised.
+          For more info, visit https://fab-spec.org/eh?no-assets-dir`)
     } else {
       log(`Copying fingerprinted _assets:`)
       await fs.copy(assets_path, path.join(build_path, '_assets'), {
@@ -65,6 +86,9 @@ export default class Compiler {
     await Promise.all(
       paths.map(async filename => {
         try {
+          const stats = await fs.stat(path.join(input_path, filename))
+          if (stats.isDirectory()) return
+
           const full_hash = await hasha.fromFile(
             path.join(input_path, filename),
             {
@@ -88,6 +112,7 @@ export default class Compiler {
           )
         } catch (e) {
           error(`Error copying ${filename}: ${e}`)
+          throw e
         }
       })
     )
@@ -95,13 +120,22 @@ export default class Compiler {
     log(`Done!`)
 
     const server_path = path.join(input_path, '_server', 'index.js')
-    const settings_path = path.join(input_path, '_server', 'production-settings.json')
+    const settings_path = path.join(
+      input_path,
+      '_server',
+      'production-settings.json'
+    )
     if (!(await fs.pathExists(server_path))) {
       log(`${chalk.yellow(`No _server/index.js file detected.`)}
-        Your FAB will only have the simplest of webservers injected.
-        If you want to host a static site, you probably want @fab/static
-        https://fab-spec.org/eh?no-server-index`)
-      await this.webpack(path.resolve(__dirname, 'files/fallback-index.js'), settings_path, build_path, renames)
+          Your FAB will only have the simplest of webservers injected.
+          If you want to host a static site, you probably want @fab/static
+          https://fab-spec.org/eh?no-server-index`)
+      await this.webpack(
+        path.resolve(__dirname, 'files/fallback-index.js'),
+        settings_path,
+        build_path,
+        renames
+      )
     } else {
       log(`Injecting FAB wrapper and compiling ${chalk.green(server_path)}`)
       await this.webpack(server_path, settings_path, build_path, renames)
@@ -115,6 +149,13 @@ export default class Compiler {
       )})`
     )
     log(`Done!`)
+
+    if (opts.post_webpack_side_effect) {
+      await opts.post_webpack_side_effect()
+    }
+  }
+
+  private static async zip(build_dir: string, output_file: string) {
     log(`Zipping it up into a FAB`)
 
     const zipfile = path.resolve(output_file)
@@ -141,7 +182,11 @@ export default class Compiler {
   ) {
     const settings_exists = await fs.pathExists(settings_path)
     if (settings_exists) {
-      log(`    Found production settings file at ${chalk.yellow(path.relative(process.cwd(), settings_path))}`)
+      log(
+        `    Found production settings file at ${chalk.yellow(
+          path.relative(process.cwd(), settings_path)
+        )}`
+      )
     }
     await new Promise((resolve, reject) =>
       webpack(
@@ -155,8 +200,14 @@ export default class Compiler {
           resolve: {
             alias: {
               fs: 'memfs',
+              path: 'path-browserify',
               'app-index': server_path,
-              'production-settings.json': settings_exists ? settings_path : path.resolve(__dirname, 'files/default-production-settings.json'),
+              'production-settings.json': settings_exists
+                ? settings_path
+                : path.resolve(
+                    __dirname,
+                    'files/default-production-settings.json'
+                  )
             }
           },
           output: {

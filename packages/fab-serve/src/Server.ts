@@ -67,14 +67,18 @@ export default class Server {
       Headers: fetch.Headers,
       URL: URL,
       console: {
-        log: console.log
+        log: console.log,
+        error: console.error
       },
       NODE_ENV: 'server',
       process: {
         env: {
           NODE_ENV: 'server'
         }
-      }
+      },
+      setTimeout,
+      setImmediate,
+      clearTimeout
     }
 
     const script = new vm.Script(src)
@@ -99,11 +103,19 @@ export default class Server {
               method,
               headers
             })
-            const production_settings = renderer.getProdSettings ? renderer.getProdSettings() : {}
-            const fetch_res = await renderer.render(fetch_req, Object.assign({
-              injected: 'variables',
-              should: 'work!'
-            }, production_settings))
+            const production_settings = renderer.getProdSettings
+              ? renderer.getProdSettings()
+              : {}
+            const fetch_res = await renderer.render(
+              fetch_req,
+              Object.assign(
+                {
+                  injected: 'variables',
+                  should: 'work!'
+                },
+                production_settings
+              )
+            )
             res.writeHead(
               fetch_res.status,
               fetch_res.statusText,
