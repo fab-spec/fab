@@ -9,7 +9,7 @@ export default async function rewriteWebpackEmptyContext(
   const bundle = await fs.readFile(server_js_path, 'utf8')
   const replaced =
     // NFI why this is broken atm
-    `var setTimeout = global.setTimeout;\n` +
+    // `var setTimeout = global.setTimeout;\n` +
     // NextJS uses dynamic requires, we've prepared a
     // NEXT_CACHE to catch them so wire them together.
     bundle.replace(

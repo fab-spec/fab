@@ -74,6 +74,25 @@ export default class Server {
         env: {
           NODE_ENV: 'server'
         }
+      },
+      setTimeout: function(a: any, b: any) {
+        console.log("SETTING A TIMEOUT")
+        console.log({a,b})
+        console.log(typeof a)
+        if (typeof a == 'string') {
+          setTimeout(new Function(a), b)
+        } else {
+          setTimeout(() => {
+            console.log('INSIDE')
+            a()
+            console.log("DONE")
+          }, b)
+        }
+      },
+      setImmediate: function(fn: any, ...args: Array<any>) {
+        console.log("SET IMMEDIATE")
+        setImmediate(fn, ...args)
+        console.log("DONE")
       }
     }
 
@@ -99,11 +118,19 @@ export default class Server {
               method,
               headers
             })
-            const production_settings = renderer.getProdSettings ? renderer.getProdSettings() : {}
-            const fetch_res = await renderer.render(fetch_req, Object.assign({
-              injected: 'variables',
-              should: 'work!'
-            }, production_settings))
+            const production_settings = renderer.getProdSettings
+              ? renderer.getProdSettings()
+              : {}
+            const fetch_res = await renderer.render(
+              fetch_req,
+              Object.assign(
+                {
+                  injected: 'variables',
+                  should: 'work!'
+                },
+                production_settings
+              )
+            )
             res.writeHead(
               fetch_res.status,
               fetch_res.statusText,

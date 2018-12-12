@@ -16,6 +16,7 @@
     "chalk": "^2.4.1",
     "deterministic-zip": "^1.0.5",
     "hasha": "^3.0.0",
+    "path-browserify": "^1.0.0",
     "tslib": "^1",
     "webpack": "^4.27.1"
   },
@@ -51,5 +52,8 @@
     "prepack": "rm -rf lib && tsc -b && cp -R src/files lib/files",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/index.d.ts",
+  "resolutions": {
+    "path-browserify": "1.0.0"
+  }
 }
