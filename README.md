@@ -39,35 +39,46 @@ A `V8:Isolate`-compatible single-file build of your server-side logic.
 Exposes two entry points:
 
 ```js
-
-
-const render = async (request, settings) => {
-  // invoke your application
-  return new Reponse(/* respond here */)
+const getProdSettings = () => {
+  return {
+    // All production settings are bundled into the FAB here,
+    // ensuring predictable behaviour regardless of host.
+    // These are returned as a separate entry point, however,
+    // so that any encrypted variables can be decrypted
+    // by the host before being passed through to the render.
+  }
 }
 
-module.exports = { renderGet }
+const render = async (request, settings) => {
+  // request: a fetch.Request object
+  // settings: your production settings plus any
+  //           environment-specific overrides
+  
+  const { body, statusCode, headers } = 
+                  await myApp.render(request, settings)
+  
+  // return a fetch.Response object with the full data.
+  // Streaming responses not yet fully supported, but will be.
+  return new Response(body, { statusCode, headers })
+}
+
+module.exports = { render, getProdSettings }
 ```
-
-### `settings.json`
-
-Production settings compiled in, to ensure that production changes are _only_ possible by deploying a new FAB.
-
-On each request, a new `settings` object can be injected as required to allow testing the one bundle in multiple environments. This should be merged with the production data object.
 
 ### `_assets` directory
 
-Fingerprinted, usually copied to a static host and forked off at the CDN level (all http request for `/_assets*` can be forked off.)
+Usually split off and hosted separately on a static file server like S3, then routed there by a CDN or load balancer _in front_ of your FAB host, and served with `cache-control: immutable` headers. As such, files in this directory _must_ be fingerprinted so they do not clash from release to release.
 
 ## Development Progress
 
 ```
-@fab/static - compile a FAB from a static dir         3%
-@fab/serve - host a FAB in a NodeJS express server    0%
-@fab/next - compile a NextJS project                  0%
-@fab/compile - advanced compiler for SSR FABs         0%
-@fab/cf-workers - wrap FAB in a Cloudflare Worker     0%
-@fab/docker - wrap FAB in a Docker image              0%
+@fab/compile - advanced compiler for SSR FABs         WORKING
+@fab/serve - host a FAB in a NodeJS express server    WORKING
+@fab/afterjs - compile an After.js project            WORKING
+@fab/next - compile a NextJS project                  ALPHA RELEASE
+@fab/static - compile a FAB from a static dir         UNDER DEVELOPMENT
+@fab/cf-workers - wrap FAB in a Cloudflare Worker     PLANNED
+@fab/docker - wrap FAB in a Docker image              PLANNED
 ```
 
 Please star this project to follow along!
