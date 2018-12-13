@@ -23,7 +23,9 @@ class FabCompile extends Command {
       description: 'Output FAB file',
       default: 'fab.zip'
     }),
-    'compile-only': flags.boolean()
+    'compile-only': flags.boolean({
+      description: 'Bundle .fab/build into fab.zip'
+    })
   }
 
   static args = []
