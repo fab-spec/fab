@@ -68,7 +68,7 @@ export default class Compiler {
             log(
               `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
                 path.relative(input_path, src)
-              )} => ${chalk.gray(build_dir + '/')}/${chalk.yellow(
+              )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(
                 path.relative(build_path, dest)
               )}`
             )
@@ -79,45 +79,49 @@ export default class Compiler {
     }
 
     log(`Copying non-fingerprinted (public) assets:`)
-    const paths = await globby(['**/*', '!_server', '!_assets'], {
+    const paths = await globby(['**/*', '!_server/**/*', '!_assets/**/*'], {
       cwd: input_path
     })
     const renames: { [filename: string]: string } = {}
-    await Promise.all(
-      paths.map(async filename => {
-        try {
-          const stats = await fs.stat(path.join(input_path, filename))
-          if (stats.isDirectory()) return
+    if (paths.length > 0) {
+      await Promise.all(
+        paths.map(async filename => {
+          try {
+            const stats = await fs.stat(path.join(input_path, filename))
+            if (stats.isDirectory()) return
 
-          const full_hash = await hasha.fromFile(
-            path.join(input_path, filename),
-            {
-              algorithm: 'md5'
-            }
-          )
-          const hash = full_hash!.substring(0, 9)
-          const asset_path = `_assets/_public/${filename.replace(
-            /([^.]*)$/,
-            `${hash}.$1`
-          )}`
-          renames['/' + filename] = '/' + asset_path
-          log(
-            `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
-              filename
-            )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(asset_path)}`
-          )
-          await fs.copy(
-            path.join(input_path, filename),
-            path.join(build_path, asset_path)
-          )
-        } catch (e) {
-          error(`Error copying ${filename}: ${e}`)
-          throw e
-        }
-      })
-    )
+            const full_hash = await hasha.fromFile(
+              path.join(input_path, filename),
+              {
+                algorithm: 'md5'
+              }
+            )
+            const hash = full_hash!.substring(0, 9)
+            const asset_path = `_assets/_public/${filename.replace(
+              /([^.]*)$/,
+              `${hash}.$1`
+            )}`
+            renames['/' + filename] = '/' + asset_path
+            log(
+              `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
+                filename
+              )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(asset_path)}`
+            )
+            await fs.copy(
+              path.join(input_path, filename),
+              path.join(build_path, asset_path)
+            )
+          } catch (e) {
+            error(`Error copying ${filename}: ${e}`)
+            throw e
+          }
+        })
+      )
+      log(`Done!`)
+    } else {
+      log(`No non-fingerprinted assets found.`)
+    }
 
-    log(`Done!`)
 
     const server_path = path.join(input_path, '_server', 'index.js')
     const settings_path = path.join(
