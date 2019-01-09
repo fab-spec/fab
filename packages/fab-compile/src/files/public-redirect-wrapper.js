@@ -15,8 +15,7 @@ const render = async (req, settings) => {
   const parsed = url.parse(req.url)
   const { path, protocol, host } = parsed
 
-  const rewrite =
-    rewrites[path] || (path.endsWith('/') && rewrites[path + 'index.html'])
+  const rewrite = rewrites[path]
   if (rewrite) {
     const response = await fetch(`${protocol}//${host}${rewrite}`)
 
