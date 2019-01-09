@@ -13,7 +13,8 @@ const rewrites = FAB_REWRITES
 
 const render = async (req, settings) => {
   const parsed = url.parse(req.url)
-  const path = parsed.path
+  const { path, protocol, host } = parsed
+
   const rewrite =
     rewrites[path] || (path.endsWith('/') && rewrites[path + 'index.html'])
   if (rewrite) {
