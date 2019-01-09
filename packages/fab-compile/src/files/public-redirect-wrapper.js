@@ -17,9 +17,17 @@ const render = async (req, settings) => {
   const rewrite =
     rewrites[path] || (path.endsWith('/') && rewrites[path + 'index.html'])
   if (rewrite) {
-    const response = await fetch(`${parsed.protocol}//${parsed.host}${rewrite}`)
-    response.headers.delete('cache-control')
-    return response
+    const response = await fetch(`${protocol}//${host}${rewrite}`)
+
+    // Delete cache control & return response
+    const headers = Object.assign({}, response.headers)
+    delete headers['cache-control']
+
+    return new Response(await response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers
+    })
   }
   return await render_app(req, settings)
 }
