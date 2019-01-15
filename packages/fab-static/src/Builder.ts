@@ -1,12 +1,21 @@
 import * as fs from 'fs-extra'
 import chalk from 'chalk'
 
+const _log = (str: string) =>
+  `${chalk.gray(`[FAB:Static]`)} ${str.split(/\n\s*/).join('\n            ')}`
+const log = (str: string) => console.log(_log(str))
+const error = (str: string) => console.log(_log(chalk.red(str)))
+
+interface Config {
+  base_href: string
+}
+
 export default class Builder {
   static async start(
     dir: string,
     output_file: string,
     wip_dir: string,
-    redirect: string | undefined
+    config_file: string
   ) {
     console.log(`Building ${chalk.green(dir)}`)
 
@@ -15,7 +24,19 @@ export default class Builder {
       throw new Error(`Directory doesn't exist`)
     }
 
-    fs.remove(wip_dir)
+    const config: Config = {
+      base_href: '/',
+    }
+    if (await fs.pathExists(config_file)) {
+      try {
+        Object.apply(config, JSON.parse(await fs.readFile(config_file, 'utf8')))
+      } catch (e) {
+        console.log(chalk.red(`Error loading ${config_file}`))
+        throw new Error(`Cn doesn't exist`)
+      }
+    }
+
+    fs.emptyDir(wip_dir)
 
   }
 }

@@ -80,9 +80,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@fab/compile@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@fab/compile/-/compile-0.0.8.tgz#0a22137957a71b6349f0e2bc58df0621e5dee348"
+"@fab/compile@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@fab/compile/-/compile-0.0.9.tgz#f6781ab3696a839d04463928ecb3dcd2b4c583fb"
+  integrity sha512-C9IxNa4+ILUmYqPNM7kh5XeqMlCIVsJxLDw0KNq0gOqAaCRfJmIB1UjHouJ5MPTaGo0PNoor6iaGClXjlQPCkg==
   dependencies:
     "@oclif/command" "^1"
     "@oclif/config" "^1"

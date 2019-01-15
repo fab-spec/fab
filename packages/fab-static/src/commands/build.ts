@@ -20,9 +20,10 @@ export default class Build extends Command {
       description: 'Intermediate directory for working',
       default: '.fab'
     }),
-    'add-redirects': flags.string({
-      char: 'r',
-      description: 'Redirect a subdirectory of assets to _assets'
+    config: flags.string({
+      char: 'c',
+      description: 'Path to config file',
+      default: 'fab.config.json'
     })
   }
 
@@ -37,14 +38,11 @@ export default class Build extends Command {
 
     if (!args.directory) throw new Error('You must supply a directory to build')
 
-    if (flags['add-redirects'])
-      throw new Error(`We don't support redirects yet, sorry.`)
-
     return await Builder.start(
       path.resolve(args.directory),
       path.resolve(flags.output!),
       path.resolve(flags['working-dir']!),
-      flags['add-redirects']
+      path.resolve(flags.config!),
     )
 
     /*
