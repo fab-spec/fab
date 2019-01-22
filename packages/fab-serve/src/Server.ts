@@ -5,6 +5,7 @@ import * as mime from 'mime-types'
 import * as fetch from 'node-fetch'
 import * as yauzl from 'yauzl'
 import * as getStream from 'get-stream'
+const concat = require('concat-stream')
 import * as express from 'express'
 
 const getContentType = (pathname: string) => {
@@ -80,7 +81,17 @@ export default class Server {
 
     await new Promise((resolve, reject) => {
       const app = express()
-      app.get('*', async (req, res) => {
+
+      app.use((req, res, next) => {
+        req.pipe(
+          concat((data: any) => {
+            req.body = data.toString()
+            next()
+          })
+        )
+      })
+
+      app.all('*', async (req, res) => {
         try {
           const pathname = url.parse(req.url!).pathname!
           if (pathname.startsWith('/_assets')) {
@@ -93,7 +104,8 @@ export default class Server {
             const url = `${req.protocol}://${req.headers.host}${req.url}`
             const fetch_req = new Request(url, {
               method,
-              headers
+              headers,
+              ...(method === 'POST' ? { body: req.body } : {})
             })
             const production_settings = renderer.getProdSettings
               ? renderer.getProdSettings()
