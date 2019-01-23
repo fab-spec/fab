@@ -13,9 +13,11 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@types/cheerio": "^0.22.10",
+    "@types/mustache": "^0.8.32",
     "@types/prettier": "^1.15.2",
     "cheerio": "^1.0.0-rc.2",
     "globby": "^8.0.1",
+    "mustache": "^3.0.1",
     "prettier": "^1.16.1",
     "tslib": "^1"
   },

@@ -10,6 +10,7 @@ export default class Compiler {
 
     const $ = cheerio.load(html)
     $('head').prepend('{{{ FAB_ENV_INJECTION }}}')
+    $('script').attr('nonce', '{{ FAB_NONCE }}')
 
     return $.html()
   }
