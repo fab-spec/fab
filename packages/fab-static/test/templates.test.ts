@@ -18,4 +18,17 @@ describe('hello', () => {
     const expected = await fs.readFile(__dirname + '/templates/b.out.html', 'utf8')
     expect(html(result)).toEqual(html(expected))
   })
+
+  it('should escape any existing mustache templates and restore them', async () => {
+    const result = await Compiler.compile(__dirname + '/templates/c.in.html')
+    const expected = await fs.readFile(__dirname + '/templates/c.out.html', 'utf8')
+    expect(html(result)).toEqual(html(expected))
+
+    const rendered = Compiler.render(result, {
+      FAB_ENV_INJECTION: `<script>console.log('hi')</script>`,
+      FAB_NONCE: 'noncey'
+    })
+    const expected_render = await fs.readFile(__dirname + '/templates/c.rendered.html', 'utf8')
+    expect(html(rendered)).toEqual(html(expected_render))
+  })
 })
