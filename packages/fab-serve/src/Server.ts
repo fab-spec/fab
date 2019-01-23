@@ -5,24 +5,12 @@ import * as mime from 'mime-types'
 import * as fetch from 'node-fetch'
 import * as yauzl from 'yauzl'
 import * as getStream from 'get-stream'
+const concat = require('concat-stream')
 import * as express from 'express'
 
 const getContentType = (pathname: string) => {
   const mimeType = mime.lookup(pathname)
   return (mimeType && mime.contentType(mimeType)) || 'text/html; charset=utf-8'
-}
-
-export const mapToObj = (
-  map: Map<string, string>,
-  options: { exclusions?: Array<string> } = {}
-) => {
-  const exclusions = new Set(options.exclusions || [])
-  const obj: { [index: string]: string } = {}
-  return [...map.entries()].reduce(
-    (obj, [key, value]) =>
-      exclusions.has(key.toLowerCase()) ? obj : ((obj[key] = value), obj),
-    obj
-  )
 }
 
 export default class Server {
@@ -93,7 +81,17 @@ export default class Server {
 
     await new Promise((resolve, reject) => {
       const app = express()
-      app.get('*', async (req, res) => {
+
+      app.use((req, res, next) => {
+        req.pipe(
+          concat((data: any) => {
+            req.body = data.toString()
+            next()
+          })
+        )
+      })
+
+      app.all('*', async (req, res) => {
         try {
           const pathname = url.parse(req.url!).pathname!
           if (pathname.startsWith('/_assets')) {
@@ -106,7 +104,8 @@ export default class Server {
             const url = `${req.protocol}://${req.headers.host}${req.url}`
             const fetch_req = new Request(url, {
               method,
-              headers
+              headers,
+              ...(method === 'POST' ? { body: req.body } : {})
             })
             const production_settings = renderer.getProdSettings
               ? renderer.getProdSettings()
@@ -121,10 +120,12 @@ export default class Server {
                 production_settings
               )
             )
+            const response_headers = fetch_res.headers.raw()
+            delete response_headers['content-encoding']
             res.writeHead(
               fetch_res.status,
               fetch_res.statusText,
-              mapToObj(fetch_res.headers, { exclusions: ['content-encoding'] })
+              response_headers
             )
             const blob = await fetch_res.arrayBuffer()
             res.write(Buffer.from(blob))
