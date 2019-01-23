@@ -1,5 +1,6 @@
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import * as cheerio from 'cheerio'
 
 export default class Compiler {
   static async compile(input_file: string) {
@@ -7,8 +8,9 @@ export default class Compiler {
 
     const html = await fs.readFile(input_path, 'utf8')
 
-    console.log({html})
+    const $ = cheerio.load(html)
+    $('head').prepend('{{{ FAB_ENV_INJECTION }}}')
 
-    return html
+    return $.html()
   }
 }
