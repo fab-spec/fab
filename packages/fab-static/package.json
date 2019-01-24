@@ -8,19 +8,23 @@
   },
   "bugs": "https://github.com/fab-spec/fab/issues",
   "dependencies": {
-    "@fab/compile": "^0.0.9",
+    "@fab/compile": "^0.1.5",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@types/cheerio": "^0.22.10",
     "@types/mustache": "^0.8.32",
     "@types/prettier": "^1.15.2",
+    "chalk": "^2.4.2",
     "cheerio": "^1.0.0-rc.2",
-    "globby": "^8.0.1",
+    "fs-extra": "^7.0.1",
+    "globby": "^9.0.0",
+    "hasha": "^3.0.0",
     "mustache": "^3.0.1",
     "mustache-loader": "^1.4.1",
     "prettier": "^1.16.1",
-    "tslib": "^1"
+    "tslib": "^1",
+    "webpack": "^4.29.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
