@@ -20,7 +20,8 @@ const error = (str: string) => console.log(_log(chalk.red(str)))
 type CompilerOpts = {
   post_webpack_side_effect?: () => Promise<void>
   compile_only?: boolean,
-  module_loaders?: Array<Object>
+  module_loaders?: Array<Object>,
+  resolve_loader_modules?: Array<string>
 }
 export default class Compiler {
   static async compile(
@@ -212,10 +213,13 @@ export default class Compiler {
               'production-settings.json': settings_exists
                 ? settings_path
                 : path.resolve(
-                    __dirname,
-                    'files/default-production-settings.json'
-                  )
-            }
+                  __dirname,
+                  'files/default-production-settings.json'
+                )
+            },
+          },
+          resolveLoader: {
+            modules: ['node_modules', ...(opts.resolve_loader_modules || [])]
           },
           module: {
             rules: opts.module_loaders || []
