@@ -37,9 +37,6 @@
     "ts-node": "^7",
     "typescript": "^3.0"
   },
-  "engines": {
-    "node": ">=8.0.0"
-  },
   "files": [
     "/bin",
     "/lib",
@@ -53,19 +50,13 @@
   "license": "MIT",
   "main": "lib/index.js",
   "oclif": {
-    "commands": "./lib/commands",
-    "bin": "fab-static",
-    "plugins": [
-      "@oclif/plugin-help"
-    ]
+    "bin": "fab-static"
   },
   "repository": "fab-spec/fab",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf lib && tsc -b",
     "test:watch": "ts-mocha \"test/**/*.test.ts\" --watch -R min",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "types": "lib/index.d.ts"
 }

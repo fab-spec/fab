@@ -17,10 +17,10 @@ export default class Builder {
     wip_dir: string,
     config_file: string
   ) {
-    console.log(`Building ${chalk.green(dir)}`)
+    log(`Building ${chalk.green(dir)}`)
 
     if (!(await fs.pathExists(dir))) {
-      console.log(chalk.red(`${dir} doesn't exist!`))
+      error(`${dir} doesn't exist!`)
       throw new Error(`Directory doesn't exist`)
     }
 
@@ -31,8 +31,8 @@ export default class Builder {
       try {
         Object.apply(config, JSON.parse(await fs.readFile(config_file, 'utf8')))
       } catch (e) {
-        console.log(chalk.red(`Error loading ${config_file}`))
-        throw new Error(`Cn doesn't exist`)
+        error(`Error loading ${config_file}`)
+        throw new Error(`Config file doesn't exist`)
       }
     }
 
