@@ -27,7 +27,8 @@ class FabStatic extends Command {
     server: flags.string({
       char: 's',
       description: 'Path to server entry file or directory'
-    })
+    }),
+    'intermediate-only': flags.boolean()
   }
 
   static args = [
@@ -52,7 +53,7 @@ class FabStatic extends Command {
       throw new Error('No directory supplied.')
     }
 
-    return await Builder.start(merged_config)
+    return await Builder.start(merged_config, flags['intermediate-only'])
   }
 
   private async loadConfig(flags: any) {

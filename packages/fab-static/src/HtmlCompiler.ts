@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as cheerio from 'cheerio'
 import * as mustache from 'mustache'
 
-export default class Compiler {
+export default class HtmlCompiler {
   static async compile(input_file: string) {
     const input_path = path.resolve(input_file)
 
