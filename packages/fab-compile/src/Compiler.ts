@@ -19,7 +19,8 @@ const error = (str: string) => console.log(_log(chalk.red(str)))
 
 type CompilerOpts = {
   post_webpack_side_effect?: () => Promise<void>
-  compile_only?: boolean
+  compile_only?: boolean,
+  module_loaders?: Array<Object>
 }
 export default class Compiler {
   static async compile(
@@ -138,11 +139,12 @@ export default class Compiler {
         path.resolve(__dirname, 'files/fallback-index.js'),
         settings_path,
         build_path,
-        renames
+        renames,
+        opts
       )
     } else {
       log(`Injecting FAB wrapper and compiling ${chalk.green(server_path)}`)
-      await this.webpack(server_path, settings_path, build_path, renames)
+      await this.webpack(server_path, settings_path, build_path, renames, opts)
     }
 
     const bundle_output = path.join(build_path, 'server.js')
@@ -182,7 +184,8 @@ export default class Compiler {
     server_path: string,
     settings_path: string,
     build_path: string,
-    renames: { [p: string]: string }
+    renames: { [p: string]: string },
+    opts: CompilerOpts
   ) {
     const settings_exists = await fs.pathExists(settings_path)
     if (settings_exists) {
@@ -213,6 +216,9 @@ export default class Compiler {
                     'files/default-production-settings.json'
                   )
             }
+          },
+          module: {
+            rules: opts.module_loaders || []
           },
           output: {
             path: build_path,

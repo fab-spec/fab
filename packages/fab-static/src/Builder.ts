@@ -4,10 +4,9 @@ import * as globby from 'globby'
 import chalk from 'chalk'
 import { error, log, note } from './log'
 import HtmlCompiler from './HtmlCompiler'
-import Compiler from '@fab/compile/lib/Compiler'
+import Compiler from '../../fab-compile/src/Compiler'
 import * as hasha from 'hasha'
 import * as prettier from 'prettier'
-import rewriteWebpackEmptyContext from '../../fab-nextjs/src/rewriteWebpackEmptyContext'
 
 interface Config {
   directory: string
@@ -77,7 +76,7 @@ export default class Builder {
     const manifest = prettier.format(
       `module.exports = { 
       ${Object.keys(html_rewrites)
-        .map(html_path => `"${html_path}": require('./htmls/${html_rewrites[html_path]}'),`)
+        .map(html_path => `"${html_path}": require('./${html_rewrites[html_path]}'),`)
         .join()}
     }`,
       // @ts-ignore (babylon has been renamed, but not in @types)
@@ -149,7 +148,12 @@ export default class Builder {
 
     const build_path = path.join(abs_working_dir, 'build')
     console.log('ABOUT TO BUILD')
-    await Compiler.compile(abs_int_dir, build_path, path.resolve(output))
+    await Compiler.compile(abs_int_dir, build_path, path.resolve(output), {
+      module_loaders: [{
+        test: /\.html$/,
+        loader: 'mustache-loader'
+      }]
+    })
 
     /*
 
