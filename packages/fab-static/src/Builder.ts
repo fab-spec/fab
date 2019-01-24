@@ -152,7 +152,8 @@ export default class Builder {
       module_loaders: [{
         test: /\.html$/,
         loader: 'mustache-loader'
-      }]
+      }],
+      resolve_loader_modules: ['node_modules/@fab/static/node_modules']
     })
 
     /*
