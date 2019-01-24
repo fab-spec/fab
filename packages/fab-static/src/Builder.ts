@@ -76,7 +76,7 @@ export default class Builder {
     const manifest = prettier.format(
       `module.exports = { 
       ${Object.keys(html_rewrites)
-        .map(html_path => `"${html_path}": require('./${html_rewrites[html_path]}'),`)
+        .map(html_path => `"/${html_path}": require('./${html_rewrites[html_path]}'),`)
         .join()}
     }`,
       // @ts-ignore (babylon has been renamed, but not in @types)
