@@ -4,7 +4,7 @@ import * as globby from 'globby'
 import chalk from 'chalk'
 import { error, log, note } from './log'
 import HtmlCompiler from './HtmlCompiler'
-import Compiler from '../../fab-compile/src/Compiler'
+import Compiler from '@fab/compile/lib/Compiler'
 import * as hasha from 'hasha'
 import * as prettier from 'prettier'
 
