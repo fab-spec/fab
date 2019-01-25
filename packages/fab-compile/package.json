@@ -38,7 +38,8 @@
   },
   "files": [
     "/bin",
-    "/lib"
+    "/lib",
+    "utils.js"
   ],
   "homepage": "https://github.com/fab-spec/fab",
   "keywords": [

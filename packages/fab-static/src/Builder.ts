@@ -119,17 +119,20 @@ export default class Builder {
       path.resolve(__dirname, 'files/fab-wrapper.js'),
       path.join(abs_int_dir, '_server', 'index.js')
     )
+
     log(
       `  ${chalk.gray('@fab/static/')}${chalk.yellow(
-        'files/default-static-server.js'
+        'files/default-app-server.js'
       )} => ${chalk.gray(working_dir + '/intermediate/_server/')}${chalk.yellow(
-        'default-static-server.js'
+        'default-app-server.js'
       )}`
     )
     await fs.copy(
-      path.resolve(__dirname, 'files/default-static-server.js'),
-      path.join(abs_int_dir, '_server', 'default-static-server.js')
+      path.resolve(__dirname, 'files/default-app-server.js'),
+      path.join(abs_int_dir, '_server', 'default-app-server.js')
     )
+
+    const app_server_path = path.join(abs_int_dir, '_server', 'app-server.js');
     if (server) {
       const abs_server = path.resolve(server)
       if (!(await fs.pathExists(abs_server))) {
@@ -139,9 +142,9 @@ export default class Builder {
       log(
         `  ${chalk.yellow(server)} => ${chalk.gray(
           working_dir + '/intermediate/_server/'
-        )}${chalk.yellow('static-server.js')}`
+        )}${chalk.yellow('app-server.js')}`
       )
-      await fs.copy(abs_server, path.join(abs_int_dir, '_server', 'static-server.js'))
+      await fs.copy(abs_server, app_server_path)
     }
 
     if (intermediate_only) return log(`--intermediate-only set. Stopping here.`)
@@ -153,7 +156,10 @@ export default class Builder {
         test: /\.html$/,
         loader: 'mustache-loader'
       }],
-      resolve_loader_modules: ['node_modules/@fab/static/node_modules']
+      resolve_loader_modules: ['node_modules/@fab/static/node_modules'],
+      resolve_aliases: {
+        'app-server': server ? app_server_path : './default-app-server.js'
+      }
     })
 
     /*

@@ -1,8 +1,9 @@
 module.exports = {
   async modifyRequest(request) {
-    return request
+  },
+  async route(path, request) {
+    return path
   },
   async modifyResponse(response) {
-    return response
   }
 }

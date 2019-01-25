@@ -21,7 +21,8 @@ type CompilerOpts = {
   post_webpack_side_effect?: () => Promise<void>
   compile_only?: boolean,
   module_loaders?: Array<Object>,
-  resolve_loader_modules?: Array<string>
+  resolve_loader_modules?: Array<string>,
+  resolve_aliases?: {[name: string]: string}
 }
 export default class Compiler {
   static async compile(
@@ -201,7 +202,7 @@ export default class Compiler {
         {
           mode: 'production',
           target: 'webworker',
-          entry: path.resolve(__dirname, 'files/public-redirect-wrapper.js'),
+          entry: path.resolve(__dirname, 'files/fab-entry.js'),
           optimization: {
             minimize: false
           },
@@ -215,7 +216,8 @@ export default class Compiler {
                 : path.resolve(
                   __dirname,
                   'files/default-production-settings.json'
-                )
+                ),
+              ...(opts.resolve_aliases || {})
             },
           },
           resolveLoader: {
