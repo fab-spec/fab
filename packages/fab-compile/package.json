@@ -8,11 +8,13 @@
   },
   "bugs": "https://github.com/fab-spec/fab/issues",
   "dependencies": {
+    "@babel/preset-env": "^7.3.1",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@types/globby": "^8.0.0",
     "@types/hasha": "^3.0.0",
+    "babel-loader": "^8.0.5",
     "chalk": "^2.4.1",
     "deterministic-zip": "^1.0.5",
     "globby": "^9.0.0",

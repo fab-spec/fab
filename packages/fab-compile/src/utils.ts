@@ -1,6 +1,7 @@
 import * as mime from 'mime-types'
+import { parse } from 'url'
 
-const getContentType = pathname => {
+const getContentType = (pathname: string) => {
   const mimeType = mime.lookup(pathname)
   return (mimeType && mime.contentType(mimeType)) || 'text/html; charset=utf-8'
 }
@@ -37,7 +38,7 @@ export const fetchAndReturn = async (url: string) => {
   }
 
   // Add mime types if not already present
-  if (!headers['content-type']) headers['content-type'] = getContentType(path)
+  if (!headers['content-type']) headers['content-type'] = getContentType(parse(url).path!)
 
   return new Response(await response.body, {
     status: response.status,

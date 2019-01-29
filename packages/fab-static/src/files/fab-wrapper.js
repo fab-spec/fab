@@ -5,12 +5,12 @@
  *
  * */
 
-const url = require('url')
-const htmls = require('./htmls')
-const default_server = require('./default-app-server')
-const server_overrides = require('app-server')
+import url from 'url'
+import htmls from './htmls'
+import default_server from './default-app-server'
+import server_overrides from 'app-server'
 
-const render = async (req, settings) => {
+export const render = async (req, settings) => {
   const req_url = url.parse(req.url)
   const { path } = req_url
 
@@ -44,5 +44,3 @@ const render = async (req, settings) => {
     headers: {}
   })
 }
-
-module.exports = { render }

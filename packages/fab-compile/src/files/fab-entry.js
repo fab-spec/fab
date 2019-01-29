@@ -6,14 +6,15 @@
  *
  * */
 
-const { fetchAndReturn } = require('@fab/compile/utils')
+import { fetchAndReturn } from '@fab/compile/utils'
 
-const url = require('url')
-const render_app = require('app-index').render
-const production_settings = require('production-settings.json')
+import url from 'url'
+import { render as render_app } from 'app-index'
+import production_settings from 'production-settings.json'
+
 const rewrites = FAB_REWRITES
 
-const render = async (req, settings) => {
+export async function render(req, settings) {
   const parsed = url.parse(req.url)
   const { path, protocol, host } = parsed
 
@@ -24,9 +25,6 @@ const render = async (req, settings) => {
   return await render_app(req, settings)
 }
 
-module.exports = {
-  render,
-  getProdSettings() {
-    return production_settings
-  }
+export function getProdSettings() {
+  return production_settings
 }
