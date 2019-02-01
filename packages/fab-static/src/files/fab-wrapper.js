@@ -15,15 +15,15 @@ const SERVER = {
   ...server_overrides
 }
 
-export const render = async (req, settings) => {
-  await SERVER.modifyRequest(settings, req)
-  const response = await _render(req, settings)
+export const render = async (request, settings) => {
+  await SERVER.modifyRequest(settings, request)
+  const response = await _render(request, settings)
   await SERVER.modifyResponse(settings, response)
   return response
 }
 
-async function _render(req, settings) {
-  const req_url = url.parse(req.url)
+async function _render(request, settings) {
+  const req_url = url.parse(request.url)
 
   const route = await SERVER.route(settings, req_url.path, request)
 
@@ -35,7 +35,7 @@ async function _render(req, settings) {
 
   // Routing to an absolute URL we'll proxy the request
   const parsed_route = url.parse(route)
-  if (parsed_route.hostname) return proxyRequest(req, route)
+  if (parsed_route.hostname) return proxyRequest(request, route)
 
   const path = parsed_route.route
   const matched_html =
@@ -63,8 +63,12 @@ async function _render(req, settings) {
   })
 }
 
-function proxyRequest(req, url) {
-
+function proxyRequest(request, url) {
+  return fetch(url, {
+    headers: request.headers,
+    method: request.method,
+    ...(request.method === 'POST' ? { body: request.body } : {})
+  })
 }
 
 function render404() {
