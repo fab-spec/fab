@@ -7,8 +7,8 @@
 
 import url from 'url'
 import htmls from './htmls'
-import default_server from './default-app-server'
-import server_overrides from 'app-server'
+import * as default_server from './default-app-server'
+import * as server_overrides from 'app-server'
 
 const SERVER = {
   ...default_server,
@@ -37,7 +37,7 @@ async function _render(request, settings) {
   const parsed_route = url.parse(route)
   if (parsed_route.hostname) return proxyRequest(request, route)
 
-  const path = parsed_route.route
+  const path = parsed_route.path
   const matched_html =
     htmls[path] ||
     htmls[path + (path.endsWith('/') ? '' : '/') + 'index.html'] ||

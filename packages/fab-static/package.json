@@ -1,14 +1,14 @@
 {
   "name": "@fab/static",
   "description": "Compile static-site projects into FABs",
-  "version": "0.0.3",
+  "version": "0.1.0-1",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-static": "./bin/run"
   },
   "bugs": "https://github.com/fab-spec/fab/issues",
   "dependencies": {
-    "@fab/compile": "^0.1.6",
+    "@fab/compile": "^0.2.0-0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",

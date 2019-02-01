@@ -580,6 +580,28 @@
     tslib "^1"
     webpack "^4.27.1"
 
+"@fab/compile@^0.2.0-0":
+  version "0.2.0-0"
+  resolved "https://registry.yarnpkg.com/@fab/compile/-/compile-0.2.0-0.tgz#cc8c5b189ebff90a2d95b4139187d78510e71774"
+  integrity sha512-V/ZhRk3qNjwhXXeS777LXEc4YLMf0je0fp6XNxLp/9TrRSgdsFHk+HJHf5uC+XsV7M3KXBzoVS8Ye8Fb4wuh5Q==
+  dependencies:
+    "@babel/preset-env" "^7.3.1"
+    "@oclif/command" "^1"
+    "@oclif/config" "^1"
+    "@oclif/plugin-help" "^2"
+    "@types/globby" "^8.0.0"
+    "@types/hasha" "^3.0.0"
+    babel-loader "^8.0.5"
+    chalk "^2.4.1"
+    deterministic-zip "^1.0.5"
+    globby "^9.0.0"
+    hasha "^3.0.0"
+    mime-types "^2.1.21"
+    path-browserify "^1.0.0"
+    tslib "^1"
+    typescript "^3.3.1"
+    webpack "^4.29.0"
+
 "@lerna/add@3.10.6":
   version "3.10.6"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.10.6.tgz#6f2c6b26eb905c40fef4180f3ffa34ad9dbb860b"
@@ -6375,7 +6397,12 @@ password-prompt@^1.0.7:
     ansi-escapes "^3.1.0"
     cross-spawn "^6.0.5"
 
-path-browserify@0.0.0, path-browserify@1.0.0, path-browserify@^1.0.0:
+path-browserify@0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-0.0.0.tgz#a0b870729aae214005b7d5032ec2cbbb0fb4451a"
+  integrity sha1-oLhwcpquIUAFt9UDLsLLuw+0RRo=
+
+path-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.0.tgz#40702a97af46ae00b0ea6fa8998c0b03c0af160d"
   integrity sha512-Hkavx/nY4/plImrZPHRk2CL9vpOymZLgEbMNX1U0bjcBL7QN9wODxyx0yaMZURSQaUtSEvDrfAvxa9oPb0at9g==
