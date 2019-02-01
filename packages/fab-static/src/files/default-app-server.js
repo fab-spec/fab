@@ -1,5 +1,5 @@
-export async function modifyRequest(request) {}
-export async function route(path, request) {
+export async function modifyRequest(settings, request) {}
+export async function route(settings, path, request) {
   return path
 }
-export async function modifyResponse(response) {}
+export async function modifyResponse(settings, response) {}
