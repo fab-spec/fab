@@ -42,7 +42,7 @@ async function _render(request, settings) {
     htmls[path] ||
     htmls[path + (path.endsWith('/') ? '' : '/') + 'index.html'] ||
     (path.match(/\/[^.^\/]+$/) && htmls[path + '.html']) ||
-    htmls['index.html']
+    htmls['/index.html']
 
   // Couldn't find a matching HTML file, return a 404
   if (!matched_html) return render404()
