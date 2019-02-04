@@ -167,7 +167,7 @@ export default class Builder {
       )
     } else {
       const fallback_settings = path.resolve('production-settings.json');
-      if (!await fs.pathExists(fallback_settings)) {
+      if (await fs.pathExists(fallback_settings)) {
         log(`Copying settings JSON.`)
         log(
           `  ${chalk.yellow('production-settings.json')} => ${chalk.gray(
