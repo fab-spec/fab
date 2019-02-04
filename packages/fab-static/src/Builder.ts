@@ -12,12 +12,13 @@ interface Config {
   directory: string
   output: string
   working_dir: string
-  server: string | undefined
+  server: string | undefined,
+  settings: string | undefined
 }
 
 export default class Builder {
   static async start(config: Config, intermediate_only: boolean) {
-    const { directory: dir, output, working_dir, server } = config
+    const { directory: dir, output, working_dir, server, settings } = config
 
     const abs_dir = path.resolve(dir)
     const abs_working_dir = path.resolve(working_dir)
@@ -145,6 +146,41 @@ export default class Builder {
         )}${chalk.yellow('app-server.js')}`
       )
       await fs.copy(abs_server, app_server_path)
+    }
+
+    if (settings) {
+      log(`Copying settings JSON.`)
+      const settings_path = path.resolve(settings);
+      if (!await fs.pathExists(settings_path)) {
+        error(`Error: The specified settings file ${settings} doesn't exist!`)
+        throw new Error('Settings file missing')
+      }
+
+      log(
+        `  ${chalk.yellow(settings)} => ${chalk.gray(
+          working_dir + '/intermediate/_server/'
+        )}${chalk.yellow('production-settings.json')}`
+      )
+      await fs.copy(
+        settings_path,
+        path.join(abs_int_dir, '_server', 'production-settings.json')
+      )
+    } else {
+      const fallback_settings = path.resolve('production-settings.json');
+      if (!await fs.pathExists(fallback_settings)) {
+        log(`Copying settings JSON.`)
+        log(
+          `  ${chalk.yellow('production-settings.json')} => ${chalk.gray(
+            working_dir + '/intermediate/_server/'
+          )}${chalk.yellow('production-settings.json')}`
+        )
+        await fs.copy(
+          fallback_settings,
+          path.join(abs_int_dir, '_server', 'production-settings.json')
+        )
+      } else {
+        log(`No production-settings.json file found, and no --prod-settings flag provided. Skipping.`)
+      }
     }
 
     if (intermediate_only) return log(`--intermediate-only set. Stopping here.`)

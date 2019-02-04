@@ -28,6 +28,10 @@ class FabStatic extends Command {
       char: 's',
       description: 'Path to server entry file or directory'
     }),
+    'prod-settings': flags.string({
+      char: 'p',
+      description: 'Path to production settings json'
+    }),
     'intermediate-only': flags.boolean()
   }
 
@@ -46,6 +50,7 @@ class FabStatic extends Command {
       output: flags.output || config.output || 'fab.zip',
       working_dir: flags['working-dir'] || config.working_dir || '.fab',
       server: flags.server || config.server,
+      settings: flags['prod-settings'] || config.settings,
     }
 
     if (!merged_config.directory) {
