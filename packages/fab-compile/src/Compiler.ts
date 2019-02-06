@@ -11,15 +11,16 @@ import * as hasha from 'hasha'
 const zip = util.promisify(_zip)
 
 const _log = (str: string) =>
-  `${chalk.gray(`[FAB:Compile]`)} ${str
-    .split(/\n\s*/)
-    .join('\n              ')}`
+  `${chalk.gray(`[FAB:Compile]`)} ${str.split(/\n\s*/).join('\n              ')}`
 const log = (str: string) => console.log(_log(str))
 const error = (str: string) => console.log(_log(chalk.red(str)))
 
 type CompilerOpts = {
   post_webpack_side_effect?: () => Promise<void>
   compile_only?: boolean
+  module_loaders?: Array<Object>
+  resolve_loader_modules?: Array<string>
+  resolve_aliases?: { [name: string]: string }
 }
 export default class Compiler {
   static async compile(
@@ -68,9 +69,7 @@ export default class Compiler {
             log(
               `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
                 path.relative(input_path, src)
-              )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(
-                path.relative(build_path, dest)
-              )}`
+              )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(path.relative(build_path, dest))}`
             )
           return true
         }
@@ -90,27 +89,18 @@ export default class Compiler {
             const stats = await fs.stat(path.join(input_path, filename))
             if (stats.isDirectory()) return
 
-            const full_hash = await hasha.fromFile(
-              path.join(input_path, filename),
-              {
-                algorithm: 'md5'
-              }
-            )
+            const full_hash = await hasha.fromFile(path.join(input_path, filename), {
+              algorithm: 'md5'
+            })
             const hash = full_hash!.substring(0, 9)
-            const asset_path = `_assets/_public/${filename.replace(
-              /([^.]*)$/,
-              `${hash}.$1`
-            )}`
+            const asset_path = `_assets/_public/${filename.replace(/([^.]*)$/, `${hash}.$1`)}`
             renames['/' + filename] = '/' + asset_path
             log(
-              `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
-                filename
-              )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(asset_path)}`
+              `    ${chalk.gray(input_dir + '/')}${chalk.yellow(filename)} => ${chalk.gray(
+                build_dir + '/'
+              )}${chalk.yellow(asset_path)}`
             )
-            await fs.copy(
-              path.join(input_path, filename),
-              path.join(build_path, asset_path)
-            )
+            await fs.copy(path.join(input_path, filename), path.join(build_path, asset_path))
           } catch (e) {
             error(`Error copying ${filename}: ${e}`)
             throw e
@@ -122,13 +112,8 @@ export default class Compiler {
       log(`No non-fingerprinted assets found.`)
     }
 
-
     const server_path = path.join(input_path, '_server', 'index.js')
-    const settings_path = path.join(
-      input_path,
-      '_server',
-      'production-settings.json'
-    )
+    const settings_path = path.join(input_path, '_server', 'production-settings.json')
     if (!(await fs.pathExists(server_path))) {
       log(`${chalk.yellow(`No _server/index.js file detected.`)}
           Your FAB will only have the simplest of webservers injected.
@@ -138,11 +123,12 @@ export default class Compiler {
         path.resolve(__dirname, 'files/fallback-index.js'),
         settings_path,
         build_path,
-        renames
+        renames,
+        opts
       )
     } else {
       log(`Injecting FAB wrapper and compiling ${chalk.green(server_path)}`)
-      await this.webpack(server_path, settings_path, build_path, renames)
+      await this.webpack(server_path, settings_path, build_path, renames, opts)
     }
 
     const bundle_output = path.join(build_path, 'server.js')
@@ -182,7 +168,8 @@ export default class Compiler {
     server_path: string,
     settings_path: string,
     build_path: string,
-    renames: { [p: string]: string }
+    renames: { [p: string]: string },
+    opts: CompilerOpts
   ) {
     const settings_exists = await fs.pathExists(settings_path)
     if (settings_exists) {
@@ -197,7 +184,7 @@ export default class Compiler {
         {
           mode: 'production',
           target: 'webworker',
-          entry: path.resolve(__dirname, 'files/public-redirect-wrapper.js'),
+          entry: path.resolve(__dirname, 'files/fab-entry.js'),
           optimization: {
             minimize: false
           },
@@ -208,11 +195,39 @@ export default class Compiler {
               'app-index': server_path,
               'production-settings.json': settings_exists
                 ? settings_path
-                : path.resolve(
-                    __dirname,
-                    'files/default-production-settings.json'
-                  )
+                : path.resolve(__dirname, 'files/default-production-settings.json'),
+              ...(opts.resolve_aliases || {})
             }
+          },
+          resolveLoader: {
+            modules: [
+              'node_modules',
+              ...(opts.resolve_loader_modules || [])
+            ]
+          },
+          module: {
+            rules: [
+              {
+                test: /\.m?js$/,
+                exclude: /node_modules/,
+                use: {
+                  loader: 'babel-loader',
+                  options: {
+                    presets: [
+                      [
+                        '@babel/preset-env',
+                        {
+                          targets: {
+                            node: true
+                          }
+                        }
+                      ]
+                    ]
+                  }
+                }
+              },
+              ...(opts.module_loaders || [])
+            ]
           },
           output: {
             path: build_path,

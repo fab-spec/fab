@@ -1,12 +1,12 @@
-import * as http from 'http'
 import * as url from 'url'
 import * as vm from 'vm'
 import * as mime from 'mime-types'
 import * as fetch from 'node-fetch'
 import * as yauzl from 'yauzl'
 import * as getStream from 'get-stream'
-const concat = require('concat-stream')
 import * as express from 'express'
+
+const concat = require('concat-stream')
 
 const getContentType = (pathname: string) => {
   const mimeType = mime.lookup(pathname)
@@ -120,16 +120,15 @@ export default class Server {
                 production_settings
               )
             )
+            res.status(fetch_res.status)
             const response_headers = fetch_res.headers.raw()
             delete response_headers['content-encoding']
-            res.writeHead(
-              fetch_res.status,
-              fetch_res.statusText,
-              response_headers
-            )
+            Object.keys(response_headers).forEach(header => {
+              const values = response_headers[header]
+              res.set(header, values.length === 1 ? values[0] : values)
+            })
             const blob = await fetch_res.arrayBuffer()
-            res.write(Buffer.from(blob))
-            res.end()
+            res.send(Buffer.from(blob))
           }
         } catch (e) {
           console.log('ERROR')
