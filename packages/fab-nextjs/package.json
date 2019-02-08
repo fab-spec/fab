@@ -18,6 +18,7 @@
     "chalk": "^2.4.1",
     "fs-extra": "^7.0.1",
     "globby": "^8.0.1",
+    "mock-express-response": "^0.2.2",
     "tslib": "^1"
   },
   "devDependencies": {
