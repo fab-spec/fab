@@ -4,9 +4,10 @@ import * as path from 'path'
 
 export default async function generateIncludes(
   includesDir: string,
-  output_dir: string
+  output_dir: string,
+  next_dir = '.next'
 ) {
-  const files = await globby(['.next/**/*'], { cwd: includesDir })
+  const files = await globby([`${next_dir}/**/*`], { cwd: includesDir })
   console.log(files)
   const contents = await Promise.all(
     files.map(file => fs.readFile(file, { encoding: 'base64' }))
