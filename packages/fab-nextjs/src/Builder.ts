@@ -26,8 +26,12 @@ export default class Builder {
       next_dir_name = require(next_config).distDir || next_dir_name;
     }
     next_dir = path.join(dir, next_dir_name);
-    if (!(await fs.pathExists(dir)) || !(await fs.pathExists(next_dir))) {
+    if (!(await fs.pathExists(dir))) {
       error(`${dir} doesn't exist!`)
+      throw new Error('Missing directory')
+    }
+    if (!(await fs.pathExists(next_dir))) {
+      error(`${next_dir} doesn't exist!`)
       throw new Error('Missing directory')
     }
 
