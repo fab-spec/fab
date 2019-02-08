@@ -20,9 +20,18 @@ export default class Builder {
     output_file: string,
     intermediate_only: boolean
   ) {
-    const next_dir = path.join(dir, '.next')
-    if (!(await fs.pathExists(dir)) || !(await fs.pathExists(next_dir))) {
+    let next_dir_name = '.next';
+    const next_config = `${dir}/next.config.js`;
+    if (await fs.pathExists(next_config)) {
+      next_dir_name = require(next_config).distDir || next_dir_name;
+    }
+    next_dir = path.join(dir, next_dir_name);
+    if (!(await fs.pathExists(dir))) {
       error(`${dir} doesn't exist!`)
+      throw new Error('Missing directory')
+    }
+    if (!(await fs.pathExists(next_dir))) {
+      error(`${next_dir} doesn't exist!`)
       throw new Error('Missing directory')
     }
 
@@ -47,10 +56,10 @@ export default class Builder {
     await fs.copy(path.join(next_dir, 'static'), path.join(int_dir, '_next', 'static'))
 
     log(`Generating includes for the server files`)
-    await generateIncludes(dir, path.join(int_dir, '_server'))
+    await generateIncludes(dir, path.join(int_dir, '_server'), next_dir_name)
 
     log(`Generating NEXT_CACHE for intercepting dynamic require() calls`)
-    await generateNextCache(dir, path.join(int_dir, '_server'))
+    await generateNextCache(dir, path.join(int_dir, '_server'), next_dir_name)
 
     console.log(
       `Copying server.js from @fab/nextjs to .fab/intermediate/_server/index.js`

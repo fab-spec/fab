@@ -4,18 +4,19 @@ import * as path from 'path'
 
 export default async function generateNextCache(
   includesDir: string,
-  output_dir: string
+  output_dir: string,
+  next_dir = '.next'
 ) {
   const build_id = await fs.readFile(
-    path.join(includesDir, '.next', 'BUILD_ID'),
+    path.join(includesDir, next_dir, 'BUILD_ID'),
     'utf8'
   )
 
   const files = await globby(
     [
-      '.next/*.json',
-      '.next/server/*.json',
-      `.next/server/static/${build_id}/**/*`
+      `${next_dir}/*.json`,
+      `${next_dir}/server/*.json`,
+      `${next_dir}/server/static/${build_id}/**/*`
     ],
     { cwd: includesDir }
   )
