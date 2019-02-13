@@ -202,6 +202,7 @@ export default class Compiler {
           resolveLoader: {
             modules: [
               'node_modules',
+              'node_modules/@fab/compile/node_modules',
               ...(opts.resolve_loader_modules || [])
             ]
           },
@@ -211,18 +212,9 @@ export default class Compiler {
                 test: /\.m?js$/,
                 exclude: /node_modules/,
                 use: {
-                  loader: 'babel-loader',
+                  loader: '@sucrase/webpack-loader',
                   options: {
-                    presets: [
-                      [
-                        '@babel/preset-env',
-                        {
-                          targets: {
-                            node: true
-                          }
-                        }
-                      ]
-                    ]
+                    transforms: ['typescript','imports']
                   }
                 }
               },
