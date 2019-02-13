@@ -6,7 +6,7 @@
  *
  * */
 
-import { fetchAndReturn } from '@fab/compile/utils'
+import { fetchAndReturn } from '../utils'
 
 import url from 'url'
 import { render as render_app } from 'app-index'
