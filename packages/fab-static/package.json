@@ -8,7 +8,6 @@
   },
   "bugs": "https://github.com/fab-spec/fab/issues",
   "dependencies": {
-    "@babel/core": "^7.2.2",
     "@fab/compile": "^0.2.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
