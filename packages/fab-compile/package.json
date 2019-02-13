@@ -11,6 +11,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@sucrase/webpack-loader": "^2.0.0",
     "@types/globby": "^8.0.0",
     "@types/hasha": "^3.0.0",
     "chalk": "^2.4.1",
@@ -19,6 +20,7 @@
     "hasha": "^3.0.0",
     "mime-types": "^2.1.21",
     "path-browserify": "^1.0.0",
+    "sucrase": "^3.9.5",
     "tslib": "^1",
     "typescript": "^3.3.1",
     "webpack": "^4.29.0"
