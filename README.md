@@ -10,21 +10,21 @@
 
 Working with one of these projects? Read the following 
 
-* Create React App: [https://github.com/fab-spec/fab/tree/master/packages/fab-static](`@fab/static` — Usage with Create React App)
-* Gatsby: [https://github.com/fab-spec/fab/tree/master/packages/fab-static](`@fab/static` — Gatsby installations)
-* Any other static site renderer: [https://github.com/fab-spec/fab/tree/master/packages/fab-static](`@fab/static` — Usage with many HTML files)
-* NextJS: [https://github.com/fab-spec/fab/tree/master/packages/fab-nextjs](`@fab/nextjs`)
-* AfterJS: [https://github.com/fab-spec/fab/tree/master/packages/fab-afterjs](`@fab/afterjs`)
+* Create React App: [`@fab/static` — Usage with Create React App](https://github.com/fab-spec/fab/tree/master/packages/fab-static)
+* Gatsby: [`@fab/static` — Gatsby installations](https://github.com/fab-spec/fab/tree/master/packages/fab-static)
+* Any other static site renderer: [`@fab/static` — Usage with many HTML files](https://github.com/fab-spec/fab/tree/master/packages/fab-static)
+* NextJS: [`@fab/nextjs`](https://github.com/fab-spec/fab/tree/master/packages/fab-nextjs)
+* AfterJS: [`@fab/afterjs`](https://github.com/fab-spec/fab/tree/master/packages/fab-afterjs)
 
 Thinking of writing your own adapter? Head to [https://github.com/fab-spec/fab/tree/master/packages/fab-compile](`@fab/compile`) to understand the low-level compilation API. Then get in touch, we're happy to help!
 
 ### Deployment adapters
 
-* Lambda@Edge: [https://github.com/fab-spec/lambda-edge-packager](`@fab/lambda-edge-packager`)
-* Cloudflare Workers: [https://github.com/fab-spec/cloudflare-workers-packager](`@fab/cloudflare-workers-packager`)
-* NodeJS: [https://github.com/fab-spec/fab/tree/master/packages/fab-serve](`@fab/serve`)
+* Lambda@Edge: [`@fab/lambda-edge-packager`](https://github.com/fab-spec/lambda-edge-packager)
+* Cloudflare Workers: [`@fab/cloudflare-workers-packager`](https://github.com/fab-spec/cloudflare-workers-packager)
+* NodeJS: [`@fab/serve`](https://github.com/fab-spec/fab/tree/master/packages/fab-serve)
 
-Thinking of writing your own deployment adapter? Read on to understand the runtime requirements of FABs, then check [https://github.com/fab-spec/fab/tree/master/packages/fab-serve](`@fab/serve`) for some sample code.
+Thinking of writing your own deployment adapter? Read on to understand the runtime requirements of FABs, then check [`@fab/serve`](https://github.com/fab-spec/fab/tree/master/packages/fab-serve) for some sample code.
 
 ## The FAB format
 
