@@ -1,8 +1,34 @@
 # Frontend Application Bundle (FAB) Specification
 
-***extremely work-in-progress voice*** This is extremely work-in-progress, under active development by [@glenmaddern](https://twitter.com/glenmaddern). Skip ahead to the [Development Progress](#development-progress) section to see what's good to use right now.
+***<h3 align="center"><img width="410" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/52991323-5a6b5880-3460-11e9-844b-4264154777c3.png"><br/>Build once, run anywhere</h3>***
+
+<h4>&nbsp;</h4>
+
+FABs are a **compile target for frontend applications**. They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
+
+### Framework adapters
+
+Working with one of these projects? Read the following 
+
+* Create React App: [https://github.com/fab-spec/fab/tree/master/packages/fab-static](`@fab/static` — Usage with Create React App)
+* Gatsby: [https://github.com/fab-spec/fab/tree/master/packages/fab-static](`@fab/static` — Gatsby installations)
+* Any other static site renderer: [https://github.com/fab-spec/fab/tree/master/packages/fab-static](`@fab/static` — Usage with many HTML files)
+* NextJS: [https://github.com/fab-spec/fab/tree/master/packages/fab-nextjs](`@fab/nextjs`)
+* AfterJS: [https://github.com/fab-spec/fab/tree/master/packages/fab-afterjs](`@fab/afterjs`)
+
+Thinking of writing your own adapter? Head to [https://github.com/fab-spec/fab/tree/master/packages/fab-compile](`@fab/compile`) to understand the low-level compilation API. Then get in touch, we're happy to help!
+
+### Deployment adapters
+
+* Lambda@Edge: [https://github.com/fab-spec/lambda-edge-packager](`@fab/lambda-edge-packager`)
+* Cloudflare Workers: [https://github.com/fab-spec/cloudflare-workers-packager](`@fab/cloudflare-workers-packager`)
+* NodeJS: [https://github.com/fab-spec/fab/tree/master/packages/fab-serve](`@fab/serve`)
+
+Thinking of writing your own deployment adapter? Read on to understand the runtime requirements of FABs, then check [https://github.com/fab-spec/fab/tree/master/packages/fab-serve](`@fab/serve`) for some sample code.
 
 ## The FAB format
+
+> _Note: This is work-in-progress, under active development by [@glenmaddern](https://twitter.com/glenmaddern)._
 
 ### Frontend Applications
 
@@ -30,7 +56,7 @@ fab.zip
   └── _assets     (directory of assets for this release)
 ```
 
-> _It is desirable, but not required, to use [`deterministic-zip`](https://npm.im/deterministic-zip) to create this file. This will ensure that two FABs with identical contents will themselves be identical._ 
+> _All FAB tooling uses [`deterministic-zip`](https://npm.im/deterministic-zip) to create this file, which means that two FABs with identical contents will themselves be identical._ 
 
 ### `server.js`
 
@@ -67,81 +93,9 @@ module.exports = { render, getProdSettings }
 
 ### `_assets` directory
 
-Intended to be extracted from the FAB and hosted separately on a static file server like S3, then routed there by a CDN or load balancer using the URL path `/_assets/*`. This usually happens _in front_ of your FAB host, and assets are recommended to be served with `cache-control: immutable` headers. As such, files in this directory _must_ be fingerprinted so they do not clash from release to release.
+Extracted from the FAB and hosted separately on a static file server like S3 at deploy time, then routed there by a CDN or load balancer using the URL path `/_assets/*`. This happens _before your request even reaches your FAB_, which means that the `_assets` directory cannot be changed. More importantly, and assets are recommended to be served with `cache-control: immutable` headers. As such, files in this directory _must_ be fingerprinted so they do not clash from release to release.
 
 Since there can be no static assets _outside_ the `/_assets` directory, and all assets must be fingerprinted, we provide `@fab/compile` which takes a more user-friendly format and generates a spec-compliant FAB.
-
-## `@fab/compile`
-
-```
-yarn global add @fab/compile
-npm install -g @fab/compile
-```
-
-```
-fab-compile
-  -i, --input=input          [default: .fab/intermediate] Intermediate FAB directory
-  -b, --build-dir=build-dir  [default: .fab/build] Working FAB directory
-  -o, --output=output        [default: fab.zip] Output FAB file
-```
-
-### FAB Intermediate Directory
-
-`@fab/compile` operates on an "intermediate directory", by default located at `.fab/intermediate`, consisting of the following:
-
-```
-.fab/intermediate
-  ├── _server
-  │   ├──index.js       (server entry point)
-  │   ├──production-settings.json
-  │   └── **            (any other files needed for compilation)
-  ├── _assets           (directory of assets for this release)
-      └── **            (all files passed through untouched)
-  └── **/*              (any other assets handled as "public")
-```
-
-### `_assets` vs public assets
-
-Any file that's not in `_server` or `_assets` will be treated as a "public asset". During compilation, these files are fingerprinted and copied into the FAB under the `_assets/_public` directory, and server code is injected to map the old paths to the new ones:
-
-```js
-// .fab/intermediate/some-dir/some-file.xyz
-//             copied to:
-// .fab/build/_assets/_public/some-dir/some-file.a7b29c34fd.xyz
-
-const render = async (request, settings) => {
-  if (pathMatches(request, '/some-dir/some-file.xyz')) {
-    // Fetch the asset using its /_assets/_public URL
-    const response = await fetch(`https://your.app/_assets/_public/some-dir/some-file.a7b29c34fd.xyz`)
-    // Delete its cache control header, since only _assets 
-    // are safe to cache forever
-    response.headers.delete('cache-control')
-    // Pass through the response
-    return response
-  }
-  
-  // For all other requests, forward them to your app as expected
-  return your_app.render(request, settings)
-}
-```
-
-This has a nice consequence—_any_ static asset file structure can be compiled to a FAB, but those that make proper use of the `_asset` directory will have far better performance and caching behaviour.
-
-### `_server/index.js` and `_server/production-settings.json`
-
-These two files get compiled together to produce the two exports for a FAB's `server.js` file: `render` and `getProdSettings`. This process is done using a minimal Webpack configuration, so `require`-ing other files (potentially generated ones) is supported, but more complex source transformations (like using Babel) are not. If needed, pre-compile your source code before placing it in `.fab/intermediate`.
-
-## Development Progress
-
-```
-@fab/compile - advanced compiler for SSR FABs         WORKING
-@fab/serve - host a FAB in a NodeJS express server    WORKING
-@fab/afterjs - compile an After.js project            WORKING
-@fab/next - compile a NextJS project                  ALPHA RELEASE
-@fab/static - compile a FAB from a static dir         UNDER DEVELOPMENT
-@fab/cf-workers - wrap FAB in a Cloudflare Worker     PLANNED
-@fab/docker - wrap FAB in a Docker image              PLANNED
-```
 
 Please star this project to follow along!
 
