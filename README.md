@@ -4,9 +4,13 @@
 
 <h4>&nbsp;</h4>
 
-FABs are a **compile target for frontend applications**. They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
+FABs are a **compile target for frontend applications**.
+
+They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
 
 ### Framework adapters
+
+> **Note:** for now, you probably want to get started with [**@fab/static**](https://github.com/fab-spec/fab/tree/master/packages/fab-static). It's a zero-config compiler for static sites with hooks to add **as much server-side logic as most apps need**.
 
 Working with one of these projects? Read the following 
 
