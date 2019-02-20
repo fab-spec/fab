@@ -4,7 +4,7 @@
 
 <h4>&nbsp;</h4>
 
-🌠 FABs are a **compile target for frontend applications**. They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
+FABs are a **compile target for frontend applications**. They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
 
 ### Framework adapters
 
