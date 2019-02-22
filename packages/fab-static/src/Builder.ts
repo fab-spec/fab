@@ -12,7 +12,7 @@ interface Config {
   directory: string
   output: string
   working_dir: string
-  server: string | undefined,
+  server: string | undefined
   settings: string | undefined
 }
 
@@ -64,7 +64,10 @@ export default class Builder {
             htmls_dir + '/'
           )}${chalk.yellow(filename)}`
         )
-        await fs.writeFile(path.resolve(path.join(htmls_dir, filename)), compiled)
+        await fs.writeFile(
+          path.resolve(path.join(htmls_dir, filename)),
+          compiled
+        )
         html_rewrites[html] = filename
       }
     } else {
@@ -74,16 +77,30 @@ export default class Builder {
     }
 
     log(`Writing HTML rewrite manifest`)
-    const manifest = prettier.format(
-      `module.exports = { 
-      ${Object.keys(html_rewrites)
-        .map(html_path => `"/${html_path}": require('./${html_rewrites[html_path]}'),`)
-        .join()}
-    }`,
-      // @ts-ignore (babylon has been renamed, but not in @types)
-      { parser: 'babel' }
-    )
-    await fs.writeFile(path.resolve(path.join(htmls_dir, 'index.js')), manifest)
+    const raw_manifest_js = `module.exports = {
+    ${Object.keys(html_rewrites)
+      .map(
+        html_path =>
+          `"/${html_path}": require('./${html_rewrites[html_path]}'),`
+      )
+      .join('')}
+  }`
+    const manifest_output_path = path.resolve(path.join(htmls_dir, 'index.js'))
+    let manifest
+    try {
+      manifest = prettier.format(
+        raw_manifest_js,
+        // @ts-ignore (babylon has been renamed, but not in @types)
+        { parser: 'babel' }
+      )
+    } catch (e) {
+      error(
+        `Error prettifying ${manifest_output_path}! Check output for errors and raise an issue at https://github.com/fab-spec/fab/issues`
+      )
+      manifest = raw_manifest_js
+    }
+
+    await fs.writeFile(manifest_output_path, manifest)
     log(`  Wrote ${chalk.gray(htmls_dir + '/')}${chalk.yellow('index.js')}`)
 
     const non_htmls = await globby(['**/*', '!**/*.html', '!_server/**/*'], {
@@ -104,7 +121,10 @@ export default class Builder {
             working_dir + '/intermediate/'
           )}${chalk.yellow(filename)}`
         )
-        await fs.copy(path.join(abs_dir, filename), path.join(abs_int_dir, filename))
+        await fs.copy(
+          path.join(abs_dir, filename),
+          path.join(abs_int_dir, filename)
+        )
       }
     } else {
       note(`Note: no non-HTML files found in ${dir}.`)
@@ -112,9 +132,11 @@ export default class Builder {
 
     log(`Copying server files.`)
     log(
-      `  ${chalk.gray('@fab/static/')}${chalk.yellow('files/fab-wrapper.js')} => ${chalk.gray(
-        working_dir + '/intermediate/_server/'
-      )}${chalk.yellow('index.js')}`
+      `  ${chalk.gray('@fab/static/')}${chalk.yellow(
+        'files/fab-wrapper.js'
+      )} => ${chalk.gray(working_dir + '/intermediate/_server/')}${chalk.yellow(
+        'index.js'
+      )}`
     )
     await fs.copy(
       path.resolve(__dirname, 'files/fab-wrapper.js'),
@@ -133,7 +155,7 @@ export default class Builder {
       path.join(abs_int_dir, '_server', 'default-app-server.js')
     )
 
-    const app_server_path = path.join(abs_int_dir, '_server', 'app-server.js');
+    const app_server_path = path.join(abs_int_dir, '_server', 'app-server.js')
     if (server) {
       const abs_server = path.resolve(server)
       if (!(await fs.pathExists(abs_server))) {
@@ -150,8 +172,8 @@ export default class Builder {
 
     if (settings) {
       log(`Copying settings JSON.`)
-      const settings_path = path.resolve(settings);
-      if (!await fs.pathExists(settings_path)) {
+      const settings_path = path.resolve(settings)
+      if (!(await fs.pathExists(settings_path))) {
         error(`Error: The specified settings file ${settings} doesn't exist!`)
         throw new Error('Settings file missing')
       }
@@ -166,7 +188,7 @@ export default class Builder {
         path.join(abs_int_dir, '_server', 'production-settings.json')
       )
     } else {
-      const fallback_settings = path.resolve('production-settings.json');
+      const fallback_settings = path.resolve('production-settings.json')
       if (await fs.pathExists(fallback_settings)) {
         log(`Copying settings JSON.`)
         log(
@@ -179,7 +201,9 @@ export default class Builder {
           path.join(abs_int_dir, '_server', 'production-settings.json')
         )
       } else {
-        log(`No production-settings.json file found, and no --prod-settings flag provided. Skipping.`)
+        log(
+          `No production-settings.json file found, and no --prod-settings flag provided. Skipping.`
+        )
       }
     }
 
@@ -188,10 +212,12 @@ export default class Builder {
     const build_path = path.join(abs_working_dir, 'build')
     console.log('ABOUT TO BUILD')
     await Compiler.compile(abs_int_dir, build_path, path.resolve(output), {
-      module_loaders: [{
-        test: /\.html$/,
-        loader: 'mustache-loader'
-      }],
+      module_loaders: [
+        {
+          test: /\.html$/,
+          loader: 'mustache-loader'
+        }
+      ],
       resolve_loader_modules: ['node_modules/@fab/static/node_modules'],
       resolve_aliases: {
         'app-server': server ? app_server_path : './default-app-server.js'
