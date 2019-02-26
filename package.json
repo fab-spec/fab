@@ -6,7 +6,8 @@
   ],
   "scripts": {
     "docz:dev": "docz dev",
-    "docz:build": "docz build"
+    "docz:build": "docz build",
+    "build:fab": "npm run docz:build && npx fab-static .docz/dist"
   },
   "devDependencies": {
     "docz": "^0.13.7",

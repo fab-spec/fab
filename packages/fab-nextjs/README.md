@@ -1,6 +1,7 @@
 ---
 name: "@fab/nextjs"
 route: "/packages/@fab/nextjs"
+menu: Packages
 ---
 
 @fab/nextjs
