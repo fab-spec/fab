@@ -4,14 +4,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "scripts": {
-    "docz:dev": "docz dev",
-    "docz:build": "docz build",
-    "build:fab": "npm run docz:build && npx fab-static .docz/dist"
-  },
   "devDependencies": {
-    "docz": "^0.13.7",
-    "docz-theme-default": "^0.13.7",
     "lerna": "^3.4.3"
   }
 }
