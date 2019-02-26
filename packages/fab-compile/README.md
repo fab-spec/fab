@@ -1,3 +1,9 @@
+---
+name: "@fab/compile"
+route: "/packages/@fab/compile"
+menu: Packages
+---
+
 ## `@fab/compile`
 
 ```

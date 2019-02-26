@@ -1,3 +1,9 @@
+---
+name: "@fab/serve"
+route: "/packages/@fab/serve"
+menu: Packages
+---
+
 @fab/serve
 ==========
 

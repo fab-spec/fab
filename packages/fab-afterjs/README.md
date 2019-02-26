@@ -1,3 +1,9 @@
+---
+name: "@fab/afterjs"
+route: "/packages/@fab/afterjs"
+menu: Packages
+---
+
 @fab/afterjs
 ============
 
