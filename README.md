@@ -1,6 +1,6 @@
 # Frontend Application Bundle (FAB) Specification
 
-***<h3 align="center"><img width="410" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/52991323-5a6b5880-3460-11e9-844b-4264154777c3.png"><br/>Build once, run everywhere</h3>***
+***<h3 align="center"><img width="410" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53390558-a7fb3e80-39e7-11e9-8b5b-d33640e6514f.png"><br/>Build once, run everywhere</h3>***
 
 <h4>&nbsp;</h4>
 
