@@ -1,3 +1,8 @@
+---
+name: "@fab/static"
+route: "/packages/@fab/static"
+---
+
 @fab/static
 ===========
 

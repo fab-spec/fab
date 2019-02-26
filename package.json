@@ -4,7 +4,13 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "docz:dev": "docz dev",
+    "docz:build": "docz build"
+  },
   "devDependencies": {
+    "docz": "^0.13.7",
+    "docz-theme-default": "^0.13.7",
     "lerna": "^3.4.3"
   }
 }

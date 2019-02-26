@@ -1,3 +1,8 @@
+---
+name: "@fab/nextjs"
+route: "/packages/@fab/nextjs"
+---
+
 @fab/nextjs
 ===========
 

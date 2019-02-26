@@ -60,7 +60,7 @@ export default class Compiler {
     if (!(await fs.pathExists(assets_path))) {
       log(`${chalk.yellow(`No _assets directory detected.`)}
           This isn't necessarily a problem, but your FAB may be able to be optimised.
-          For more info, visit https://fab-spec.org/eh?no-assets-dir`)
+          For more info, visit https://fab.dev/eh?no-assets-dir`)
     } else {
       log(`Copying fingerprinted _assets:`)
       await fs.copy(assets_path, path.join(build_path, '_assets'), {
@@ -118,7 +118,7 @@ export default class Compiler {
       log(`${chalk.yellow(`No _server/index.js file detected.`)}
           Your FAB will only have the simplest of webservers injected.
           If you want to host a static site, you probably want @fab/static
-          https://fab-spec.org/eh?no-server-index`)
+          https://fab.dev/eh?no-server-index`)
       await this.webpack(
         path.resolve(__dirname, 'files/fallback-index.js'),
         settings_path,
