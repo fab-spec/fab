@@ -9,6 +9,8 @@ export default {
         'font-variant-ligatures': 'common-ligatures'
       }
     },
+    linesToScrollEditor: 999999,
     showPlaygroundEditor: false,
+    codeSandbox: false
   }
 }
