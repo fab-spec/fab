@@ -1,8 +1,11 @@
-<img width="410" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53390558-a7fb3e80-39e7-11e9-8b5b-d33640e6514f.png"/>
+---
+name: Home
+route: /
+---
 
-### _Build once, run everywhere_
+***<h3 align="center"><img width="410" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53390558-a7fb3e80-39e7-11e9-8b5b-d33640e6514f.png"/><br/>Build once, run everywhere</h3>***
 
-# FAB Specification 
+# FAB Specification
 
 FABs are a **compile target for frontend applications**.<br/>They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
 
