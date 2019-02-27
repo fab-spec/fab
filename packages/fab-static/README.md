@@ -1,6 +1,6 @@
 ---
 name: "@fab/static"
-route: "/packages/@fab/static"
+route: "/packages/fab-static"
 menu: Packages
 ---
 
