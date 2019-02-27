@@ -7,7 +7,7 @@ route: /
 
 # FAB Specification
 
-FABs are a **compile target for frontend applications**.<br/>They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
+💎 FABs are a **compile target for frontend applications**.<br/>They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
 
 ## Framework adapters
 
@@ -15,21 +15,23 @@ FABs are a **compile target for frontend applications**.<br/>They unify **static
 
 Working with one of these projects? Read the following 
 
-* Create React App: [`@fab/static` — Usage with Create React App](https://github.com/fab-spec/fab/tree/master/packages/fab-static)
-* Gatsby: [`@fab/static` — Gatsby installations](https://github.com/fab-spec/fab/tree/master/packages/fab-static)
-* Any other static site renderer: [`@fab/static` — Usage with many HTML files](https://github.com/fab-spec/fab/tree/master/packages/fab-static)
-* NextJS: [`@fab/nextjs`](https://github.com/fab-spec/fab/tree/master/packages/fab-nextjs)
-* AfterJS: [`@fab/afterjs`](https://github.com/fab-spec/fab/tree/master/packages/fab-afterjs)
+* Create React App: [**@fab/static** — Usage with Create React App](./packages/fab-static)
+* Gatsby: [**@fab/static** — Gatsby installations](./packages/fab-static)
+* Any other static site renderer: [**@fab/static** — Usage with many HTML files](./packages/fab-static)
+* NextJS: [**@fab/nextjs**](./packages/fab-nextjs)
+* AfterJS: [**@fab/afterjs**](./packages/fab-afterjs)
 
-Thinking of writing your own adapter? Head to [https://github.com/fab-spec/fab/tree/master/packages/fab-compile](`@fab/compile`) to understand the low-level compilation API. Then get in touch, we're happy to help!
+Thinking of writing your own adapter? Head to [**@fab/compile**](./packages/fab-compile) to understand the low-level compilation API. Then get in touch, we're happy to help!
 
-### Deployment adapters
+## Deployment adapters
 
-* Lambda@Edge: [`@fab/lambda-edge-packager`](https://github.com/fab-spec/lambda-edge-packager)
-* Cloudflare Workers: [`@fab/cloudflare-workers-packager`](https://github.com/fab-spec/cloudflare-workers-packager)
-* NodeJS: [`@fab/serve`](https://github.com/fab-spec/fab/tree/master/packages/fab-serve)
+💎 FABs are **portable**. That is, once they're compiled, they can be deployed to any number of 
 
-Thinking of writing your own deployment adapter? Read on to understand the runtime requirements of FABs, then check [`@fab/serve`](https://github.com/fab-spec/fab/tree/master/packages/fab-serve) for some sample code.
+* Lambda@Edge: [**@fab/lambda-edge-packager**](https://github.com/fab-spec/lambda-edge-packager)
+* Cloudflare Workers: [**@fab/cloudflare-workers-packager**](https://github.com/fab-spec/cloudflare-workers-packager)
+* NodeJS: [**@fab/serve**](./packages/fab-serve)
+
+Thinking of writing your own deployment adapter? Read on to understand the runtime requirements of FABs, then check [`@fab/serve`](./packages/fab-serve) for some sample code.
 
 ## The FAB format
 
