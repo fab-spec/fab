@@ -7,6 +7,13 @@ export default {
     styles: {
       body: {
         'font-variant-ligatures': 'common-ligatures'
+      },
+      h1: {
+        fontFamily: 'Poppins',
+        fontSize: [50, 50, 70],
+      },
+      h3: {
+        'font-weight': 'bold'
       }
     },
     linesToScrollEditor: 999999,

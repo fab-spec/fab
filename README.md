@@ -7,13 +7,15 @@ route: /
 
 # FAB Specification
 
-💎 FABs are a **compile target for frontend applications**.<br/>They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
+💎 FABs are a **compile target for frontend applications**.
+
+They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
 
 ## Framework adapters
 
 > **Note:** for now, you probably want to get started with [**@fab/static**](./packages/fab-static). It's a zero-config compiler for static sites with hooks to add **as much server-side logic as most apps need**.
 
-Working with one of these projects? Read the following 
+Working with one of these projects? Read the following
 
 * Create React App: [**@fab/static** — Usage with Create React App](./packages/fab-static)
 * Gatsby: [**@fab/static** — Gatsby installations](./packages/fab-static)
@@ -37,7 +39,7 @@ Thinking of writing your own deployment adapter? Read on to understand the runti
 
 > _Note: This is work-in-progress, under active development by [@glenmaddern](https://twitter.com/glenmaddern)._
 
-### Frontend Applications
+### What is a Frontend Application?
 
 The term _**Frontend Application**_ encompasses a wide range of modern web projects, from purely static sites with no client-side JS, to entirely client-rendered apps hitting an API, or those with a significant server-side-rendering component. But they are defined in opposition to a more traditional "backend" application, which may emit HTML across the wire as well, but usually has a persistent server, with direct connections to databases and a local filesystem.
 
@@ -53,7 +55,7 @@ As such, static site hosting has grown in popularity among the frontend applicat
 
 _**Frontend Application Bundles**_ are the container format that work equally well for fully-static through to full server-rendered frontend apps, making your choice of _technology_ independent from your choice of _hosting_.
 
-### `fab.zip` specification
+### fab.zip specification
 
 The FAB file is a zip* file containing two parts:
 
