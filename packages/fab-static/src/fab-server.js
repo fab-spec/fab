@@ -1,11 +1,18 @@
-const URL_ALIASES = {
+const REDIRECTS = {
   '/eh?no-assets-dir': '/kb/why-assets-are-important'
 }
 
 export async function route(path) {
-  const alias_url = URL_ALIASES[path]
+  const maybe_redirect = REDIRECTS[path]
 
-  if (alias_url) return alias_url
+  if (maybe_redirect) {
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: maybe_redirect
+      }
+    })
+  }
 
   return path
 }
