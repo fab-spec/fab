@@ -55,7 +55,7 @@ As such, static site hosting has grown in popularity among the frontend applicat
 
 _**Frontend Application Bundles**_ are the container format that work equally well for fully-static through to full server-rendered frontend apps, making your choice of _technology_ independent from your choice of _hosting_.
 
-### fab.zip specification
+## fab.zip specification
 
 The FAB file is a zip* file containing two parts:
 

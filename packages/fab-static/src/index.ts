@@ -5,7 +5,7 @@ import Builder from './Builder'
 import { error, note, log } from './log'
 
 class FabStatic extends Command {
-  static description = 'describe the command here'
+  static description = 'Builds a FAB from a directory of static HTML and assets, with an optional server-side component.'
 
   static examples = [`$ fab-static ~/src/my-project/build`]
 
