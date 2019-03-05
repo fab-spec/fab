@@ -6,7 +6,7 @@ export default {
   themeConfig: {
     styles: {
       body: {
-        'font-variant-ligatures': 'common-ligatures'
+        fontVariantLigatures: 'common-ligatures'
       },
       h1: {
         fontFamily: 'Poppins',
