@@ -2,7 +2,7 @@ export default {
   title: 'FAB — Frontend Application Bundles',
   description: 'Project homepage for the FAB specification & related tooling',
   src: '../',
-  files: '{README.md,docs/*.mdx,packages/*/README.md}',
+  files: '{README.md,docs/**/*.mdx,packages/*/README.md}',
   themeConfig: {
     styles: {
       body: {
@@ -14,7 +14,10 @@ export default {
       },
       h3: {
         'font-weight': 'bold'
-      }
+      },
+      code: {
+        whiteSpace: 'nowrap'
+      },
     },
     linesToScrollEditor: 999999,
     showPlaygroundEditor: false,
