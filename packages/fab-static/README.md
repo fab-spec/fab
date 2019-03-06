@@ -111,6 +111,78 @@ A production settings file might look like:
 
 These values are for the **production** environment ([read why](https://fab.dev/kb/environment-variables#bundling-production-settings)). To supply non-production variables that will be injected in place of these settings, consult the documentation of your hosting platform e.g. [Linc](https://linc.sh)
 
+## Accessing Environment Variables at Runtime
+
+**@fab/static** dynamically injects a `<script>` tag into any HTML response as it's being streamed to the client:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- FAB SETTINGS SCRIPT TAG INJECTED HERE -->
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <!-- ... -->
+  </head>
+  <body>
+    <!-- ... -->
+  </body>
+</html>
+```
+
+That `<script>` tag has the following format:
+
+```html
+<script type="text/javascript">
+  window.FAB_SETTINGS = {
+    "API_URL": "https://staging.api.example.com"
+  }
+</script>
+```
+
+Whatever the `settings` object passed to `render` (which will be a combination of production settings as well as any environment-specific overrides), **@fab/static** will serialise them to JSON and inject them as `window.FAB_SETTINGS`. This code will execute before any other, meaning you can always rely on `FAB_SETTINGS` to be available by the time your app is booted.
+
+```js
+fetch(`${window.FAB_SETTINGS.API_URL}/endpoint`).then(
+  // ...
+)
+```
+
+To use the same environment variables during development, it's recommended to add a layer of abstraction between `FAB_SETTINGS` (available once the FAB is built) and `process.env` (available during development). For example
+
+```js
+// src/config.js
+
+const lookupEnvVar = name => {
+  // Use FAB_SETTINGS if defined
+  if (typeof FAB_SETTINGS === 'object') {
+    return FAB_SETTINGS[name]
+    
+  // Otherwise use process.env
+  } else {
+    // Note: some build systems (like Create React App) only expose
+    // process.env vars that start with a prefix (like REACT_APP_)
+    return process.env[`REACT_APP_${name}`]
+  }
+}
+
+export default {
+  API_URL: lookupEnvVar('API_URL'),
+  API_KEY: lookupEnvVar('API_KEY'),
+  // ...
+}
+```
+
+You can use the `config` throughout your app like so:
+
+```js
+import config from '../config'
+
+fetch(`${config.API_URL}/endpoint`).then(
+  // ...
+)
+```
+
 ## Adding a server
 
 Despite the name, `@fab/static` is capable of running virtually any server-side logic you'd like. From use-cases like rewriting or forwarding URLs, proxying APIs, or simply providing a health check, you can supercharge your FAB by using the `-s` or `--server` flag to `fab-static`.

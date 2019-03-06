@@ -9,11 +9,14 @@ export default {
         fontVariantLigatures: 'common-ligatures'
       },
       h1: {
-        fontFamily: 'Poppins',
+        fontFamily: 'Source Sans Pro',
         fontSize: [50, 55, 60],
       },
+      h2: {
+        fontFamily: 'Source Sans Pro',
+      },
       h3: {
-        'font-weight': 'bold'
+        fontWeight: 'bold'
       },
       code: {
         whiteSpace: 'nowrap'
