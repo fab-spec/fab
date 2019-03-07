@@ -32,8 +32,8 @@ export default class Builder {
     log(`Generating includes for the server files`)
     await generateIncludes(dir, path.join(int_dir, '_server'), next_dir_name)
 
-    log(`Generating NEXT_CACHE for intercepting dynamic require() calls`)
-    await generateNextCache(dir, path.join(int_dir, '_server'), next_dir_name)
+    // log(`Generating NEXT_CACHE for intercepting dynamic require() calls`)
+    // await generateNextCache(dir, path.join(int_dir, '_server'), next_dir_name)
 
     console.log(
       `Copying server.js from @fab/nextjs to .fab/intermediate/_server/index.js`
