@@ -26,7 +26,7 @@ export default {
     showPlaygroundEditor: false,
     codeSandbox: false,
     logo: {
-      src: 'https://user-images.githubusercontent.com/23264/53463084-0b45a900-3a9a-11e9-83b4-e78aca9149d6.png',
+      src: 'https://user-images.githubusercontent.com/23264/53997173-49745400-418f-11e9-87d0-60a9da6449e6.png',
       width: '100%'
     }
   }

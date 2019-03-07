@@ -3,7 +3,7 @@ name: Home
 route: /
 ---
 
-***<h3 align="center"><img width="410" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53390558-a7fb3e80-39e7-11e9-8b5b-d33640e6514f.png"/><br/>Build once, run everywhere</h3>***
+***<h3 align="center"><img width="461" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53997145-306ba300-418f-11e9-91d0-b44e6df85d4c.png"/><br/>Build once, run everywhere</h3>***
 
 # FAB Specification
 
