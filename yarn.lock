@@ -4195,13 +4195,6 @@ memfs@2.12.1:
     fast-extend "0.0.2"
     fs-monkey "^0.3.3"
 
-memfs@^2.15.2:
-  version "2.15.2"
-  resolved "https://registry.yarnpkg.com/memfs/-/memfs-2.15.2.tgz#199b64580cf849ea641d8fac81d96742bfebd26d"
-  dependencies:
-    fast-extend "0.0.2"
-    fs-monkey "^0.3.3"
-
 memory-fs@^0.4.0, memory-fs@~0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.4.1.tgz#3a9a20b8462523e447cfbc7e8bb80ed667bfc552"

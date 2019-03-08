@@ -1,7 +1,7 @@
 import * as globby from 'globby'
 import * as fs from 'fs-extra'
 import * as path from 'path'
-import { error, log } from '@fab/static/lib/log'
+import { error, log } from './utils'
 import * as prettier from 'prettier'
 import chalk from 'chalk'
 
