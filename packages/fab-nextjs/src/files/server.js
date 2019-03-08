@@ -5,7 +5,7 @@ const renderers = require('./renderers')
 
 export const render = async (req, settings) => {
   console.log(`REQUEST! ${req.url}`)
-  const res = new {}
+  const res = {}
   const req_url = url.parse(req.url)
   const { path } = req_url
   console.log({path})
