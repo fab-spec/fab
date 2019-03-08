@@ -65,10 +65,10 @@ export default class Builder {
     })
   }
 
-  private static async preflightChecks(dir: string): {
+  private static async preflightChecks(dir: string): Promise<{
     next_dir_name: string,
     next_dir: string
-  } {
+  }> {
     const next_config_path = `${dir}/next.config.js`
     if (!(await fs.pathExists(next_config_path))) {
       error(`next.config.js doesn't exist!`)

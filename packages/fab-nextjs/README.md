@@ -25,7 +25,7 @@ $ npm install -g @fab/nextjs
 $ fab-nextjs COMMAND
 running command...
 $ fab-nextjs (-v|--version|version)
-@fab/nextjs/0.0.1 darwin-x64 node-v11.1.0
+@fab/nextjs/0.1.0-0 darwin-x64 node-v11.1.0
 $ fab-nextjs --help [COMMAND]
 USAGE
   $ fab-nextjs COMMAND
@@ -56,7 +56,7 @@ EXAMPLE
   $ fab-nextjs build
 ```
 
-_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.1/src/commands/build.ts)_
+_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.1.0-0/src/commands/build.ts)_
 
 ## `fab-nextjs help [COMMAND]`
 
@@ -73,5 +73,5 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 <!-- commandsstop -->

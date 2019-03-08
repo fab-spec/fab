@@ -1,7 +1,7 @@
 {
   "name": "@fab/nextjs",
   "description": "FAB compiler for NextJS projects",
-  "version": "0.0.1",
+  "version": "0.1.0-0",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-nextjs": "./bin/run"
