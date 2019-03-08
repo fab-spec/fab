@@ -1,11 +1,9 @@
-const next = require('next-server')
 //const MockExpressResponse = require('./mock-express-response')
-const fs = require('fs')
-const url = require('url')
+import url from 'url'
 
 const renderers = require('./renderers')
 
-const render = async (req, settings) => {
+export const render = async (req, settings) => {
   console.log(`REQUEST! ${req.url}`)
   const res = new {}
   const req_url = url.parse(req.url)
@@ -27,5 +25,3 @@ const render = async (req, settings) => {
   //  headers: res._headers
   //})
 }
-
-module.exports = { render }
