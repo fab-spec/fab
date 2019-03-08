@@ -1,11 +1,11 @@
-//const MockExpressResponse = require('./mock-express-response')
+const MockExpressResponse = require('./mock-express-response')
 import url from 'url'
 
 const renderers = require('./renderers')
 
 export const render = async (req, settings) => {
   console.log(`REQUEST! ${req.url}`)
-  const res = {}
+  const res = new MockExpressResponse()
   const req_url = url.parse(req.url)
   const { path } = req_url
   console.log({path})
