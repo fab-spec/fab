@@ -1,5 +1,5 @@
 const next = require('next-server')
-const MockExpressResponse = require('./mock-express-response')
+//const MockExpressResponse = require('./mock-express-response')
 const fs = require('fs')
 const url = require('url')
 
@@ -7,7 +7,7 @@ const renderers = require('./renderers')
 
 const render = async (req, settings) => {
   console.log(`REQUEST! ${req.url}`)
-  const res = new MockExpressResponse()
+  const res = new {}
   const req_url = url.parse(req.url)
   const { path } = req_url
   console.log({path})

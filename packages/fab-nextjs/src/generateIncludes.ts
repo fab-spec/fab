@@ -10,15 +10,15 @@ export default async function generateIncludes(
   output_dir: string,
   next_dir = '.next'
 ) {
-  const files = await globby([`${next_dir}/serverless/**/*`], { cwd: includesDir })
+  const files: string[] = await globby([`${next_dir}/serverless/pages/*`], { cwd: includesDir })
   console.log(files)
 
   log(`Writing HTML rewrite manifest`)
   const raw_manifest_js = `module.exports = {
-  ${Object.keys(files)
+  ${files
     .map(
-      html_path =>
-        `"/${html_path}": require('./${files[html_path]}'),`
+      renderer_name =>
+        `"/${renderer_name}": require('./pages/${path.basename(renderer_name)}'),`
     )
     .join('')}
 }`

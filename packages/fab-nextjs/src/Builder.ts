@@ -29,11 +29,14 @@ export default class Builder {
       path.join(int_dir, '_next', 'static')
     )
 
+    log(`Copying .next/serverless/pages to .fab/intermediate/_server/pages`)
+    await fs.copy(
+      path.join(next_dir, 'serverless', 'pages'),
+      path.join(int_dir, '_server', 'pages')
+    )
+
     log(`Generating includes for the server files`)
     await generateIncludes(dir, path.join(int_dir, '_server'), next_dir_name)
-
-    // log(`Generating NEXT_CACHE for intercepting dynamic require() calls`)
-    // await generateNextCache(dir, path.join(int_dir, '_server'), next_dir_name)
 
     console.log(
       `Copying server.js from @fab/nextjs to .fab/intermediate/_server/index.js`
@@ -56,16 +59,16 @@ export default class Builder {
     const build_path = path.join(working_dir, 'build')
     console.log('ABOUT TO BUILD')
     await Compiler.compile(int_dir, build_path, output_file, {
-      post_webpack_side_effect: async () => {
-        log(
-          `Injecting NEXT_CACHE lookups whenever dynamic require() calls are detected`
-        )
-        await rewriteWebpackEmptyContext(path.join(build_path, 'server.js'))
+      resolve_aliases: {
+        fs: 'memfs',
       }
     })
   }
 
-  private static async preflightChecks(dir: string) {
+  private static async preflightChecks(dir: string): {
+    next_dir_name: string,
+    next_dir: string
+  } {
     const next_config_path = `${dir}/next.config.js`
     if (!(await fs.pathExists(next_config_path))) {
       error(`next.config.js doesn't exist!`)
