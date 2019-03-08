@@ -22,6 +22,9 @@ export default {
         whiteSpace: 'nowrap'
       },
     },
+    htmlContext: {
+        favicon: '/public/favicon.ico',
+    },
     linesToScrollEditor: 999999,
     showPlaygroundEditor: false,
     codeSandbox: false,
