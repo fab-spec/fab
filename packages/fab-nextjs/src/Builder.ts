@@ -47,6 +47,14 @@ export default class Builder {
     )
 
     console.log(
+      `Copying path-with-posix.js from @fab/nextjs to .fab/intermediate/_server/path-with-posix.js`
+    )
+    await fs.copy(
+      path.join(__dirname, 'files', 'path-with-posix.js'),
+      path.join(int_dir, '_server', 'path-with-posix.js')
+    )
+
+    console.log(
       `Copying mock-express-response from @fab/nextjs to .fab/intermediate/_server`
     )
     await fs.copy(
@@ -61,6 +69,7 @@ export default class Builder {
     await Compiler.compile(int_dir, build_path, output_file, {
       resolve_aliases: {
         fs: 'memfs',
+        path: path.resolve(path.join(int_dir, '_server', 'path-with-posix.js'))
       }
     })
   }
