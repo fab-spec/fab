@@ -13,7 +13,7 @@ export default class Builder {
     server: string | undefined,
     intermediate_only: boolean
   ) {
-    const { next_dir_name, next_dir } = await this.preflightChecks(dir)
+    const { next_dir_name, next_dir, asset_prefix } = await this.preflightChecks(dir)
 
     log(`Building ${chalk.green(dir)}`)
 
@@ -22,11 +22,23 @@ export default class Builder {
     await fs.ensureDir(path.join(int_dir, '_assets'))
     await fs.ensureDir(path.join(int_dir, '_server'))
 
-    log(`Copying .next/static to .fab/intermediate/_next/static`)
-    await fs.copy(
-      path.join(next_dir, 'static'),
-      path.join(int_dir, '_next', 'static')
-    )
+    if (asset_prefix === '/_assets') {
+      log(`Copying .next/static to .fab/intermediate/_assets/_next/static`)
+      await fs.copy(
+        path.join(next_dir, 'static'),
+        path.join(int_dir, '_assets', '_next', 'static')
+      )
+    } else {
+      if (asset_prefix !== '') {
+        error(`assetPrefix of '${asset_prefix}' not supported! You must use '/_assets' or not specify one.`)
+        throw new Error('Unsupported assetPrefix')
+      }
+      log(`Copying .next/static to .fab/intermediate/_next/static`)
+      await fs.copy(
+        path.join(next_dir, 'static'),
+        path.join(int_dir, '_next', 'static')
+      )
+    }
 
     log(`Copying .next/serverless/pages to .fab/intermediate/_server/pages`)
     await fs.copy(
@@ -101,7 +113,8 @@ export default class Builder {
     dir: string
   ): Promise<{
     next_dir_name: string
-    next_dir: string
+    next_dir: string,
+    asset_prefix: string
   }> {
     const next_config_path = `${dir}/next.config.js`
     if (!(await fs.pathExists(next_config_path))) {
@@ -140,6 +153,9 @@ export default class Builder {
 
       throw new Error('Missing .next/build-manifest.json')
     }
-    return { next_dir_name, next_dir }
+
+    const asset_prefix = next_config.assetPrefix || ''
+
+    return { next_dir_name, next_dir, asset_prefix }
   }
 }
