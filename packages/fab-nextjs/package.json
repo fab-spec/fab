@@ -20,6 +20,7 @@
     "globby": "^8.0.1",
     "memfs": "2.12.1",
     "mock-express-response": "^0.2.2",
+    "prettier": "^1.16.4",
     "tslib": "^1"
   },
   "devDependencies": {
