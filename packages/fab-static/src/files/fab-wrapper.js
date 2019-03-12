@@ -47,7 +47,7 @@ async function _render(request, settings) {
   // Couldn't find a matching HTML file, return a 404
   if (!matched_html) return render404()
 
-  // Otherwise render the 404 with our settings injected
+  // Otherwise render the HTML with our settings injected
   const headers = {}
   headers['content-type'] = 'text/html'
 

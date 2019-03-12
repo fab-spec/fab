@@ -190,7 +190,6 @@ export default class Compiler {
           },
           resolve: {
             alias: {
-              fs: 'memfs',
               path: 'path-browserify',
               'app-index': server_path,
               'production-settings.json': settings_exists

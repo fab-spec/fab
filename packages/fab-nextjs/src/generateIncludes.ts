@@ -1,51 +1,47 @@
 import * as globby from 'globby'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import { error, log } from './utils'
+import * as prettier from 'prettier'
+import chalk from 'chalk'
 
 export default async function generateIncludes(
   includesDir: string,
   output_dir: string,
   next_dir = '.next'
 ) {
-  const files = await globby([`${next_dir}/**/*`], { cwd: includesDir })
-  console.log(files)
-  const contents = await Promise.all(
-    files.map(file => fs.readFile(file, { encoding: 'base64' }))
+  const files = await globby([
+    `${next_dir}/serverless/pages/*`,
+    `!${next_dir}/serverless/pages/_*`
+  ])
+  // console.log(files)
+
+  log(`Writing HTML rewrite manifest`)
+  const raw_manifest_js = `module.exports = {
+  ${files
+    .map(filepath => {
+      const renderer_name = path.basename(filepath, '.js')
+      return `"/${renderer_name}": require('./pages/${renderer_name}'),`
+    })
+    .join('')}
+}`
+  const manifest_output_path = path.resolve(
+    path.join(output_dir, 'renderers.js')
   )
-  const urls: { [key: string]: string } = {}
-  files.forEach((file, index) => {
-    const bytes = `Buffer.from('${contents[index]}', 'base64')`
-    urls[file] = `{ bytes: ${bytes}, headers: ${JSON.stringify({})} }`
-  })
-
-  const code = `
-  const urls = {}
-  ${Object.keys(urls)
-    .map(url => `urls['/${url}'] = ${urls[url]};`)
-    .join('\n')}
-  
-  const fs = require('fs')
-  const path = require('path')
-  module.exports = async () => {
-    for (const url of Object.keys(urls)) {
-      await new Promise((resolve, reject) =>
-        fs.mkdir(
-          path.dirname(url),
-          { recursive: true },
-          err => (err ? reject(err) : resolve())
-        )
-      )
-      await new Promise((resolve, reject) =>
-        fs.writeFile(
-          url,
-          urls[url].bytes,
-          'base64',
-          (err, ok) => (err ? reject(err) : resolve(ok))
-        )
-      )
-    }
+  let manifest
+  try {
+    manifest = prettier.format(
+      raw_manifest_js,
+      // @ts-ignore (babylon has been renamed, but not in @types)
+      { parser: 'babel' }
+    )
+  } catch (e) {
+    error(
+      `Error prettifying ${manifest_output_path}! Check output for errors and raise an issue at https://github.com/fab-spec/fab/issues`
+    )
+    manifest = raw_manifest_js
   }
-  `
 
-  await fs.writeFile(path.join(output_dir, 'includes.js'), code)
+  await fs.writeFile(manifest_output_path, manifest)
+  log(`  Wrote ${chalk.gray(output_dir + '/')}${chalk.yellow('index.js')}`)
 }

@@ -1,13 +1,15 @@
-import {Command, flags} from '@oclif/command'
-import Builder from "../Builder";
-import * as path from "path";
+import { Command, flags } from '@oclif/command'
+import Builder from '../Builder'
+import * as path from 'path'
+import * as fs from 'fs-extra'
+import { error, log } from '../utils'
+import chalk from 'chalk'
 
 export default class Build extends Command {
   static description = 'Build a NextJS project into a FAB'
 
   static examples = [
-    `$ fab-nextjs build
-`,
+    `$ fab-nextjs build`,
   ]
 
   static flags = {
@@ -25,6 +27,10 @@ export default class Build extends Command {
       description: 'Output FAB file',
       default: 'fab.zip'
     }),
+    server: flags.string({
+      char: 's',
+      description: 'Path to server entry file'
+    }),
     'intermediate-only': flags.boolean()
   }
 
@@ -38,10 +44,12 @@ export default class Build extends Command {
   async run() {
     const { args, flags } = this.parse(Build)
     const { directory } = args
+
     return await Builder.start(
       path.resolve(directory),
       flags['working-dir']!,
       path.resolve(flags.output!),
+      flags.server,
       flags['intermediate-only']
     )
   }

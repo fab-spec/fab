@@ -1,50 +1,79 @@
-const next = require('next-server')
-const MockExpressResponse = require('./mock-express-response')
-const fs = require('fs')
-const url = require('url')
+import MockExpressResponse from './mock-express-response'
+import { parse } from 'url'
 
-const initFiles = require('./includes')
-global.NEXT_CACHE = require('./next-cache')
+import * as default_server from './default-app-server'
+import * as server_overrides from 'app-server'
 
-let startup_promise
-const serverOptions = {}
-
-const startup = () => {
-  if (startup_promise) return startup_promise
-  startup_promise = new Promise(async (resolve, reject) => {
-    try {
-      await initFiles()
-      //const files = await new Promise(res =>
-      //  fs.readdir('/.next', (_, files) => res(files))
-      //)
-      //console.log(files)
-      const app = next(serverOptions)
-      await app.prepare()
-      resolve(app.getRequestHandler())
-    } catch (e) {
-      reject(e)
-    }
-  })
-  return startup_promise
-}
-startup().then(() => console.log(`Booted and ready!`))
-
-const render = async (req, settings) => {
-  console.log(`REQUEST! ${req.url}`)
-  const requestHandler = await startup()
-  const res = new MockExpressResponse()
-  const req_url = url.parse(req.url)
-  const { path } = req_url
-
-  const local_req = new Request(path, {
-    method: req.method,
-    headers: req.headers
-  })
-  await requestHandler(local_req, res)
-  return new Response(res._getString(), {
-    status: res.statusCode,
-    headers: res._headers
-  })
+const SERVER = {
+  ...default_server,
+  ...server_overrides
 }
 
-module.exports = { render }
+const RENDERERS = require('./renderers')
+
+export const render = async (request, settings) => {
+  await SERVER.modifyRequest(settings, request)
+  const response = await _render(request, settings)
+  await SERVER.modifyResponse(settings, response)
+  return response
+}
+
+const _render = async (request, settings) => {
+  console.log(`REQUEST! ${request.url}`)
+  const response = new MockExpressResponse()
+  const req_url = parse(request.url)
+
+  const route = await SERVER.route(settings, req_url.path, request)
+
+  // Routing to something falsy means a 404
+  if (!route) return render404()
+
+  // Routing to anything other than a simple string, we just return it
+  if (typeof route !== 'string') return route
+
+  // Routing to an absolute URL we'll proxy the request
+  const parsed_route = parse(route)
+  if (parsed_route.hostname) return proxyRequest(request, route)
+
+  const { pathname } = parsed_route
+  console.log({ pathname })
+
+  const renderer = pathname === '/' ? RENDERERS['/index'] : RENDERERS[pathname]
+  console.log({ renderer })
+  if (renderer) {
+    const local_req = new Request(route, {
+      method: request.method,
+      headers: request.headers
+    })
+    await renderer.render(local_req, response)
+    return new Response(response._getString(), {
+      status: response.statusCode,
+      headers: response._headers
+    })
+  }
+
+  return render404()
+}
+
+function proxyRequest(request, url) {
+  const { protocol, host } = parse(url)
+
+  // Ensure host and origin headers are set appropriately
+  const headers = new Headers(request.headers)
+  headers.delete('host')
+  if (headers.get('origin')) headers.set('origin', `${protocol}//${host}`)
+
+  return fetch(url, {
+    headers,
+    method: request.method,
+    ...(request.method === 'POST' ? { body: request.body } : {})
+  })
+}
+
+function render404() {
+  return new Response(null, {
+    status: 404,
+    statusText: 'Not Found',
+    headers: {}
+  })
+}
