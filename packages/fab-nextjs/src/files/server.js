@@ -38,7 +38,7 @@ const _render = async (request, settings) => {
   const { pathname } = parsed_route
   console.log({ pathname })
 
-  const renderer = pathname === '/' ? RENDERERS.index : RENDERERS[pathname]
+  const renderer = pathname === '/' ? RENDERERS['/index'] : RENDERERS[pathname]
   console.log({ renderer })
   if (renderer) {
     const local_req = new Request(route, {
