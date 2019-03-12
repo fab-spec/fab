@@ -1,5 +1,5 @@
 import MockExpressResponse from './mock-express-response'
-import url, { parse } from 'url'
+import { parse } from 'url'
 
 import * as default_server from './default-app-server'
 import * as server_overrides from 'app-server'
@@ -18,10 +18,10 @@ export const render = async (request, settings) => {
   return response
 }
 
-const _render = async (req, settings) => {
-  console.log(`REQUEST! ${req.url}`)
-  const res = new MockExpressResponse()
-  const req_url = url.parse(req.url)
+const _render = async (request, settings) => {
+  console.log(`REQUEST! ${request.url}`)
+  const response = new MockExpressResponse()
+  const req_url = parse(request.url)
 
   const route = await SERVER.route(settings, req_url.path, request)
 
@@ -35,26 +35,25 @@ const _render = async (req, settings) => {
   const parsed_route = parse(route)
   if (parsed_route.hostname) return proxyRequest(request, route)
 
-  const path = parsed_route.path
-  console.log({path})
+  const { pathname } = parsed_route
+  console.log({ pathname })
 
-  const renderer = RENDERERS[path] || RENDERERS[path + 'index']
-  console.log({renderer})
+  const renderer = pathname === '/' ? RENDERERS.index : RENDERERS[pathname]
+  console.log({ renderer })
   if (renderer) {
-    const local_req = new Request(path, {
-      method: req.method,
-      headers: req.headers
+    const local_req = new Request(route, {
+      method: request.method,
+      headers: request.headers
     })
-    await renderer.render(local_req, res)
-    return new Response(res._getString(), {
-      status: res.statusCode,
-      headers: res._headers
+    await renderer.render(local_req, response)
+    return new Response(response._getString(), {
+      status: response.statusCode,
+      headers: response._headers
     })
   }
 
   return render404()
 }
-
 
 function proxyRequest(request, url) {
   const { protocol, host } = parse(url)

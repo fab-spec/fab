@@ -26,7 +26,7 @@ class FabStatic extends Command {
     }),
     server: flags.string({
       char: 's',
-      description: 'Path to server entry file or directory'
+      description: 'Path to server entry file'
     }),
     'prod-settings': flags.string({
       char: 'p',

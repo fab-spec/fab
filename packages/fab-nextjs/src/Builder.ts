@@ -3,8 +3,6 @@ import * as path from 'path'
 import Compiler from '@fab/compile/lib/Compiler'
 import chalk from 'chalk'
 import generateIncludes from './generateIncludes'
-import rewriteWebpackEmptyContext from './rewriteWebpackEmptyContext'
-import generateNextCache from './generateNextCache'
 import { error, log } from './utils'
 
 export default class Builder {
@@ -12,6 +10,7 @@ export default class Builder {
     dir: string,
     working_dir: string,
     output_file: string,
+    server: string | undefined,
     intermediate_only: boolean
   ) {
     const { next_dir_name, next_dir } = await this.preflightChecks(dir)
@@ -38,7 +37,7 @@ export default class Builder {
     log(`Generating includes for the server files`)
     await generateIncludes(dir, path.join(int_dir, '_server'), next_dir_name)
 
-    console.log(
+    log(
       `Copying server.js from @fab/nextjs to .fab/intermediate/_server/index.js`
     )
     await fs.copy(
@@ -46,7 +45,7 @@ export default class Builder {
       path.join(int_dir, '_server', 'index.js')
     )
 
-    console.log(
+    log(
       `Copying path-with-posix.js from @fab/nextjs to .fab/intermediate/_server/path-with-posix.js`
     )
     await fs.copy(
@@ -54,7 +53,15 @@ export default class Builder {
       path.join(int_dir, '_server', 'path-with-posix.js')
     )
 
-    console.log(
+    log(
+      `Copying default-app-server.js from @fab/nextjs to .fab/intermediate/_server/default-app-server.js`
+    )
+    await fs.copy(
+      path.join(__dirname, 'files', 'default-app-server.js'),
+      path.join(int_dir, '_server', 'default-app-server.js')
+    )
+
+    log(
       `Copying mock-express-response from @fab/nextjs to .fab/intermediate/_server`
     )
     await fs.copy(
@@ -62,20 +69,38 @@ export default class Builder {
       path.join(int_dir, '_server', 'mock-express-response')
     )
 
+    const app_server_path = path.join(int_dir, '_server', 'app-server.js')
+    if (server) {
+      const abs_server = path.resolve(server)
+      if (!(await fs.pathExists(abs_server))) {
+        error(`Error: The server ${abs_server} doesn't exist!`)
+        throw new Error('Server file missing')
+      }
+      log(
+        `  ${chalk.yellow(server)} => ${chalk.gray(
+          working_dir + '/intermediate/_server/'
+        )}${chalk.yellow('app-server.js')}`
+      )
+      await fs.copy(abs_server, app_server_path)
+    }
+
     if (intermediate_only) return log(`--intermediate-only set. Stopping here.`)
 
     const build_path = path.join(working_dir, 'build')
-    console.log('ABOUT TO BUILD')
+    log('ABOUT TO BUILD')
     await Compiler.compile(int_dir, build_path, output_file, {
       resolve_aliases: {
         fs: 'memfs',
-        path: path.resolve(path.join(int_dir, '_server', 'path-with-posix.js'))
+        path: path.resolve(path.join(int_dir, '_server', 'path-with-posix.js')),
+        'app-server': server ? path.resolve(app_server_path) : './default-app-server.js'
       }
     })
   }
 
-  private static async preflightChecks(dir: string): Promise<{
-    next_dir_name: string,
+  private static async preflightChecks(
+    dir: string
+  ): Promise<{
+    next_dir_name: string
     next_dir: string
   }> {
     const next_config_path = `${dir}/next.config.js`

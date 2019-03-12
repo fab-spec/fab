@@ -27,6 +27,10 @@ export default class Build extends Command {
       description: 'Output FAB file',
       default: 'fab.zip'
     }),
+    server: flags.string({
+      char: 's',
+      description: 'Path to server entry file'
+    }),
     'intermediate-only': flags.boolean()
   }
 
@@ -45,6 +49,7 @@ export default class Build extends Command {
       path.resolve(directory),
       flags['working-dir']!,
       path.resolve(flags.output!),
+      flags.server,
       flags['intermediate-only']
     )
   }

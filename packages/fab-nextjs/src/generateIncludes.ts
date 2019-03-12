@@ -14,7 +14,7 @@ export default async function generateIncludes(
     `${next_dir}/serverless/pages/*`,
     `!${next_dir}/serverless/pages/_*`
   ])
-  console.log(files)
+  // console.log(files)
 
   log(`Writing HTML rewrite manifest`)
   const raw_manifest_js = `module.exports = {
