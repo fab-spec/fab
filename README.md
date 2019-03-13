@@ -9,9 +9,9 @@ route: /
 
 💎 FABs are a **compile target for frontend applications**.
 
-HI MELBJS
-
 They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
+
+https://github.com/fab-spec/fab
 
 ## Framework adapters
 
