@@ -20,7 +20,14 @@ export async function render(req, settings) {
 
   const rewrite = rewrites[path]
   if (rewrite) {
-    return await fetchAndReturn(`${protocol}//${host}${rewrite}`)
+    //return await fetchAndReturn(`${protocol}//${host}${rewrite}`)
+    return new Response(null, {
+      status: 302,
+      statusText: 'Found',
+      headers: {
+        Location: `${protocol}//${host}${rewrite}`
+      }
+    })
   }
   return await render_app(req, settings)
 }
