@@ -96,6 +96,27 @@
     tslib "^1"
     webpack "^4.27.1"
 
+"@fab/compile@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@fab/compile/-/compile-0.2.2.tgz#a425ff044074d49524cbbf3a9164d106dea35160"
+  dependencies:
+    "@oclif/command" "^1"
+    "@oclif/config" "^1"
+    "@oclif/plugin-help" "^2"
+    "@sucrase/webpack-loader" "^2.0.0"
+    "@types/globby" "^8.0.0"
+    "@types/hasha" "^3.0.0"
+    chalk "^2.4.1"
+    deterministic-zip "^1.0.5"
+    globby "^9.0.0"
+    hasha "^3.0.0"
+    mime-types "^2.1.21"
+    path-browserify "^1.0.0"
+    sucrase "^3.9.5"
+    tslib "^1"
+    typescript "^3.3.1"
+    webpack "^4.29.0"
+
 "@lerna/add@3.13.1":
   version "3.13.1"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.13.1.tgz#2cd7838857edb3b43ed73e3c21f69a20beb9b702"
