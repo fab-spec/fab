@@ -1,0 +1,49 @@
+{
+  "name": "@fab/create-react-app",
+  "description": "Specialised version of @fab/static for stock Create React Apps",
+  "version": "0.0.0",
+  "author": "Glen Maddern @geelen",
+  "bin": {
+    "fab-create-react-app": "./bin/run"
+  },
+  "bugs": "https://github.com/fab-spec/fab/issues",
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^2",
+    "tslib": "^1"
+  },
+  "devDependencies": {
+    "@oclif/test": "^1",
+    "@types/chai": "^4",
+    "@types/mocha": "^5",
+    "@types/node": "^10",
+    "chai": "^4",
+    "mocha": "^5",
+    "nyc": "^13",
+    "ts-node": "^8",
+    "typescript": "^3.3"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib"
+  ],
+  "homepage": "https://github.com/fab-spec/fab",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "bin": "fab-create-react-app"
+  },
+  "repository": "fab-spec/fab",
+  "scripts": {
+    "prepack": "rm -rf lib && tsc -b",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+  },
+  "types": "lib/index.d.ts"
+}
