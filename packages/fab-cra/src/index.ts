@@ -3,14 +3,32 @@ import {Command, flags} from '@oclif/command'
 class FabCreateReactApp extends Command {
   static description = 'describe the command here'
 
+  static examples = [`$ fab-create-react-app`]
+
   static flags = {
-    // add --version flag to show CLI version
-    version: flags.version({char: 'v'}),
-    help: flags.help({char: 'h'}),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
-    // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    help: flags.help({ char: 'h' }),
+    config: flags.string({
+      char: 'c',
+      description: 'Path to config file',
+      default: 'fab.config.json'
+    }),
+    output: flags.string({
+      char: 'o',
+      description: 'Output FAB file (default fab.zip)'
+    }),
+    'working-dir': flags.string({
+      char: 'w',
+      description: 'Intermediate directory for working (default .fab)',
+    }),
+    server: flags.string({
+      char: 's',
+      description: 'Path to server entry file'
+    }),
+    'prod-settings': flags.string({
+      char: 'p',
+      description: 'Path to production settings json'
+    }),
+    'intermediate-only': flags.boolean()
   }
 
   static args = [{name: 'file'}]
