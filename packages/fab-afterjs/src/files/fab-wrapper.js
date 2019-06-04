@@ -1,10 +1,10 @@
 /*
-* FAB Wrapper
-*
-* Entry point for the FAB Webpack build
-* Maps the simplified index.fab.js to the FAB spec
-*
-* */
+ * FAB Wrapper
+ *
+ * Entry point for the FAB Webpack build
+ * Maps the simplified index.fab.js to the FAB spec
+ *
+ * */
 
 const MockExpressResponse = require('./mock-express-response')
 const render_app = require('./app').default

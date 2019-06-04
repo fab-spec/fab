@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import { Command, flags } from '@oclif/command'
 import Server from './Server'
 
@@ -13,24 +14,38 @@ class FabServe extends Command {
       description: 'Port to use',
       env: 'PORT',
       default: '3000',
-      required: true
-    })
+      required: true,
+    }),
+    cert: flags.string({
+      description: 'SSL certificate to use',
+    }),
+    key: flags.string({
+      description: 'Key for the SSL Certificate',
+    }),
   }
 
   static args = [{ name: 'file' }]
 
   async run() {
     const { args, flags } = this.parse(FabServe)
-    const {port} = flags
+    const { port, cert, key } = flags
     const { file } = args
 
     if (!file) {
       this.error(`You must provide a FAB file to run`)
     }
 
-    await Server.start(file, port)
+    if ((key || cert) && !(key && cert)) {
+      this.error('If you specificy either a key or cert, you must supply both')
+    }
+    const certContents = cert ? fs.readFileSync(cert) : undefined
+    const keyContents = key ? fs.readFileSync(key) : undefined
 
-    this.log(`Serving ${file} on http://localhost:${port}`)
+    await Server.start(file, { port, cert: certContents, key: keyContents })
+
+    const protocol = cert ? 'https' : 'http'
+
+    this.log(`Serving ${file} on ${protocol}://localhost:${port}`)
   }
 }
 
