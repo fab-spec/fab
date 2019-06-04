@@ -1,3 +1,5 @@
+import * as http from 'http'
+import * as https from 'https'
 import * as url from 'url'
 import * as vm from 'vm'
 import * as mime from 'mime-types'
@@ -13,13 +15,23 @@ const getContentType = (pathname: string) => {
   return (mimeType && mime.contentType(mimeType)) || 'text/html; charset=utf-8'
 }
 
+interface Options {
+  port: string
+  cert?: Buffer
+  key?: Buffer
+}
+
 export default class Server {
   private file: string
   private port: string
+  private cert?: Buffer
+  private key?: Buffer
 
-  constructor(file: string, port: string) {
+  constructor(file: string, options: Options) {
     this.file = file
-    this.port = port
+    this.port = options.port
+    this.cert = options.cert
+    this.key = options.key
   }
 
   async start() {
@@ -135,12 +147,15 @@ export default class Server {
           res.end()
         }
       })
-      app.listen(this.port, resolve)
+      const server = this.cert
+        ? https.createServer({ key: this.key, cert: this.cert }, app)
+        : http.createServer(app)
+      server.listen(this.port, resolve)
     })
   }
 
-  static async start(file: string, port: string) {
-    const server = new Server(file, port)
+  static async start(file: string, options: Options) {
+    const server = new Server(file, options)
     return await server.start()
   }
 }
