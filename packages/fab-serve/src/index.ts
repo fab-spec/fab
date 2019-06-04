@@ -13,15 +13,15 @@ class FabServe extends Command {
       description: 'Port to use',
       env: 'PORT',
       default: '3000',
-      required: true
-    })
+      required: true,
+    }),
   }
 
   static args = [{ name: 'file' }]
 
   async run() {
     const { args, flags } = this.parse(FabServe)
-    const {port} = flags
+    const { port } = flags
     const { file } = args
 
     if (!file) {

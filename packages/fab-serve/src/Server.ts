@@ -61,17 +61,17 @@ export default class Server {
       URL: URL,
       console: {
         log: console.log,
-        error: console.error
+        error: console.error,
       },
       NODE_ENV: 'server',
       process: {
         env: {
-          NODE_ENV: 'server'
-        }
+          NODE_ENV: 'server',
+        },
       },
       setTimeout,
       setImmediate,
-      clearTimeout
+      clearTimeout,
     }
 
     const script = new vm.Script(src)
@@ -105,17 +105,15 @@ export default class Server {
             const fetch_req = new Request(url, {
               method,
               headers,
-              ...(method === 'POST' ? { body: req.body } : {})
+              ...(method === 'POST' ? { body: req.body } : {}),
             })
-            const production_settings = renderer.getProdSettings
-              ? renderer.getProdSettings()
-              : {}
+            const production_settings = renderer.getProdSettings ? renderer.getProdSettings() : {}
             const fetch_res = await renderer.render(
               fetch_req,
               Object.assign(
                 {
                   injected: 'variables',
-                  should: 'work!'
+                  should: 'work!',
                 },
                 production_settings
               )
@@ -123,7 +121,7 @@ export default class Server {
             res.status(fetch_res.status)
             const response_headers = fetch_res.headers.raw()
             delete response_headers['content-encoding']
-            Object.keys(response_headers).forEach(header => {
+            Object.keys(response_headers).forEach((header) => {
               const values = response_headers[header]
               res.set(header, values.length === 1 ? values[0] : values)
             })
