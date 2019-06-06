@@ -186,7 +186,7 @@ export default class Compiler {
           target: 'webworker',
           entry: path.resolve(__dirname, 'files/fab-entry.js'),
           optimization: {
-            minimize: false
+            minimize: true
           },
           resolve: {
             alias: {

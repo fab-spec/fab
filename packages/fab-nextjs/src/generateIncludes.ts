@@ -16,18 +16,67 @@ export default async function generateIncludes(
   ])
   // console.log(files)
 
+  const webpack_metadata: {
+    preamble?: string
+    chunks: { [key: string]: Function }
+    entries: { [key: string]: string }
+  } = {
+    chunks: {},
+    entries: {}
+  }
+
+  files.forEach(filepath => {
+    const text = fs.readFileSync(filepath, 'utf8')
+    // console.log({ filepath })
+    const match = text.match(
+      /return __webpack_require__\(__webpack_require__\.s\s*=\s*"([^"]+)"\)}/m
+    )
+    if (!match) {
+      error(`Webpack compiled output for ${filepath} doesn't match expectations!`)
+      throw new Error('Unexpected compiled page output')
+    }
+
+    // @ts-ignore
+    const {
+      0: match_str,
+      1: entry,
+      index
+    }: { 0: string; 1: string; index: number } = match
+    // console.log({ match_str, entry, index })
+
+    const preamble = text.slice(0, index)
+    if (!webpack_metadata.preamble) webpack_metadata.preamble = preamble
+    if (webpack_metadata.preamble !== preamble) {
+      error(`Webpack compiled output headers do not match between page files!`)
+      error(webpack_metadata.preamble)
+      error(`  differs to:`)
+      error(preamble)
+      throw new Error('Unexpected compiled page output')
+    }
+
+    const chunks = eval(text.slice(index + match_str.length))
+    Object.assign(webpack_metadata.chunks, chunks)
+
+    const renderer_name = path.basename(filepath, '.js')
+    log(`  ${chalk.yellow(renderer_name + '.js')} => ${chalk.yellow(entry)}`)
+    webpack_metadata.entries[`/${renderer_name}`] = entry
+  })
+
   log(`Writing HTML rewrite manifest`)
-  const raw_manifest_js = `module.exports = {
-  ${files
-    .map(filepath => {
-      const renderer_name = path.basename(filepath, '.js')
-      return `"/${renderer_name}": require('./pages/${renderer_name}'),`
-    })
-    .join('')}
-}`
-  const manifest_output_path = path.resolve(
-    path.join(output_dir, 'renderers.js')
-  )
+  const raw_manifest_js = `
+  ${webpack_metadata.preamble}
+  return {
+    ${Object.keys(webpack_metadata.entries)
+      .map(path => `"${path}": __webpack_require__("${webpack_metadata.entries[path]}")`)
+      .join(',')}
+  }
+}({
+  ${Object.keys(webpack_metadata.chunks)
+    .map(chunk => `"${chunk}": ${webpack_metadata.chunks[chunk].toString()}`)
+    .join(',')}
+})`
+
+  const manifest_output_path = path.resolve(path.join(output_dir, 'renderers.js'))
   let manifest
   try {
     manifest = prettier.format(

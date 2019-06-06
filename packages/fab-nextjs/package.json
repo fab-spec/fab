@@ -1,14 +1,14 @@
 {
   "name": "@fab/nextjs",
   "description": "FAB compiler for NextJS projects",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-nextjs": "./bin/run"
   },
   "bugs": "https://github.com/fab-spec/fab/issues",
   "dependencies": {
-    "@fab/compile": "^0.2.2",
+    "@fab/compile": "^0.3.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",

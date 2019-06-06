@@ -40,12 +40,6 @@ export default class Builder {
       )
     }
 
-    log(`Copying .next/serverless/pages to .fab/intermediate/_server/pages`)
-    await fs.copy(
-      path.join(next_dir, 'serverless', 'pages'),
-      path.join(int_dir, '_server', 'pages')
-    )
-
     log(`Generating includes for the server files`)
     await generateIncludes(dir, path.join(int_dir, '_server'), next_dir_name)
 
