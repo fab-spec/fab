@@ -9,7 +9,6 @@ var escapeHtml = require('escape-html');
 var merge = require('utils-merge');
 var Utils = require('./utils');
 var MockResponse = require('mock-res');
-var MockExpressRequest = require('mock-express-request');
 var util = require('util');
 var send = require('send');
 var mime = send.mime;

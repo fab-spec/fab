@@ -21,7 +21,6 @@ export const render = async (request, settings) => {
 const _render = async (request, settings) => {
   global.FAB_SETTINGS = settings
   console.log(`REQUEST! ${request.url}`)
-  const response = new MockExpressResponse()
   const req_url = parse(request.url)
 
   const route = await SERVER.route(settings, req_url.path, request)
@@ -45,6 +44,9 @@ const _render = async (request, settings) => {
     const local_req = new Request(route, {
       method: request.method,
       headers: request.headers
+    })
+    const response = new MockExpressResponse({
+      request: local_req
     })
     await renderer.render(local_req, response)
     return new Response(response._getString(), {
