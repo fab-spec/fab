@@ -14,7 +14,7 @@ export default async function generateIncludes(
     `${next_dir}/serverless/pages/*`,
     `!${next_dir}/serverless/pages/_*`
   ])
-  console.log(files)
+  // console.log(files)
 
   const webpack_metadata: {
     preamble?: string
@@ -27,7 +27,7 @@ export default async function generateIncludes(
 
   files.forEach(filepath => {
     const text = fs.readFileSync(filepath, 'utf8')
-    console.log({ filepath })
+    // console.log({ filepath })
     const match = text.match(
       /return __webpack_require__\(__webpack_require__\.s\s*=\s*"([^"]+)"\)}/m
     )
@@ -42,7 +42,7 @@ export default async function generateIncludes(
       1: entry,
       index
     }: { 0: string; 1: string; index: number } = match
-    console.log({ match_str, entry, index })
+    // console.log({ match_str, entry, index })
 
     const preamble = text.slice(0, index)
     if (!webpack_metadata.preamble) webpack_metadata.preamble = preamble
@@ -58,18 +58,9 @@ export default async function generateIncludes(
     Object.assign(webpack_metadata.chunks, chunks)
 
     const renderer_name = path.basename(filepath, '.js')
+    log(`  ${chalk.yellow(renderer_name + '.js')} => ${chalk.yellow(entry)}`)
     webpack_metadata.entries[`/${renderer_name}`] = entry
   })
-
-  console.log(webpack_metadata)
-
-  /*
-  ${files
-    .map(filepath => {
-      const renderer_name = path.basename(filepath, '.js')
-      return `"/${renderer_name}": require('./pages/${renderer_name}'),`
-    })
-    .join('')}*/
 
   log(`Writing HTML rewrite manifest`)
   const raw_manifest_js = `
