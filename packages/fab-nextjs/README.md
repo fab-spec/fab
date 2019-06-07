@@ -7,7 +7,9 @@ menu: Packages
 @fab/nextjs
 ===========
 
-FAB compiler for NextJS projects
+FAB compiler for NextJS projects.
+
+NextJS is a tricky target for FABs, as it, like a lot of NodeJS server-side JS projects, assumes a fair bit about the environment it runs on. Since version 8, Next has offered two build targets: NodeJS & Serverless. The serverless build has stripped out a lot of the old assumptions and generates a single file per "route" for NextJS. Each of these files shares a lot with each other, so `@fab/nextjs` merges these and wraps them in a FAB adapter, so that you end up with a single-file entry point. It's still a bit of a proof of concept, but it works!
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@fab/nextjs.svg)](https://npmjs.org/package/@fab/nextjs)
