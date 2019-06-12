@@ -37,7 +37,7 @@ async function _render(request, settings) {
   const parsed_route = parse(route)
   if (parsed_route.hostname) return proxyRequest(request, route)
 
-  const path = parsed_route.path
+  const path = parsed_route.pathname
   const matched_html =
     htmls[path] ||
     htmls[path + (path.endsWith('/') ? '' : '/') + 'index.html'] ||
