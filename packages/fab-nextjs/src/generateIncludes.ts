@@ -10,10 +10,8 @@ export default async function generateIncludes(
   output_dir: string,
   next_dir = '.next'
 ) {
-  const files = await globby([
-    `${next_dir}/serverless/pages/*`,
-    `!${next_dir}/serverless/pages/_*`,
-  ])
+  const pages_dir = path.join(next_dir, 'serverless', 'pages')
+  const files = await globby([`**`, `!/_*`], { cwd: pages_dir })
   // console.log(files)
 
   const webpack_metadata: {
@@ -26,7 +24,7 @@ export default async function generateIncludes(
   }
 
   files.forEach((filepath) => {
-    const text = fs.readFileSync(filepath, 'utf8')
+    const text = fs.readFileSync(path.join(pages_dir, filepath), 'utf8')
     // console.log({ filepath })
     const match = text.match(
       /return __webpack_require__\(__webpack_require__\.s\s*=\s*"([^"]+)"\)}/m
@@ -57,7 +55,10 @@ export default async function generateIncludes(
     const chunks = eval(text.slice(index + match_str.length))
     Object.assign(webpack_metadata.chunks, chunks)
 
-    const renderer_name = path.basename(filepath, '.js')
+    const renderer_name = path.join(
+      path.dirname(filepath),
+      path.basename(filepath, '.js')
+    )
     log(`  ${chalk.yellow(renderer_name + '.js')} => ${chalk.yellow(entry)}`)
     webpack_metadata.entries[`/${renderer_name}`] = entry
   })
