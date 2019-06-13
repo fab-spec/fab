@@ -21,6 +21,7 @@ export default class Builder {
     const int_dir = path.join(working_dir, 'intermediate')
     await fs.ensureDir(path.join(int_dir, '_assets'))
     await fs.ensureDir(path.join(int_dir, '_server'))
+    await fs.ensureDir(path.join(int_dir, 'static'))
 
     if (asset_prefix === '/_assets') {
       log(`Copying .next/static to .fab/intermediate/_assets/_next/static`)
@@ -39,6 +40,9 @@ export default class Builder {
         path.join(int_dir, '_next', 'static')
       )
     }
+
+    log(`Copying static files`)
+    await fs.copy(path.join(dir, 'static'), path.join(int_dir, 'static'))
 
     log(`Generating includes for the server files`)
     await generateIncludes(dir, path.join(int_dir, '_server'), next_dir_name)
