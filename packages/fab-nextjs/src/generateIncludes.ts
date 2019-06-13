@@ -12,7 +12,7 @@ export default async function generateIncludes(
 ) {
   const files = await globby([
     `${next_dir}/serverless/pages/*`,
-    `!${next_dir}/serverless/pages/_*`
+    `!${next_dir}/serverless/pages/_*`,
   ])
   // console.log(files)
 
@@ -22,10 +22,10 @@ export default async function generateIncludes(
     entries: { [key: string]: string }
   } = {
     chunks: {},
-    entries: {}
+    entries: {},
   }
 
-  files.forEach(filepath => {
+  files.forEach((filepath) => {
     const text = fs.readFileSync(filepath, 'utf8')
     // console.log({ filepath })
     const match = text.match(
@@ -40,7 +40,7 @@ export default async function generateIncludes(
     const {
       0: match_str,
       1: entry,
-      index
+      index,
     }: { 0: string; 1: string; index: number } = match
     // console.log({ match_str, entry, index })
 
@@ -67,12 +67,14 @@ export default async function generateIncludes(
   ${webpack_metadata.preamble}
   return {
     ${Object.keys(webpack_metadata.entries)
-      .map(path => `"${path}": __webpack_require__("${webpack_metadata.entries[path]}")`)
+      .map(
+        (path) => `"${path}": __webpack_require__("${webpack_metadata.entries[path]}")`
+      )
       .join(',')}
   }
 }({
   ${Object.keys(webpack_metadata.chunks)
-    .map(chunk => `"${chunk}": ${webpack_metadata.chunks[chunk].toString()}`)
+    .map((chunk) => `"${chunk}": ${webpack_metadata.chunks[chunk].toString()}`)
     .join(',')}
 })`
 
