@@ -16,9 +16,9 @@ const rewrites = FAB_REWRITES
 
 export async function render(req, settings) {
   const parsed = url.parse(req.url)
-  const { path, protocol, host } = parsed
+  const { pathname, protocol, host } = parsed
 
-  const rewrite = rewrites[path]
+  const rewrite = rewrites[pathname]
   if (rewrite) {
     //return await fetchAndReturn(`${protocol}//${host}${rewrite}`)
     return new Response(null, {
