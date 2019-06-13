@@ -6,7 +6,7 @@ import * as server_overrides from 'app-server'
 
 const SERVER = {
   ...default_server,
-  ...server_overrides
+  ...server_overrides,
 }
 
 const RENDERERS = require('./renderers')
@@ -41,17 +41,21 @@ const _render = async (request, settings) => {
   const renderer = pathname === '/' ? RENDERERS['/index'] : RENDERERS[pathname]
   console.log({ renderer })
   if (renderer) {
-    const local_req = new Request(route, {
+    const local_req = {
+      url: route,
       method: request.method,
-      headers: request.headers
-    })
+      headers: request.headers,
+      connection: {
+        encrypted: req_url.protocol === 'https',
+      },
+    }
     const response = new MockExpressResponse({
-      request: local_req
+      request: local_req,
     })
     await renderer.render(local_req, response)
     return new Response(response._getString(), {
       status: response.statusCode,
-      headers: response._headers
+      headers: response._headers,
     })
   }
 
@@ -69,7 +73,7 @@ function proxyRequest(request, url) {
   return fetch(url, {
     headers,
     method: request.method,
-    ...(request.method === 'POST' ? { body: request.body } : {})
+    ...(request.method === 'POST' ? { body: request.body } : {}),
   })
 }
 
@@ -77,6 +81,6 @@ function render404() {
   return new Response(null, {
     status: 404,
     statusText: 'Not Found',
-    headers: {}
+    headers: {},
   })
 }
