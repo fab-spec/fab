@@ -11,7 +11,7 @@ export default async function generateIncludes(
   next_dir = '.next'
 ) {
   const pages_dir = path.join(next_dir, 'serverless', 'pages')
-  const files = await globby([`**`, `!/_*`], { cwd: pages_dir })
+  const files = await globby([`**`, `!_*`], { cwd: pages_dir })
   // console.log(files)
 
   const webpack_metadata: {
