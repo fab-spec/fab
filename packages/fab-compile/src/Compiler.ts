@@ -3,14 +3,13 @@ import chalk from 'chalk'
 import * as util from 'util'
 import * as globby from 'globby'
 import * as path from 'path'
+import * as webpack from 'webpack'
+import * as hasha from 'hasha';
+import * as SriPlugin from 'webpack-subresource-integrity';
+
+// deterministic-zip offers no TS typings
 // @ts-ignore
 import * as _zip from 'deterministic-zip'
-// @ts-ignore
-import * as webpack from 'webpack'
-// @ts-ignore
-import * as hasha from 'hasha'
-// @ts-ignore
-import * as SriPlugin from 'webpack-subresource-integrity';
 
 const zip = util.promisify(_zip)
 
