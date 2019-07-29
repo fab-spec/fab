@@ -5,8 +5,12 @@ import * as globby from 'globby'
 import * as path from 'path'
 // @ts-ignore
 import * as _zip from 'deterministic-zip'
+// @ts-ignore
 import * as webpack from 'webpack'
+// @ts-ignore
 import * as hasha from 'hasha'
+// @ts-ignore
+import * as SriPlugin from 'webpack-subresource-integrity';
 
 const zip = util.promisify(_zip)
 
@@ -69,38 +73,46 @@ export default class Compiler {
             log(
               `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
                 path.relative(input_path, src)
-              )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(path.relative(build_path, dest))}`
+              )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(
+                path.relative(build_path, dest)
+              )}`
             )
           return true
-        }
+        },
       })
       log(`Done!`)
     }
 
     log(`Copying non-fingerprinted (public) assets:`)
     const paths = await globby(['**/*', '!_server/**/*', '!_assets/**/*'], {
-      cwd: input_path
+      cwd: input_path,
     })
     const renames: { [filename: string]: string } = {}
     if (paths.length > 0) {
       await Promise.all(
-        paths.map(async filename => {
+        paths.map(async (filename) => {
           try {
             const stats = await fs.stat(path.join(input_path, filename))
             if (stats.isDirectory()) return
 
             const full_hash = await hasha.fromFile(path.join(input_path, filename), {
-              algorithm: 'md5'
+              algorithm: 'md5',
             })
             const hash = full_hash!.substring(0, 9)
-            const asset_path = `_assets/_public/${filename.replace(/([^.]*)$/, `${hash}.$1`)}`
+            const asset_path = `_assets/_public/${filename.replace(
+              /([^.]*)$/,
+              `${hash}.$1`
+            )}`
             renames['/' + filename] = '/' + asset_path
             log(
-              `    ${chalk.gray(input_dir + '/')}${chalk.yellow(filename)} => ${chalk.gray(
-                build_dir + '/'
-              )}${chalk.yellow(asset_path)}`
+              `    ${chalk.gray(input_dir + '/')}${chalk.yellow(
+                filename
+              )} => ${chalk.gray(build_dir + '/')}${chalk.yellow(asset_path)}`
             )
-            await fs.copy(path.join(input_path, filename), path.join(build_path, asset_path))
+            await fs.copy(
+              path.join(input_path, filename),
+              path.join(build_path, asset_path)
+            )
           } catch (e) {
             error(`Error copying ${filename}: ${e}`)
             throw e
@@ -151,7 +163,7 @@ export default class Compiler {
     const zipfile = path.resolve(output_file)
     const options = {
       includes: ['./server.js', './_assets/**'],
-      cwd: build_dir
+      cwd: build_dir,
     }
     await zip(build_dir, zipfile, options)
     const stats2 = await fs.stat(zipfile)
@@ -186,7 +198,7 @@ export default class Compiler {
           target: 'webworker',
           entry: path.resolve(__dirname, 'files/fab-entry.js'),
           optimization: {
-            minimize: true
+            minimize: true,
           },
           resolve: {
             alias: {
@@ -195,15 +207,15 @@ export default class Compiler {
               'production-settings.json': settings_exists
                 ? settings_path
                 : path.resolve(__dirname, 'files/default-production-settings.json'),
-              ...(opts.resolve_aliases || {})
-            }
+              ...(opts.resolve_aliases || {}),
+            },
           },
           resolveLoader: {
             modules: [
               'node_modules',
               'node_modules/@fab/compile/node_modules',
-              ...(opts.resolve_loader_modules || [])
-            ]
+              ...(opts.resolve_loader_modules || []),
+            ],
           },
           module: {
             rules: [
@@ -213,31 +225,36 @@ export default class Compiler {
                 use: {
                   loader: '@sucrase/webpack-loader',
                   options: {
-                    transforms: ['typescript','imports']
-                  }
-                }
+                    transforms: ['typescript', 'imports'],
+                  },
+                },
               },
-              ...(opts.module_loaders || [])
-            ]
+              ...(opts.module_loaders || []),
+            ],
           },
           output: {
             path: build_path,
             filename: 'server.js',
             library: 'server',
-            libraryTarget: 'commonjs2'
+            libraryTarget: 'commonjs2',
+            crossOriginLoading: 'anonymous',
           },
           node: {
             path: true,
             process: true,
-            net: 'empty'
+            net: 'empty',
           },
           plugins: [
             new webpack.DefinePlugin({
-              FAB_REWRITES: JSON.stringify(renames)
-            })
-          ]
+              FAB_REWRITES: JSON.stringify(renames),
+            }),
+            new SriPlugin({
+              hashFuncNames: ['sha256', 'sha384'],
+              enabled: process.env.NODE_ENV === 'production',
+            }),
+          ],
         },
-        (err, stats) => {
+        (err: any, stats: any) => {
           if (err || stats.hasErrors()) {
             console.log('Build failed.')
             console.log(err)
