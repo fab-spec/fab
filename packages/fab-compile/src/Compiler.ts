@@ -4,8 +4,8 @@ import * as util from 'util'
 import * as globby from 'globby'
 import * as path from 'path'
 import * as webpack from 'webpack'
-import * as hasha from 'hasha';
-import * as SriPlugin from 'webpack-subresource-integrity';
+import * as hasha from 'hasha'
+import * as SriPlugin from 'webpack-subresource-integrity'
 
 // deterministic-zip offers no TS typings
 // @ts-ignore
@@ -249,7 +249,6 @@ export default class Compiler {
             }),
             new SriPlugin({
               hashFuncNames: ['sha256', 'sha384'],
-              enabled: process.env.NODE_ENV === 'production',
             }),
           ],
         },
