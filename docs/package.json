@@ -6,8 +6,8 @@
   },
   "devDependencies": {
     "@fab/static": "^0.1.4",
-    "docz": "^0.13.7",
-    "docz-theme-default": "^0.13.7"
+    "docz": "^2.0.0-rc.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   }
 }
-

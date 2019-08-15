@@ -1,6 +1,6 @@
 export default {
   title: 'FAB — Frontend Application Bundles',
-  description: 'Project homepage for the FAB specification & related tooling',
+  description: 'Homepage for the FAB project & specification',
   src: '../',
   files: '{README.md,docs/**/*.mdx,packages/*/README.md}',
   themeConfig: {
