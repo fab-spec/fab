@@ -13,11 +13,11 @@ const SERVER = {
 const RENDERERS = require('./renderers')
 const pathRenderers = {}
 const regexpRenderers = []
-Object.keys(RENDERERS).forEach(path => {
+Object.keys(RENDERERS).forEach((path) => {
   if (path.match(/\:/)) {
     regexpRenderers.push({
       path_matcher: pathToRegexp(path),
-      renderer: RENDERERS[path]
+      renderer: RENDERERS[path],
     })
   } else {
     pathRenderers[path] = RENDERERS[path]
@@ -59,25 +59,37 @@ const _render = async (request, settings) => {
   const { pathname } = parsed_route
   console.log({ pathname })
 
-  const renderer = pathname === '/' ? getRenderer('/index') : getRenderer(pathname)
+  const renderer =
+    pathname === '/' ? getRenderer('/index') : getRenderer(pathname)
   console.log({ renderer })
+
   if (renderer) {
-    const local_req = {
-      url: route,
-      method: request.method,
-      headers: request.headers,
-      connection: {
-        encrypted: req_url.protocol === 'https',
-      },
+    if (typeof renderer === 'string') {
+      return new Response(renderer, {
+        status: 200,
+        statusText: 'OK',
+        headers: {
+          'Content-Type': 'text/html'
+        },
+      })
+    } else if (typeof renderer.render === 'function') {
+      const local_req = {
+        url: route,
+        method: request.method,
+        headers: request.headers,
+        connection: {
+          encrypted: req_url.protocol === 'https',
+        },
+      }
+      const response = new MockExpressResponse({
+        request: local_req,
+      })
+      await renderer.render(local_req, response)
+      return new Response(response._getString(), {
+        status: response.statusCode,
+        headers: response._headers,
+      })
     }
-    const response = new MockExpressResponse({
-      request: local_req,
-    })
-    await renderer.render(local_req, response)
-    return new Response(response._getString(), {
-      status: response.statusCode,
-      headers: response._headers,
-    })
   }
 
   return render404()
@@ -99,9 +111,11 @@ function proxyRequest(request, url) {
 }
 
 function render404() {
-  return new Response(null, {
+  return new Response(RENDERERS['/404'], {
     status: 404,
     statusText: 'Not Found',
-    headers: {},
+    headers: {
+      'Content-Type': 'text/html'
+    },
   })
 }

@@ -11,6 +11,18 @@ export default async function generateIncludes(
   next_dir = '.next'
 ) {
   const pages_dir = path.join(next_dir, 'serverless', 'pages')
+  const html = await globby([`**/*.html`, `!_*`], { cwd: pages_dir })
+  const html_content = html.map((filepath) => {
+    const renderer_name = path.join(
+      path.dirname(filepath),
+      path.basename(filepath, '.html')
+    )
+    return {
+      path: `/${renderer_name}`,
+      content: fs.readFileSync(path.join(pages_dir, filepath), 'utf8'),
+    }
+  })
+
   const files = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
   // console.log(files)
 
@@ -30,7 +42,9 @@ export default async function generateIncludes(
       /return __webpack_require__\(__webpack_require__\.s\s*=\s*"([^"]+)"\)[;\/* \n]*}\)/m
     )
     if (!match) {
-      error(`Webpack compiled output for ${filepath} doesn't match expectations!`)
+      error(
+        `Webpack compiled output for ${filepath} doesn't match expectations!`
+      )
       throw new Error('Unexpected compiled page output')
     }
 
@@ -67,11 +81,17 @@ export default async function generateIncludes(
   const raw_manifest_js = `
   ${webpack_metadata.preamble}
   return {
-    ${Object.keys(webpack_metadata.entries)
-      .map(
-        (path) => `"${toParamPath(path)}": __webpack_require__("${webpack_metadata.entries[path]}")`
-      )
-      .join(',')}
+    ${[
+      ...html_content.map(
+        ({ path, content }) => `"${path}": ${JSON.stringify(content)}`
+      ),
+      ...Object.keys(webpack_metadata.entries).map(
+        (path) =>
+          `"${toParamPath(path)}": __webpack_require__("${
+            webpack_metadata.entries[path]
+          }")`
+      ),
+    ].join(',')}
   }
 })({
   ${Object.keys(webpack_metadata.chunks)
@@ -79,7 +99,9 @@ export default async function generateIncludes(
     .join(',')}
 })`
 
-  const manifest_output_path = path.resolve(path.join(output_dir, 'renderers.js'))
+  const manifest_output_path = path.resolve(
+    path.join(output_dir, 'renderers.js')
+  )
   let manifest
   try {
     manifest = prettier.format(
