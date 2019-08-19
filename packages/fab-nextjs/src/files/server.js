@@ -1,5 +1,6 @@
 import MockExpressResponse from './mock-express-response'
 import { parse } from 'url'
+import pathToRegexp from 'path-to-regexp'
 
 import * as default_server from './default-app-server'
 import * as server_overrides from 'app-server'
@@ -10,6 +11,26 @@ const SERVER = {
 }
 
 const RENDERERS = require('./renderers')
+const pathRenderers = {}
+const regexpRenderers = []
+Object.keys(RENDERERS).forEach(path => {
+  if (path.match(/\:/)) {
+    regexpRenderers.push({
+      path_matcher: pathToRegexp(path),
+      renderer: RENDERERS[path]
+    })
+  } else {
+    pathRenderers[path] = RENDERERS[path]
+  }
+})
+const getRenderer = (request_path) => {
+  const exact_match = pathRenderers[request_path]
+  if (exact_match) return exact_match
+
+  for (const { path_matcher, renderer } of regexpRenderers) {
+    if (path_matcher.exec(request_path)) return renderer
+  }
+}
 
 export const render = async (request, settings) => {
   await SERVER.modifyRequest(settings, request)
@@ -38,7 +59,7 @@ const _render = async (request, settings) => {
   const { pathname } = parsed_route
   console.log({ pathname })
 
-  const renderer = pathname === '/' ? RENDERERS['/index'] : RENDERERS[pathname]
+  const renderer = pathname === '/' ? getRenderer('/index') : getRenderer(pathname)
   console.log({ renderer })
   if (renderer) {
     const local_req = {

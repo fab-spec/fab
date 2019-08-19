@@ -69,7 +69,7 @@ export default async function generateIncludes(
   return {
     ${Object.keys(webpack_metadata.entries)
       .map(
-        (path) => `"${path}": __webpack_require__("${webpack_metadata.entries[path]}")`
+        (path) => `"${toParamPath(path)}": __webpack_require__("${webpack_metadata.entries[path]}")`
       )
       .join(',')}
   }
@@ -96,4 +96,8 @@ export default async function generateIncludes(
 
   await fs.writeFile(manifest_output_path, manifest)
   log(`  Wrote ${chalk.gray(output_dir + '/')}${chalk.yellow('index.js')}`)
+}
+
+const toParamPath = (next_path: string): string => {
+  return next_path.replace(/\[(\w+)\]/g, ':$1')
 }
