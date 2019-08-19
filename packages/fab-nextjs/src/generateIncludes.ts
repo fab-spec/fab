@@ -11,7 +11,7 @@ export default async function generateIncludes(
   next_dir = '.next'
 ) {
   const pages_dir = path.join(next_dir, 'serverless', 'pages')
-  const files = await globby([`**`, `!_*`], { cwd: pages_dir })
+  const files = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
   // console.log(files)
 
   const webpack_metadata: {
@@ -27,7 +27,7 @@ export default async function generateIncludes(
     const text = fs.readFileSync(path.join(pages_dir, filepath), 'utf8')
     // console.log({ filepath })
     const match = text.match(
-      /return __webpack_require__\(__webpack_require__\.s\s*=\s*"([^"]+)"\)}/m
+      /return __webpack_require__\(__webpack_require__\.s\s*=\s*"([^"]+)"\)[;\/* \n]*}\)/m
     )
     if (!match) {
       error(`Webpack compiled output for ${filepath} doesn't match expectations!`)
@@ -40,7 +40,7 @@ export default async function generateIncludes(
       1: entry,
       index,
     }: { 0: string; 1: string; index: number } = match
-    // console.log({ match_str, entry, index })
+    console.log({ match_str, entry, index })
 
     const preamble = text.slice(0, index)
     if (!webpack_metadata.preamble) webpack_metadata.preamble = preamble
@@ -73,7 +73,7 @@ export default async function generateIncludes(
       )
       .join(',')}
   }
-}({
+})({
   ${Object.keys(webpack_metadata.chunks)
     .map((chunk) => `"${chunk}": ${webpack_metadata.chunks[chunk].toString()}`)
     .join(',')}
