@@ -3,15 +3,19 @@ name: Home
 route: /
 ---
 
-***<h3 align="center"><img width="461" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53997145-306ba300-418f-11e9-91d0-b44e6df85d4c.png"/><br/>Build once, run everywhere</h3>***
+***<h3 align="center"><br/><img width="461" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53997145-306ba300-418f-11e9-91d0-b44e6df85d4c.png"/></h3>***
 
 # FAB Specification
 
 💎 FABs are a **compile target for frontend applications**.
 
-They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms.
+They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms. Its goal is to do for frontend applications what Docker has done for infrastructure—a standard for interoperable tooling.
 
 https://github.com/fab-spec/fab
+
+## Overview
+
+<img width="100%" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/63136503-b5e46080-c015-11e9-9f69-c974e11d9528.png"/>
 
 ## Framework adapters
 
