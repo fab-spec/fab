@@ -102,7 +102,9 @@ export default class Builder {
       resolve_aliases: {
         fs: 'memfs',
         path: path.resolve(path.join(int_dir, '_server', 'path-with-posix.js')),
-        'app-server': server ? path.resolve(app_server_path) : './default-app-server.js'
+        'app-server': server ? path.resolve(app_server_path) : './default-app-server.js',
+        jimp: path.join(__dirname, 'files', 'jimp.js'),
+        'react-ssr-prepass': path.join(__dirname, 'files', 'jimp.js')
       }
     })
   }
