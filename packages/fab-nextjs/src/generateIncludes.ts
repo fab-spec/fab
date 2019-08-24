@@ -78,13 +78,15 @@ export default async function generateIncludes(
   })
 
   log(`Writing HTML rewrite manifest`)
-  const raw_manifest_js = `
+  const html_strings = html_content.map(
+    ({ path, content }) => `"${path}": ${JSON.stringify(content)}`
+  )
+  const raw_manifest_js = webpack_metadata.preamble
+    ? `
   ${webpack_metadata.preamble}
   return {
     ${[
-      ...html_content.map(
-        ({ path, content }) => `"${path}": ${JSON.stringify(content)}`
-      ),
+      ...html_strings,
       ...Object.keys(webpack_metadata.entries).map(
         (path) =>
           `"${toParamPath(path)}": __webpack_require__("${
@@ -98,6 +100,9 @@ export default async function generateIncludes(
     .map((chunk) => `"${chunk}": ${webpack_metadata.chunks[chunk].toString()}`)
     .join(',')}
 })`
+    : `module.exports = {
+  ${html_strings.join(',\n')}
+}`
 
   const manifest_output_path = path.resolve(
     path.join(output_dir, 'renderers.js')
