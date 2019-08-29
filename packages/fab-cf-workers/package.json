@@ -8,12 +8,14 @@
   },
   "bugs": "https://github.com/fab-spec/fab/issues",
   "dependencies": {
+    "@cloudflare/wrangler": "^1.2.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@types/shelljs": "^0.8.5",
     "cli-ux": "^5.3.1",
     "shelljs": "^0.8.3",
+    "theros": "^1.0.6",
     "tslib": "^1"
   },
   "devDependencies": {
