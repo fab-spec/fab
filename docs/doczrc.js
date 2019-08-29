@@ -2,6 +2,7 @@ export default {
   title: 'FAB — Frontend Application Bundles',
   description: 'Homepage for the FAB project & specification',
   src: '../',
+  public: '/public',
   files: '{README.md,docs/**/*.mdx,packages/*/README.md}',
   themeConfig: {
     styles: {
@@ -22,6 +23,9 @@ export default {
       code: {
         whiteSpace: 'nowrap'
       },
+      img: {
+        width: '100%'
+      }
     },
     linesToScrollEditor: 999999,
     showPlaygroundEditor: false,

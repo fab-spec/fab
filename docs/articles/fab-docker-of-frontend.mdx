@@ -1,0 +1,170 @@
+---
+name: 'The Docker of Frontend'
+route: '/articles/the-docker-of-frontend'
+menu: Articles
+---
+
+# The Docker of Frontend
+
+![Slide](/public/slides/docker-of-frontend.001.jpeg)
+
+** Intro from Men At Work—Land Down under plays **
+
+Good morning everyone! Thanks for that wonderful musical intro, I’m so glad I could share a piece of my terrible culture with you all.
+
+My talk is titled Frontend Application Bundles which is an open-source project I’ve been working on.
+
+---
+
+First thing first, this is me, I’m @glenmaddern on Twitter and if you wanna get in touch afterwards just DM me and we can come chat.
+
+---
+
+I work on a product called Linc, which is actually the reason FAB exists. I'm not going to have any time to talk about it but if you're interested in this FAB stuff definitely come up and talk to me about it afterwards.
+
+---
+
+You might know a couple of open source projects I helped start, both in the CSS-in-JS space. The first was CSS Modules, which is CSS running through a Webpack loader. I had a bit more of a hand in Styled Components which I'm really happy with because it's been quite an influential way of doing CSS-in-JS, particularly in React. Lots of people are using it, lots of new libraries are adopting ideas from it, so I'm really happy with that outcome.
+
+I don’t work on either of these really any more, both of these projects now have great teams of maintainers working on them, they’re still great, you should check them out.
+
+---
+
+What I’m looking at now is a new project, in a different part of the ecosystem. It's called FAB, for Frontend Application Bundles, which I see as a stepping stone to the kind of “next era” of frameworks and metaframeworks for frontend. I’m gonna spend most of my talk on that, but I thought it’d be good to start with the overall architecture, just to give you a sense of what it is.
+
+---
+
+A FAB is a "container format", you can think of it as basically a ZIP file with a particular structure, because it is. It sits between all the frontend frameworks you want to use on one side and all the places you want to host on the other. And it simplifies that process and also opens up a whole new world of possibilities.
+
+---
+
+The design goal of FABs is to support any frontend project from the smallest index.html file to a client-rendered React app to a full server-rendered framework.
+
+And on the other side, it is to run it anywhere that javascript can run. And now that's not the same anywhere that NodeJS can run, which is traditionally what people think about when they think about when they think about server-side rendering. There's one platform in particular this makes a big difference which I'll come back to.
+
+---
+
+Okay so before before I get into how it all works and demonstrate that it does work, I thought I’d take a step back and talk about why I started to work on this project and why I think right now is the perfect time to introduce it.
+
+---
+
+The best way I know to do this to start with a bit of a history. A history of the tech that's got us to here but also my history, my views on the world.
+
+---
+
+My first job out of university was way back in 2005, and it was writing software for transport modelling. So basically we would simulate traffic in a city and use that to figure out whether you should build a bridge here or put new trains or whatever. 
+
+What I liked about this job was the idea that you could write code that made these machines dance—coming straight out of university, having tech skills and no people skills, this was a great opportunity to just work with machines.
+
+---
+
+And it wasn't until 5 years later, 2010, when I found myself writing code on the web. I remember on my first day that got me to implement a tiny little change in a file and deploy it, and then we looked at the analytics and 2000 people had hit that code in the last 10 minutes or so. 
+
+I’d been working professionally for 5 years and maybe a total of a dozen people had ever used any code that I’d written. And it’s a startling thing, to think how easily you can reach so many people with the Web. It totally shifted how I saw my role in the process.
+
+---
+
+The other thing that happened was that I noticed that I was a backend programmer in a team of backend programmers. There were 9 of us, and we had one frontend developer who was part time. 2010 right there.
+
+Interestingly though, this is only obvious in retrospective because all of us backend programmers called ourselves "full stack" but didn't know HTML or CSS, so... I apologise for being one of those people.
+
+---
+
+So 2014 obviously now we're all doing React, this is what my screen looks like every day. I mean this is a React conference, we're the cool kids, we're the ones wearing sunglasses, everything's great.
+
+---
+
+And that's kinda true but it skips an important step. I went through this step and a lot of people in this room would have gone through this step and the tech went through this step. Which was there was a big period where React wasn't around, and it wasn't clear that there was this new level we could all build upon.
+
+These projects were bringing ideas from different places and trying to see if they would work on the web. Which was what I was doing too—I was a backend programmer trying to copy stuff that worked like desktop UI MVC and try to bring it across and see if it worked.
+
+---
+
+I think tech goes through these phases, where first you copy what works somewhere else and then eventually you find a good adaptation. And I think React "won" the kind of frontend battle whenever it was, 2013, when it started to gain real traction because it was the first proper adaptation of concepts that worked in a different domain but work really well for UI development on the web.
+
+And I think it's that process that I think is relevant to what is happening today.
+
+---
+
+A few years earlier, that shift was already well under way on the backend with Docker. Now, I’m the first to admit that I’m no Docker expert, and so I don't expect you to be either. I stopped doing backend devopsy stuff just before it came out.
+
+---
+
+The best way I know to understand Docker was that previously you would have specific servers for specific tasks. A database server for databases, Ruby for Rails and NodeJS for JavaScript. And I mean it could be as simple as spinning up a blank instance of a server, installing NodeJS, now you have “NodeJS server”. But then that server was custom for that particular task.
+
+---
+
+Docker sat in the middle and said hey, wrap up the code you want to run as well as the execution environment, so take Ruby code and the Ruby runtime. And then on the right hand side the resources you're using, the servers, are actually just blank canvases that can run any task.
+
+It’s not some profoundly original concept, but it's been profoundly successful, something like 20% of all companies using Postgres and over 30% of all companies using Nginx or Redis deploy it through docker, so it’s worth looking into what Docker did that made that possible.
+
+---
+
+And I don’t know if anyone in the room has had Docker explained this way, but when I first came across Docker the first analogy they make is the shipping container. The story goes like this: the most important, transformative, impactful invention of the 20th century is a box. This box. 
+
+The story goes, if you wanted to send something you’d manafactured to the other side of the world, the story goes that the only way you had to do that was to throw it on the back of a truck, it’d get driven to the docks, where each individual item would be thrown on the back of a boat, some would be damaged, other stuff would get stolen, and then at the other end the process would repeat itself.
+
+---
+
+And it took somebody's genius to think "Well, what about if we put it in a box? And then people couldn't get inside it, wouldn't get broken, wouldn't get stolen".
+
+Suddenly, the whole world opens up—you can now manufacture anything anywhere and ship to anyone. The story of the second half of the 20th century, the rise of manufacturing in countries all around the world, the decline of manufacturing in other places, the whole concept of globalisation owes itself to genius of the box.
+
+It’s a good story, but it’s… not really what happened.
+
+---
+
+Because, there were boxes before that particular box, called the Intermodal Container. I mean, it was a really good box, don’t get me wrong, it’s really strong, when you stack a bunch of them they lock together in the corners so they don’t fall over. It’s a good box, but that’s not why it transformed global shipping.
+
+---
+
+It transformed the world because it became a standard. They gave the patents away, which is I guess the equivalent of an open-source piece of software in today’s world. So when you're sending something to the other side of the world, everybody involved along the way was compatible.
+
+So it wasn't the shipping that changed, it was the fact that the truck you put it on was manufactured in Japan, the boat that it sailed on was manufactured in China, the train in India at the other end was compatible with this one standard. This Intermodal container was global.
+
+And it's that concept of standardisation that enabled each individual company to grab a piece of that logistics chain and improve it without having to own the whole process. And it's that which revolutionised global shipping.
+
+---
+
+And so likewise, Docker didn’t invent the concept of containerisation for software. There were virtual machines that were kinda clunky but pretty much did a lot of the same things.
+
+---
+
+There’s a lot written about the technical differences between virtual machines and Docker containers and that’s all interesting, but in my mind, that’s not what made Docker successful.
+
+---
+
+Docker, like React, is native to problem space its inhabiting, it solves the problem well, but it’s only because it’s open and standard that it has the ability to change things.
+
+---
+
+But when Docker hit the scene, it wasn't like React, it wasn’t just yet another library. Before docker, all the interesting work was happening inside platforms.
+
+---
+
+Platforms like AWS and Heroku and vendors like VMWare were all doing really awesome stuff, but it was all entirely closed within their ecosystems. Docker didn’t make those platforms go away it just changed where they were innovating. Now instead of each vendor building the same things to compete with each other, they can all build atop this standard.
+
+---
+
+And so I see our current situation with what I’m calling “Frontend Applications”, that we’re in one of those dark ages just before a step change to what’s possible, even though it's the best it's ever been. So let me talk about why I think that’s the case.
+
+---
+
+I see a massive dichotomy in the frontend landscape right now, which is whether you’re shipping a static site, or something that involves server rendering. There’s a massive difference in the complexity you take on as a developer if you decide to adopt server-rendering, and worse, there’s no gentle path from one to the other—it’s the sort of decision you make at the beginning of the project and then live with throughout its lifespan.
+
+---
+
+And I think that has to do with the end result. I mean, as I said at the beginning, projects exist on the web in order to get used by humans, and so the final step of deploying and hosting the code is a really strong constraint on what developer choices you feel comfortable making.
+
+---
+
+And I think the problem comes when you compare the ease of use with a static server like Netlify is way better than any of the dynamic hosts. Especially once you start to get off into the weeds doing fairly custom server-side stuff and you have to run your own servers, that’s fine lots of people manage that fine but it’s a far cry from the ease of just throwing things on S3.
+
+---
+
+And if you go right down the line of doing whatever works best for backend code I feel like you end up here, with something way heavier than you need. Running an index.html file on infrastructure that was designed for Postgres.
+
+It feels like the "Copy" phase of software development. Take what works on the backend, and just use it. But I think we can do better.
+
+---
+
