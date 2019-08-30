@@ -19,7 +19,7 @@ $ npm install -g @fab/cf-workers
 $ fab-cf-workers COMMAND
 running command...
 $ fab-cf-workers (-v|--version|version)
-@fab/cf-workers/0.0.1 darwin-x64 node-v12.6.0
+@fab/cf-workers/0.0.2 darwin-x64 node-v12.6.0
 $ fab-cf-workers --help [COMMAND]
 USAGE
   $ fab-cf-workers COMMAND
@@ -54,7 +54,7 @@ EXAMPLE
   $ fab-cf-workers deploy fab.zip
 ```
 
-_See code: [src/commands/deploy.ts](https://github.com/fab-spec/fab/blob/v0.0.1/src/commands/deploy.ts)_
+_See code: [src/commands/deploy.ts](https://github.com/fab-spec/fab/blob/v0.0.2/src/commands/deploy.ts)_
 
 ## `fab-cf-workers help [COMMAND]`
 
