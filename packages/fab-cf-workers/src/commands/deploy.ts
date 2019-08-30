@@ -126,18 +126,20 @@ route = ""
 
     this.log(chalk.yellow(`Creating bucket and uploading _assets to S3`))
 
+    const bin_path = shell.exec(`npm bin`).trim()
+
     shell.exec(
-      `npx theros create --bucket ${s3_bucket} --key  ${aws_key} --secret ${aws_secret}`
+      `${bin_path}/theros create --bucket ${s3_bucket} --key  ${aws_key} --secret ${aws_secret}`
     )
     shell.exec(
-      `cd .fab/deploy/s3 && npx theros deploy --bucket ${s3_bucket} --key  ${aws_key} --secret ${aws_secret}`
+      `cd .fab/deploy/s3 && ${bin_path}/theros deploy --bucket ${s3_bucket} --key  ${aws_key} --secret ${aws_secret}`
     )
 
     this.log(
       chalk.yellow(`Deploying server to Cloudflare Workers using 🤠 Wrangler`)
     )
 
-    shell.exec(`cd .fab/deploy/cf && npx @cloudflare/wrangler publish`)
+    shell.exec(`cd .fab/deploy/cf && ${bin_path}/wrangler publish`)
   }
 
   private async getGlobalConfig(
