@@ -139,7 +139,9 @@ route = ""
       chalk.yellow(`Deploying server to Cloudflare Workers using 🤠 Wrangler`)
     )
 
-    shell.exec(`cd .fab/deploy/cf && ${bin_path}/wrangler publish`)
+    shell.exec(
+      `cd .fab/deploy/cf && CF_API_KEY="${cf_api_key}" CF_EMAIL="${cf_email}" ${bin_path}/wrangler publish`
+    )
   }
 
   private async getGlobalConfig(
