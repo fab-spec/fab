@@ -1,7 +1,7 @@
 {
   "name": "@fab/cf-workers",
   "description": "FAB releaser for Cloudflare Workers",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-cf-workers": "./bin/run"
