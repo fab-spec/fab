@@ -1,7 +1,7 @@
 {
   "name": "@fab/cf-workers",
   "description": "FAB releaser for Cloudflare Workers",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Glen Maddern @geelen",
   "bin": {
     "fab-cf-workers": "./bin/run"
@@ -12,8 +12,10 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@types/decompress": "^4.2.3",
     "@types/shelljs": "^0.8.5",
     "cli-ux": "^5.3.1",
+    "decompress": "^4.2.0",
     "guid-typescript": "^1.0.9",
     "shelljs": "^0.8.3",
     "theros": "^1.0.6",
