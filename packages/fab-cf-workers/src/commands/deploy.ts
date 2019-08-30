@@ -75,7 +75,7 @@ export default class Deploy extends Command {
     )
     const global_config = await this.getGlobalConfig(global_config_path, flags)
     if (this.prompted_keys.size) {
-      this.writeConfig(global_config_path, global_config)
+      await this.writeGlobalConfig(global_config_path, global_config)
     }
     const {
       aws_key,
@@ -90,6 +90,7 @@ export default class Deploy extends Command {
       local_config_path,
       flags
     )
+    await this.writeLocalConfig(local_config_path, { name, s3_bucket })
 
     info(
       `Deploying project as '${name}'.${
@@ -126,17 +127,17 @@ route = ""
     this.log(chalk.yellow(`Creating bucket and uploading _assets to S3`))
 
     shell.exec(
-      `theros create --bucket ${s3_bucket} --key  ${aws_key} --secret ${aws_secret}`
+      `npx theros create --bucket ${s3_bucket} --key  ${aws_key} --secret ${aws_secret}`
     )
     shell.exec(
-      `cd .fab/deploy/s3 && theros deploy --bucket ${s3_bucket} --key  ${aws_key} --secret ${aws_secret}`
+      `cd .fab/deploy/s3 && npx theros deploy --bucket ${s3_bucket} --key  ${aws_key} --secret ${aws_secret}`
     )
 
     this.log(
       chalk.yellow(`Deploying server to Cloudflare Workers using 🤠 Wrangler`)
     )
 
-    shell.exec(`cd .fab/deploy/cf && wrangler publish`)
+    shell.exec(`cd .fab/deploy/cf && npx @cloudflare/wrangler publish`)
   }
 
   private async getGlobalConfig(
@@ -229,7 +230,7 @@ route = ""
     })
   }
 
-  private async writeConfig(
+  private async writeGlobalConfig(
     config_path: string,
     config: GlobalConfig
   ): Promise<void> {
@@ -252,5 +253,22 @@ route = ""
 
     await fs.ensureFile(config_path)
     await fs.writeFile(config_path, JSON.stringify(existing_config, null, 2))
+  }
+
+  private async writeLocalConfig(
+    config_path: string,
+    config: LocalConfig
+  ): Promise<void> {
+    const config_exists = await fs.pathExists(config_path)
+    const existing_config =
+      (config_exists && JSON.parse(await fs.readFile(config_path, 'utf8'))) ||
+      {}
+    const merged_config = {
+      ...existing_config,
+      ...config,
+    }
+
+    await fs.ensureFile(config_path)
+    await fs.writeFile(config_path, JSON.stringify(merged_config, null, 2))
   }
 }
