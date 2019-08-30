@@ -21,7 +21,7 @@ class FabServe extends Command {
     }),
     key: flags.string({
       description: 'Key for the SSL Certificate',
-    }),
+    })
   }
 
   static args = [{ name: 'file' }]
