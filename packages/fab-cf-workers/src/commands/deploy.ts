@@ -5,7 +5,8 @@ import * as path from 'path'
 import cli from 'cli-ux'
 import * as fs from 'fs-extra'
 import { homedir } from 'os'
-import { info, log, error, short_guid } from '../utils'
+import { info, error, short_guid, log } from '../utils'
+import * as decompress from 'decompress'
 
 interface GlobalConfig {
   aws_key: string | undefined | null
@@ -98,10 +99,13 @@ export default class Deploy extends Command {
       }`
     )
 
+    shell.config.fatal = true
+    log(`Extracting ${file} to .fab/deploy`)
     shell.exec('rm -rf .fab/deploy')
+    await decompress(file, '.fab/deploy')
     shell.exec('mkdir -p .fab/deploy/s3')
     shell.exec('mkdir -p .fab/deploy/cf')
-    shell.exec('cp -r .fab/build/_assets .fab/deploy/s3')
+    shell.exec('mv .fab/deploy/_assets .fab/deploy/s3')
     shell.exec(
       `cp ${path.resolve(
         __dirname,
@@ -122,9 +126,9 @@ route = ""
       '.fab/deploy/cf/s3-bucket-name.js',
       `export default "${s3_bucket}"`
     )
-    shell.exec(`cp .fab/build/server.js .fab/deploy/cf`)
+    shell.exec(`mv .fab/deploy/server.js .fab/deploy/cf`)
 
-    this.log(chalk.yellow(`Creating bucket and uploading _assets to S3`))
+    info(`Creating bucket and uploading _assets to S3`)
 
     const bin_path = shell.exec(`npm bin`).trim()
 
@@ -135,7 +139,7 @@ route = ""
       `cd .fab/deploy/s3 && ${bin_path}/theros deploy --bucket ${s3_bucket} --key  ${aws_key} --secret ${aws_secret}`
     )
 
-    this.log(
+    info(
       chalk.yellow(`Deploying server to Cloudflare Workers using 🤠 Wrangler`)
     )
 
