@@ -124,13 +124,13 @@ route = ""
     )
     await fs.writeFile(
       '.fab/deploy/cf/s3-bucket-name.js',
-      `export default "${s3_bucket}"`
+      `module.exports = "${s3_bucket}"`
     )
     shell.exec(`mv .fab/deploy/server.js .fab/deploy/cf`)
 
     info(`Creating bucket and uploading _assets to S3`)
 
-    const bin_path = shell.exec(`npm bin`).trim()
+    const bin_path = shell.exec(`npm bin`, {silent:true}).trim()
 
     shell.exec(
       `${bin_path}/theros create --bucket ${s3_bucket} --key  ${aws_key} --secret ${aws_secret}`
