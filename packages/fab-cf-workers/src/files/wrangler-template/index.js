@@ -1,6 +1,6 @@
 const fab = require('./server.js')
 const s3_bucket_name = require('./s3-bucket-name')
-const asset_base_url = `https://${s3_bucket_name}.s3.amazonaws.com`
+const asset_base_url = `https://s3.amazonaws.com/${s3_bucket_name}`
 
 const handleRequest = async (request) => {
   const url = new URL(request.url)
