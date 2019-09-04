@@ -4,7 +4,7 @@ route: "/packages/fab-nextjs"
 menu: Packages
 ---
 
-# 💎 @fab/static
+# 💎 @fab/nextjs
 
 Builds a NextJS9+ app into a FAB.
 
@@ -22,8 +22,8 @@ In version 9, [path-based Dynamic Routing](https://github.com/zeit/next.js#dynam
 Install `@fab/nextjs` as a development dependency:
 
 ```
-yarn add --dev @fab/static
-npm install --dev @fab/static
+yarn add --dev @fab/nextjs
+npm install --dev @fab/nextjs
 ```
 
 Ensure you're on the `serverless` build target, and we recommend using an `assetPrefix` of `/_assets`:
@@ -49,7 +49,7 @@ Add scripts to your `package.json`:
   }
 ```
 
-We've added two scripts here, `fab:compile` which runs the `fab-static` builder, and `build:fab` that builds the project first. Most of the time, and especially you're using a FAB-enabled platform like [linc.sh](https://linc.sh), you'll mostly run `build:fab`, but having a separate `fab:compile` step can be handy as you set things up.
+We've added two scripts here, `fab:compile` which runs the `fab-nextjs` builder, and `build:fab` that builds the project first. Most of the time, and especially you're using a FAB-enabled platform like [linc.sh](https://linc.sh), you'll mostly run `build:fab`, but having a separate `fab:compile` step can be handy as you set things up.
 
 You can test it out by running: 
 
@@ -84,7 +84,7 @@ Note: this process will add one file `fab.zip` and one directory `.fab` into you
 
 ## Usage
 
-`@fab/static` takes the following options:
+`@fab/nextjs` takes the following options:
 
 ```
 USAGE
