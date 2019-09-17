@@ -26,7 +26,7 @@ yarn add --dev @fab/nextjs
 npm install --dev @fab/nextjs
 ```
 
-Ensure you're on the `serverless` build target, and we recommend using an `assetPrefix` of `/_assets`:
+In your `next.config.js` file, ensure that you're on the `serverless` build target, and we recommend using an `assetPrefix` of `/_assets`:
 
 ```js
 const isProd = process.env.NODE_ENV === 'production'
