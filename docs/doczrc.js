@@ -3,25 +3,6 @@ export default {
   description: 'Homepage for the FAB project & specification',
   files: ['../packages/*/README.md', './**/*.mdx', '../README.md'],
   themeConfig: {
-    styles: {
-      body: {
-        fontVariantLigatures: 'common-ligatures',
-        background: '#fefefe',
-      },
-      h1: {
-        fontFamily: 'Source Sans Pro',
-        fontSize: [50, 55, 60],
-      },
-      h2: {
-        fontFamily: 'Source Sans Pro',
-      },
-      h3: {
-        fontWeight: 'bold',
-      },
-      code: {
-        whiteSpace: 'nowrap',
-      },
-    },
     linesToScrollEditor: 999999,
     showPlaygroundEditor: false,
     codeSandbox: false,
