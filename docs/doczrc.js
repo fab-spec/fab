@@ -1,13 +1,13 @@
 export default {
   title: 'FAB — Frontend Application Bundles',
   description: 'Homepage for the FAB project & specification',
-  src: '../',
-  files: '{README.md,docs/**/*.mdx,packages/*/README.md}',
+  // src: '../',
+  // files: '{README.md,docs/**/*.mdx,packages/*/README.md}',
   themeConfig: {
     styles: {
       body: {
         fontVariantLigatures: 'common-ligatures',
-        background: '#fefefe'
+        background: '#fefefe',
       },
       h1: {
         fontFamily: 'Source Sans Pro',
@@ -17,21 +17,22 @@ export default {
         fontFamily: 'Source Sans Pro',
       },
       h3: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
       },
       code: {
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
       },
     },
     linesToScrollEditor: 999999,
     showPlaygroundEditor: false,
     codeSandbox: false,
     logo: {
-      src: 'https://user-images.githubusercontent.com/23264/53997173-49745400-418f-11e9-87d0-60a9da6449e6.png',
-      width: '100%'
-    }
+      src:
+        'https://user-images.githubusercontent.com/23264/53997173-49745400-418f-11e9-87d0-60a9da6449e6.png',
+      width: '100%',
+    },
   },
   htmlContext: {
     favicon: '/public/favicon-32x32.png',
-  }
+  },
 }
