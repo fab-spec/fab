@@ -1,14 +1,10 @@
+import global from 'gatsby-theme-docz/src/theme/global'
+
 export default {
+  ...global,
   body: {
-    margin: 0,
-    padding: 0,
+    ...global.body,
     fontVariantLigatures: 'common-ligatures',
     background: '#fefefe',
-  },
-  '.icon-link': {
-    display: 'none',
-  },
-  '.with-overlay': {
-    overflow: 'hidden',
   },
 }
