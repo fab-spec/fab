@@ -2,7 +2,7 @@
 import { jsx, Flex } from 'theme-ui'
 import { Link } from 'docz'
 
-import * as styles from './styles'
+import * as styles from 'gatsby-theme-docz/src/components/Logo/styles'
 
 export const Logo = () => {
   return (
