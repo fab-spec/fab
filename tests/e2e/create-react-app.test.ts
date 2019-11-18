@@ -6,7 +6,9 @@ const cmd = (command: string, ...opts: any) => {
   return execa.command(command, ...opts)
 }
 const shell = async (command: string, ...opts: any) => {
-  console.log((await cmd(command)).stdout)
+  const promise = cmd(command, ...opts)
+  promise.stdout.pipe(process.stdout)
+  await promise
 }
 
 it('should allow creation of a tmp dir', async () => {
