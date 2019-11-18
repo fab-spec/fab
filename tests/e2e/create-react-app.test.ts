@@ -2,14 +2,14 @@ import * as execa from 'execa'
 import * as tmp from 'tmp-promise'
 
 const cmd = (command: string, ...opts: any) => {
-  process.stdout.write(`$ ${command}`)
+  process.stdout.write(`$ ${command}\n`)
   return execa.command(command, ...opts)
 }
 const shell = async (command: string, ...opts: any) => {
   const promise = cmd(command, ...opts)
   promise.stdout.pipe(process.stdout)
   promise.stderr.pipe(process.stderr)
-  return await promise
+  return promise
 }
 
 it('should allow creation of a tmp dir', async () => {
@@ -29,8 +29,7 @@ it('should allow creation of a new CRA project', async () => {
   const { stdout: files } = await cmd(`ls -l ${cwd}`)
   expect(files).toMatch('package.json')
 
-  await shell(`echo SKIP_PREFLIGHT_CHECK=true > .env`, {cwd})
-  await shell(`yarn build`, {cwd})
+  await shell(`SKIP_PREFLIGHT_CHECK=true yarn build`, {cwd})
   await shell(`fab-static build`, {cwd})
 
   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
