@@ -7,5 +7,5 @@ it('should pass a noop', () => {
 it('should have our packages locally', async () => {
   const { stdout: bins } = await execa.command(`ls -l node_modules/.bin`)
   console.log({bins})
-  expect(bins).toMatch(/fab-static/)
+  expect(bins).toMatch(/definitely-not-there/)
 })
