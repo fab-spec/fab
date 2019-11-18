@@ -2,19 +2,18 @@ import * as execa from 'execa'
 import * as tmp from 'tmp-promise'
 
 const cmd = (command: string, ...opts: any) => {
-  console.log(command)
+  process.stdout.write(`$ ${command}`)
   return execa.command(command, ...opts)
 }
 const shell = async (command: string, ...opts: any) => {
   const promise = cmd(command, ...opts)
   promise.stdout.pipe(process.stdout)
   promise.stderr.pipe(process.stderr)
-  await promise
+  return await promise
 }
 
 it('should allow creation of a tmp dir', async () => {
   const dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
-  console.log({ dir })
   await shell(`ls -l ${dir.path}`)
   const { stdout } = await cmd(`pwd`, { cwd: dir.path })
   console.log({ stdout })
