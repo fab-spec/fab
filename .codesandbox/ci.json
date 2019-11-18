@@ -1,4 +1,5 @@
 {
+  "buildCommand": false,
   "packages": ["packages/fab-cli"],
   "sandboxes": ["node", "vanilla"]
 }
