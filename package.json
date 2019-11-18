@@ -9,6 +9,7 @@
     "execa": "^3.3.0",
     "jest": "^24.9.0",
     "lerna": "^3.4.3",
+    "tmp-promise": "^2.0.2",
     "ts-jest": "^24.1.0",
     "typescript": "^3.7.2"
   },
