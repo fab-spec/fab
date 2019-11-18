@@ -6,5 +6,6 @@ module.exports = {
     'ts-jest': {
       tsConfig: 'tests/tsconfig.json'
     }
-  }
+  },
+  setupFilesAfterEnv: ['./tests/jest.setup.js']
 };
