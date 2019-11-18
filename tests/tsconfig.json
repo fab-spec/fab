@@ -5,7 +5,8 @@
     "module": "commonjs",
     "strict": true,
     "target": "es2017",
-    "composite": true
+    "composite": true,
+    "types": ["node", "mocha"]
   },
   "include": [
     "**/*"
