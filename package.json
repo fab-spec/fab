@@ -5,6 +5,14 @@
     "packages/*"
   ],
   "devDependencies": {
-    "lerna": "^3.4.3"
+    "@types/jest": "^24.0.23",
+    "execa": "^3.3.0",
+    "jest": "^24.9.0",
+    "lerna": "^3.4.3",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.7.2"
+  },
+  "scripts": {
+    "test": "jest"
   }
 }
