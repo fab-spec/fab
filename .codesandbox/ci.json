@@ -1,5 +1,5 @@
 {
   "buildCommand": false,
   "packages": ["packages/fab-cli"],
-  "sandboxes": ["node", "vanilla"]
+  "sandboxes": ["node", "vanilla", "serverless-rain-g2orc"]
 }
