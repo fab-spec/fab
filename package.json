@@ -5,6 +5,7 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@types/mocha": "^5.2.7",
     "execa": "^3.3.0",
     "fs-extra": "^8.1.0",
     "jest": "^24.9.0",
