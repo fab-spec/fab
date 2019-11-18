@@ -8,6 +8,7 @@ const cmd = (command: string, ...opts: any) => {
 const shell = async (command: string, ...opts: any) => {
   const promise = cmd(command, ...opts)
   promise.stdout.pipe(process.stdout)
+  promise.stderr.pipe(process.stderr)
   await promise
 }
 
@@ -24,8 +25,8 @@ it('should allow creation of a tmp dir', async () => {
 it('should allow creation of a new CRA project', async () => {
   const dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
   await shell(`ls -l ${dir.path}`)
-  await shell(`yarn create react-app .`, { cwd: dir.path })
-  const { stdout: files } = await cmd(`ls -l ${dir.path}`)
+  await shell(`yarn create react-app cra-test`, { cwd: dir.path })
+  const { stdout: files } = await cmd(`ls -l ${dir.path}/cra-test`)
   console.log(files)
   expect(files).toMatch(/package\.json/)
 })
