@@ -1,4 +1,4 @@
 {
   "packages": ["packages/fab-cli"],
-  "sandboxes": ["node"]
+  "sandboxes": ["node", "vanilla"]
 }
