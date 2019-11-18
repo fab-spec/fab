@@ -5,7 +5,6 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@types/jest": "^24.0.23",
     "execa": "^3.3.0",
     "fs-extra": "^8.1.0",
     "jest": "^24.9.0",
