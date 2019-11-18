@@ -1,5 +1,6 @@
 import * as execa from 'execa'
 import * as tmp from 'tmp-promise'
+import * as fs from 'fs-extra'
 
 const cmd = (command: string, ...opts: any) => {
   process.stdout.write(`$ ${command}\n`)
@@ -29,7 +30,9 @@ it('should allow creation of a new CRA project', async () => {
   const { stdout: files } = await cmd(`ls -l ${cwd}`)
   expect(files).toMatch('package.json')
 
-  await shell(`SKIP_PREFLIGHT_CHECK=true yarn build`, {cwd})
+  await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
+  await shell(`cat .env`, {cwd})
+  await shell(`yarn build`, {cwd})
   await shell(`fab-static build`, {cwd})
 
   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
