@@ -20,7 +20,6 @@ jobs:
     - name: yarn install & build
       run: |
         yarn
-        yarn build --if-present
         yarn lerna run prepack --stream
       env:
         CI: true
