@@ -33,7 +33,8 @@ it('should allow creation of a new CRA project', async () => {
   expect(files).toMatch('package.json')
 
   await shell(`yarn build`, { cwd })
-  await shell(`fab-static build`, { cwd })
+  await shell(`yarn link @fab/static`, { cwd })
+  await shell(`yarn fab-static build`, { cwd })
 
   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
   expect(files_after_fab_build).toMatch('fab.zip')
