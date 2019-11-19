@@ -1,4 +1,4 @@
-name: Node CI
+name: FAB CI
 
 on: [push]
 
@@ -22,6 +22,7 @@ jobs:
         yarn
         npm run build --if-present
         yarn lerna run prepack
+        yarn lerna exec -- yarn link
       env:
         CI: true
     - name: Run tests
