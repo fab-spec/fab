@@ -8,6 +8,7 @@
     "lerna": "^3.4.3"
   },
   "scripts": {
+    "link-all": "lerna exec -- npm run link",
     "build": "lerna run prepack --stream"
   }
 }

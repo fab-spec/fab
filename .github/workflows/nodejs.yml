@@ -21,6 +21,7 @@ jobs:
       run: |
         yarn
         yarn build
+        yarn link-all
       env:
         CI: true
     - name: Run tests
