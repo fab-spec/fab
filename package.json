@@ -5,16 +5,6 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@types/mocha": "^5.2.7",
-    "execa": "^3.3.0",
-    "fs-extra": "^8.1.0",
-    "jest": "^24.9.0",
-    "lerna": "^3.4.3",
-    "tmp-promise": "^2.0.2",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.7.2"
-  },
-  "scripts": {
-    "test": "jest"
+    "lerna": "^3.4.3"
   }
 }

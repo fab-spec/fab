@@ -26,6 +26,7 @@ jobs:
         CI: true
     - name: Run tests
       run: |
+        cd tests
         yarn test
       env:
         CI: true
