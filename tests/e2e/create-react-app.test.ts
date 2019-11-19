@@ -23,7 +23,9 @@ it('should allow creation of a tmp dir', async () => {
 })
 
 it('should allow creation of a new CRA project', async () => {
-  const dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
+  const dir = await tmp.dir({
+    dir: process.env.GITHUB_WORKSPACE ? process.env.HOME : undefined,
+  })
   await shell(`ls -l ${dir.path}`)
   await shell(`yarn create react-app cra-test`, { cwd: dir.path })
   const cwd = `${dir.path}/cra-test`
