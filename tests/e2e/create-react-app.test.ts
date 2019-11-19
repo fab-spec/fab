@@ -32,8 +32,6 @@ it('should allow creation of a new CRA project', async () => {
   const { stdout: files } = await cmd(`ls -l ${cwd}`)
   expect(files).toMatch('package.json')
 
-  await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
-  await shell(`cat .env`, { cwd })
   await shell(`yarn build`, { cwd })
   await shell(`fab-static build`, { cwd })
 
