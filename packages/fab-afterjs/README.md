@@ -25,7 +25,7 @@ $ npm install -g @fab/afterjs
 $ fab-afterjs COMMAND
 running command...
 $ fab-afterjs (-v|--version|version)
-@fab/afterjs/0.1.3 darwin-x64 node-v11.1.0
+@fab/afterjs/0.1.3 darwin-x64 node-v12.6.0
 $ fab-afterjs --help [COMMAND]
 USAGE
   $ fab-afterjs COMMAND
@@ -75,7 +75,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.3/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
 ## `fab-afterjs setup [DIRECTORY]`
 
