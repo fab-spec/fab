@@ -1,5 +1,4 @@
 import * as execa from 'execa'
-import * as expect from 'expect'
 
 it('should pass a noop', () => {
   expect(1 + 1).toBe(2)

@@ -339,10 +339,12 @@
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
 
-"@types/mocha@^5.2.7":
-  version "5.2.7"
-  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.7.tgz#315d570ccb56c53452ff8638738df60726d5b6ea"
-  integrity sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
+"@types/jest@^24.0.23":
+  version "24.0.23"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.23.tgz#046f8e2ade026fe831623e361a36b6fb9a4463e4"
+  integrity sha512-L7MBvwfNpe7yVPTXLn32df/EK+AMBFAFvZrRuArGs7npEWnlziUXK+5GMIUTI4NIuwok3XibsjXCs5HxviYXjg==
+  dependencies:
+    jest-diff "^24.3.0"
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
@@ -1742,7 +1744,7 @@ jest-config@^24.9.0:
     pretty-format "^24.9.0"
     realpath-native "^1.1.0"
 
-jest-diff@^24.9.0:
+jest-diff@^24.3.0, jest-diff@^24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-24.9.0.tgz#931b7d0d5778a1baf7452cb816e325e3724055da"
   integrity sha512-qMfrTs8AdJE2iqrTp0hzh7kTd2PQWrsFyj9tORoKmu32xjPjeE4NyjVRDz8ybYwqS2ik8N4hsIpiVTyFeo2lBQ==

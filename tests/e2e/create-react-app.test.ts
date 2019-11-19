@@ -1,7 +1,6 @@
 import * as execa from 'execa'
 import * as tmp from 'tmp-promise'
 import * as fs from 'fs-extra'
-import * as expect from 'expect'
 
 const cmd = (command: string, ...opts: any) => {
   process.stdout.write(`$ ${command}\n`)
