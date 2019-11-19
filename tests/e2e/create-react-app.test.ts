@@ -2,6 +2,7 @@ import * as execa from 'execa'
 import * as tmp from 'tmp-promise'
 import * as fs from 'fs-extra'
 import * as expect from 'expect'
+import * as path from 'path'
 
 const cmd = (command: string, ...opts: any) => {
   process.stdout.write(`$ ${command}\n`)
@@ -26,6 +27,9 @@ it('should allow creation of a new CRA project', async () => {
   const dir = await tmp.dir({
     dir: process.env.GITHUB_WORKSPACE ? process.env.HOME : undefined,
   })
+  const root = process.env.GITHUB_WORKSPACE || path.resolve('.')
+  console.log({root})
+
   await shell(`ls -l ${dir.path}`)
   await shell(`yarn create react-app cra-test`, { cwd: dir.path })
   const cwd = `${dir.path}/cra-test`
@@ -33,7 +37,7 @@ it('should allow creation of a new CRA project', async () => {
   expect(files).toMatch('package.json')
 
   await shell(`yarn build`, { cwd })
-  await shell(`yarn link @fab/static`, { cwd })
+  await shell(`yarn add link:${root}/packages/fab-static`, { cwd })
   await shell(`yarn run fab-static build`, { cwd })
 
   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
