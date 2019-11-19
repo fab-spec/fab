@@ -1,4 +1,4 @@
 {
   "packages": ["packages/*"],
-  "sandboxes": ["node", "vanilla", "serverless-rain-g2orc"]
+  "sandboxes": ["node", "vanilla"]
 }
