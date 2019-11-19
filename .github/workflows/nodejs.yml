@@ -28,6 +28,6 @@ jobs:
       run: |
         cd tests
         yarn
-        yarn test hello-world
+        yarn test
       env:
         CI: true
