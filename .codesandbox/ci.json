@@ -4,5 +4,5 @@
     "packages/fab-static",
     "packages/fab-serve"
   ],
-  "sandboxes": ["dazzling-cray-t0ru6", "pensive-wildflower-bnipe"]
+  "sandboxes": ["dazzling-cray-t0ru6"]
 }
