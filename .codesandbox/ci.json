@@ -1,5 +1,6 @@
 {
   "packages": [
+    "packages/fab-compile",
     "packages/fab-static",
     "packages/fab-serve"
   ],
