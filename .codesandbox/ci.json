@@ -1,4 +1,4 @@
 {
   "packages": ["packages/*"],
-  "sandboxes": ["node", "vanilla"]
+  "sandboxes": ["node", "vanilla", "dazzling-cray-t0ru6"]
 }
