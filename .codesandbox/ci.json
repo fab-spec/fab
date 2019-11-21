@@ -1,4 +1,4 @@
 {
   "packages": ["packages/*"],
-  "sandboxes": ["node", "vanilla", "dazzling-cray-t0ru6"]
+  "sandboxes": ["node", "vanilla", "pensive-wildflower-bnipe"]
 }
