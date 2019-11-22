@@ -1,0 +1,33 @@
+// fab.config.json5
+{
+  build: {
+    "render-html": { //shorthand for @fab/render-html
+      dir: "build",
+      include: "**/*.html",
+      exclude: "_server/**/*" // Atm we have a warning that _server exists. Does that make sense here?
+    },
+    "rewrite-assets": {
+      dir: "build",
+      exclude: [
+        "**/*.html", // what if @fab/render-html isn't there? Should this be all hidden underneath a preset?
+        "_server/**/*"
+      ]
+    }
+  },
+  render: {
+    "render-html": {
+      "match-routes": ["", ".html", "/index.html"]
+    },
+    "rewrite-assets": {
+      "immutable": [
+        "/static/*"
+      ]
+    }
+  },
+  settings: {
+    production: './production-settings.json',
+    staging: {
+      API_URL: 'https://staging.lol.com'
+    }
+  }
+}

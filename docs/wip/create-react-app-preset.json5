@@ -1,0 +1,8 @@
+// This feels pretty good tbh. But what if there's more than one preset? :/
+{
+  presets: {
+    "@fab/preset-cra": {
+      dir: "build"
+    }
+  }
+}
