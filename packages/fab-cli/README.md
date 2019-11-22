@@ -29,28 +29,27 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`fab hello [FILE]`](#fab-hello-file)
+* [`fab build`](#fab-build)
 * [`fab help [COMMAND]`](#fab-help-command)
 
-## `fab hello [FILE]`
+## `fab build`
 
 describe the command here
 
 ```
 USAGE
-  $ fab hello [FILE]
+  $ fab build
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -c, --config=config  [default: fab.config.json5] Path to config file
+  -h, --help           show CLI help
 
 EXAMPLE
   $ fab hello
   hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/fab-spec/fab/blob/v0.0.1/src/commands/hello.ts)_
+_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.1/src/commands/build.ts)_
 
 ## `fab help [COMMAND]`
 

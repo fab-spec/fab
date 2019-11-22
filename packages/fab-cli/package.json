@@ -11,6 +11,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@types/jju": "^1.4.1",
     "chalk": "^3.0.0",
     "fs-extra": "^8.1.0",
     "jju": "^1.4.0",
