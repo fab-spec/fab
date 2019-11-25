@@ -1,3 +1,9 @@
+---
+name: "@fab/cli"
+route: "/packages/fab-cli"
+menu: Packages
+---
+
 @fab/cli
 ========
 
