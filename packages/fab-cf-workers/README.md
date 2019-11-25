@@ -1,3 +1,9 @@
+---
+name: "@fab/cf-workers"
+route: "/packages/fab-cf-workers"
+menu: Packages
+---
+
 @fab/cf-workers
 ===============
 
