@@ -5,9 +5,9 @@ route: /
 
 ***<h3 align="center"><br/><img width="461" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53997145-306ba300-418f-11e9-91d0-b44e6df85d4c.png"/></h3>***
 
-Join discussion on Discord [![Discord link](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
+[![Join discussion on Discord](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
 
-See current version of the docs at https://fab-docs--production--next.branch.linc-preview.sh/
+See current version of the docs at https://fab-docs--production--next.branch.linc-preview.sh/, or [join the discussion on Discord](https://discord.gg/Qvj3pJY)
 
 # FAB Specification
 
