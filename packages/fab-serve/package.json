@@ -51,8 +51,7 @@
   },
   "repository": "fab-spec/fab",
   "scripts": {
-    "prepack": "rm -rf lib && tsc -d",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+    "prepack": "rm -rf lib && tsc -d"
   },
   "types": "lib/index.d.ts"
 }
