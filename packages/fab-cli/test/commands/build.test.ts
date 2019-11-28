@@ -1,5 +1,4 @@
 import {expect, test} from '@oclif/test'
-import { build } from '@fab/rewire-assets'
 
 describe('build', () => {
   test

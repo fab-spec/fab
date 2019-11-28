@@ -6,6 +6,7 @@ export default class Builder {
       console.log({ plugin_name, plugin_args })
       const plugin = require(plugin_name)
       console.log({plugin})
+      plugin.build()
     }
   }
 }
