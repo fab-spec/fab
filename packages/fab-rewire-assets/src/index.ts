@@ -1,5 +1,5 @@
 export const build = () => {
-  console.log("I am build time. And I just changed.")
+  console.log("I am build time.")
 }
 
 export const render = () => {
