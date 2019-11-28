@@ -9,6 +9,7 @@
   },
   "scripts": {
     "link-all": "lerna exec -- npm link",
-    "build": "lerna run prepack"
+    "build": "lerna run prepack",
+    "test": "lerna run test"
   }
 }

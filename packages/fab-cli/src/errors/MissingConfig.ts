@@ -22,7 +22,7 @@ Either use the --config argument to point to a different file or run the followi
       log.error(`
 Config file '${file_path}' not found.
 Looked for file at '${path.resolve(file_path)}' but it didn't exist.
-Maybe you need to run fab init?
+Maybe you need to run 'fab init', or you're running in the wrong directory?
 `)
     }
   }

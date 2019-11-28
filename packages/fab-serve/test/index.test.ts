@@ -9,7 +9,7 @@ describe('@fab/serve', () => {
     .exit(2)
     .it('runs without arguments', ctx => {
       // Not sure if this is even running tbh
-      // expect(ctx.stderr).to.contain('You must provide a FAB file to run')
+      expect(ctx.stderr).to.contain('You must provide a FAB file to run')
     })
 
   test
