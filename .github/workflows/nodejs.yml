@@ -24,7 +24,12 @@ jobs:
         yarn link-all
       env:
         CI: true
-    - name: Run tests
+    - name: yarn test
+      run: |
+        yarn test
+      env:
+        CI: true
+    - name: Run e2e tests
       run: |
         cd tests
         yarn
