@@ -4,8 +4,8 @@ import MissingConfig from "../errors/MissingConfig";
 import * as jju from 'jju'
 
 export default class JSON5Config {
-  private str_contents: string;
-  private data: FabConfig;
+  str_contents: string;
+  data: FabConfig;
 
   static async readFrom(file_path: string) : Promise<JSON5Config> {
     if (!await fs.pathExists(file_path)) {
