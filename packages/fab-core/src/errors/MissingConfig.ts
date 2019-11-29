@@ -2,7 +2,7 @@ import * as path from 'path'
 import { DEFAULT_CONFIG_FILENAME } from '../constants'
 import { log } from '../helpers'
 
-export default class MissingConfig extends Error {
+export class MissingConfig extends Error {
   constructor(file_path: string) {
     super(`Missing config file at '${file_path}'`)
 

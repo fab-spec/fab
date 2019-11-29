@@ -1,28 +1,5 @@
-export interface PluginArgs {
-  [arg_name: string]: string
-}
+export * from './types'
+export * from './constants'
 
-export interface FabConfig {
-  build: {
-    [plugin_name: string]: PluginArgs
-  },
-  settings?: {
-    [env_name: string]: {
-      [var_name: string]: string
-    }
-  }
-}
-
-export interface FabPlugin {
-  build: (args: PluginArgs, proto_fab: ProtoFab) => void
-  render: () => Response
-}
-
-export type FabFiles = Map<string, string>
-
-export class ProtoFab {
-  files: FabFiles | undefined
-
-  constructor() {
-  }
-}
+export * from './errors/MissingConfig'
+export * from './errors/InvalidConfigError'

@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build:watch": "tsc --build --watch",
+    "build:watch": "tsc --build --watch --preserveWatchOutput",
     "prepack": "rm -rf lib && tsc -b",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
@@ -23,5 +23,8 @@
     "nyc": "^13",
     "ts-node": "^8",
     "typescript": "^3.3"
+  },
+  "dependencies": {
+    "chalk": "^3.0.0"
   }
 }

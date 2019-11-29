@@ -1,6 +1,6 @@
-import {FabConfig} from "../types";
+import {FabConfig} from "@fab/core";
 import * as fs from 'fs-extra';
-import MissingConfig from "../errors/MissingConfig";
+import {MissingConfig} from "@fab/core";
 import * as jju from 'jju'
 
 export default class JSON5Config {
