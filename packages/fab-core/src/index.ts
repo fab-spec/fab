@@ -10,3 +10,8 @@ export interface FabConfig {
     }
   }
 }
+
+export interface FabPlugin {
+  build: () => void
+  render: () => Response
+}
