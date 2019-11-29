@@ -16,7 +16,7 @@
     "chalk": "^2.4.2",
     "cheerio": "^1.0.0-rc.2",
     "fs-extra": "^7.0.1",
-    "globby": "^9.0.0",
+    "globby": "^10",
     "hasha": "^5.0.0",
     "mustache": "^3.0.1",
     "mustache-loader": "^1.4.1",

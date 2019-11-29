@@ -1,8 +1,10 @@
+export interface PluginArgs {
+  [arg_name: string]: string
+}
+
 export interface FabConfig {
   build: {
-    [plugin_name: string]: {
-      [arg_name: string]: string
-    }
+    [plugin_name: string]: PluginArgs
   },
   settings?: {
     [env_name: string]: {
@@ -12,6 +14,15 @@ export interface FabConfig {
 }
 
 export interface FabPlugin {
-  build: () => void
+  build: (args: PluginArgs, proto_fab: ProtoFab) => void
   render: () => Response
+}
+
+export type FabFiles = Map<string, string>
+
+export class ProtoFab {
+  files: FabFiles | undefined
+
+  constructor() {
+  }
 }

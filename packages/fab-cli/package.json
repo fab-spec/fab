@@ -24,7 +24,6 @@
     "@types/mocha": "^5",
     "@types/node": "^10",
     "chai": "^4",
-    "globby": "^10",
     "mocha": "^5",
     "nyc": "^13",
     "ts-node": "^8",

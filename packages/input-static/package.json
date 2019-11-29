@@ -1,0 +1,28 @@
+{
+  "name": "@fab/input-static",
+  "version": "0.0.1",
+  "description": "Module to handle files outside _assets",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:watch": "tsc --build --watch",
+    "prepack": "rm -rf lib && tsc -b",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fab-spec/fab.git"
+  },
+  "keywords": [
+    "fab"
+  ],
+  "author": "Glen Maddern",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fab-spec/fab/issues"
+  },
+  "homepage": "https://github.com/fab-spec/fab#readme",
+  "dependencies": {
+    "globby": "^10"
+  }
+}
