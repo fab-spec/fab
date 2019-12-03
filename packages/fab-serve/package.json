@@ -51,7 +51,8 @@
   },
   "repository": "fab-spec/fab",
   "scripts": {
-    "prepack": "rm -rf lib && tsc -d"
+    "clean": "rm -rf lib",
+    "prepack": "yarn clean && tsc -d"
   },
   "types": "lib/index.d.ts"
 }

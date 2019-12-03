@@ -35,7 +35,27 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`fab build`](#fab-build)
 * [`fab help [COMMAND]`](#fab-help-command)
+
+## `fab build`
+
+describe the command here
+
+```
+USAGE
+  $ fab build
+
+OPTIONS
+  -c, --config=config  [default: fab.config.json5] Path to config file
+  -h, --help           show CLI help
+
+EXAMPLE
+  $ fab hello
+  hello world from ./src/hello.ts!
+```
+
+_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.1/src/commands/build.ts)_
 
 ## `fab help [COMMAND]`
 

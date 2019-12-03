@@ -58,7 +58,8 @@
   },
   "repository": "fab-spec/fab",
   "scripts": {
-    "prepack": "rm -rf lib && tsc -d && cp -R src/files lib/files",
+    "clean": "rm -rf lib",
+    "prepack": "yarn clean && tsc -d && cp -R src/files lib/files",
     "test:watch": "ts-mocha \"test/**/*.test.ts\" --watch -R min",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },

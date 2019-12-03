@@ -6,7 +6,8 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build:watch": "tsc --build --watch --preserveWatchOutput",
-    "prepack": "rm -rf lib && tsc -b",
+    "clean": "rm -rf lib",
+    "prepack": "yarn clean && tsc -b",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "repository": {

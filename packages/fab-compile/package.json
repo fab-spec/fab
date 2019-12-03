@@ -53,6 +53,7 @@
   },
   "repository": "fab-spec/fab",
   "scripts": {
+    "clean": "rm -rf lib",
     "prepack": "tsc -d && cp -R src/files lib/files"
   },
   "types": "lib/index.d.ts",
