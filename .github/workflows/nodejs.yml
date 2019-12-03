@@ -20,7 +20,7 @@ jobs:
     - name: yarn install
       run: |
         yarn
-#        yarn build
+        yarn build
 #        yarn link-all
       env:
         CI: true
