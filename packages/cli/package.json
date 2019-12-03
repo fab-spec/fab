@@ -21,7 +21,7 @@
     "fab": "./bin/run"
   },
   "scripts": {
-    "clean": "rm -rf esm cjs",
+    "clean": "rm -rf lib",
     "build": "yarn build:cjs",
     "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir lib",
     "prepack": "npm run clean && npm run build && npm run oclif:generate",
@@ -46,7 +46,7 @@
     "node": ">=8.0.0"
   },
   "oclif": {
-    "commands": "./lib/commands",
+    "commands": "./src/commands",
     "bin": "fab",
     "plugins": [
       "@oclif/plugin-help"
