@@ -8,8 +8,9 @@
     "build": "lerna run build --stream --parallel",
     "clean": "lerna run clean --stream --parallel",
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
+    "typecheck": "tsc --noEmit",
     "pretest": "yarn typecheck",
-    "typecheck": "tsc --noEmit"
+    "test": "lerna run test --stream --parallel"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",

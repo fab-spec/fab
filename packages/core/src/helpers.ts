@@ -1,4 +1,4 @@
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 
 export const log = {
   error(str: string) {

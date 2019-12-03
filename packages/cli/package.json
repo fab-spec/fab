@@ -13,7 +13,6 @@
   "files": [
     "/bin",
     "/lib",
-    "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
   "main": "lib/index.js",
@@ -23,9 +22,8 @@
   },
   "scripts": {
     "clean": "rm -rf esm cjs",
-    "build": "yarn build:cjs && yarn build:esm",
-    "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir cjs",
-    "build:esm": "tsc -p tsconfig.build.json --module esnext --outDir esm",
+    "build": "yarn build:cjs",
+    "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir lib",
     "prepack": "npm run clean && npm run build && npm run oclif:generate",
     "oclif:generate": "oclif-dev manifest && oclif-dev readme",
     "postpack": "rm -f oclif.manifest.json",
