@@ -4,13 +4,26 @@
   "workspaces": [
     "packages/*"
   ],
-  "devDependencies": {
-    "lerna": "^3.4.3"
-  },
   "scripts": {
-    "link-all": "lerna exec -- npm link",
-    "build:watch": "lerna run build:watch --stream",
-    "build": "lerna run prepack",
-    "test": "lerna run test"
+    "clean": "lerna run clean --stream --parallel",
+    "build": "lerna run build --stream --parallel",
+    "pretest": "yarn typecheck",
+    "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@ts-tools/node": "^1.1.2",
+    "@types/chai": "^4.2.5",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.12.14",
+    "chai": "^4.2.0",
+    "lerna": "^3.19.0",
+    "mocha": "^6.2.2",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.0",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "~3.7.2",
+    "nyc": "^13",
+    "ts-node": "^8"
   }
 }

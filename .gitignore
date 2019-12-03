@@ -1,6 +1,13 @@
 node_modules
 yarn-error.log
+package-lock.json
+
 .docz
 .fab
+
+cjs
+esm
+
+.nyc_output
 oclif.manifest.json
 tsconfig.tsbuildinfo

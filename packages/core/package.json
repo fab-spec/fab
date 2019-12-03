@@ -7,25 +7,23 @@
   "repository": "fab-spec/fab",
   "license": "MIT",
   "author": "Glen Maddern",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
+  "files": [
+    "cjs",
+    "esm",
+    "src"
+  ],
   "scripts": {
     "build:watch": "tsc --build --watch --preserveWatchOutput",
     "clean": "rm -rf lib",
-    "prepack": "tsc -b",
+    "build": "tsc -b",
+    "prepack": "npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
     "@types/node": "^10",
     "chalk": "^3.0.0"
-  },
-  "devDependencies": {
-    "@types/chai": "^4",
-    "@types/mocha": "^5",
-    "chai": "^4",
-    "mocha": "^5",
-    "nyc": "^13",
-    "ts-node": "^8",
-    "typescript": "^3.3"
   }
 }
