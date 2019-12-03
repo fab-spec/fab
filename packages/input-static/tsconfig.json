@@ -1,14 +1,9 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../tsconfig.settings.json",
   "compilerOptions": {
-    "composite": true,
-    "outDir": "lib",
-    "rootDir": "src"
+    "rootDir": "src",
+    "outDir": "lib"
   },
-  "include": ["src/**/*"],
-  "references": [
-    {
-      "path": "../fab-core/tsconfig.json"
-    }
-  ]
+  "references": [{ "path": "../fab-core" }],
+  "include": ["src/**/*"]
 }

@@ -3,3 +3,4 @@ yarn-error.log
 .docz
 .fab
 oclif.manifest.json
+tsconfig.tsbuildinfo

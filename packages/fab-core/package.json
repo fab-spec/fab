@@ -1,31 +1,31 @@
 {
   "name": "@fab/core",
   "version": "0.0.1",
+  "private": false,
   "description": "Common code for all FAB projects",
+  "homepage": "https://github.com/fab-spec/fab",
+  "repository": "fab-spec/fab",
+  "license": "MIT",
+  "author": "Glen Maddern",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "build:watch": "tsc --build --watch --preserveWatchOutput",
     "clean": "rm -rf lib",
-    "prepack": "yarn clean && tsc -b",
+    "prepack": "tsc -b",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
-  "repository": "fab-spec/fab",
-  "homepage": "https://github.com/fab-spec/fab",
-  "author": "Glen Maddern",
-  "license": "MIT",
-  "private": false,
+  "dependencies": {
+    "@types/node": "^10",
+    "chalk": "^3.0.0"
+  },
   "devDependencies": {
     "@types/chai": "^4",
     "@types/mocha": "^5",
-    "@types/node": "^10",
     "chai": "^4",
     "mocha": "^5",
     "nyc": "^13",
     "ts-node": "^8",
     "typescript": "^3.3"
-  },
-  "dependencies": {
-    "chalk": "^3.0.0"
   }
 }

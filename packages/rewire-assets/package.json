@@ -2,6 +2,19 @@
   "name": "@fab/rewire-assets",
   "version": "0.0.1",
   "description": "Module to handle files outside _assets",
+  "keywords": [
+    "fab"
+  ],
+  "homepage": "https://github.com/fab-spec/fab#readme",
+  "bugs": {
+    "url": "https://github.com/fab-spec/fab/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fab-spec/fab.git"
+  },
+  "license": "MIT",
+  "author": "Glen Maddern",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -10,21 +23,10 @@
     "prepack": "yarn clean && tsc -b",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fab-spec/fab.git"
-  },
-  "keywords": [
-    "fab"
-  ],
-  "author": "Glen Maddern",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/fab-spec/fab/issues"
-  },
-  "homepage": "https://github.com/fab-spec/fab#readme",
-  "devDependencies": {
-    "typescript": "^3.7.2",
+  "dependencies": {
     "@types/node": "^12.12.14"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.2"
   }
 }

@@ -1,13 +1,10 @@
 {
   "compilerOptions": {
+    "composite": true,
     "declaration": true,
     "importHelpers": true,
     "module": "commonjs",
     "strict": true,
-    "target": "es2017",
-    "baseUrl": "./packages",
-    "paths": {
-      "@fab/*": ["fab-*/src", "*/src"]
-    }
+    "target": "es2017"
   }
 }
