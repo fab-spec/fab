@@ -5,13 +5,15 @@
     "packages/*"
   ],
   "scripts": {
-    "clean": "lerna run clean --stream --parallel",
     "build": "lerna run build --stream --parallel",
-    "pretest": "yarn typecheck",
+    "clean": "lerna run clean --stream --parallel",
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
+    "pretest": "yarn typecheck",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@oclif/test": "^1",
     "@ts-tools/node": "^1.1.2",
     "@types/chai": "^4.2.5",
     "@types/mocha": "^5.2.7",
@@ -19,11 +21,11 @@
     "chai": "^4.2.0",
     "lerna": "^3.19.0",
     "mocha": "^6.2.2",
+    "nyc": "^13",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.0",
+    "ts-node": "^8",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "~3.7.2",
-    "nyc": "^13",
-    "ts-node": "^8"
+    "typescript": "~3.7.2"
   }
 }
