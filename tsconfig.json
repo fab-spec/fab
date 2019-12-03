@@ -5,14 +5,15 @@
     "target": "es2020",
     "module": "esnext",
     "lib": [
-      "es2020"
+      "es2020",
+      "dom"
     ],
     "declaration": true,
-    "declarationMap": true,
+//    "declarationMap": true,
     "sourceMap": true,
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+//    "noUnusedLocals": true,
+//    "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",

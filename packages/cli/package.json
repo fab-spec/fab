@@ -22,8 +22,12 @@
     "fab": "./bin/run"
   },
   "scripts": {
-    "clean": "rm -rf lib",
-    "prepack": "yarn clean && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "clean": "rm -rf esm cjs",
+    "build": "yarn build:cjs && yarn build:esm",
+    "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir cjs",
+    "build:esm": "tsc -p tsconfig.build.json --module esnext --outDir esm",
+    "prepack": "npm run clean && npm run build && npm run oclif:generate",
+    "oclif:generate": "oclif-dev manifest && oclif-dev readme",
     "postpack": "rm -f oclif.manifest.json",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
