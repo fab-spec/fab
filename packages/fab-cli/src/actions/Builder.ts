@@ -1,5 +1,12 @@
 import {FabConfig, FabPlugin, ProtoFab} from '@fab/core'
 
+/*
+*
+* build: {
+*   "@fab/rewire-assets": { ... }
+*
+* */
+
 export default class Builder {
   static build(config: FabConfig) {
     const proto_fab = new ProtoFab()

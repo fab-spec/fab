@@ -1,7 +1,7 @@
 import {FabPlugin, PluginArgs, ProtoFab, InvalidConfigError} from "@fab/core";
 
 class InputStatic implements FabPlugin {
-  build = (args: PluginArgs, proto_fab: ProtoFab) => {
+  build(args: PluginArgs, proto_fab: ProtoFab) {
     const { dir } = args
 
     // Todo: dir needs to exist
@@ -12,7 +12,7 @@ class InputStatic implements FabPlugin {
     console.log(`I am input static! Reading files from ${dir}`)
   }
 
-  render = () => {
+  render() {
     console.log("I am render time")
     return new Response('OK', {
       status: 200
