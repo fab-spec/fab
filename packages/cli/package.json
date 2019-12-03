@@ -27,7 +27,8 @@
     "prepack": "npm run clean && npm run build && npm run oclif:generate",
     "oclif:generate": "oclif-dev manifest && oclif-dev readme",
     "postpack": "rm -f oclif.manifest.json",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "coverage": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
