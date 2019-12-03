@@ -17,11 +17,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: yarn install & build
+    - name: yarn install
       run: |
         yarn
-        yarn build
-        yarn link-all
+#        yarn build
+#        yarn link-all
       env:
         CI: true
     - name: yarn test
@@ -29,10 +29,10 @@ jobs:
         yarn test
       env:
         CI: true
-    - name: Run e2e tests
-      run: |
-        cd tests
-        yarn
-        yarn test
-      env:
-        CI: true
+#    - name: Run e2e tests
+#      run: |
+#        cd tests
+#        yarn
+#        yarn test
+#      env:
+#        CI: true
