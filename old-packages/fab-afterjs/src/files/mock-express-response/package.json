@@ -1,0 +1,72 @@
+{
+  "name": "mock-express-response",
+  "version": "0.2.2",
+  "description": "Nodejs library to mock express http response",
+  "keywords": [
+    "express",
+    "connect",
+    "mock",
+    "stab",
+    "unit",
+    "test",
+    "spec",
+    "specification",
+    "bdd",
+    "tdd",
+    "response",
+    "http",
+    "htttps"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lykmapipo/mock-express-response.git"
+  },
+  "author": {
+    "name": "lykmapipo",
+    "email": "lallyelias87@gmail.com",
+    "url": "https://github.com/lykmapipo"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lykmapipo/mock-express-response/issues"
+  },
+  "homepage": "https://github.com/lykmapipo/mock-express-response",
+  "contributors": [
+    {
+      "name": "lykmapipo",
+      "github": "https://github.com/lykmapipo"
+    }
+  ],
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "ejs": "^2.5.7",
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-mocha-test": "^0.13.3",
+    "jshint-stylish": "^2.2.1",
+    "lodash": "^4.17.4",
+    "mocha": "^4.0.1"
+  },
+  "dependencies": {
+    "content-disposition": "^0.5.2",
+    "content-type": "^1.0.4",
+    "cookie": "^0.3.1",
+    "cookie-signature": "^1.0.6",
+    "depd": "^1.1.1",
+    "escape-html": "^1.0.3",
+    "etag": "^1.8.1",
+    "mock-express-request": "^0.2.2",
+    "mock-res": "^0.5.0",
+    "on-finished": "^2.3.0",
+    "proxy-addr": "^2.0.2",
+    "qs": "^6.5.1",
+    "send": "^0.16.1",
+    "utils-merge": "^1.0.1",
+    "vary": "^1.1.2"
+  }
+}
