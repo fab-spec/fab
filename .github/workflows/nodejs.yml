@@ -24,11 +24,19 @@ jobs:
 #        yarn link-all
       env:
         CI: true
-    - name: yarn test
+    - name: test @fab/core
       run: |
+        cd packages/core
         yarn test
-      env:
-        CI: true
+    - name: test @fab/cli
+      run: |
+        cd packages/cli
+        yarn test
+#    - name: yarn test
+#      run: |
+#        yarn test
+#      env:
+#        CI: true
 #    - name: Run e2e tests
 #      run: |
 #        cd tests
