@@ -21,17 +21,18 @@
     "path-browserify": "^1.0.0",
     "sucrase": "^3.9.5",
     "tslib": "^1",
-    "typescript": "^3.3.1",
     "webpack": "^4.29.0"
   },
   "devDependencies": {
     "@oclif/test": "^1",
     "@types/chai": "^4",
-    "@types/node": "^10",
+    "@types/node": "^12.12.14",
+    "@types/webpack": "^4.41.0",
     "chai": "^4",
     "mocha": "^5",
     "nyc": "^13",
-    "ts-node": "^7"
+    "ts-node": "^7",
+    "typescript": "^3.7.2"
   },
   "engines": {
     "node": ">=8.0.0"

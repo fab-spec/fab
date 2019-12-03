@@ -31,15 +31,15 @@
     "@types/cheerio": "^0.22.10",
     "@types/expect": "^1.20.3",
     "@types/mustache": "^0.8.32",
-    "@types/node": "^10",
+    "typescript": "^3.7.2",
+    "@types/node": "^12.12.14",
     "@types/prettier": "^1.15.2",
     "chai": "^4",
     "expect": "^23.6.0",
     "mocha": "^5",
     "nyc": "^13",
     "ts-mocha": "^2.0.0",
-    "ts-node": "^7",
-    "typescript": "^3.0"
+    "ts-node": "^7"
   },
   "files": [
     "/bin",

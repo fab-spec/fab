@@ -26,12 +26,12 @@
     "@oclif/dev-cli": "^1",
     "@oclif/test": "^1",
     "@types/chai": "^4",
-    "@types/node": "^10",
+          "typescript": "^3.7.2",
+          "@types/node": "^12.12.14",
     "chai": "^4",
     "mocha": "^5",
     "nyc": "^13",
-    "ts-node": "^7",
-    "typescript": "^3.0"
+    "ts-node": "^7"
   },
   "engines": {
     "node": ">=8.0.0"

@@ -25,7 +25,7 @@ $ npm install -g @fab/cf-workers
 $ fab-cf-workers COMMAND
 running command...
 $ fab-cf-workers (-v|--version|version)
-@fab/cf-workers/0.0.5 darwin-x64 node-v12.6.0
+@fab/cf-workers/0.0.5 darwin-x64 node-v13.1.0
 $ fab-cf-workers --help [COMMAND]
 USAGE
   $ fab-cf-workers COMMAND
