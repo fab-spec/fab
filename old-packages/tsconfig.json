@@ -3,7 +3,7 @@
   "references": [
     { "path": "fab-cli" },
     { "path": "fab-core" },
-    { "path": "fab-input-static" },
-    { "path": "fab-rewire-assets" }
+    { "path": "input-static" },
+    { "path": "rewire-assets" }
   ]
 }
