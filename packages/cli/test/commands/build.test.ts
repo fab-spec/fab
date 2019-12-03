@@ -3,7 +3,6 @@ import {expect, test} from '@oclif/test'
 describe('build', () => {
   test
     .stdout()
-    .stderr()
     .command(['build'])
     .catch(err => expect(err.message).to.equal(`Missing config file at 'fab.config.json5'`))
     .it(`should report that it can't find the default config file`, ctx => {
@@ -14,7 +13,6 @@ describe('build', () => {
 
   test
     .stdout()
-    .stderr()
     .command(['build', '--config', 'no-existo.json5'])
     .catch(err => expect(err.message).to.equal(`Missing config file at 'no-existo.json5'`))
     .it('should report that the specified config file is missing', ctx => {

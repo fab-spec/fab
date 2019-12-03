@@ -10,7 +10,7 @@
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
     "typecheck": "tsc --noEmit",
     "pretest": "yarn typecheck",
-    "test": "lerna run test"
+    "test": "lerna run test --stream --parallel"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
