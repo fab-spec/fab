@@ -22,6 +22,11 @@ jobs:
         yarn
       env:
         CI: true
+    - name: yarn typecheck
+      run: |
+        yarn typecheck
+      env:
+        CI: true
     - name: yarn build
       run: |
         yarn build
