@@ -21,7 +21,7 @@
     "src"
   ],
   "scripts": {
-    "build:watch": "tsc --build --watch --preserveWatchOutput",
+    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
     "clean": "rm -rf esm cjs",
     "build": "yarn build:cjs && yarn build:esm",
     "build:cjs": "tsc --module commonjs --outDir cjs",
