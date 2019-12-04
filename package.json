@@ -8,7 +8,7 @@
     "link-all": "lerna exec -- npm link",
     "build:watch": "lerna run build:watch --parallel",
     "build": "lerna run build --parallel",
-    "build:codesandbox": "lerna run pack",
+    "build:codesandbox": "npm run link-all && lerna exec -- npm pack",
     "clean": "lerna run clean --parallel",
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
     "typecheck": "tsc --noEmit",
