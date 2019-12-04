@@ -21,8 +21,9 @@ export interface FabPlugin {
 export type FabFiles = Map<string, string>
 
 export class ProtoFab {
-  files: FabFiles | undefined
+  files: FabFiles
 
   constructor() {
+    this.files = new Map()
   }
 }

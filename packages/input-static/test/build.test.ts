@@ -19,7 +19,35 @@ describe('@fab/input-static', () => {
   it('should require a dir argument', async () => {
     await shouldThrow(
       () => plugin.build({}, new ProtoFab()),
-      'Config file contains errors!'
+      `@fab/input-static requires an argument of 'dir'.`
+    )
+  })
+
+  it('should check the dir exists', async () => {
+    await shouldThrow(
+      () =>
+        plugin.build(
+          {
+            dir: './no-existo',
+          },
+          new ProtoFab()
+        ),
+      `@fab/input-static specifies a 'dir' of './no-existo', which doesn't exist.`
+    )
+  })
+
+  it('should check the dir exists', async () => {
+    const proto_fab = new ProtoFab()
+    proto_fab.files.set('/a', 'something')
+    await shouldThrow(
+      () =>
+        plugin.build(
+          {
+            dir: __dirname + '/fixtures',
+          },
+          proto_fab
+        ),
+      `@fab/input-static must be the first 'input' plugin in the chain.`
     )
   })
 })
