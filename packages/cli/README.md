@@ -1,6 +1,6 @@
 ---
 name: "@fab/cli"
-route: "/packages/fab-cli"
+route: "/packages/cli"
 menu: Packages
 ---
 
