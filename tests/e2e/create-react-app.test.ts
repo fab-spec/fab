@@ -8,8 +8,8 @@ const cmd = (command: string, ...opts: any) => {
 }
 const shell = async (command: string, ...opts: any) => {
   const promise = cmd(command, ...opts)
-  promise.stdout.pipe(process.stdout)
-  promise.stderr.pipe(process.stderr)
+  promise.stdout!.pipe(process.stdout)
+  promise.stderr!.pipe(process.stderr)
   return promise
 }
 
