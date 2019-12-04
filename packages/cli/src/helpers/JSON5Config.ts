@@ -1,6 +1,6 @@
 import { FabConfig } from '@fab/core'
 import * as fs from 'fs-extra'
-import { MissingConfig, InvalidConfigError, assume } from '@fab/core'
+import { MissingConfig, InvalidConfigError, a_ssume, s_ssume } from '@fab/core'
 import * as jju from 'jju'
 
 export default class JSON5Config {
@@ -12,21 +12,12 @@ export default class JSON5Config {
       throw new MissingConfig(file_path)
     }
 
-    const str_contents = await assume(
+    const str_contents = await a_ssume(
       () => fs.readFile(file_path, 'utf8'),
       () => new InvalidConfigError(`Could not read file at '${file_path}'`)
     )
 
-    const parse = () => {
-      try {
-        return
-      } catch (e) {
-        throw new InvalidConfigError(
-          `Could not parse file at '${file_path}'. Check that it is valid JSON5.`
-        )
-      }
-    }
-    const data = await assume(
+    const data = s_ssume(
       () => jju.parse(str_contents),
       () =>
         new InvalidConfigError(
