@@ -2,15 +2,12 @@
   "scripts": {
     "docz:dev": "docz dev",
     "docz:build": "docz build",
-    "build:fab": "npm run docz:build && fab-static .docz/dist",
-    "docz:serve": "docz build && docz serve"
+    "build:fab": "npm run docz:build && fab-static .docz/dist"
   },
   "devDependencies": {
     "@fab/static": "^0.1.4",
-    "docz": "^2.0.0-rc.62"
-  },
-  "dependencies": {
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2"
+    "docz": "^0.13.7",
+    "docz-theme-default": "^0.13.7"
   }
 }
+
