@@ -23,10 +23,10 @@ jobs:
       env:
         CI: true
     - name: yarn build
-    run: |
-      yarn build
-    env:
-      CI: true
+      run: |
+        yarn build
+      env:
+        CI: true
     - name: yarn test
       run: |
         yarn test
