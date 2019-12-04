@@ -6,11 +6,7 @@
     "docz:serve": "docz build && docz serve"
   },
   "devDependencies": {
-    "@fab/static": "^0.1.4",
-    "docz": "^2.1.1"
+    "@fab/static": "^0.1.4"
   },
-  "dependencies": {
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2"
-  }
+  "dependencies": {}
 }
