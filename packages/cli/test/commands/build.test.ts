@@ -19,4 +19,13 @@ describe('build', () => {
       expect(ctx.stdout).to.contain(`Config file 'no-existo.json5' not found.`)
       expect(ctx.stdout).to.contain('fab init')
     })
+
+  const empty_config = `${__dirname}/fixtures/fab.empty-config.json5`;
+  test
+    .stdout()
+    .command(['build', '--config', empty_config])
+    .catch(err => expect(err.message).to.equal(`Could not parse file at '${empty_config}'. Check that it is valid JSON5.`))
+    .it('should report that the specified config file is empty', ctx => {
+      expect(ctx.stdout).to.contain('Config file contains errors!')
+    })
 })
