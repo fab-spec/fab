@@ -21,7 +21,7 @@ it('should allow creation of a tmp dir', async () => {
   expect(stdout).toMatch('tmp')
 })
 
-it('should allow creation of a new CRA project', async () => {
+it.skip('should allow creation of a new CRA project', async () => {
   const dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
   await shell(`ls -l ${dir.path}`)
   await shell(`yarn create react-app cra-test`, { cwd: dir.path })
