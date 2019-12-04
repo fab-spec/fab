@@ -47,7 +47,7 @@
     "node": ">=8.0.0"
   },
   "oclif": {
-    "commands": "./src/commands",
+    "commands": "./lib/commands",
     "bin": "fab",
     "plugins": [
       "@oclif/plugin-help"

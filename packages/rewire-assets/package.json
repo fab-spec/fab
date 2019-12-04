@@ -13,23 +13,23 @@
   "license": "MIT",
   "author": "Glen Maddern",
   "main": "cjs/index.js",
-    "module": "esm/index.js",
-    "types": "esm/index.d.ts",
-    "files": [
-      "cjs",
-      "esm",
-      "src"
-    ],
-    "scripts": {
-      "build:watch": "tsc --build --watch --preserveWatchOutput",
-      "clean": "rm -rf esm cjs",
-      "build": "yarn build:cjs && yarn build:esm",
-      "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir cjs",
-      "build:esm": "tsc -p tsconfig.build.json --module esnext --outDir esm",
-      "prepack": "npm run clean && npm run build",
-      "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
-    },
-    "dependencies": {
-      "@types/node": "^12.12.14"
-    }
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
+  "files": [
+    "cjs",
+    "esm",
+    "src"
+  ],
+  "scripts": {
+    "build:watch": "tsc --build --watch --preserveWatchOutput",
+    "clean": "rm -rf esm cjs",
+    "build": "yarn build:cjs && yarn build:esm",
+    "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir cjs",
+    "build:esm": "tsc -p tsconfig.build.json --module esnext --outDir esm",
+    "prepack": "npm run clean && npm run build",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@types/node": "^12.12.14"
   }
+}
