@@ -24,8 +24,8 @@
     "build:watch": "tsc --build --watch --preserveWatchOutput",
     "clean": "rm -rf esm cjs",
     "build": "yarn build:cjs && yarn build:esm",
-    "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir cjs",
-    "build:esm": "tsc -p tsconfig.build.json --module esnext --outDir esm",
+    "build:cjs": "tsc --module commonjs --outDir cjs",
+    "build:esm": "tsc --module esnext --outDir esm",
     "prepack": "npm run clean && npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },

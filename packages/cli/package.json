@@ -23,7 +23,7 @@
   "scripts": {
     "clean": "rm -rf lib",
     "build": "yarn build:cjs",
-    "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir lib",
+    "build:cjs": "tsc --module commonjs --outDir lib",
     "prepack": "npm run clean && npm run build && npm run oclif:generate",
     "oclif:generate": "oclif-dev manifest && oclif-dev readme",
     "postpack": "rm -f oclif.manifest.json",
