@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "link-all": "lerna exec -- npm link",
-    "build": "lerna run build --stream --parallel",
+    "build": "lerna run prepack --stream --parallel",
     "clean": "lerna run clean --stream --parallel",
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
     "typecheck": "tsc --noEmit",
