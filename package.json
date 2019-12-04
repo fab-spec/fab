@@ -6,8 +6,9 @@
   ],
   "scripts": {
     "link-all": "lerna exec -- npm link",
-    "build": "lerna run build --stream --parallel",
-    "clean": "lerna run clean --stream --parallel",
+    "build:watch": "lerna run build:watch --parallel",
+    "build": "lerna run build --parallel",
+    "clean": "lerna run clean --parallel",
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
     "typecheck": "tsc --noEmit",
     "pretest": "yarn typecheck",

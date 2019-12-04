@@ -1,7 +1,9 @@
 import {FabPlugin, PluginArgs, ProtoFab, InvalidConfigError} from "@fab/core";
+import globby from 'globby'
+import path from "path";
 
 class InputStatic implements FabPlugin {
-  build(args: PluginArgs, proto_fab: ProtoFab) {
+  async build(args: PluginArgs, proto_fab: ProtoFab) {
     const { dir } = args
 
     // Todo: dir needs to exist
@@ -10,6 +12,9 @@ class InputStatic implements FabPlugin {
     // Todo: proto_fab needs to have no .files yet
 
     console.log(`I am input static! Reading files from ${dir}`)
+
+    const files = await globby([path.join(dir, '**', '*')])
+    console.log({files})
   }
 
   render() {

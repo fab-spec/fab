@@ -14,7 +14,7 @@ export interface FabConfig {
 }
 
 export interface FabPlugin {
-  build: (args: PluginArgs, proto_fab: ProtoFab) => void
+  build: (args: PluginArgs, proto_fab: ProtoFab) => Promise<void>
   render: () => Response
 }
 
