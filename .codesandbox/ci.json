@@ -1,0 +1,7 @@
+{
+  "packages": [
+    "packages/cli",
+    "packages/core"
+  ],
+  "sandboxes": ["dazzling-cray-t0ru6"]
+}

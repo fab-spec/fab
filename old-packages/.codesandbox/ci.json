@@ -1,8 +1,0 @@
-{
-  "packages": [
-    "packages/fab-compile",
-    "packages/fab-static",
-    "packages/fab-serve"
-  ],
-  "sandboxes": ["dazzling-cray-t0ru6"]
-}
