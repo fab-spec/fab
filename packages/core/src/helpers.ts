@@ -5,3 +5,11 @@ export const log = {
     console.log(chalk.red(str))
   }
 }
+
+export async function assume<T> (fn: () => Promise<T>, throws: (e: Error) => Error) {
+  try {
+    return await fn()
+  } catch (e) {
+    throw throws(e)
+  }
+}
