@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "@fab/static": "^0.1.4",
-    "docz": "^2.0.0-rc.62"
+    "docz": "^2.1.1"
   },
   "dependencies": {
     "react": "^16.10.2",
