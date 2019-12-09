@@ -14,7 +14,7 @@ export default class Builder {
         return {
           plugin: ssume(
             () => require(plugin_name).default as FabPlugin,
-            (err) =>
+            () =>
               new InvalidConfigError(
                 `Cannot find module '${plugin_name}', which was referenced in the 'build' config.\nAre you sure it's installed?`
               )

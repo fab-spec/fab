@@ -1,12 +1,11 @@
 {
   build: {
-    "@fab/input-static": {
-      "dir": "src"
+    '@fab/input-static': {
+      dir: 'src',
     },
-    "@fab/no-existo": {
-      "other": "ag"
+    '@fab/no-existo': {
+      other: 'ag',
     },
   },
-  render: {
-  }
+  render: {},
 }
