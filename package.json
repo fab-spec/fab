@@ -28,7 +28,9 @@
     "@types/node": "^12.12.14",
     "chai": "^4.2.0",
     "docz": "^2.1.1",
+    "husky": "^3.1.0",
     "lerna": "^3.19.0",
+    "lint-staged": "^9.5.0",
     "mocha": "^6.2.2",
     "nyc": "^13",
     "prettier": "^1.19.1",
@@ -38,5 +40,16 @@
     "ts-node": "^8",
     "tsconfig-paths": "^3.9.0",
     "typescript": "~3.7.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,json,md,ts}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
