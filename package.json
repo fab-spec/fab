@@ -13,6 +13,7 @@
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
     "typecheck": "tsc --noEmit",
     "test": "lerna run test --stream --parallel",
+    "test:watch": "lerna run test --stream --parallel -- --watch",
     "docz:dev": "docz dev",
     "docz:build": "docz build",
     "build:fab": "npm run docz:build && fab-static .docz/dist",
