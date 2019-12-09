@@ -10,7 +10,7 @@ describe('JSON5Config', () => {
         },
       },
     })
-    const regex = config.data.build.plugin.regex
+    const regex = config.data.build.plugin.regex as RegExp
     expect(regex).to.be.a('RegExp')
     expect('/foo.abcdef123456.js').to.match(regex)
     expect('/static/foo.abcdef123456.js').to.match(regex)
@@ -30,7 +30,7 @@ describe('JSON5Config', () => {
         },
       },
     })
-    const regex = config.data.build.plugin.regex
+    const regex = config.data.build.plugin.regex as RegExp
     expect(regex).to.be.a('RegExp')
     expect('/foo.abcdef123456.js').to.not.match(regex)
     expect('/static/foo.abcdef123456.js').to.match(regex)

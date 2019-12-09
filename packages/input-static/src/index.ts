@@ -10,6 +10,9 @@ class InputStatic implements FabPlugin {
     if (!dir) {
       throw new InvalidConfigError(`@fab/input-static requires an argument of 'dir'.`)
     }
+    if (typeof dir !== 'string') {
+      throw new InvalidConfigError(`@fab/input-static's 'dir' argument must be a string.`)
+    }
     if (!(await fs.pathExists(dir))) {
       throw new InvalidConfigError(
         `@fab/input-static specifies a 'dir' of '${dir}', which doesn't exist.`
