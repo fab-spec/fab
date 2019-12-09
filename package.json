@@ -50,6 +50,11 @@
     "*.{js,css,json,md}": [
       "prettier --write",
       "git add"
+    ],
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "yarn typecheck",
+      "git add"
     ]
   }
 }
