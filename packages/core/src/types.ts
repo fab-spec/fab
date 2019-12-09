@@ -14,15 +14,16 @@ export interface FabConfig {
 }
 
 export interface FabPlugin {
-  build: (args: PluginArgs, proto_fab: ProtoFab) => void
+  build: (args: PluginArgs, proto_fab: ProtoFab) => Promise<void>
   render: () => Response
 }
 
 export type FabFiles = Map<string, string>
 
 export class ProtoFab {
-  files: FabFiles | undefined
+  files: FabFiles
 
   constructor() {
+    this.files = new Map()
   }
 }

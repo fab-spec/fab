@@ -6,11 +6,12 @@
   ],
   "scripts": {
     "link-all": "lerna exec -- npm link",
-    "build": "lerna run build --stream --parallel",
-    "clean": "lerna run clean --stream --parallel",
+    "build:watch": "lerna run build:watch --parallel",
+    "build": "lerna run build --parallel",
+    "build:codesandbox": "npm run link-all && lerna exec -- npm pack",
+    "clean": "lerna run clean --parallel",
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
     "typecheck": "tsc --noEmit",
-    "pretest": "yarn typecheck",
     "test": "lerna run test --stream --parallel",
     "docz:dev": "docz dev",
     "docz:build": "docz build",
@@ -37,6 +38,5 @@
     "ts-node": "^8",
     "tsconfig-paths": "^3.9.0",
     "typescript": "~3.7.2"
-  },
-  "dependencies": {}
+  }
 }

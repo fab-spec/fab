@@ -2,8 +2,8 @@ import { log } from '../helpers'
 
 export class InvalidConfigError extends Error {
   constructor(explanation: string) {
-    super(`Config file contains errors!`)
+    super(explanation)
 
-    log.error(explanation)
+    log.error(`Config file contains errors!`)
   }
 }

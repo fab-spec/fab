@@ -1,8 +1,8 @@
 {
   "packages": [
-    "packages/fab-compile",
-    "packages/fab-static",
-    "packages/fab-serve"
+    "packages/cli",
+    "packages/core"
   ],
+  "buildCommand": "build:codesandbox",
   "sandboxes": ["dazzling-cray-t0ru6"]
 }
