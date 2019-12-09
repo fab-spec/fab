@@ -1,6 +1,11 @@
-import { FabConfig } from '@fab/core'
 import * as fs from 'fs-extra'
-import { MissingConfig, InvalidConfigError, assume, ssume } from '@fab/core'
+import {
+  FabConfig,
+  MissingConfig,
+  InvalidConfigError,
+  assume,
+  ssume,
+} from '@fab/core'
 import * as jju from 'jju'
 
 export default class JSON5Config {
@@ -31,7 +36,9 @@ export default class JSON5Config {
   constructor(str_contents: string, data: FabConfig) {
     // todo: can we generate a validator from the TS definition
     if (!data.build) {
-      throw new InvalidConfigError(`The FAB config file is missing a 'build' property.`)
+      throw new InvalidConfigError(
+        `The FAB config file is missing a 'build' property.`
+      )
     }
 
     this.str_contents = str_contents

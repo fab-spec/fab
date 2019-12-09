@@ -37,10 +37,11 @@ jobs:
         yarn test
       env:
         CI: true
-#    - name: Run e2e tests
-#      run: |
-#        cd tests
-#        yarn
-#        yarn test
-#      env:
-#        CI: true
+    - name: Run e2e tests
+      run: |
+        yarn link-all
+        cd tests
+        yarn
+        yarn test
+      env:
+        CI: true
