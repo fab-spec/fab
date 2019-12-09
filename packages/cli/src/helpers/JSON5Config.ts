@@ -1,6 +1,7 @@
 import * as fs from 'fs-extra'
 import { FabConfig, MissingConfig, InvalidConfigError, assume, ssume } from '@fab/core'
 import * as jju from 'jju'
+import regexParser from 'regex-parser'
 
 export default class JSON5Config {
   str_contents: string
@@ -31,6 +32,14 @@ export default class JSON5Config {
     // todo: can we generate a validator from the TS definition
     if (!data.build) {
       throw new InvalidConfigError(`The FAB config file is missing a 'build' property.`)
+    }
+
+    for (const [plugin, args] of Object.entries(data.build)) {
+      for (const [k, v] of Object.entries(args)) {
+        if ((v as string).match(/^\/.*\/([gimy]*)$/)) {
+          args[k] = regexParser(v as string)
+        }
+      }
     }
 
     this.str_contents = str_contents

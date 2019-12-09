@@ -42,6 +42,7 @@
     "chalk": "^3.0.0",
     "fs-extra": "^8.1.0",
     "jju": "^1.4.0",
+    "regex-parser": "^2.2.10",
     "tslib": "^1"
   },
   "engines": {

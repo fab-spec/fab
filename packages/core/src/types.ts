@@ -1,5 +1,5 @@
 export interface PluginArgs {
-  [arg_name: string]: string
+  [arg_name: string]: string | RegExp
 }
 
 export interface FabConfig {
