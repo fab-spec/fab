@@ -1,26 +1,28 @@
 ---
-name: "@fab/cli"
-route: "/packages/cli"
+name: 'CLI'
+route: '/packages/cli'
 menu: Packages
 ---
 
-@fab/cli
-========
+# FAB Command Line Interface
 
-The CLI entry-point for the FAB ecosystem
+`fab`: the CLI entry-point for the FAB ecosystem
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@fab/cli.svg)](https://npmjs.org/package/@fab/cli)
-[![CircleCI](https://circleci.com/gh/fab-spec/fab/tree/master.svg?style=shield)](https://circleci.com/gh/fab-spec/fab/tree/master)
 [![Downloads/week](https://img.shields.io/npm/dw/@fab/cli.svg)](https://npmjs.org/package/@fab/cli)
 [![License](https://img.shields.io/npm/l/@fab/cli.svg)](https://github.com/fab-spec/fab/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
+
+- [Usage](#usage)
+- [Commands](#commands)
+  <!-- tocstop -->
+
+## Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @fab/cli
 $ fab COMMAND
@@ -32,11 +34,15 @@ USAGE
   $ fab COMMAND
 ...
 ```
+
 <!-- usagestop -->
-# Commands
+
+## Commands
+
 <!-- commands -->
-* [`fab build`](#fab-build)
-* [`fab help [COMMAND]`](#fab-help-command)
+
+- [`fab build`](#fab-build)
+- [`fab help [COMMAND]`](#fab-help-command)
 
 ## `fab build`
 
@@ -73,4 +79,5 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
+
 <!-- commandsstop -->

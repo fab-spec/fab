@@ -1,1 +1,1 @@
-# rewire-assets
+# @fab/rewire-assets
