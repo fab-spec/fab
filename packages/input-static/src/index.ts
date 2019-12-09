@@ -29,11 +29,12 @@ class InputStatic implements FabPlugin {
 
     await Promise.all(
       files.map(async (filename) => {
-        proto_fab.files!.set(filename, await fs.readFile(filename, 'utf8'))
+        proto_fab.files!.set(
+          path.relative(dir, filename),
+          await fs.readFile(filename, 'utf8')
+        )
       })
     )
-
-    console.log(proto_fab)
   }
 
   render() {

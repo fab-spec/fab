@@ -26,4 +26,15 @@ it('should test a series of configs against a static dir', async () => {
   expect(unknown_module.stderr).toContain(`Cannot find module '@fab/no-existo'`)
   expect(unknown_module.stderr).toContain(`Are you sure it's installed?`)
   expect(unknown_module.stdout).toContain(`Config file contains errors!`)
+
+  const missing_rewire = await expectError(`fab build -c fab.missing-rewire.json5`, {
+    cwd,
+  })
+  expect(missing_rewire.stdout).toContain(`Build failed!`)
+  expect(missing_rewire.stdout).toContain(
+    `Build config leaves files outside of _assets dir: index.html`
+  )
+  expect(missing_rewire.stdout).toContain(`You might need to add @fab/rewire-assets`)
+  expect(missing_rewire.stdout).toContain(`See https://fab.dev/packages/rewire-assets`)
+  expect(missing_rewire.stderr).toContain(`Build failed!`)
 })

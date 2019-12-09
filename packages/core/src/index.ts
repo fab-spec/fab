@@ -3,4 +3,5 @@ export * from './constants'
 export * from './helpers'
 
 export * from './errors/MissingConfig'
-export * from './errors/InvalidConfigError'
+export * from './errors/InvalidConfig'
+export * from './errors/BuildFailed'

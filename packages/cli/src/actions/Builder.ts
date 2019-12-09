@@ -1,4 +1,11 @@
-import { FabConfig, FabPlugin, InvalidConfigError, ProtoFab, ssume } from '@fab/core'
+import {
+  BuildFailedError,
+  FabConfig,
+  FabPlugin,
+  InvalidConfigError,
+  ProtoFab,
+  ssume,
+} from '@fab/core'
 
 /*
  *
@@ -27,6 +34,15 @@ export default class Builder {
     const proto_fab = new ProtoFab()
     for (const { plugin, plugin_args } of build_plugins) {
       await plugin.build(plugin_args, proto_fab)
+    }
+
+    // After build, there should only be files in the expected places (server.js, _assets)
+    const invalid_reason = proto_fab.readyForCompilation()
+    if (invalid_reason) {
+      throw new BuildFailedError(`FAB is not ready for compilation.
+${invalid_reason}
+You might need to add @fab/rewire-assets to your 'build' config. See https://fab.dev/packages/rewire-assets for more information about what this module is and why it's needed.
+`)
     }
   }
 }
