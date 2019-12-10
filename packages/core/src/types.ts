@@ -2,7 +2,9 @@ export interface PluginArgs {
   [arg_name: string]: string | number | RegExp
 }
 
-export interface BuildConfig {}
+export interface BuildConfig {
+  [arg_name: string]: PluginArgs
+}
 
 export interface FabConfig {
   build: BuildConfig

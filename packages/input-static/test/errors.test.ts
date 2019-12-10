@@ -14,6 +14,7 @@ const shouldThrow = async (async_fn: () => any, message: string) => {
 describe('@fab/input-static', () => {
   it('should require a dir argument', async () => {
     await shouldThrow(
+      // @ts-ignore
       () => plugin.build({}, new ProtoFab()),
       `@fab/input-static requires an argument of 'dir'.`
     )
