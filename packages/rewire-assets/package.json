@@ -30,7 +30,9 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
+    "@fab/core": "*",
+    "@types/mime-types": "^2.1.0",
     "@types/node": "^12.12.14",
-    "@fab/core": "*"
+    "mime-types": "^2.1.25"
   }
 }

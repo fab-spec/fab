@@ -1,4 +1,5 @@
 import {
+  DEFAULT_MIME_TYPE,
   FabPlugin,
   filenameOutsideFabLocations,
   InvalidConfigError,
@@ -7,6 +8,12 @@ import {
   ProtoFab,
 } from '@fab/core'
 import path from 'path'
+import mime from 'mime-types'
+
+const getContentType = (pathname: string) => {
+  const mimeType = mime.lookup(pathname)
+  return (mimeType && mime.contentType(mimeType)) || DEFAULT_MIME_TYPE
+}
 
 interface RewireAssetsArgs extends PluginArgs {
   'inline-threshold'?: number
@@ -56,8 +63,7 @@ class RewireAssets implements FabPlugin<RewireAssetsArgs, RewireAssetsMetadata> 
     for (const filename of to_inline) {
       inlined_assets.set(filename, {
         contents: proto_fab.files.get(filename)!,
-        // Todo: look this up
-        content_type: 'text/html',
+        content_type: getContentType(filename),
       })
       // We got this, yo.
       proto_fab.files.delete(filename)

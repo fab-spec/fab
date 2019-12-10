@@ -2,6 +2,11 @@ import plugin, { RewireAssetsMetadata } from '../src'
 import { expect } from 'chai'
 import { PluginMetadata, ProtoFab } from '@fab/core'
 
+const EXAMPLES = {
+  HTML: '< some contents >',
+  CSS: 'body { font-family: Comic Sans MS; font-size: 48px; }',
+}
+
 describe('Build time', () => {
   it('should be a function', () => {
     expect(plugin.build).to.be.a('function')
@@ -9,7 +14,7 @@ describe('Build time', () => {
 
   it('should ignore files in _assets already', async () => {
     const files = {
-      '_assets/some.file': '< some contents >',
+      '_assets/some.file': EXAMPLES.HTML,
     }
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
     await plugin.build({}, proto_fab)
@@ -27,7 +32,8 @@ describe('Build time', () => {
 
   it('should inline small files by default', async () => {
     const files = {
-      'index.html': '< some contents >',
+      'index.html': EXAMPLES.HTML,
+      'main.css': EXAMPLES.CSS,
     }
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
     await plugin.build({}, proto_fab)
@@ -36,8 +42,15 @@ describe('Build time', () => {
       [
         'index.html',
         {
-          contents: '< some contents >',
-          content_type: 'text/html',
+          contents: EXAMPLES.HTML,
+          content_type: 'text/html; charset=utf-8',
+        },
+      ],
+      [
+        'main.css',
+        {
+          contents: EXAMPLES.CSS,
+          content_type: 'text/css; charset=utf-8',
         },
       ],
     ])
