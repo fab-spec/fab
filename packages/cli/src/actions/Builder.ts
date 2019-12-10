@@ -8,6 +8,7 @@ import {
   ProtoFab,
   ssume,
 } from '@fab/core'
+import { Compiler } from './Compiler'
 
 export default class Builder {
   static async build(config: FabConfig) {
@@ -39,5 +40,7 @@ ${invalid_reason}
 You might need to add @fab/rewire-assets to your 'build' config. See https://fab.dev/packages/rewire-assets for more information about what this module is and why it's needed.
 `)
     }
+
+    Compiler.compile(proto_fab, config.render)
   }
 }
