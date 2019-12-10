@@ -1,5 +1,5 @@
 export interface PluginArgs {
-  [arg_name: string]: string | number | RegExp
+  [arg_name: string]: string | number | RegExp | undefined
 }
 
 export interface BuildConfig {
