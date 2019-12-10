@@ -1,3 +1,6 @@
+import path from 'path'
+import mime from 'mime-types'
+import hasha from 'hasha'
 import {
   DEFAULT_MIME_TYPE,
   FabPlugin,
@@ -7,8 +10,6 @@ import {
   PluginMetadata,
   ProtoFab,
 } from '@fab/core'
-import path from 'path'
-import mime from 'mime-types'
 
 const getContentType = (pathname: string) => {
   const mimeType = mime.lookup(pathname)
@@ -70,8 +71,8 @@ class RewireAssets implements FabPlugin<RewireAssetsArgs, RewireAssetsMetadata> 
 
     const renamed_assets: RenamedAssets = new Map()
     for (const filename of to_rename) {
-      // Todo: calculate
-      const hash = 'abcdef1234567890'
+      const contents = proto_fab.files.get(filename)!
+      const hash = hasha(contents, { algorithm: 'md5' }).slice(0, 9)
       const immutable = !!immutable_regexp.exec(filename)
       const extname = path.extname(filename)
       const asset_path = `_assets/${
@@ -86,8 +87,8 @@ class RewireAssets implements FabPlugin<RewireAssetsArgs, RewireAssetsMetadata> 
       })
 
       // "Move" the file by changing its key
+      proto_fab.files.set(asset_path, contents)
       proto_fab.files.delete(filename)
-      proto_fab.files.set(asset_path, proto_fab.files.get(filename)!)
     }
 
     proto_fab.metadata.rewire_assets = { inlined_assets, renamed_assets }
