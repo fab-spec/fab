@@ -4,16 +4,10 @@ import {
   FabPlugin,
   InvalidConfigError,
   PluginArgs,
+  PluginMetadata,
   ProtoFab,
   ssume,
 } from '@fab/core'
-
-/*
- *
- * build: {
- *   "@fab/rewire-assets": { ... }
- *
- * */
 
 export default class Builder {
   static async build(config: FabConfig) {
@@ -21,7 +15,7 @@ export default class Builder {
       ([plugin_name, plugin_args]) => {
         return {
           plugin: ssume(
-            () => require(plugin_name).default as FabPlugin<PluginArgs>,
+            () => require(plugin_name).default as FabPlugin<PluginArgs, PluginMetadata>,
             () =>
               new InvalidConfigError(
                 `Cannot find module '${plugin_name}', which was referenced in the 'build' config.\nAre you sure it's installed?`
@@ -32,7 +26,7 @@ export default class Builder {
       }
     )
 
-    const proto_fab = new ProtoFab()
+    const proto_fab = new ProtoFab<PluginMetadata>()
     for (const { plugin, plugin_args } of build_plugins) {
       await plugin.build(plugin_args, proto_fab)
     }

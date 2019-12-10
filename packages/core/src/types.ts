@@ -1,9 +1,11 @@
+import { ProtoFab } from './models/ProtoFab'
+
 export interface PluginArgs {
   [arg_name: string]: string | number | RegExp | undefined
 }
 
 export interface BuildConfig {
-  [arg_name: string]: PluginArgs
+  [plugin_name: string]: PluginArgs
 }
 
 export interface FabConfig {
@@ -15,34 +17,15 @@ export interface FabConfig {
   }
 }
 
-export interface FabPlugin<T extends PluginArgs> {
-  build: (args: T, proto_fab: ProtoFab) => Promise<void>
+export interface PluginMetadata {
+  [plugin_name: string]: {
+    [metadata_name: string]: any
+  }
+}
+
+export interface FabPlugin<T extends PluginArgs, U extends PluginMetadata> {
+  build: (args: T, proto_fab: ProtoFab<U>) => Promise<void>
   render: () => Response
 }
 
 export type FabFiles = Map<string, string>
-
-export class ProtoFab {
-  files: FabFiles
-
-  constructor() {
-    this.files = new Map()
-  }
-
-  readyForCompilation(): string | undefined {
-    // todo: an empty directory is... valid?
-    const files_in_wrong_place = []
-    for (const filename of this.files.keys()) {
-      if (filename !== '/server.js' && !filename.startsWith('/_assets/')) {
-        files_in_wrong_place.push(filename)
-      }
-    }
-
-    if (files_in_wrong_place.length > 0) {
-      return `Build config leaves files outside of _assets dir: ${files_in_wrong_place.join(
-        ', '
-      )}`
-    }
-    return undefined
-  }
-}

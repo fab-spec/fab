@@ -1,4 +1,10 @@
-import { FabPlugin, PluginArgs, ProtoFab, InvalidConfigError } from '@fab/core'
+import {
+  FabPlugin,
+  PluginArgs,
+  ProtoFab,
+  InvalidConfigError,
+  PluginMetadata,
+} from '@fab/core'
 import globby from 'globby'
 import path from 'path'
 import fs from 'fs-extra'
@@ -7,8 +13,10 @@ interface InputStaticArgs extends PluginArgs {
   dir: string
 }
 
-class InputStatic implements FabPlugin<InputStaticArgs> {
-  async build(args: InputStaticArgs, proto_fab: ProtoFab) {
+interface InputStaticMetadata extends PluginMetadata {}
+
+class InputStatic implements FabPlugin<InputStaticArgs, InputStaticMetadata> {
+  async build(args: InputStaticArgs, proto_fab: ProtoFab<InputStaticMetadata>) {
     const { dir } = args
 
     if (!dir) {

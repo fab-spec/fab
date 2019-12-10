@@ -1,12 +1,30 @@
-import { FabPlugin, InvalidConfigError, PluginArgs, ProtoFab } from '@fab/core'
+import {
+  FabPlugin,
+  filenameOutsideFabLocations,
+  InvalidConfigError,
+  PluginArgs,
+  PluginMetadata,
+  ProtoFab,
+} from '@fab/core'
+import path from 'path'
 
 interface RewireAssetsArgs extends PluginArgs {
   'inline-threshold'?: number
   'treat-as-immutable'?: RegExp
 }
 
-class RewireAssets implements FabPlugin<RewireAssetsArgs> {
-  async build(args: RewireAssetsArgs, proto_fab: ProtoFab) {
+type InlineAssets = Map<string, { contents: string; content_type: string }>
+type RenamedAssets = Map<string, { asset_path: string; immutable: boolean }>
+
+export interface RewireAssetsMetadata extends PluginMetadata {
+  rewire_assets: {
+    inlined_assets: InlineAssets
+    renamed_assets: RenamedAssets
+  }
+}
+
+class RewireAssets implements FabPlugin<RewireAssetsArgs, RewireAssetsMetadata> {
+  async build(args: RewireAssetsArgs, proto_fab: ProtoFab<RewireAssetsMetadata>) {
     const {
       'inline-threshold': inline_threshold = 8192,
       'treat-as-immutable': immutable_regexp = /\.[0-9A-F]{8,}\./i,
@@ -20,6 +38,54 @@ class RewireAssets implements FabPlugin<RewireAssetsArgs> {
         `'treat-as-immutable' value must be a regex-parser compatible RegExp string!`
       )
     }
+
+    const to_inline = []
+    const to_rename = []
+    for (const [filename, contents] of proto_fab.files.entries()) {
+      console.log(filename, filenameOutsideFabLocations(filename))
+      if (filenameOutsideFabLocations(filename)) {
+        if (contents.length > inline_threshold) {
+          to_rename.push(filename)
+        } else {
+          to_inline.push(filename)
+        }
+      }
+    }
+
+    const inlined_assets: InlineAssets = new Map()
+    for (const filename of to_inline) {
+      inlined_assets.set(filename, {
+        contents: proto_fab.files.get(filename)!,
+        // Todo: look this up
+        content_type: 'text/html',
+      })
+      // We got this, yo.
+      proto_fab.files.delete(filename)
+    }
+
+    const renamed_assets: RenamedAssets = new Map()
+    for (const filename of to_rename) {
+      // Todo: calculate
+      const hash = 'abcdef1234567890'
+      const immutable = !!immutable_regexp.exec(filename)
+      const extname = path.extname(filename)
+      const asset_path = `_assets/${
+        immutable
+          ? filename
+          : filename.slice(0, -1 * extname.length) + '.' + hash + extname
+      }`
+
+      renamed_assets.set(filename, {
+        asset_path,
+        immutable,
+      })
+
+      // "Move" the file by changing its key
+      proto_fab.files.delete(filename)
+      proto_fab.files.set(asset_path, proto_fab.files.get(filename)!)
+    }
+
+    proto_fab.metadata.rewire_assets = { inlined_assets, renamed_assets }
   }
 
   render() {

@@ -36,7 +36,7 @@ export default class JSON5Config {
 
     for (const [plugin, args] of Object.entries(data.build)) {
       for (const [k, v] of Object.entries(args)) {
-        if ((v as string).match(/^\/.*\/([gimy]*)$/)) {
+        if (typeof v === 'string' && v.match(/^\/.*\/([gimy]*)$/)) {
           args[k] = regexParser(v as string)
         }
       }

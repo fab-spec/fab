@@ -37,4 +37,17 @@ describe('JSON5Config', () => {
     expect('/static/foo.abcdef1234567890.js').to.match(regex)
     expect('/static/foo.abcdef1234567890abcdef1234567890.js').to.match(regex)
   })
+
+  it('should not crash on numeric values', () => {
+    const config = new JSON5Config('', {
+      build: {
+        plugin: {
+          number: 123,
+        },
+      },
+    })
+    const regex = config.data.build.plugin.number as number
+    expect(regex).to.be.a('Number')
+    expect(regex).to.eq(123)
+  })
 })
