@@ -5,7 +5,7 @@ export class ProtoFab<U extends PluginMetadata> {
   files: FabFiles
   metadata: U
 
-  constructor(init_files: { [k: string]: string }) {
+  constructor(init_files: { [k: string]: string } = {}) {
     this.files = new Map(Object.entries(init_files))
     this.metadata = {} as U
   }

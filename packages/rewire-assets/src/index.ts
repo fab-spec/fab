@@ -49,7 +49,6 @@ class RewireAssets implements FabPlugin<RewireAssetsArgs, RewireAssetsMetadata> 
     const to_inline = []
     const to_rename = []
     for (const [filename, contents] of proto_fab.files.entries()) {
-      console.log(filename, filenameOutsideFabLocations(filename))
       if (filenameOutsideFabLocations(filename)) {
         if (contents.length > inline_threshold) {
           to_rename.push(filename)
