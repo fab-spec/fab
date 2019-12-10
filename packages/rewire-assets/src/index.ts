@@ -1,6 +1,11 @@
 import { FabPlugin, PluginArgs, ProtoFab } from '@fab/core'
 
-class RewireAssets implements FabPlugin {
+interface RewireAssetsArgs extends PluginArgs {
+  'inline-threshold': number
+  'treat-as-immutable': RegExp
+}
+
+class RewireAssets implements FabPlugin<PluginArgs> {
   async build(args: PluginArgs, proto_fab: ProtoFab) {}
 
   render() {

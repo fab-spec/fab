@@ -30,6 +30,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@types/node": "^12.12.14"
+    "@types/node": "^12.12.14",
+    "@fab/core": "*"
   }
 }

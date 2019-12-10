@@ -3,6 +3,7 @@ import {
   FabConfig,
   FabPlugin,
   InvalidConfigError,
+  PluginArgs,
   ProtoFab,
   ssume,
 } from '@fab/core'
@@ -20,7 +21,7 @@ export default class Builder {
       ([plugin_name, plugin_args]) => {
         return {
           plugin: ssume(
-            () => require(plugin_name).default as FabPlugin,
+            () => require(plugin_name).default as FabPlugin<PluginArgs>,
             () =>
               new InvalidConfigError(
                 `Cannot find module '${plugin_name}', which was referenced in the 'build' config.\nAre you sure it's installed?`

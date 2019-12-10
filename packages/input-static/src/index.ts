@@ -3,15 +3,16 @@ import globby from 'globby'
 import path from 'path'
 import fs from 'fs-extra'
 
-class InputStatic implements FabPlugin {
-  async build(args: PluginArgs, proto_fab: ProtoFab) {
+interface InputStaticArgs extends PluginArgs {
+  dir: string
+}
+
+class InputStatic implements FabPlugin<InputStaticArgs> {
+  async build(args: InputStaticArgs, proto_fab: ProtoFab) {
     const { dir } = args
 
     if (!dir) {
       throw new InvalidConfigError(`@fab/input-static requires an argument of 'dir'.`)
-    }
-    if (typeof dir !== 'string') {
-      throw new InvalidConfigError(`@fab/input-static's 'dir' argument must be a string.`)
     }
     if (!(await fs.pathExists(dir))) {
       throw new InvalidConfigError(

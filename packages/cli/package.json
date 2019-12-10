@@ -43,7 +43,8 @@
     "fs-extra": "^8.1.0",
     "jju": "^1.4.0",
     "regex-parser": "^2.2.10",
-    "tslib": "^1"
+    "tslib": "^1",
+    "@fab/core": "*"
   },
   "engines": {
     "node": ">=8.0.0"
