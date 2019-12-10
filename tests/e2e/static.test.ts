@@ -14,10 +14,6 @@ it('should test a series of configs against a static dir', async () => {
   )
   expect(no_config.stdout).toContain(`fab.config.json5`)
 
-  console.log('WHAT IS HAPPEN')
-  await shell(`cat ${process.env.GITHUB_WORKSPACE}/packages/core/cjs/index.js`, { cwd })
-  await shell(`cat ${process.env.GITHUB_WORKSPACE}/packages/core/esm/index.js`, { cwd })
-
   const empty_config = await expectError(`fab build -c fab.empty-config.json5`, { cwd })
   expect(empty_config.stderr).toContain(
     `Error: The FAB config file is missing a 'build' property.`
