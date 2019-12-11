@@ -1,19 +1,8 @@
-import {
-  FabPlugin,
-  PluginArgs,
-  ProtoFab,
-  InvalidConfigError,
-  PluginMetadata,
-} from '@fab/core'
+import { InvalidConfigError, ProtoFab } from '@fab/core'
 import globby from 'globby'
 import path from 'path'
 import fs from 'fs-extra'
-
-interface InputStaticArgs extends PluginArgs {
-  dir: string
-}
-
-interface InputStaticMetadata extends PluginMetadata {}
+import { InputStaticArgs, InputStaticMetadata } from './types'
 
 export async function build(
   args: InputStaticArgs,
@@ -49,11 +38,4 @@ export async function build(
       )
     })
   )
-}
-
-export async function render(metadata: InputStaticMetadata) {
-  console.log('I am render time')
-  return new Response('OK', {
-    status: 200,
-  })
 }

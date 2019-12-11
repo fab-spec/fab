@@ -21,7 +21,7 @@
   "scripts": {
     "build": "yarn build:cjs",
     "build:cjs": "tsc --module commonjs --outDir lib",
-    "build:watch": "yarn build --watch --preserveWatchOutput",
+    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
     "clean": "rm -rf esm cjs",
     "prepack": "npm run clean && npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""

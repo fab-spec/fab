@@ -3,32 +3,20 @@ import mime from 'mime-types'
 import hasha from 'hasha'
 import {
   DEFAULT_MIME_TYPE,
-  FabPlugin,
   filenameOutsideFabLocations,
   InvalidConfigError,
-  PluginArgs,
-  PluginMetadata,
   ProtoFab,
 } from '@fab/core'
+import {
+  InlineAssets,
+  RenamedAssets,
+  RewireAssetsArgs,
+  RewireAssetsMetadata,
+} from './types'
 
 const getContentType = (pathname: string) => {
   const mimeType = mime.lookup(pathname)
   return (mimeType && mime.contentType(mimeType)) || DEFAULT_MIME_TYPE
-}
-
-interface RewireAssetsArgs extends PluginArgs {
-  'inline-threshold'?: number
-  'treat-as-immutable'?: RegExp
-}
-
-type InlineAssets = Map<string, { contents: string; content_type: string }>
-type RenamedAssets = Map<string, { asset_path: string; immutable: boolean }>
-
-export interface RewireAssetsMetadata extends PluginMetadata {
-  rewire_assets: {
-    inlined_assets: InlineAssets
-    renamed_assets: RenamedAssets
-  }
 }
 
 export async function build(
@@ -92,11 +80,4 @@ export async function build(
   }
 
   proto_fab.metadata.rewire_assets = { inlined_assets, renamed_assets }
-}
-
-export async function render(metadata: RewireAssetsMetadata) {
-  console.log('I am render time')
-  return new Response('OK', {
-    status: 200,
-  })
 }
