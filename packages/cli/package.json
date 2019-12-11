@@ -46,7 +46,9 @@
     "regex-parser": "^2.2.10",
     "tslib": "^1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@oclif/dev-cli": "^1"
+  },
   "engines": {
     "node": ">=8.0.0"
   },
