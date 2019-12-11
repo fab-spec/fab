@@ -37,6 +37,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^6.0.0",
     "@types/fs-extra": "^8.0.1",
     "@types/jju": "^1.4.1",
@@ -48,7 +49,6 @@
     "regex-parser": "^2.2.10",
     "rollup": "^1.27.10",
     "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-json": "^4.0.0",
     "tslib": "^1",
     "webpack": "^4.41.2"
   },
