@@ -1,6 +1,6 @@
 {
   "name": "@fab/input-static",
-  "version": "0.0.2",
+  "version": "0.0.3-alpha.0+98ce344",
   "description": "Module to handle files outside _assets",
   "keywords": [
     "fab"
@@ -30,12 +30,13 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "^0.0.2",
+    "@fab/core": "^0.0.3-alpha.0+98ce344",
     "@types/node": "^12.12.14",
     "fs-extra": "^8.1.0",
     "globby": "^10"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "98ce34423f906c0a9f66f2f87643e64b841e359a"
 }
