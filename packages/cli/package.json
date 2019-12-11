@@ -46,6 +46,7 @@
     "regex-parser": "^2.2.10",
     "tslib": "^1"
   },
+  "devDependencies": {},
   "engines": {
     "node": ">=8.0.0"
   },
