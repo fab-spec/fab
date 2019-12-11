@@ -20,14 +20,14 @@
   "type": "module",
   "exports": {
     "default": "./esm/index.js",
-    "require": "./cjs/index.js"
+    "require": "./cjs/index.cjs"
   },
-  "main": "cjs/index.js",
+  "main": "cjs/index.cjs",
   "module": "esm/index.js",
   "types": "esm/index.d.ts",
   "scripts": {
     "build": "yarn build:cjs && yarn build:esm",
-    "build:cjs": "tsc --module commonjs --outDir cjs",
+    "build:cjs": "tsc --module commonjs --outDir cjs && renamer --find .js --replace .cjs 'cjs/**/*.js'",
     "build:esm": "tsc --module esnext --outDir esm",
     "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
     "clean": "rm -rf esm cjs",
