@@ -12,27 +12,30 @@
   "repository": "fab-spec/fab",
   "license": "MIT",
   "author": "Glen Maddern",
-  "main": "cjs/index.js",
-  "module": "esm/index.js",
-  "types": "esm/index.d.ts",
   "files": [
     "cjs",
     "esm",
     "src"
   ],
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
   "scripts": {
-    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
-    "clean": "rm -rf esm cjs",
     "build": "yarn build:cjs && yarn build:esm",
     "build:cjs": "tsc --module commonjs --outDir cjs",
     "build:esm": "tsc --module esnext --outDir esm",
+    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
+    "clean": "rm -rf esm cjs",
     "prepack": "npm run clean && npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
+    "@fab/core": "*",
     "@types/node": "^12.12.14",
     "fs-extra": "^8.1.0",
-    "globby": "^10",
-    "@fab/core": "*"
+    "globby": "^10"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

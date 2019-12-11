@@ -21,18 +21,19 @@
     "fab": "./bin/run"
   },
   "scripts": {
-    "clean": "rm -rf lib",
-    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
     "build": "yarn build:cjs",
     "build:cjs": "tsc --module commonjs --outDir lib",
-    "prepack": "npm run clean && npm run build && npm run oclif:generate",
-    "oclif:generate": "oclif-dev manifest && oclif-dev readme",
-    "postpack": "rm -f oclif.manifest.json",
+    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
+    "clean": "rm -rf lib",
     "coverage": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "oclif:generate": "oclif-dev manifest && oclif-dev readme",
+    "prepack": "npm run clean && npm run build && npm run oclif:generate",
+    "postpack": "rm -f oclif.manifest.json",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
+    "@fab/core": "*",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
@@ -43,11 +44,13 @@
     "fs-extra": "^8.1.0",
     "jju": "^1.4.0",
     "regex-parser": "^2.2.10",
-    "tslib": "^1",
-    "@fab/core": "*"
+    "tslib": "^1"
   },
   "engines": {
     "node": ">=8.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "oclif": {
     "commands": "./lib/commands",
