@@ -55,12 +55,12 @@
   "publishConfig": {
     "access": "public"
   },
+  "gitHead": "98ce34423f906c0a9f66f2f87643e64b841e359a",
   "oclif": {
     "commands": "./lib/commands",
     "bin": "fab",
     "plugins": [
       "@oclif/plugin-help"
     ]
-  },
-  "gitHead": "98ce34423f906c0a9f66f2f87643e64b841e359a"
+  }
 }

@@ -8,18 +8,15 @@
   "license": "MIT",
   "author": "Glen Maddern",
   "files": [
-    "cjs",
-    "esm",
+    "lib",
     "src"
   ],
-  "main": "cjs/index.js",
-  "module": "esm/index.js",
-  "types": "esm/index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "build": "yarn build:cjs && yarn build:esm",
-    "build:cjs": "tsc --module commonjs --outDir cjs",
-    "build:esm": "tsc --module esnext --outDir esm",
-    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
+    "build": "yarn build:cjs",
+    "build:cjs": "tsc --module commonjs --outDir lib",
+    "build:watch": "yarn build --watch --preserveWatchOutput",
     "clean": "rm -rf esm cjs",
     "prepack": "npm run clean && npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
