@@ -1,7 +1,7 @@
 import {
   BuildFailedError,
+  FabBuilder,
   FabConfig,
-  FabPlugin,
   InvalidConfigError,
   PluginArgs,
   PluginMetadata,
@@ -15,8 +15,8 @@ export default class Builder {
     const build_plugins = Object.entries(config.build).map(
       ([plugin_name, plugin_args]) => {
         return {
-          plugin: ssume(
-            () => require(plugin_name).default as FabPlugin<PluginArgs, PluginMetadata>,
+          builder: ssume(
+            () => require(plugin_name).build as FabBuilder<PluginArgs, PluginMetadata>,
             () =>
               new InvalidConfigError(
                 `Cannot find module '${plugin_name}', which was referenced in the 'build' config.\nAre you sure it's installed?`
@@ -28,8 +28,8 @@ export default class Builder {
     )
 
     const proto_fab = new ProtoFab<PluginMetadata>()
-    for (const { plugin, plugin_args } of build_plugins) {
-      await plugin.build(plugin_args, proto_fab)
+    for (const { builder, plugin_args } of build_plugins) {
+      await builder(plugin_args, proto_fab)
     }
 
     // After build, there should only be files in the expected places (server.js, _assets)
@@ -41,6 +41,6 @@ You might need to add @fab/rewire-assets to your 'build' config. See https://fab
 `)
     }
 
-    Compiler.compile(proto_fab, config.render)
+    await Compiler.compile(proto_fab, config.render || [])
   }
 }

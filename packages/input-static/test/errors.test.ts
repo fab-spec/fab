@@ -1,4 +1,4 @@
-import plugin from '../src'
+import { build } from '../src'
 import { expect } from 'chai'
 import { PluginMetadata, ProtoFab } from '@fab/core'
 
@@ -15,7 +15,7 @@ describe('@fab/input-static', () => {
   it('should require a dir argument', async () => {
     await shouldThrow(
       // @ts-ignore
-      () => plugin.build({}, new ProtoFab()),
+      () => build({}, new ProtoFab()),
       `@fab/input-static requires an argument of 'dir'.`
     )
   })
@@ -23,7 +23,7 @@ describe('@fab/input-static', () => {
   it('should check the dir exists', async () => {
     await shouldThrow(
       () =>
-        plugin.build(
+        build(
           {
             dir: './no-existo',
           },
@@ -38,7 +38,7 @@ describe('@fab/input-static', () => {
     proto_fab.files.set('/a', 'something')
     await shouldThrow(
       () =>
-        plugin.build(
+        build(
           {
             dir: __dirname + '/fixtures',
           },

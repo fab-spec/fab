@@ -1,4 +1,4 @@
-import plugin, { RewireAssetsMetadata } from '../src'
+import { build, RewireAssetsMetadata } from '../src'
 import { expect } from 'chai'
 import { PluginMetadata, ProtoFab } from '@fab/core'
 import hasha from 'hasha'
@@ -10,7 +10,7 @@ const EXAMPLES = {
 
 describe('Build time', () => {
   it('should be a function', () => {
-    expect(plugin.build).to.be.a('function')
+    expect(build).to.be.a('function')
   })
 
   it('should ignore files in _assets already', async () => {
@@ -18,7 +18,7 @@ describe('Build time', () => {
       '_assets/some.file': EXAMPLES.HTML,
     }
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
-    await plugin.build({}, proto_fab)
+    await build({}, proto_fab)
     expect([...proto_fab.files.entries()]).to.deep.equal([...Object.entries(files)])
   })
 
@@ -27,7 +27,7 @@ describe('Build time', () => {
       'server.js': '< some contents >',
     }
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
-    await plugin.build({}, proto_fab)
+    await build({}, proto_fab)
     expect([...proto_fab.files.entries()]).to.deep.equal([...Object.entries(files)])
   })
 
@@ -37,7 +37,7 @@ describe('Build time', () => {
       'main.css': EXAMPLES.CSS,
     }
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
-    await plugin.build({}, proto_fab)
+    await build({}, proto_fab)
     expect([...proto_fab.files.entries()]).to.deep.equal([])
     expect([...proto_fab.metadata.rewire_assets.inlined_assets.entries()]).to.deep.equal([
       [
@@ -64,7 +64,7 @@ describe('Build time', () => {
     }
     const css_hash = hasha(EXAMPLES.CSS, { algorithm: 'md5' }).slice(0, 9)
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
-    await plugin.build(
+    await build(
       {
         'inline-threshold': EXAMPLES.CSS.length - 1,
       },

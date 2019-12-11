@@ -3,7 +3,7 @@ import { PluginMetadata, ProtoFab } from '@fab/core'
 import { rollup } from 'rollup'
 
 export class Compiler {
-  static async compile(proto_fab: ProtoFab<PluginMetadata>, render_plugins: [string]) {
+  static async compile(proto_fab: ProtoFab<PluginMetadata>, render_plugins: [string?]) {
     console.log("It's compilin' time!")
 
     await fs.emptyDir('.fab/build')
