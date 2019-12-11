@@ -31,8 +31,7 @@
     "@types/mime-types": "^2.1.0",
     "@types/node": "^12.12.14",
     "hasha": "^5.1.0",
-    "mime-types": "^2.1.25",
-    "rollup": "^1.27.9"
+    "mime-types": "^2.1.25"
   },
   "publishConfig": {
     "access": "public"
