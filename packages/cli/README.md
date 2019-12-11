@@ -27,7 +27,7 @@ $ npm install -g @fab/cli
 $ fab COMMAND
 running command...
 $ fab (-v|--version|version)
-@fab/cli/0.0.2 darwin-x64 node-v13.1.0
+@fab/cli/0.0.3-alpha.0+bdb4da8 darwin-x64 node-v13.1.0
 $ fab --help [COMMAND]
 USAGE
   $ fab COMMAND
@@ -60,7 +60,7 @@ EXAMPLE
   hello world from ./src/hello.ts!
 ```
 
-_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.2/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.3-alpha.0+bdb4da8/lib/commands/build.js)_
 
 ## `fab help [COMMAND]`
 

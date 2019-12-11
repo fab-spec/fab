@@ -17,7 +17,8 @@
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
     "test": "lerna run test --stream --parallel",
     "test:watch": "lerna run test --stream --parallel -- --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "publish:prerelease": "lerna publish --force-publish --canary --dist-tag=prerelease"
   },
   "husky": {
     "hooks": {
