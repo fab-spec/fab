@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra'
-import { FabConfig, MissingConfig, InvalidConfigError, assume, ssume } from '@fab/core'
+import { FabConfig, MissingConfig, InvalidConfigError, a_sume, s_sume } from '@fab/core'
 import * as jju from 'jju'
 import regexParser from 'regex-parser'
 
@@ -12,12 +12,12 @@ export default class JSON5Config {
       throw new MissingConfig(file_path)
     }
 
-    const str_contents = await assume(
+    const str_contents = await a_sume(
       () => fs.readFile(file_path, 'utf8'),
       () => new InvalidConfigError(`Could not read file at '${file_path}'`)
     )
 
-    const data = ssume(
+    const data = s_sume(
       () => jju.parse(str_contents),
       () =>
         new InvalidConfigError(
@@ -30,11 +30,11 @@ export default class JSON5Config {
 
   constructor(str_contents: string, data: FabConfig) {
     // todo: can we generate a validator from the TS definition
-    if (!data.plugins) {
+    if (!data.build) {
       throw new InvalidConfigError(`The FAB config file is missing a 'build' property.`)
     }
 
-    for (const [plugin, args] of Object.entries(data.plugins)) {
+    for (const [plugin, args] of Object.entries(data.build)) {
       for (const [k, v] of Object.entries(args)) {
         if (typeof v === 'string' && v.match(/^\/.*\/([gimy]*)$/)) {
           args[k] = regexParser(v as string)

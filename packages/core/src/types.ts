@@ -9,8 +9,8 @@ export interface BuildConfig {
 }
 
 export interface FabConfig {
-  plugins: BuildConfig
-  runtime: [string?]
+  build: BuildConfig
+  runtime: string[]
   settings?: {
     [env_name: string]: {
       [var_name: string]: string
@@ -29,11 +29,14 @@ export type FabBuilder<T extends PluginArgs, U extends PluginMetadata> = (
   proto_fab: ProtoFab<U>
 ) => Promise<void>
 
-export type FabRenderer<U extends PluginMetadata> = (metadata: U) => Response
+export type FabRenderer<T extends PluginArgs, U extends PluginMetadata> = (
+  args: T,
+  metadata: U
+) => (request: Request) => Response
 
 export interface FabPlugin<T extends PluginArgs, U extends PluginMetadata> {
   build: FabBuilder<T, U>
-  render: FabRenderer<U>
+  render: FabRenderer<T, U>
 }
 
 export type FabFiles = Map<string, string>

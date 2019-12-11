@@ -1,6 +1,6 @@
 // fab.config.json5
 {
-  plugins: {
+  build: {
     'render-html': {
       //shorthand for @fab/render-html
       dir: 'build',

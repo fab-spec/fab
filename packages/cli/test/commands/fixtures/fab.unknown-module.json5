@@ -1,8 +1,5 @@
 {
-  plugins: {
-    '@fab/input-static': {
-      dir: 'src',
-    },
+  build: {
     '@fab/no-existo': {
       other: 'ag',
     },

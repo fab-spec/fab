@@ -8,7 +8,7 @@ import commonjs from 'rollup-plugin-commonjs'
 import json from '@rollup/plugin-json'
 
 export class Compiler {
-  static async compile(proto_fab: ProtoFab<PluginMetadata>, render_plugins: [string?]) {
+  static async compile(proto_fab: ProtoFab<PluginMetadata>, render_plugins: string[]) {
     console.log("It's compilin' time!")
 
     await fs.emptyDir('.fab/build')
