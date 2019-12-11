@@ -4,6 +4,8 @@ import { rollup } from 'rollup'
 import webpack from 'webpack'
 import * as path from 'path'
 import resolve from '@rollup/plugin-node-resolve'
+import commonjs from 'rollup-plugin-commonjs'
+import json from 'rollup-plugin-json'
 
 export class Compiler {
   static async compile(proto_fab: ProtoFab<PluginMetadata>, render_plugins: [string?]) {
@@ -15,7 +17,7 @@ export class Compiler {
 ${render_plugins
   .map(
     (plugin, i) => `
-import { render as renderer_${i} } from '${plugin}/render'
+import { render as renderer_${i} } from '${plugin}'
 `
   )
   .join('\n')}
@@ -29,7 +31,7 @@ const renderers = [
 
     const bundle = await rollup({
       input: './.fab/build/server.js',
-      plugins: [resolve()],
+      plugins: [resolve(), commonjs(), json()],
     })
     const { output } = await bundle.generate({ format: 'esm' })
     console.log(output)

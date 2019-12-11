@@ -1,1 +1,1 @@
-module.exports = require('./lib/render')
+export * from './esm/render'
