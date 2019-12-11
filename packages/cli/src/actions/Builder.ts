@@ -65,7 +65,7 @@ export default class Builder {
           new InvalidPluginError(
             plugin_name,
             `The plugin '${plugin_name}' has no 'render' export, but is referenced in the 'runtime' section of the config!\n` +
-            `Looked for ${requireable_plugin + '/render'} and ${requireable_plugin}`
+              `Looked for ${requireable_plugin + '/render'} and ${requireable_plugin}`
           )
       )
 
