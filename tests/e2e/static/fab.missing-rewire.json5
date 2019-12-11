@@ -1,8 +1,8 @@
 {
-  build: {
+  plugins: {
     '@fab/input-static': {
       dir: 'src',
     },
   },
-  render: {},
+  runtime: [],
 }

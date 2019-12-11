@@ -12,11 +12,11 @@ import { Compiler } from './Compiler'
 
 export default class Builder {
   static async build(config: FabConfig) {
-    const build_plugins = Object.entries(config.build).map(
+    const build_plugins = Object.entries(config.plugins).map(
       ([plugin_name, plugin_args]) => {
         return {
           builder: ssume(
-            () => require(plugin_name).build as FabBuilder<PluginArgs, PluginMetadata>,
+            () => require(plugin_name).plugins as FabBuilder<PluginArgs, PluginMetadata>,
             () =>
               new InvalidConfigError(
                 `Cannot find module '${plugin_name}', which was referenced in the 'build' config.\nAre you sure it's installed?`
@@ -41,6 +41,6 @@ You might need to add @fab/rewire-assets to your 'build' config. See https://fab
 `)
     }
 
-    await Compiler.compile(proto_fab, config.render || [])
+    await Compiler.compile(proto_fab, config.runtime || [])
   }
 }

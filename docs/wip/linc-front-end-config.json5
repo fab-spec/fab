@@ -1,14 +1,9 @@
 {
-  "build": {
-    "@fab/render-html": {},
-    "@fab/rewrite-assets": {}
+  plugins: {
+    '@fab/render-html': {},
+    '@fab/rewrite-assets': {
+      treat_as_immutable: ['/static/*'],
+    },
   },
-  "render": {
-    "@fab/render-html": {},
-    "@fab/rewrite-assets": {
-      "treat-as-immutable": [
-        "/static/*"
-      ]
-    }
-  }
+  runtime: ['@fab/render-html', '@fab/rewrite-assets'],
 }

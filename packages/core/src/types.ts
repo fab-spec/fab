@@ -9,8 +9,8 @@ export interface BuildConfig {
 }
 
 export interface FabConfig {
-  build: BuildConfig
-  render?: [string]
+  plugins: BuildConfig
+  runtime: [string?]
   settings?: {
     [env_name: string]: {
       [var_name: string]: string
