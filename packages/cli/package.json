@@ -30,7 +30,7 @@
     "prepack": "npm run clean && npm run build && npm run oclif:generate",
     "postpack": "rm -f oclif.manifest.json",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme"
   },
   "dependencies": {
     "@fab/core": "*",
