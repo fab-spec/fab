@@ -1,6 +1,6 @@
-import { build } from '../src'
 import { expect } from 'chai'
 import { PluginMetadata, ProtoFab } from '@fab/core'
+import { build } from '../src/build'
 
 describe('@fab/input-static', () => {
   it('should be a function', () => {
