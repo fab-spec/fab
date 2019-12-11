@@ -33,7 +33,7 @@
     "version": "oclif-dev readme"
   },
   "dependencies": {
-    "@fab/core": "*",
+    "@fab/core": "^0.0.1",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
