@@ -17,6 +17,11 @@
     "esm",
     "src"
   ],
+  "type": "module",
+  "exports": {
+    "default": "./esm/index.js",
+    "require": "./cjs/index.js"
+  },
   "main": "cjs/index.js",
   "module": "esm/index.js",
   "types": "esm/index.d.ts",
