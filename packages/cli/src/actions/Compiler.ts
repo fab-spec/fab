@@ -1,11 +1,11 @@
 import fs from 'fs-extra'
 import { PluginMetadata, ProtoFab } from '@fab/core'
 import { rollup } from 'rollup'
-import webpack from 'webpack'
-import * as path from 'path'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import json from '@rollup/plugin-json'
+// @ts-ignore
+import hypothetical from 'rollup-plugin-hypothetical'
 
 export class Compiler {
   static async compile(proto_fab: ProtoFab<PluginMetadata>, render_plugins: string[]) {
@@ -27,11 +27,21 @@ const renderers = [
 ]
 `
 
-    await fs.writeFile('.fab/build/server.js', server_contents)
+    // await fs.writeFile('.fab/build/server.js', server_contents)
 
     const bundle = await rollup({
-      input: './.fab/build/server.js',
-      plugins: [resolve(), commonjs(), json()],
+      input: './server.js',
+      plugins: [
+        hypothetical({
+          files: {
+            './server.js': server_contents,
+          },
+          allowFallthrough: true,
+        }),
+        resolve(),
+        commonjs(),
+        json(),
+      ],
     })
     const { output } = await bundle.generate({ format: 'esm' })
     console.log(output)
