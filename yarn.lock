@@ -5466,6 +5466,15 @@ deterministic-zip@^1.0.5:
     crc32-stream "^3.0.0"
     minimatch "^3.0.3"
 
+deterministic-zip@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/deterministic-zip/-/deterministic-zip-1.1.0.tgz#5af613242f0624068ec7b36fea5df3d6e3998ea4"
+  integrity sha512-Tjoq2BT6WTD5AeUDydxwMAPqdz0EIgyjmvruvsH/J3uO+xV9mp4bn065ygvElezLJ7KloTGMtrNKFhxS2jk4Gg==
+  dependencies:
+    async "^3.1.0"
+    crc32-stream "^3.0.0"
+    minimatch "^3.0.3"
+
 devcert-san@^0.3.3:
   version "0.3.3"
   resolved "https://registry.npmjs.org/devcert-san/-/devcert-san-0.3.3.tgz#aa77244741b2d831771c011f22ee25e396ad4ba9"
