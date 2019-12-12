@@ -39,21 +39,6 @@ export type FabRenderer<T extends PluginArgs, U extends PluginMetadata> = (
   metadata: U
 ) => (request: Request, settings: FabSettings) => undefined | Promise<Response>
 
-export abstract class FabRuntime<T extends PluginArgs, U extends PluginMetadata> {
-  args: T
-  metadata: U
-  constructor(args: T, metadata: U) {
-    this.args = args
-    this.metadata = metadata
-  }
-
-  shouldRespond(request: Request, settings: FabSettings): boolean {
-    return false
-  }
-
-  abstract async render(request: Request, settings: FabSettings): Promise<Response>
-}
-
 /*
  * The outermost FAB renderer has to follow the spec exactly
  * */

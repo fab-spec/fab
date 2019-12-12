@@ -1,5 +1,5 @@
 import { InputStaticArgs, InputStaticMetadata } from './types'
-import { FabRenderer, FabRuntime } from '@fab/core'
+import { FabRenderer } from '@fab/core'
 
 export const render: FabRenderer<InputStaticArgs, InputStaticMetadata> = (
   args: InputStaticArgs,
@@ -18,18 +18,5 @@ export const render: FabRenderer<InputStaticArgs, InputStaticMetadata> = (
       return respond(request)
     }
     return undefined
-  }
-}
-
-export const runtime = class InputStaticRuntime extends FabRuntime<
-  InputStaticArgs,
-  InputStaticMetadata
-> {
-  shouldRespond() {
-    return true
-  }
-
-  async render() {
-    return new Response()
   }
 }
