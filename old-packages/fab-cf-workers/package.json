@@ -1,0 +1,66 @@
+{
+  "name": "@fab/cf-workers",
+  "description": "FAB releaser for Cloudflare Workers",
+  "version": "0.0.5",
+  "author": "Glen Maddern @geelen",
+  "bin": {
+    "fab-cf-workers": "./bin/run"
+  },
+  "bugs": "https://github.com/fab-spec/fab/issues",
+  "dependencies": {
+    "@cloudflare/wrangler": "^1.2.0",
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^2",
+    "@types/decompress": "^4.2.3",
+    "@types/shelljs": "^0.8.5",
+    "cli-ux": "^5.3.1",
+    "decompress": "^4.2.0",
+    "guid-typescript": "^1.0.9",
+    "shelljs": "^0.8.3",
+    "theros": "^1.0.6",
+    "tslib": "^1"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@oclif/test": "^1",
+    "@types/chai": "^4",
+    "@types/node": "^10",
+    "chai": "^4",
+    "globby": "^10",
+    "mocha": "^5",
+    "nyc": "^13",
+    "ts-node": "^8",
+    "typescript": "^3.3"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/fab-spec/fab",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "fab-cf-workers",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "fab-spec/fab",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "clean": "rm -rf lib",
+    "prepack": "yarn clean && tsc -d && cp -R src/files lib/files && oclif-dev manifest && oclif-dev readme",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "types": "lib/index.d.ts"
+}

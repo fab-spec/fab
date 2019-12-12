@@ -17,15 +17,29 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: yarn install & build
+    - name: yarn install
       run: |
         yarn
-        yarn build
-        yarn link-all
       env:
         CI: true
-    - name: Run tests
+    - name: yarn typecheck
       run: |
+        yarn typecheck
+      env:
+        CI: true
+    - name: yarn build
+      run: |
+        yarn build
+      env:
+        CI: true
+    - name: yarn test
+      run: |
+        yarn test
+      env:
+        CI: true
+    - name: Run e2e tests
+      run: |
+        yarn link-all
         cd tests
         yarn
         yarn test

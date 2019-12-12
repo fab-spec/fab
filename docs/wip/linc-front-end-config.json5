@@ -1,0 +1,14 @@
+{
+  "build": {
+    "@fab/render-html": {},
+    "@fab/rewrite-assets": {}
+  },
+  "render": {
+    "@fab/render-html": {},
+    "@fab/rewrite-assets": {
+      "treat-as-immutable": [
+        "/static/*"
+      ]
+    }
+  }
+}

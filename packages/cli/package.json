@@ -1,0 +1,59 @@
+{
+  "name": "@fab/cli",
+  "version": "0.0.1",
+  "description": "The CLI entry-point for the FAB ecosystem",
+  "keywords": [
+    "oclif"
+  ],
+  "homepage": "https://github.com/fab-spec/fab",
+  "bugs": "https://github.com/fab-spec/fab/issues",
+  "repository": "fab-spec/fab",
+  "license": "MIT",
+  "author": "Glen Maddern @geelen",
+  "files": [
+    "/bin",
+    "/lib",
+    "/oclif.manifest.json"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "bin": {
+    "fab": "./bin/run"
+  },
+  "scripts": {
+    "clean": "rm -rf lib",
+    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
+    "build": "yarn build:cjs",
+    "build:cjs": "tsc --module commonjs --outDir lib",
+    "prepack": "npm run clean && npm run build && npm run oclif:generate",
+    "oclif:generate": "oclif-dev manifest && oclif-dev readme",
+    "postpack": "rm -f oclif.manifest.json",
+    "coverage": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^2",
+    "@types/fs-extra": "^8.0.1",
+    "@types/jju": "^1.4.1",
+    "@types/node": "^10",
+    "chalk": "^3.0.0",
+    "fs-extra": "^8.1.0",
+    "jju": "^1.4.0",
+    "regex-parser": "^2.2.10",
+    "tslib": "^1",
+    "@fab/core": "*"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "fab",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  }
+}

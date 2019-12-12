@@ -1,0 +1,31 @@
+{
+  "name": "@fab/core",
+  "version": "0.0.1",
+  "private": false,
+  "description": "Common code for all FAB projects",
+  "homepage": "https://github.com/fab-spec/fab",
+  "repository": "fab-spec/fab",
+  "license": "MIT",
+  "author": "Glen Maddern",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
+  "files": [
+    "cjs",
+    "esm",
+    "src"
+  ],
+  "scripts": {
+    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
+    "clean": "rm -rf esm cjs",
+    "build": "yarn build:cjs && yarn build:esm",
+    "build:cjs": "tsc --module commonjs --outDir cjs",
+    "build:esm": "tsc --module esnext --outDir esm",
+    "prepack": "npm run clean && npm run build",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@types/node": "^12.12.14",
+    "chalk": "^3.0.0"
+  }
+}

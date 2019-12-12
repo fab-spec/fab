@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "importHelpers": true,
+    "module": "commonjs",
+    "strict": true,
+    "target": "es2017"
+  }
+}

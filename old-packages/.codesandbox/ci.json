@@ -1,0 +1,8 @@
+{
+  "packages": [
+    "packages/cli",
+    "packages/core"
+  ],
+  "buildCommand": "build:codesandbox",
+  "sandboxes": ["dazzling-cray-t0ru6"]
+}

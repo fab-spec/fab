@@ -17,6 +17,10 @@ They unify **static sites, single page applications (SPAs) as well as server-ren
 
 https://github.com/fab-spec/fab
 
+## *Note:* Major overhaul underway
+
+The FAB tooling is being rebuilt in preparation for a v1 release. See the [next](https://github.com/fab-spec/fab/tree/next) branch for latest progress.
+
 ## Overview
 
 <img width="100%" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/63136503-b5e46080-c015-11e9-9f69-c974e11d9528.png"/>
