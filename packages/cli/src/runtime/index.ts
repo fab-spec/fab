@@ -7,6 +7,7 @@ import {
   PluginArgs,
   PluginMetadata,
 } from '@fab/core'
+// @ts-ignore
 import { renderers } from 'user-defined-pipeline'
 import { render as render_404 } from './404'
 

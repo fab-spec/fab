@@ -20,19 +20,7 @@ export class Compiler {
 
     await fs.emptyDir('.fab/build')
 
-    const pipeline = `
-${render_plugins
-  .map(
-    (plugin, i) => `
-import { render as renderer_${i} } from '${plugin}/render'
-`
-  )
-  .join('\n')}
-    
-export const renderers = [
-  ${render_plugins.map((plugin, i) => `renderer_${i}`).join(',')}
-]
-`
+    const pipeline = generatePipelineJs(render_plugins)
 
     const bundle = await rollup({
       input: '@fab/cli/lib/runtime',
@@ -72,33 +60,22 @@ export const renderers = [
       `    ${path.relative(process.cwd(), zipfile)} (${Math.round(stats2.size / 1024) +
         'KB'})`
     )
-
-    // await new Promise((resolve, reject) =>
-    //   webpack(
-    //     {
-    //       mode: 'production',
-    //       target: 'webworker',
-    //       entry: './.fab/build/server.js',
-    //       output: {
-    //         path: path.resolve('.fab/built'),
-    //         filename: 'server.js',
-    //         library: 'server',
-    //         libraryTarget: 'commonjs2',
-    //       },
-    //       optimization: {
-    //         minimize: false
-    //       },
-    //     },
-    //     (err, stats) => {
-    //       if (err || stats.hasErrors()) {
-    //         console.log('Build failed.')
-    //         console.log(err)
-    //         console.log(stats.toJson().errors.toString())
-    //         reject()
-    //       }
-    //       resolve()
-    //     }
-    //   )
-    // )
   }
+}
+
+function generatePipelineJs(render_plugins: string[]) {
+  const pipeline = `
+${render_plugins
+  .map(
+    (plugin, i) => `
+import { render as renderer_${i} } from '${plugin}/render'
+`
+  )
+  .join('\n')}
+    
+export const renderers = [
+  ${render_plugins.map((plugin, i) => `renderer_${i}`).join(',')}
+]
+`
+  return pipeline
 }
