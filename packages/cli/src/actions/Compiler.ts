@@ -30,7 +30,7 @@ const renderers = [
     // await fs.writeFile('.fab/build/server.js', server_contents)
 
     const bundle = await rollup({
-      input: './server.js',
+      input: '@fab/cli/lib/runtime',
       plugins: [
         hypothetical({
           files: {

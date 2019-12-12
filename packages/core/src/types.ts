@@ -8,13 +8,15 @@ export interface BuildConfig {
   [plugin_name: string]: PluginArgs
 }
 
+export type FabSettings = {
+  [var_name: string]: string
+}
+
 export interface FabConfig {
   build: BuildConfig
   runtime: string[]
   settings?: {
-    [env_name: string]: {
-      [var_name: string]: string
-    }
+    [env_name: string]: FabSettings
   }
 }
 
@@ -29,10 +31,18 @@ export type FabBuilder<T extends PluginArgs, U extends PluginMetadata> = (
   proto_fab: ProtoFab<U>
 ) => Promise<void>
 
+/*
+ * Each Renderer exports this signature
+ * */
 export type FabRenderer<T extends PluginArgs, U extends PluginMetadata> = (
   args: T,
   metadata: U
-) => (request: Request) => Response
+) => (request: Request) => undefined | Promise<Response>
+
+/*
+ * The outermost FAB renderer has to follow the spec exactly
+ * */
+export type FabSpecRender = (request: Request, settings: FabSettings) => {}
 
 export interface FabPlugin<T extends PluginArgs, U extends PluginMetadata> {
   build: FabBuilder<T, U>
