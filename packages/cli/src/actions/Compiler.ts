@@ -20,7 +20,7 @@ export class Compiler {
 
     await fs.emptyDir('.fab/build')
 
-    const server_contents = `
+    const pipeline = `
 ${render_plugins
   .map(
     (plugin, i) => `
@@ -29,8 +29,8 @@ import { render as renderer_${i} } from '${plugin}/render'
   )
   .join('\n')}
     
-const renderers = [
-  ${render_plugins.map((plugin, i) => `renderer_${i}()`).join(',')}
+export const renderers = [
+  ${render_plugins.map((plugin, i) => `renderer_${i}`).join(',')}
 ]
 `
 
@@ -39,7 +39,7 @@ const renderers = [
       plugins: [
         hypothetical({
           files: {
-            './server.js': server_contents,
+            'user-defined-pipeline': pipeline,
           },
           allowFallthrough: true,
         }),

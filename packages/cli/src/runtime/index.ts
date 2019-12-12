@@ -1,14 +1,34 @@
 /* Outermost FAB server, imports the plugin chain and responds to requests */
 
-import { FabSettings, FabSpecRender } from '@fab/core'
+import {
+  FabSettings,
+  FabSpecRender,
+  FabRenderer,
+  PluginArgs,
+  PluginMetadata,
+} from '@fab/core'
+import { renderers } from 'user-defined-pipeline'
+import { render as render_404 } from './404'
 
-export const render: FabSpecRender = (request: Request, settings: FabSettings) => {
+const pipeline = [
+  ...(renderers as FabRenderer<PluginArgs, PluginMetadata>[]),
+  render_404,
+].map((middleware) => middleware({}, {}))
+
+console.log(pipeline)
+
+export const render: FabSpecRender = async (request: Request, settings: FabSettings) => {
   console.log(request.url)
-  console.log("It's definitely being called, Glen.")
 
-  return new Response(null, {
-    status: 404,
-    statusText: 'Not Found',
+  for (const responders of pipeline) {
+    const response = responders(request)
+    if (response) {
+      return response
+    }
+  }
+
+  return new Response(`Error! Expected a plugin to respond!`, {
+    status: 500,
     headers: {},
   })
 }
