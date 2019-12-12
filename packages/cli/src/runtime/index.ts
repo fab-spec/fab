@@ -22,7 +22,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
   console.log(request.url)
 
   for (const responders of pipeline) {
-    const response = responders(request)
+    const response = responders(request, settings)
     if (response) {
       return response
     }

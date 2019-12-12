@@ -37,7 +37,7 @@ export type FabBuilder<T extends PluginArgs, U extends PluginMetadata> = (
 export type FabRenderer<T extends PluginArgs, U extends PluginMetadata> = (
   args: T,
   metadata: U
-) => (request: Request) => undefined | Promise<Response>
+) => (request: Request, settings: FabSettings) => undefined | Promise<Response>
 
 /*
  * The outermost FAB renderer has to follow the spec exactly
