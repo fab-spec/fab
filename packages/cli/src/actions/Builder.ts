@@ -72,7 +72,7 @@ export default class Builder {
       return requireable_plugin
     })
 
-    const proto_fab = new ProtoFab<PluginMetadata>()
+    const proto_fab = new ProtoFab()
     for (const { plugin_name, builder, plugin_args } of build_plugins) {
       console.log({ plugin_name, builder, plugin_args })
       await builder(plugin_args, proto_fab)

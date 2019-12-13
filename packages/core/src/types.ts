@@ -72,3 +72,8 @@ export type FabFileMetadata = {
     content_length: number
   }
 }
+
+export type FabMetadata = {
+  file_metadata: FabFileMetadata
+  plugin_metadata: PluginMetadata
+}
