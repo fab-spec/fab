@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "@types/node": "^12.12.14",
-    "chalk": "^3.0.0"
+    "chalk": "^3.0.0",
+    "mime-types": "^2.1.25"
   },
   "publishConfig": {
     "access": "public"

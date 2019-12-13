@@ -66,3 +66,9 @@ export interface FabPlugin<T extends PluginArgs, U extends PluginMetadata> {
 }
 
 export type FabFiles = Map<string, string>
+export type FabFileMetadata = {
+  [filename: string]: {
+    content_type: string
+    content_length: number
+  }
+}

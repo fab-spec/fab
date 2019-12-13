@@ -1,5 +1,5 @@
-import { filenameOutsideFabLocations } from '../helpers'
-import { FabFiles, PluginMetadata } from '../types'
+import { filenameOutsideFabLocations, getContentType } from '../helpers'
+import { FabFileMetadata, FabFiles, PluginMetadata } from '../types'
 
 export class ProtoFab<U extends PluginMetadata> {
   files: FabFiles
@@ -25,5 +25,19 @@ export class ProtoFab<U extends PluginMetadata> {
       )}`
     }
     return undefined
+  }
+
+  toJSON(): string {
+    const file_metadata: FabFileMetadata = {}
+    for (const [filename, contents] of this.files.entries()) {
+      file_metadata[filename] = {
+        content_type: getContentType(filename),
+        content_length: contents.length,
+      }
+    }
+
+    return JSON.stringify({
+      files: file_metadata,
+    })
   }
 }

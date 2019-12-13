@@ -1,19 +1,17 @@
-import mime from 'mime-types'
-import { DEFAULT_MIME_TYPE, ProtoFab } from '@fab/core/src'
+import { ProtoFab } from '@fab/core/src'
 import {
   InlineAssets,
   RenamedAssets,
   RewireAssetsArgs,
   RewireAssetsMetadata,
 } from './types'
-import { filenameOutsideFabLocations, InvalidConfigError } from '@fab/core'
+import {
+  filenameOutsideFabLocations,
+  InvalidConfigError,
+  getContentType,
+} from '@fab/core'
 import hasha from 'hasha'
 import path from 'path'
-
-const getContentType = (pathname: string) => {
-  const mimeType = mime.lookup(pathname)
-  return (mimeType && mime.contentType(mimeType)) || DEFAULT_MIME_TYPE
-}
 
 export async function build(
   args: RewireAssetsArgs,

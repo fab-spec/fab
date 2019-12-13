@@ -33,8 +33,7 @@
     "@fab/core": "^0.0.3-alpha.0+98ce344",
     "@types/mime-types": "^2.1.0",
     "@types/node": "^12.12.14",
-    "hasha": "^5.1.0",
-    "mime-types": "^2.1.25"
+    "hasha": "^5.1.0"
   },
   "publishConfig": {
     "access": "public"
