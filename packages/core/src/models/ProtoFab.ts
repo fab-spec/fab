@@ -8,8 +8,6 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   constructor(init_files: { [k: string]: string } = {}) {
     this.files = new Map(Object.entries(init_files))
     this.metadata = {} as U
-
-    console.log('WTFING')
   }
 
   readyForCompilation(): string | undefined {

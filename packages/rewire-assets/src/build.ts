@@ -43,17 +43,17 @@ export async function build(
     }
   }
 
-  const inlined_assets: InlineAssets = new Map()
+  const inlined_assets: InlineAssets = {}
   for (const filename of to_inline) {
-    inlined_assets.set(filename, {
+    inlined_assets[filename] = {
       contents: proto_fab.files.get(filename)!,
       content_type: getContentType(filename),
-    })
+    }
     // We got this, yo.
     proto_fab.files.delete(filename)
   }
 
-  const renamed_assets: RenamedAssets = new Map()
+  const renamed_assets: RenamedAssets = {}
   for (const filename of to_rename) {
     const contents = proto_fab.files.get(filename)!
     const hash = hasha(contents, { algorithm: 'md5' }).slice(0, 9)
@@ -63,10 +63,13 @@ export async function build(
       immutable ? filename : filename.slice(0, -1 * extname.length) + '.' + hash + extname
     }`
 
-    renamed_assets.set(filename, {
+    renamed_assets[filename] = {
       asset_path,
       immutable,
-    })
+    }
+
+    console.log(inlined_assets)
+    console.log(renamed_assets)
 
     // "Move" the file by changing its key
     proto_fab.files.set(asset_path, contents)

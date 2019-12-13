@@ -5,8 +5,12 @@ export interface RewireAssetsArgs extends PluginArgs {
   'treat-as-immutable'?: RegExp
 }
 
-export type InlineAssets = Map<string, { contents: string; content_type: string }>
-export type RenamedAssets = Map<string, { asset_path: string; immutable: boolean }>
+export type InlineAssets = {
+  [filename: string]: { contents: string; content_type: string }
+}
+export type RenamedAssets = {
+  [filename: string]: { asset_path: string; immutable: boolean }
+}
 
 export interface RewireAssetsMetadata extends PluginMetadata {
   rewire_assets: {
