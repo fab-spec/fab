@@ -3,7 +3,7 @@
 import {
   FabSettings,
   FabSpecRender,
-  FabRenderer,
+  FabPluginRuntime,
   PluginArgs,
   PluginMetadata,
 } from '@fab/core'
@@ -12,17 +12,17 @@ import { renderers } from 'user-defined-pipeline'
 import { render as render_404 } from './404'
 
 const pipeline = [
-  ...(renderers as FabRenderer<PluginArgs, PluginMetadata>[]),
+  ...(renderers as FabPluginRuntime<PluginArgs, PluginMetadata>[]),
   render_404,
 ].map((middleware) => middleware({}, {}))
 
 console.log(pipeline)
 
 export const render: FabSpecRender = async (request: Request, settings: FabSettings) => {
-  console.log(request.url)
+  const url = new URL(request.url)
 
   for (const responders of pipeline) {
-    const response = responders(request, settings)
+    const response = await responders({ request, settings, url })
     if (response) {
       return response
     }

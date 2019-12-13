@@ -1,8 +1,8 @@
 import {
   BuildFailedError,
-  FabBuilder,
+  FabBuildStep,
   FabConfig,
-  FabRenderer,
+  FabPluginRuntime,
   InvalidConfigError,
   InvalidPluginError,
   PluginArgs,
@@ -20,7 +20,7 @@ export default class Builder {
       ([plugin_name, plugin_args]) => {
         const builder = s_sume(
           () =>
-            require(relativeToConfig(config_path, plugin_name)).build as FabBuilder<
+            require(relativeToConfig(config_path, plugin_name)).build as FabBuildStep<
               PluginArgs,
               PluginMetadata
             >,
@@ -50,12 +50,12 @@ export default class Builder {
       const runtime = s_sume(
         () => {
           try {
-            return require(requireable_plugin).render as FabRenderer<
+            return require(requireable_plugin).render as FabPluginRuntime<
               PluginArgs,
               PluginMetadata
             >
           } catch (e) {
-            return require(requireable_plugin + '/render').build as FabRenderer<
+            return require(requireable_plugin + '/render').build as FabPluginRuntime<
               PluginArgs,
               PluginMetadata
             >

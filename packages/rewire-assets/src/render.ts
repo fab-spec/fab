@@ -1,21 +1,17 @@
 import { RewireAssetsArgs, RewireAssetsMetadata } from './types'
-import { FabRenderer } from '@fab/core'
+import { FabPluginRuntime } from '@fab/core'
 
-export const render: FabRenderer<RewireAssetsArgs, RewireAssetsMetadata> = (
+export const render: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> = (
   args: RewireAssetsArgs,
   metadata: RewireAssetsMetadata
 ) => {
-  console.log('I am render time')
+  console.log('I am rewire assets render time')
 
-  async function respond(request: Request) {
-    return new Response('OK', {
-      status: 200,
-    })
-  }
-
-  return function handle(request: Request) {
-    if (request.url === '/some-exact-path') {
-      return respond(request)
+  return async function({ url }) {
+    if (url.pathname === '/some-exact-path') {
+      return new Response('OK', {
+        status: 200,
+      })
     }
     return undefined
   }
