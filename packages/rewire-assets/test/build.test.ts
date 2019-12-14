@@ -40,7 +40,7 @@ describe('Build time', () => {
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
     await build({}, proto_fab)
     expect([...proto_fab.files.entries()]).to.deep.equal([])
-    expect([...proto_fab.metadata.rewire_assets.inlined_assets.entries()]).to.deep.equal([
+    expect(proto_fab.metadata.rewire_assets.inlined_assets).to.deep.equal([
       [
         'index.html',
         {
@@ -75,7 +75,7 @@ describe('Build time', () => {
     expect([...proto_fab.files.entries()]).to.deep.equal([
       [`_assets/main.${css_hash}.css`, EXAMPLES.CSS],
     ])
-    expect([...proto_fab.metadata.rewire_assets.inlined_assets.entries()]).to.deep.equal([
+    expect(proto_fab.metadata.rewire_assets.inlined_assets).to.deep.equal([
       [
         'index.html',
         {
@@ -85,7 +85,7 @@ describe('Build time', () => {
       ],
     ])
 
-    expect([...proto_fab.metadata.rewire_assets.renamed_assets.entries()]).to.deep.equal([
+    expect(proto_fab.metadata.rewire_assets.renamed_assets).to.deep.equal([
       [
         'main.css',
         {
