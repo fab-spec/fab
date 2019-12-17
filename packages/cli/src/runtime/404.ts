@@ -11,7 +11,7 @@ export const render: FabPluginRuntime<PluginArgs, PluginMetadata> = (
 
     // if (weDontHandleThis(url.pathname)) return undefined
 
-    return new Response(`No resource found at ${url.pathname}.`, {
+    return new Response(`No resource found at ${url.pathname}\n`, {
       status: 404,
       statusText: 'Not Found',
       headers: {},

@@ -5,6 +5,6 @@
     },
   },
   runtime: [
-    './plugins/no-render'
+    './plugins/no-runtime'
   ],
 }
