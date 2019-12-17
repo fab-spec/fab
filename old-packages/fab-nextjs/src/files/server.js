@@ -59,8 +59,7 @@ const _render = async (request, settings) => {
   const { pathname } = parsed_route
   console.log({ pathname })
 
-  const renderer =
-    pathname === '/' ? getRenderer('/index') : getRenderer(pathname)
+  const renderer = pathname === '/' ? getRenderer('/index') : getRenderer(pathname)
   console.log({ renderer })
 
   if (renderer) {
@@ -69,10 +68,10 @@ const _render = async (request, settings) => {
         status: 200,
         statusText: 'OK',
         headers: {
-          'Content-Type': 'text/html'
+          'Content-Type': 'text/html',
         },
       })
-    } else if (typeof renderer.render === 'function') {
+    } else if (typeof renderer.runtime === 'function') {
       const local_req = {
         url: route,
         method: request.method,
@@ -84,7 +83,7 @@ const _render = async (request, settings) => {
       const response = new MockExpressResponse({
         request: local_req,
       })
-      await renderer.render(local_req, response)
+      await renderer.runtime(local_req, response)
       return new Response(response._getString(), {
         status: response.statusCode,
         headers: response._headers,
@@ -115,7 +114,7 @@ function render404() {
     status: 404,
     statusText: 'Not Found',
     headers: {
-      'Content-Type': 'text/html'
+      'Content-Type': 'text/html',
     },
   })
 }

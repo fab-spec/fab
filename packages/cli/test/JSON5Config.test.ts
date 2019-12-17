@@ -9,6 +9,7 @@ describe('JSON5Config', () => {
           regex: '/\\.[0-9A-F]{8,}\\./i',
         },
       },
+      runtime: [],
     })
     const regex = config.data.build.plugin.regex as RegExp
     expect(regex).to.be.a('RegExp')
@@ -29,6 +30,7 @@ describe('JSON5Config', () => {
           regex: '/\\/static\\/.*\\.[0-9A-F]{8,}\\./i',
         },
       },
+      runtime: [],
     })
     const regex = config.data.build.plugin.regex as RegExp
     expect(regex).to.be.a('RegExp')
@@ -45,6 +47,7 @@ describe('JSON5Config', () => {
           number: 123,
         },
       },
+      runtime: [],
     })
     const regex = config.data.build.plugin.number as number
     expect(regex).to.be.a('Number')

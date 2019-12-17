@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra'
-import { FabConfig, MissingConfig, InvalidConfigError, assume, ssume } from '@fab/core'
+import { FabConfig, MissingConfig, InvalidConfigError, a_sume, s_sume } from '@fab/core'
 import * as jju from 'jju'
 import regexParser from 'regex-parser'
 
@@ -12,12 +12,12 @@ export default class JSON5Config {
       throw new MissingConfig(file_path)
     }
 
-    const str_contents = await assume(
+    const str_contents = await a_sume(
       () => fs.readFile(file_path, 'utf8'),
       () => new InvalidConfigError(`Could not read file at '${file_path}'`)
     )
 
-    const data = ssume(
+    const data = s_sume(
       () => jju.parse(str_contents),
       () =>
         new InvalidConfigError(

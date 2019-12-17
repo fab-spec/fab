@@ -15,8 +15,7 @@ menu: Packages
 
 <!-- toc -->
 
-- [Usage](#usage)
-- [Commands](#commands)
+- [FAB Command Line Interface](#fab-command-line-interface)
   <!-- tocstop -->
 
 ## Usage
@@ -28,7 +27,7 @@ $ npm install -g @fab/cli
 $ fab COMMAND
 running command...
 $ fab (-v|--version|version)
-@fab/cli/0.0.1 darwin-x64 node-v13.1.0
+@fab/cli/0.0.3-alpha.1+cead00c darwin-x64 node-v13.1.0
 $ fab --help [COMMAND]
 USAGE
   $ fab COMMAND
@@ -61,7 +60,7 @@ EXAMPLE
   hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/build.ts](https://github.com/fab-spec/fab/blob/v0.0.1/src/commands/build.ts)_
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.3-alpha.1+cead00c/lib/commands/build.js)_
 
 ## `fab help [COMMAND]`
 
@@ -78,6 +77,6 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.1/src/commands/help.ts)_
 
 <!-- commandsstop -->

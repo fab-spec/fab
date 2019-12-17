@@ -5,19 +5,31 @@
     "packages/*"
   ],
   "scripts": {
-    "link-all": "lerna exec -- yarn link",
-    "build:watch": "lerna run build:watch --parallel",
     "build": "lerna run build --parallel",
     "build:codesandbox": "npm run link-all && lerna exec -- npm pack",
+    "build:fab": "npm run docz:build && fab-static .docz/dist",
+    "build:watch": "lerna run build:watch --parallel",
     "clean": "lerna run clean --parallel",
+    "docz:build": "docz build",
+    "docz:dev": "docz dev",
+    "docz:serve": "docz build && docz serve",
+    "link-all": "lerna exec -- yarn link",
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
-    "typecheck": "tsc --noEmit",
     "test": "lerna run test --stream --parallel",
     "test:watch": "lerna run test --stream --parallel -- --watch",
-    "docz:dev": "docz dev",
-    "docz:build": "docz build",
-    "build:fab": "npm run docz:build && fab-static .docz/dist",
-    "docz:serve": "docz build && docz serve"
+    "typecheck": "tsc --noEmit",
+    "publish:prerelease": "lerna publish --force-publish --canary --dist-tag=prerelease"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,json,md,ts}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "devDependencies": {
     "@fab/static": "^0.1.8",
@@ -33,6 +45,7 @@
     "lerna": "^3.19.0",
     "lint-staged": "^9.5.0",
     "mocha": "^6.2.2",
+    "npm-run-all": "^4.1.5",
     "nyc": "^13",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
@@ -42,15 +55,5 @@
     "tsconfig-paths": "^3.9.0",
     "typescript": "~3.7.2"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,css,json,md,ts}": [
-      "prettier --write",
-      "git add"
-    ]
-  }
+  "version": "0.0.0"
 }

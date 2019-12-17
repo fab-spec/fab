@@ -4,5 +4,7 @@
       dir: 'src',
     },
   },
-  runtime: [],
+  runtime: [
+    './plugins/no-render'
+  ],
 }

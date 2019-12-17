@@ -1,7 +1,7 @@
-import { filenameOutsideFabLocations } from '../helpers'
-import { FabFiles, PluginMetadata } from '../types'
+import { filenameOutsideFabLocations, getContentType } from '../helpers'
+import { FabFileMetadata, FabFiles, FabMetadata, PluginMetadata } from '../types'
 
-export class ProtoFab<U extends PluginMetadata> {
+export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   files: FabFiles
   metadata: U
 
@@ -25,5 +25,23 @@ export class ProtoFab<U extends PluginMetadata> {
       )}`
     }
     return undefined
+  }
+
+  serialisable(): FabMetadata {
+    const file_metadata: FabFileMetadata = {}
+    for (const [filename, contents] of this.files.entries()) {
+      file_metadata[filename] = {
+        content_type: getContentType(filename),
+        content_length: contents.length,
+      }
+    }
+    return {
+      file_metadata,
+      plugin_metadata: this.metadata,
+    }
+  }
+
+  toJSON(): string {
+    return JSON.stringify(this.serialisable())
   }
 }
