@@ -42,7 +42,7 @@
     "chai": "^4.2.0",
     "chokidar": "^3.3.1",
     "concurrently": "^5.0.1",
-    "docz": "^2.1.1",
+    "docz": "^2.3.0-alpha.5",
     "fast-glob": "^3.1.1",
     "husky": "^3.1.0",
     "lerna": "^3.19.0",
