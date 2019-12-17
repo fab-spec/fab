@@ -36,8 +36,8 @@ export class Compiler {
     })
     const {
       output: [output, ...chunks],
-    } = await bundle.generate({ format: 'iife' })
-    console.log(output)
+    } = await bundle.generate({ format: 'iife', exports: 'named' })
+    // console.log(output)
 
     if (chunks.length > 0) {
       log.error(`WARNING: Didn't expect there to be more than one chunk created! Got:`)
