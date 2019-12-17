@@ -1,3 +1,9 @@
+---
+name: '@fab/cli'
+route: '/packages/cli'
+menu: Packages
+---
+
 # FAB Command Line Interface
 
 `fab`: the CLI entry-point for the FAB ecosystem

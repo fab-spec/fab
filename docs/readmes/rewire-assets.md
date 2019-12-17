@@ -1,3 +1,9 @@
+---
+name: '@fab/rewire-assets'
+route: '/packages/rewire-assets'
+menu: Packages
+---
+
 # @fab/rewire-assets
 
 A plugin for moving any files not handled by another plugin to the `_assets` folder. Usually the last in the sequence.
