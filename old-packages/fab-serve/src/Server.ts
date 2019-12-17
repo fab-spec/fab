@@ -120,7 +120,7 @@ export default class Server {
               ...(method === 'POST' ? { body: req.body } : {}),
             })
             const production_settings = renderer.getProdSettings ? renderer.getProdSettings() : {}
-            const fetch_res = await renderer.render(
+            const fetch_res = await renderer.runtime(
               fetch_req,
               Object.assign(
                 {

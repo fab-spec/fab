@@ -1,9 +1,9 @@
 ---
-name: "@fab/core"
-route: "/packages/core"
-menu: Modules
+name: 'Core'
+route: '/packages/core'
+menu: Packages
 ---
 
-# `@fab/core`
+# @fab/core
 
 Typescript definitions, error objects and helpers that all the FAB packages rely upon.

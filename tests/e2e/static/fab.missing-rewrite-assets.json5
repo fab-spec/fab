@@ -1,9 +1,0 @@
-{
-  build: {
-    "@fab/input-static": {
-      "dir": "src"
-    },
-  },
-  render: {
-  }
-}

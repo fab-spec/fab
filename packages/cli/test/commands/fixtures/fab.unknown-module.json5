@@ -1,0 +1,8 @@
+{
+  build: {
+    '@fab/no-existo': {
+      other: 'ag',
+    },
+  },
+  runtime: [],
+}

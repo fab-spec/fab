@@ -12,7 +12,7 @@ const handleRequest = async (request) => {
     if (settings.then && typeof settings.then == 'function') {
       settings = await settings
     }
-    return await fab.render(request, settings)
+    return await fab.runtime(request, settings)
   }
 }
 

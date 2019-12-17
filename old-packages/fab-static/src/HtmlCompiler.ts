@@ -10,9 +10,8 @@ export default class HtmlCompiler {
     const html = await fs.readFile(input_path, 'utf8')
 
     const $ = cheerio.load(
-      html.replace(
-        /{{{|{{/g,
-        match => (match.length === 3 ? `{{{ OPEN_TRIPLE }}}` : `{{{ OPEN_DOUBLE }}}`)
+      html.replace(/{{{|{{/g, (match) =>
+        match.length === 3 ? `{{{ OPEN_TRIPLE }}}` : `{{{ OPEN_DOUBLE }}}`
       )
     )
     $('head').prepend('{{{ FAB_ENV_INJECTION }}}')
@@ -22,10 +21,10 @@ export default class HtmlCompiler {
   }
 
   static render(input_template: string, view: { [key: string]: string }) {
-    return mustache.render(input_template, {
+    return mustache.runtime(input_template, {
       ...view,
       OPEN_TRIPLE: '{{{',
-      OPEN_DOUBLE: '{{'
+      OPEN_DOUBLE: '{{',
     })
   }
 }

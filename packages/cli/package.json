@@ -1,6 +1,6 @@
 {
   "name": "@fab/cli",
-  "version": "0.0.1",
+  "version": "0.0.3-alpha.0+98ce344",
   "description": "The CLI entry-point for the FAB ecosystem",
   "keywords": [
     "oclif"
@@ -21,32 +21,47 @@
     "fab": "./bin/run"
   },
   "scripts": {
-    "clean": "rm -rf lib",
-    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
     "build": "yarn build:cjs",
     "build:cjs": "tsc --module commonjs --outDir lib",
-    "prepack": "npm run clean && npm run build && npm run oclif:generate",
-    "oclif:generate": "oclif-dev manifest && oclif-dev readme",
-    "postpack": "rm -f oclif.manifest.json",
+    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
+    "clean": "rm -rf lib",
     "coverage": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "oclif:generate": "oclif-dev manifest && oclif-dev readme",
+    "prepack": "npm run clean && npm run build && npm run oclif:generate",
+    "postpack": "rm -f oclif.manifest.json",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
+    "@fab/core": "^0.0.3-alpha.0+98ce344",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
+    "@rollup/plugin-json": "^4.0.0",
+    "@rollup/plugin-node-resolve": "^6.0.0",
     "@types/fs-extra": "^8.0.1",
     "@types/jju": "^1.4.1",
     "@types/node": "^10",
     "chalk": "^3.0.0",
+    "deterministic-zip": "^1.1.0",
     "fs-extra": "^8.1.0",
     "jju": "^1.4.0",
+    "regex-parser": "^2.2.10",
+    "rollup": "^1.27.10",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-hypothetical": "^2.1.0",
     "tslib": "^1"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1"
   },
   "engines": {
     "node": ">=8.0.0"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "98ce34423f906c0a9f66f2f87643e64b841e359a",
   "oclif": {
     "commands": "./lib/commands",
     "bin": "fab",
