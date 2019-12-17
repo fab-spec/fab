@@ -25,7 +25,7 @@ export function s_sume<T>(fn: () => T, throws: (e: Error) => Error) {
 }
 
 export function filenameOutsideFabLocations(filename: string) {
-  return filename !== 'server.js' && !filename.startsWith('_assets/')
+  return filename !== '/server.js' && !filename.startsWith('/_assets/')
 }
 
 export const getContentType = (pathname: string) => {

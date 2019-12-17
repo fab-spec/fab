@@ -10,7 +10,7 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
     this.metadata = {} as U
   }
 
-  readyForCompilation(): string | undefined {
+  errorsPreventingCompilation(): string | undefined {
     // todo: an empty directory is... valid?
     const files_in_wrong_place = []
     for (const filename of this.files.keys()) {

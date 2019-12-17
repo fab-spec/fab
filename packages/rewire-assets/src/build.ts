@@ -59,7 +59,7 @@ export async function build(
     const hash = hasha(contents, { algorithm: 'md5' }).slice(0, 9)
     const immutable = !!immutable_regexp.exec(filename)
     const extname = path.extname(filename)
-    const asset_path = `_assets/${
+    const asset_path = `/_assets${
       immutable ? filename : filename.slice(0, -1 * extname.length) + '.' + hash + extname
     }`
 
@@ -67,9 +67,6 @@ export async function build(
       asset_path,
       immutable,
     }
-
-    console.log(inlined_assets)
-    console.log(renamed_assets)
 
     // "Move" the file by changing its key
     proto_fab.files.set(asset_path, contents)

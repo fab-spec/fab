@@ -87,7 +87,7 @@ export default class Builder {
     }
 
     // After build, there should only be files in the expected places (server.js, _assets)
-    const invalid_reason = proto_fab.readyForCompilation()
+    const invalid_reason = proto_fab.errorsPreventingCompilation()
     if (invalid_reason) {
       throw new BuildFailedError(`FAB is not ready for compilation.
 ${invalid_reason}

@@ -21,10 +21,7 @@ export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> =
         },
       })
     }
-    if (pathname === '/some-exact-path') {
-      return new Response('OK', {
-        status: 200,
-      })
+    if (renamed_assets[pathname]) {
     }
     return undefined
   }
