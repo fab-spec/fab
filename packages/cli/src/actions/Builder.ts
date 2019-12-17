@@ -11,7 +11,6 @@ import {
   s_sume,
 } from '@fab/core'
 import { Compiler } from './Compiler'
-import path from 'path'
 import { relativeToConfig } from '../helpers/paths'
 
 export default class Builder {
@@ -47,26 +46,36 @@ export default class Builder {
     const runtime_plugins = config.runtime.map((plugin_name) => {
       const requireable_plugin = relativeToConfig(config_path, plugin_name)
 
-      const requireRuntime = (path: string) => {
-        const required = require(path)
-        if (!required.runtime) throw new Error()
-        return required.runtime as FabPluginRuntime<PluginArgs, PluginMetadata>
-      }
       const runtime = s_sume(
         () => {
           try {
-            return requireRuntime(requireable_plugin + '/runtime')
+            return require(requireable_plugin + '/runtime').runtime as FabPluginRuntime<
+              PluginArgs,
+              PluginMetadata
+            >
           } catch (e) {
-            return requireRuntime(requireable_plugin)
+            return require(requireable_plugin).runtime as FabPluginRuntime<
+              PluginArgs,
+              PluginMetadata
+            >
           }
         },
         () =>
-          new InvalidPluginError(
-            plugin_name,
-            `The plugin '${plugin_name}' has no 'runtime' export, but is referenced in the 'runtime' section of the config!\n` +
-              `Looked for ${requireable_plugin + '/runtime'} and ${requireable_plugin}`
+          new InvalidConfigError(
+            `The plugin '${plugin_name}' could not be found!\n` +
+              `Looked for ${requireable_plugin +
+                '/runtime'} and ${requireable_plugin}, expected a named export 'runtime'.`
           )
       )
+
+      if (!runtime) {
+        new InvalidPluginError(
+          plugin_name,
+          `The plugin '${plugin_name}' has no 'runtime' export, but is referenced in the 'runtime' section of the config!\n` +
+            `Looked in ${requireable_plugin +
+              '/runtime'} and ${requireable_plugin}, expected a named export 'runtime'.`
+        )
+      }
 
       return requireable_plugin
     })
