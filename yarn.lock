@@ -5611,16 +5611,16 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-docz-core@^2.3.0-alpha.5:
-  version "2.3.0-alpha.5"
-  resolved "https://registry.npmjs.org/docz-core/-/docz-core-2.3.0-alpha.5.tgz#c6d8a89de87560d76fbb65d5670f54e4c3baac12"
-  integrity sha512-yeCR1sdR0kgte4BsOByIQoBNz3pA2TaBo4jkrjlYk4ExrfYEhqF3sin69+EMCTxF7wKBWnxbpyQKSVLPp/1p0Q==
+docz-core@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npmjs.org/docz-core/-/docz-core-2.2.0.tgz#b78b75c931d4e8041b31ee0fff908f37b3440930"
+  integrity sha512-qp2dEcq1Zx9pnd1ryswzAOnP1O5fNrmWoBQglOOcOOrKK2xFd/MTN5KOrux4qiPprIkrhGp3y7qKpjaSgMEWiw==
   dependencies:
     "@sindresorhus/slugify" "^0.9.1"
     chalk "^2.4.2"
     chokidar "^3.0.2"
     detect-port "^1.3.0"
-    docz-utils "^2.3.0-alpha.2"
+    docz-utils "^2.1.0"
     env-dot-prop "^2.0.1"
     fast-deep-equal "^2.0.1"
     fast-glob "^3.0.4"
@@ -5647,10 +5647,10 @@ docz-core@^2.3.0-alpha.5:
     xstate "^4.6.7"
     yargs "^13.3.0"
 
-docz-utils@^2.3.0-alpha.2:
-  version "2.3.0-alpha.2"
-  resolved "https://registry.npmjs.org/docz-utils/-/docz-utils-2.3.0-alpha.2.tgz#a33eda81e4364c93e8f6f4f4e00272558ca8fb3a"
-  integrity sha512-wSB/RHo/RKB/BoeQGTBu91vFxIIDx6GJJ6RFHrayJHrQAXWkxcAvksWXxn8uwRCh7OuwUSuhtyS3hP2hu5Tg+Q==
+docz-utils@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/docz-utils/-/docz-utils-2.1.0.tgz#648a7b28a2b8fc481483ee87e0fcc43a36b830ec"
+  integrity sha512-+GDl74VYExkiOJtM8iZ7GBRfkN5iC9UvESTQurA/sT/SwTFAxmbRdZs74r2vBkZofyCiQ+MLn2H2c9m5Q1D67A==
   dependencies:
     "@babel/generator" "^7.5.5"
     "@babel/parser" "^7.5.5"
@@ -5675,25 +5675,24 @@ docz-utils@^2.3.0-alpha.2:
     unist-util-is "^3.0.0"
     unist-util-visit "^1.4.1"
 
-docz@^2.3.0-alpha.5:
-  version "2.3.0-alpha.5"
-  resolved "https://registry.npmjs.org/docz/-/docz-2.3.0-alpha.5.tgz#991185aeb94b8d6c4d522dcf240dccf847a26e5c"
-  integrity sha512-jlYNf1tXlmW8XFf79EpR3YR4KvovuVjVpcDhm5XmKZesDcWu0ntibsqkZzEzulMuH2gGsgbwX/E3xoDSh9bdyA==
+docz@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npmjs.org/docz/-/docz-2.2.0.tgz#a7d22ce256c437d068bf88ae7b13ca5d581f65ef"
+  integrity sha512-rsxjQABy07dDqq5rus0TBx64FI2DL7KN+11mv394bRFINqC/T0WZTruKzVSGjsodrTBmIGhW47t5iqMB14XQyw==
   dependencies:
     "@emotion/core" "^10.0.16"
     "@mdx-js/react" "^1.0.27"
     array-sort "^1.0.0"
     capitalize "^2.0.0"
-    docz-core "^2.3.0-alpha.5"
+    docz-core "^2.2.0"
     fast-deep-equal "^2.0.1"
     gatsby "^2.13.27"
     gatsby-plugin-eslint "^2.0.5"
     gatsby-plugin-typescript "^2.1.6"
-    gatsby-theme-docz "^2.3.0-alpha.5"
+    gatsby-theme-docz "^2.2.0"
     lodash "^4.17.14"
     marksy "^8.0.0"
     match-sorter "^3.1.1"
-    pascal-case "^3.1.0"
     prop-types "^15.7.2"
     scheduler "^0.15.0"
     ulid "^2.3.0"
@@ -7284,10 +7283,10 @@ gatsby-telemetry@^1.1.41:
     stack-utils "1.0.2"
     uuid "3.3.3"
 
-gatsby-theme-docz@^2.3.0-alpha.5:
-  version "2.3.0-alpha.5"
-  resolved "https://registry.npmjs.org/gatsby-theme-docz/-/gatsby-theme-docz-2.3.0-alpha.5.tgz#10eb33c6ae54e1ecad44d2459ae6914b912b9523"
-  integrity sha512-fr8SLjD67G7wDi6hKHrHv0DpHvK30/DH3r1ulmxETCJSpJ66F0yctXnHSv68A2nOLVSywU0esY/bGrfgAVOwLA==
+gatsby-theme-docz@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npmjs.org/gatsby-theme-docz/-/gatsby-theme-docz-2.2.0.tgz#8fa586b1c16f74d4707fdd0de67384d192eee46d"
+  integrity sha512-W/R0xSy8jopC1x4PHQneeu7/PUk7Ppp2b3RLep0l/YcaVDsoZFAO6zdeIqCSsYVqqGUMiDaOhvDzDvkT0KT0kQ==
   dependencies:
     "@emotion/core" "^10.0.14"
     "@emotion/styled" "^10.0.14"
@@ -7318,7 +7317,7 @@ gatsby-theme-docz@^2.3.0-alpha.5:
     react-helmet-async "^1.0.4"
     react-live "^2.2.1"
     react-resize-detector "^4.2.1"
-    rehype-docz "^2.3.0-alpha.2"
+    rehype-docz "^2.1.0"
     rehype-slug "^2.0.3"
     remark-docz "^2.1.0"
     remark-frontmatter "^1.3.2"
@@ -10082,13 +10081,6 @@ lower-case@^1.1.0, lower-case@^1.1.1, lower-case@^1.1.2:
   resolved "https://registry.npmjs.org/lower-case/-/lower-case-1.1.4.tgz#9a2cabd1b9e8e0ae993a4bf7d5875c39c42e8eac"
   integrity sha1-miyr0bno4K6ZOkv31YdcOcQujqw=
 
-lower-case@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/lower-case/-/lower-case-2.0.1.tgz#39eeb36e396115cc05e29422eaea9e692c9408c7"
-  integrity sha512-LiWgfDLLb1dwbFQZsSglpRj+1ctGnayXz3Uv0/WO8n558JycT5fg6zkNcnW0G68Nn0aEldTFeEfmjCfmqry/rQ==
-  dependencies:
-    tslib "^1.10.0"
-
 lowercase-keys@1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/lowercase-keys/-/lowercase-keys-1.0.0.tgz#4e3366b39e7f5457e35f1324bdf6f88d0bfc7306"
@@ -10904,14 +10896,6 @@ no-case@^2.2.0, no-case@^2.3.2:
   integrity sha512-rmTZ9kz+f3rCvK2TD1Ue/oZlns7OGoIWP4fc3llxxRXlOkHKoWPPWJOfFYpITabSow43QJbRIoHQXtt10VldyQ==
   dependencies:
     lower-case "^1.1.1"
-
-no-case@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.npmjs.org/no-case/-/no-case-3.0.2.tgz#2b03928510318591854c0423e504d13b21234263"
-  integrity sha512-Yber3mEOA3T9+as7Z70TJUQCUPRmmq6s8NmsZX5aSB1qk+Mt+3a5JVPpnAnONUShLTkMDF4PJY3h0GKlXdRTNA==
-  dependencies:
-    lower-case "^2.0.1"
-    tslib "^1.10.0"
 
 nock@*:
   version "11.7.0"
@@ -11920,14 +11904,6 @@ pascal-case@^2.0.0:
   dependencies:
     camel-case "^3.0.0"
     upper-case-first "^1.1.0"
-
-pascal-case@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/pascal-case/-/pascal-case-3.1.0.tgz#b3cc1273a957ceb0c37c029d2580ed59f585e4df"
-  integrity sha512-7cINxTsRAFym4dLVMdObWx2wr/FjVz8BfCdLPC069kAFLal/5dZhxObpAIM40GwZ/Xik1J37z+Nw6/TVy5fmIg==
-  dependencies:
-    no-case "^3.0.2"
-    tslib "^1.10.0"
 
 pascalcase@^0.1.1:
   version "0.1.1"
@@ -13450,13 +13426,13 @@ regjsparser@^0.6.0:
   dependencies:
     jsesc "~0.5.0"
 
-rehype-docz@^2.3.0-alpha.2:
-  version "2.3.0-alpha.2"
-  resolved "https://registry.npmjs.org/rehype-docz/-/rehype-docz-2.3.0-alpha.2.tgz#059298090ec06d86cb4ff7388b8efced35567cf3"
-  integrity sha512-sgjIj+fAkzKlFa4W5/R+iRde8YCfVlyiqtOiMpYOv9hD6xhIHEcGV8HfrbAjfAaqxNXwDOhVhLfaJWjTX6WogQ==
+rehype-docz@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/rehype-docz/-/rehype-docz-2.1.0.tgz#a8fae72399639f0e8129e8d5fd299c83e4e04ccb"
+  integrity sha512-Bcr4WQxu3cth8BcTj4VPQoVLHuh3LPvNHuh4T+3ObXMJkzfTFe7lJa4xLh/jyWYJ67qEUxJwbjKMYVtqLzV2Ww==
   dependencies:
     brace "^0.11.1"
-    docz-utils "^2.3.0-alpha.2"
+    docz-utils "^2.1.0"
     hast-util-to-string "^1.0.2"
     jsx-ast-utils "^2.2.1"
     lodash "^4.17.14"
@@ -15510,7 +15486,7 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@^1, tslib@^1.10.0, tslib@^1.6.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
+tslib@^1, tslib@^1.6.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
