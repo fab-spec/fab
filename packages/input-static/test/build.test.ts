@@ -10,6 +10,6 @@ describe('@fab/input-static', () => {
   it('should add files relatively to the directory', async () => {
     const proto_fab = new ProtoFab<PluginMetadata>()
     await build({ dir: __dirname + '/fixtures' }, proto_fab)
-    expect([...proto_fab.files.keys()]).to.have.members(['index.html'])
+    expect([...proto_fab.files.keys()]).to.have.members(['/index.html'])
   })
 })

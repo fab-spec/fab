@@ -10,9 +10,9 @@ export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> =
   console.log(renamed_assets)
 
   return async function({ url }) {
-    console.log(url.pathname)
-    if (inlined_assets[url.pathname]) {
-      const { contents, content_type } = inlined_assets[url.pathname]
+    const { pathname } = url
+    if (inlined_assets[pathname]) {
+      const { contents, content_type } = inlined_assets[pathname]
       return new Response(contents, {
         status: 200,
         statusText: 'OK',
@@ -21,7 +21,7 @@ export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> =
         },
       })
     }
-    if (url.pathname === '/some-exact-path') {
+    if (pathname === '/some-exact-path') {
       return new Response('OK', {
         status: 200,
       })

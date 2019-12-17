@@ -33,7 +33,7 @@ export async function build(
   await Promise.all(
     files.map(async (filename) => {
       proto_fab.files!.set(
-        path.relative(dir, filename),
+        '/' + path.relative(dir, filename),
         await fs.readFile(filename, 'utf8')
       )
     })
