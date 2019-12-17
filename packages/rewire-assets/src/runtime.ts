@@ -6,6 +6,8 @@ export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> =
   metadata: RewireAssetsMetadata
 ) => {
   const { inlined_assets, renamed_assets } = metadata.rewire_assets
+  console.log(inlined_assets)
+  console.log(renamed_assets)
 
   return async function({ url }) {
     console.log(url.pathname)

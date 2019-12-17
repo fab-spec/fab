@@ -61,14 +61,14 @@ export class Compiler {
   }
 }
 
-function generatePipelineJs(render_plugins: string[]) {
+function generatePipelineJs(plugin_runtimes: string[]) {
   return `
-    ${render_plugins
-      .map((plugin, i) => `import { render as renderer_${i} } from '${plugin}/render'`)
+    ${plugin_runtimes
+      .map((plugin, i) => `import { runtime as runtime_${i} } from '${plugin}/runtime'`)
       .join('\n')}
         
-    export const renderers = [
-      ${render_plugins.map((plugin, i) => `renderer_${i}`).join(',')}
+    export const runtimes = [
+      ${plugin_runtimes.map((plugin, i) => `runtime_${i}`).join(',')}
     ]
   `
 }
