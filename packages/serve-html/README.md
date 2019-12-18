@@ -56,8 +56,9 @@ By default, this module has the following options:
 
 ```json5
 {
+  'match-html': '/.html$/i', // path to match for HTML files
   injections: {
-    // if not specified, injects the following
+    // if not specified, injects only the following module
     env: {
       name: 'FAB_SETTINGS', // which global variable to use?
     },

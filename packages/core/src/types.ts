@@ -1,7 +1,7 @@
 import { ProtoFab } from './models/ProtoFab'
 
 export interface PluginArgs {
-  [arg_name: string]: string | number | RegExp | undefined
+  [arg_name: string]: any
 }
 
 export interface BuildConfig {
