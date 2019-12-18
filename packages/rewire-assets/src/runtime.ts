@@ -11,6 +11,7 @@ export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> =
 
   return async function({ url }) {
     const { pathname } = url
+
     if (inlined_assets[pathname]) {
       const { contents, content_type } = inlined_assets[pathname]
       return new Response(contents, {
@@ -21,7 +22,15 @@ export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> =
         },
       })
     }
+
     if (renamed_assets[pathname]) {
+      return new Response(null, {
+        status: 302,
+        statusText: 'Found',
+        headers: {
+          Location: renamed_assets[pathname].asset_path,
+        },
+      })
     }
     return undefined
   }
