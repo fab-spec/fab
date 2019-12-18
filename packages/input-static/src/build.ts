@@ -1,8 +1,9 @@
 import { InputStaticArgs, InputStaticMetadata } from './types'
-import { InvalidConfigError, ProtoFab } from '@fab/core'
+import { ProtoFab } from '@fab/core'
 import fs from 'fs-extra'
 import globby from 'globby'
 import path from 'path'
+import { InvalidConfigError } from '@fab/cli'
 
 export async function build(
   args: InputStaticArgs,

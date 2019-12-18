@@ -1,7 +1,9 @@
 import * as fs from 'fs-extra'
-import { FabConfig, MissingConfig, InvalidConfigError, a_sume, s_sume } from '@fab/core'
+import { FabConfig, a_sume, s_sume } from '@fab/core'
 import * as jju from 'jju'
 import regexParser from 'regex-parser'
+import { MissingConfig } from '../errors/MissingConfig'
+import { InvalidConfigError } from '../errors/InvalidConfig'
 
 export default class JSON5Config {
   str_contents: string

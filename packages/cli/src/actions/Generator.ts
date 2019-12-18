@@ -1,9 +1,10 @@
-import { BuildFailedError, ProtoFab } from '@fab/core'
+import { ProtoFab } from '@fab/core'
 import fs from 'fs-extra'
 import path from 'path'
 import util from 'util'
 // @ts-ignore
 import _zip from 'deterministic-zip'
+import { BuildFailedError } from '../errors'
 const zip = util.promisify(_zip)
 
 export class Generator {

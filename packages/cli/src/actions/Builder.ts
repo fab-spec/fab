@@ -2,8 +2,6 @@ import {
   FabBuildStep,
   FabConfig,
   FabPluginRuntime,
-  InvalidConfigError,
-  InvalidPluginError,
   PluginArgs,
   PluginMetadata,
   ProtoFab,
@@ -12,6 +10,7 @@ import {
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { relativeToConfig } from '../helpers/paths'
+import { InvalidConfigError, InvalidPluginError } from '../errors'
 
 export default class Builder {
   static async build(config_path: string, config: FabConfig) {

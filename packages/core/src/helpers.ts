@@ -1,12 +1,5 @@
-import chalk from 'chalk'
 import mime from 'mime-types'
-import { DEFAULT_MIME_TYPE } from './constants'
-
-export const log = {
-  error(str: string) {
-    console.log(chalk.red(str))
-  },
-}
+import { DEFAULT_MIME_TYPE, IMMUTABLE_HEADERS, NON_IMMUTABLE_HEADERS } from './constants'
 
 export async function a_sume<T>(fn: () => Promise<T>, throws: (e: Error) => Error) {
   try {
@@ -31,4 +24,19 @@ export function filenameOutsideFabLocations(filename: string) {
 export function getContentType(pathname: string) {
   const mimeType = mime.lookup(pathname)
   return (mimeType && mime.contentType(mimeType)) || DEFAULT_MIME_TYPE
+}
+
+export function getCacheHeaders(immutable: boolean) {
+  return immutable ? IMMUTABLE_HEADERS : NON_IMMUTABLE_HEADERS
+}
+
+export function matchPath<T>(
+  lookup_table: { [pathname: string]: T },
+  pathname: string
+): T | undefined {
+  return (
+    lookup_table[pathname] ||
+    lookup_table[pathname + '.html'] ||
+    lookup_table[`${pathname}${pathname.endsWith('/') ? '' : '/'}index.html`]
+  )
 }

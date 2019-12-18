@@ -1,10 +1,11 @@
-import { log, ProtoFab } from '@fab/core'
+import { ProtoFab } from '@fab/core'
 import { rollup } from 'rollup'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import json from '@rollup/plugin-json'
 // @ts-ignore
 import hypothetical from 'rollup-plugin-hypothetical'
+import { log } from '../helpers'
 
 export class Compiler {
   static async compile(proto_fab: ProtoFab, render_plugins: string[]) {
@@ -44,7 +45,7 @@ function generatePipelineJs(plugin_runtimes: string[]) {
     ${plugin_runtimes
       .map((plugin, i) => `import { runtime as runtime_${i} } from '${plugin}/runtime'`)
       .join('\n')}
-        
+
     export const runtimes = [
       ${plugin_runtimes.map((plugin, i) => `runtime_${i}`).join(',')}
     ]
