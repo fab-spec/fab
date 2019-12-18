@@ -47,25 +47,24 @@ export default class Builder {
     const runtime_plugins = config.runtime.map((plugin_name) => {
       const requireable_plugin = relativeToConfig(config_path, plugin_name)
 
+      const requireRuntime = (path: string) => {
+        const required = require(path)
+        if (!required.runtime) throw new Error()
+        return required.runtime as FabPluginRuntime<PluginArgs, PluginMetadata>
+      }
       const runtime = s_sume(
         () => {
           try {
-            return require(requireable_plugin).render as FabPluginRuntime<
-              PluginArgs,
-              PluginMetadata
-            >
+            return requireRuntime(requireable_plugin + '/runtime')
           } catch (e) {
-            return require(requireable_plugin + '/render').build as FabPluginRuntime<
-              PluginArgs,
-              PluginMetadata
-            >
+            return requireRuntime(requireable_plugin)
           }
         },
         () =>
           new InvalidPluginError(
             plugin_name,
-            `The plugin '${plugin_name}' has no 'render' export, but is referenced in the 'runtime' section of the config!\n` +
-              `Looked for ${requireable_plugin + '/render'} and ${requireable_plugin}`
+            `The plugin '${plugin_name}' has no 'runtime' export, but is referenced in the 'runtime' section of the config!\n` +
+              `Looked for ${requireable_plugin + '/runtime'} and ${requireable_plugin}`
           )
       )
 

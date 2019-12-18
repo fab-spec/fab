@@ -1,13 +1,13 @@
 import { InputStaticArgs, InputStaticMetadata } from './types'
 import { FabPluginRuntime } from '@fab/core'
 
-export const render: FabPluginRuntime<InputStaticArgs, InputStaticMetadata> = (
+export const runtime: FabPluginRuntime<InputStaticArgs, InputStaticMetadata> = (
   args: InputStaticArgs,
   metadata: InputStaticMetadata
 ) => {
   console.log('I am input-static render time')
 
-  return async function({ url }) {
+  return async function render({ url }) {
     if (url.pathname === '/some-exact-path') {
       return new Response('OK', {
         status: 200,

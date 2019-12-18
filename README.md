@@ -1,9 +1,4 @@
----
-name: Home
-route: /
----
-
-***<h3 align="center"><br/><img width="461" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53997145-306ba300-418f-11e9-91d0-b44e6df85d4c.png"/></h3>***
+**_<h3 align="center"><br/><img width="461" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53997145-306ba300-418f-11e9-91d0-b44e6df85d4c.png"/></h3>_**
 
 [![Join discussion on Discord](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
 
@@ -17,7 +12,7 @@ They unify **static sites, single page applications (SPAs) as well as server-ren
 
 https://github.com/fab-spec/fab
 
-## *Note:* Major overhaul underway
+## _Note:_ Major overhaul underway
 
 The FAB tooling is being rebuilt in preparation for a v1 release. See the [next](https://github.com/fab-spec/fab/tree/next) branch for latest progress.
 
@@ -35,23 +30,23 @@ The FAB tooling is being rebuilt in preparation for a v1 release. See the [next]
 
 Working with one of these projects? Read the following
 
-* Create React App: [**@fab/static** — Usage with Create React App](./packages/fab-static)
-* Gatsby: [**@fab/static** — Gatsby installations](./packages/fab-static)
-* Any other static site renderer: [**@fab/static** — Usage with many HTML files](./packages/fab-static)
-* NextJS: [**@fab/nextjs**](./packages/fab-nextjs)
-* AfterJS: [**@fab/afterjs**](./packages/fab-afterjs)
+- Create React App: [**@fab/static** — Usage with Create React App](./packages/fab-static)
+- Gatsby: [**@fab/static** — Gatsby installations](./packages/fab-static)
+- Any other static site renderer: [**@fab/static** — Usage with many HTML files](./packages/fab-static)
+- NextJS: [**@fab/nextjs**](./packages/fab-nextjs)
+- AfterJS: [**@fab/afterjs**](./packages/fab-afterjs)
 
 Thinking of writing your own adapter? Head to [**@fab/compile**](./packages/fab-compile) to understand the low-level compilation API. Then get in touch, we're happy to help!
 
 ## Deployment adapters
 
-💎 FABs are **portable**. That is, once they're compiled, they can be deployed to any number of 
+💎 FABs are **portable**. That is, once they're compiled, they can be deployed to any number of
 
-* Lambda@Edge: [**@fab/lambda-edge-packager**](https://github.com/fab-spec/lambda-edge-packager)
-* Cloudflare Workers: [**@fab/cf-workers**](./packages/fab-cf-workers)
-* NodeJS: [**@fab/serve**](./packages/fab-serve)
-* Docker: _coming soon_
-* Heroku: _coming soon_
+- Lambda@Edge: [**@fab/lambda-edge-packager**](https://github.com/fab-spec/lambda-edge-packager)
+- Cloudflare Workers: [**@fab/cf-workers**](./packages/fab-cf-workers)
+- NodeJS: [**@fab/serve**](./packages/fab-serve)
+- Docker: _coming soon_
+- Heroku: _coming soon_
 
 Thinking of writing your own deployment adapter? Read on to understand the runtime requirements of FABs, then check [`@fab/serve`](./packages/fab-serve) for some sample code.
 

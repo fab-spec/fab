@@ -8,11 +8,16 @@ import {
   PluginMetadata,
   FabMetadata,
 } from '@fab/core'
+import { render as render_404 } from './404'
+
+/*
+ * Here, we import "files" that are going to be injected by the Rollup build.
+ * */
+
 // @ts-ignore
 import { renderers } from 'user-defined-pipeline'
 // @ts-ignore
 import { fab_metadata } from 'fab-metadata'
-import { render as render_404 } from './404'
 
 const pipeline = [
   ...(renderers as FabPluginRuntime<PluginArgs, PluginMetadata>[]),

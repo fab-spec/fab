@@ -1,2 +1,2 @@
 export { build } from './build'
-export { render } from './render'
+export { runtime } from './runtime'
