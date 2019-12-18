@@ -1,5 +1,6 @@
 const chokidar = require('chokidar')
 const path = require('path')
+const fs = require('fs')
 const { copyHomePackageReadmeToDocs, copyPackageReadmeToDocs } = require('./utils')
 
 try {

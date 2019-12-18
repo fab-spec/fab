@@ -1,5 +1,6 @@
 const glob = require('fast-glob')
 const path = require('path')
+const fs = require('fs')
 const { copyHomePackageReadmeToDocs, copyPackageReadmeToDocs } = require('./utils')
 
 try {
