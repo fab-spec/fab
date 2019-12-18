@@ -17,7 +17,7 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
         )
       )
       $('head').prepend('{{{ FAB_ENV_INJECTION }}}')
-      $('script').attr('nonce', '{{ FAB_NONCE }}')
+      // $('script').attr('nonce', '{{ FAB_NONCE }}')
 
       htmls[filename] = $.html()
     }
