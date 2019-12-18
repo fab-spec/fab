@@ -2,9 +2,9 @@ export default {
   typescript: false,
   title: 'FAB — Frontend Application Bundles',
   description: 'Homepage for the FAB project & specification',
-  files: ['./docs/**/*.{md|mdx}'], //, './packages/*/README.md', './README.md'],
-  themesDir: 'docs',
-  public: 'docs/public/',
+  files: ['./**/*.{md|mdx}'], //, './packages/*/README.md', './README.md'],
+  themesDir: './',
+  public: 'public/',
   themeConfig: {
     colors: { sidebar: { bg: '#EEF1F5' } },
     styles: {

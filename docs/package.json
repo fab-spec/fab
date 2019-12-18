@@ -1,0 +1,21 @@
+{
+  "name": "docs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@fab/static": "^0.1.8",
+    "docz": "^2.2.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "scripts": {
+    "build:fab": "npm run docz:build && fab-static .docz/dist",
+    "docz:build": "node scripts/build.js && docz build",
+    "docz:dev": "concurrently \"docz dev\" \"node scripts/watch.js\"",
+    "docz:serve": "docz build && docz serve"
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.2"
+  }
+}

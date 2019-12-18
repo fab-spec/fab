@@ -2,7 +2,6 @@
 name: 'Home'
 route: '/'
 ---
-
 **_<h3 align="center"><br/><img width="461" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53997145-306ba300-418f-11e9-91d0-b44e6df85d4c.png"/></h3>_**
 
 [![Join discussion on Discord](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
@@ -76,3 +75,4 @@ _**Frontend Application Bundles**_ are the container format that work equally we
 ---
 
 @glenmaddern.
+

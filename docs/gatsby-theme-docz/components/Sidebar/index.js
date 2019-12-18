@@ -32,7 +32,7 @@ export const Sidebar = React.forwardRef((props, ref) => {
         sx={{ ...styles.wrapper(props), borderTop: 'solid 3px #1865FB' }}
         data-testid="sidebar"
       >
-        <img src="/docs/public/fab-square-logo.png" width="100%" />
+        <img src="/public/fab-square-logo.png" width="100%" />
 
         <NavSearch
           placeholder="Type to search..."
