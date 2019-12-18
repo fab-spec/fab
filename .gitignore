@@ -8,3 +8,4 @@ package-lock.json
 .nyc_output
 oclif.manifest.json
 tsconfig.tsbuildinfo
+lerna-debug.log
