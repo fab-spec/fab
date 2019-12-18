@@ -10,7 +10,7 @@ export interface ServeHtmlArgs extends PluginArgs {
 }
 
 export type ServerHtmls = {
-  [path: string]: any
+  [path: string]: Array<Array<[string, string, number, number]>>
 }
 export interface ServeHtmlMetadata extends PluginMetadata {
   serve_html: {

@@ -35,7 +35,7 @@ describe('Build time', () => {
     await build({}, proto_fab)
     const htmls = proto_fab.metadata.serve_html.htmls
     expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
-    expect(htmls['/index.html'].map((tokens: string[]) => tokens[1])).to.deep.equal([
+    expect(htmls['/index.html'].map((tokens) => tokens[1])).to.deep.equal([
       '<html><head>',
       'FAB_ENV_INJECTION',
       '<title>HTML Test</title></head><body>here</body></html>',
