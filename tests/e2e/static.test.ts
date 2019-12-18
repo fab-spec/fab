@@ -26,10 +26,8 @@ describe('dir of static assets', () => {
         `fab build -c fab.empty-config.json5`,
         opts
       )
-      expect(stderr).toContain(
-        `Error: The FAB config file is missing a 'build' property.`
-      )
-      expect(stdout).toContain(`Config file contains errors!`)
+      expect(stdout).toContain(`The FAB config file is missing a 'build' property.`)
+      expect(stderr).toContain(`Config file contains errors!`)
     })
 
     it(`should tell you if you reference a module it can't find`, async () => {
@@ -37,9 +35,9 @@ describe('dir of static assets', () => {
         `fab build -c fab.unknown-module.json5`,
         opts
       )
-      expect(stderr).toContain(`Cannot find module '@fab/no-existo'`)
-      expect(stderr).toContain(`Are you sure it's installed?`)
-      expect(stdout).toContain(`Config file contains errors!`)
+      expect(stdout).toContain(`Cannot find module '@fab/no-existo'`)
+      expect(stdout).toContain(`Are you sure it's installed?`)
+      expect(stderr).toContain(`Config file contains errors!`)
     })
 
     it(`should tell you you've forgotten @fab/rewire-assets`, async () => {
@@ -49,7 +47,7 @@ describe('dir of static assets', () => {
       )
       expect(stdout).toContain(`Build failed!`)
       expect(stdout).toContain(
-        `Build config leaves files outside of _assets dir: index.html`
+        `Build config leaves files outside of _assets dir: /index.html`
       )
       expect(stdout).toContain(`You might need to add @fab/rewire-assets`)
       expect(stdout).toContain(`See https://fab.dev/packages/rewire-assets`)

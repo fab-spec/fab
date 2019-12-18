@@ -1,15 +1,6 @@
-import { expect } from 'chai'
 import { PluginMetadata, ProtoFab } from '@fab/core'
 import { build } from '../src/build'
-
-const shouldThrow = async (async_fn: () => any, message: string) => {
-  try {
-    await async_fn()
-    throw new Error('Should have thrown!')
-  } catch (err) {
-    expect(err.message).to.equal(message)
-  }
-}
+import { shouldThrow } from '@fab/core/test/helpers'
 
 describe('@fab/input-static', () => {
   it('should require a dir argument', async () => {

@@ -1,8 +1,9 @@
 import { InputStaticArgs, InputStaticMetadata } from './types'
-import { InvalidConfigError, ProtoFab } from '@fab/core'
+import { ProtoFab } from '@fab/core'
 import fs from 'fs-extra'
 import globby from 'globby'
 import path from 'path'
+import { InvalidConfigError } from '@fab/cli'
 
 export async function build(
   args: InputStaticArgs,
@@ -33,7 +34,7 @@ export async function build(
   await Promise.all(
     files.map(async (filename) => {
       proto_fab.files!.set(
-        path.relative(dir, filename),
+        '/' + path.relative(dir, filename),
         await fs.readFile(filename, 'utf8')
       )
     })

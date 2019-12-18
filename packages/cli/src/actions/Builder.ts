@@ -1,18 +1,16 @@
 import {
-  BuildFailedError,
   FabBuildStep,
   FabConfig,
   FabPluginRuntime,
-  InvalidConfigError,
-  InvalidPluginError,
   PluginArgs,
   PluginMetadata,
   ProtoFab,
   s_sume,
 } from '@fab/core'
 import { Compiler } from './Compiler'
-import path from 'path'
+import { Generator } from './Generator'
 import { relativeToConfig } from '../helpers/paths'
+import { InvalidConfigError, InvalidPluginError } from '../errors'
 
 export default class Builder {
   static async build(config_path: string, config: FabConfig) {
@@ -47,26 +45,36 @@ export default class Builder {
     const runtime_plugins = config.runtime.map((plugin_name) => {
       const requireable_plugin = relativeToConfig(config_path, plugin_name)
 
-      const requireRuntime = (path: string) => {
-        const required = require(path)
-        if (!required.runtime) throw new Error()
-        return required.runtime as FabPluginRuntime<PluginArgs, PluginMetadata>
-      }
       const runtime = s_sume(
         () => {
           try {
-            return requireRuntime(requireable_plugin + '/runtime')
+            return require(requireable_plugin + '/runtime').runtime as FabPluginRuntime<
+              PluginArgs,
+              PluginMetadata
+            >
           } catch (e) {
-            return requireRuntime(requireable_plugin)
+            return require(requireable_plugin).runtime as FabPluginRuntime<
+              PluginArgs,
+              PluginMetadata
+            >
           }
         },
         () =>
-          new InvalidPluginError(
-            plugin_name,
-            `The plugin '${plugin_name}' has no 'runtime' export, but is referenced in the 'runtime' section of the config!\n` +
-              `Looked for ${requireable_plugin + '/runtime'} and ${requireable_plugin}`
+          new InvalidConfigError(
+            `The plugin '${plugin_name}' could not be found!\n` +
+              `Looked for ${requireable_plugin +
+                '/runtime'} and ${requireable_plugin}, expected a named export 'runtime'.`
           )
       )
+
+      if (!runtime) {
+        new InvalidPluginError(
+          plugin_name,
+          `The plugin '${plugin_name}' has no 'runtime' export, but is referenced in the 'runtime' section of the config!\n` +
+            `Looked in ${requireable_plugin +
+              '/runtime'} and ${requireable_plugin}, expected a named export 'runtime'.`
+        )
+      }
 
       return requireable_plugin
     })
@@ -77,15 +85,7 @@ export default class Builder {
       await builder(plugin_args, proto_fab)
     }
 
-    // After build, there should only be files in the expected places (server.js, _assets)
-    const invalid_reason = proto_fab.readyForCompilation()
-    if (invalid_reason) {
-      throw new BuildFailedError(`FAB is not ready for compilation.
-${invalid_reason}
-You might need to add @fab/rewire-assets to your 'build' config. See https://fab.dev/packages/rewire-assets for more information about what this module is and why it's needed.
-`)
-    }
-
     await Compiler.compile(proto_fab, runtime_plugins)
+    await Generator.generate(proto_fab)
   }
 }
