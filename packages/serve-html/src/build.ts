@@ -1,6 +1,7 @@
 import { ProtoFab } from '@fab/core/src'
 import { ServeHtmlArgs, ServeHtmlMetadata, ServerHtmls } from './types'
 import cheerio from 'cheerio'
+import mustache from 'mustache'
 
 export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMetadata>) {
   const { 'match-html': match_html = /\.html$/i } = args
@@ -19,7 +20,19 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
       $('head').prepend('{{{ FAB_ENV_INJECTION }}}')
       // $('script').attr('nonce', '{{ FAB_NONCE }}')
 
-      htmls[filename] = $.html()
+      const template = $.html()
+      htmls[filename] = mustache.parse(template)
+
+      // console.log(
+      //   new mustache.Writer().renderTokens(
+      //     tokens,
+      //     new mustache.Context({
+      //       FAB_ENV_INJECTION: 'HIHIHIHI',
+      //     }),
+      //     null,
+      //     null
+      //   )
+      // )
     }
   }
 

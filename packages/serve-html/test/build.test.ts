@@ -34,9 +34,11 @@ describe('Build time', () => {
     const proto_fab = new ProtoFab<ServeHtmlMetadata>(files)
     await build({}, proto_fab)
     const htmls = proto_fab.metadata.serve_html.htmls
-    expect(htmls).to.deep.equal({
-      '/index.html':
-        '<html><head>{{{ FAB_ENV_INJECTION }}}<title>HTML Test</title></head><body>here</body></html>',
-    })
+    expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
+    expect(htmls['/index.html'].map((tokens) => tokens[1])).to.deep.equal([
+      '<html><head>',
+      'FAB_ENV_INJECTION',
+      '<title>HTML Test</title></head><body>here</body></html>',
+    ])
   })
 })
