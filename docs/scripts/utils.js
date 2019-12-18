@@ -5,6 +5,7 @@ const copyPackageReadmeToDocs = (source) => {
   if (!source.endsWith('README.md')) return
 
   const [, packageName] = source.split('/')
+
   const destination = path.resolve(__dirname, `../readmes/${packageName}.md`)
   fs.copyFileSync(source, destination)
   const contentWithoutFrontMatter = fs.readFileSync(source)
