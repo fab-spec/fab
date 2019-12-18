@@ -9,6 +9,11 @@ export interface ServeHtmlArgs extends PluginArgs {
   }
 }
 
+export type ServerHtmls = {
+  [path: string]: any
+}
 export interface ServeHtmlMetadata extends PluginMetadata {
-  serve_html: {}
+  serve_html: {
+    htmls: ServerHtmls
+  }
 }

@@ -25,4 +25,18 @@ describe('Build time', () => {
     await build({}, proto_fab)
     expect([...proto_fab.files.entries()]).to.deep.equal([])
   })
+
+  it('should compile the HTML files into a template', async () => {
+    const files = {
+      '/index.html':
+        '<html><head><title>HTML Test</title></head><body>here</body></html>',
+    }
+    const proto_fab = new ProtoFab<ServeHtmlMetadata>(files)
+    await build({}, proto_fab)
+    const htmls = proto_fab.metadata.serve_html.htmls
+    expect(htmls).to.deep.equal({
+      '/index.html':
+        '<html><head>{{{ FAB_ENV_INJECTION }}}<title>HTML Test</title></head><body>here</body></html>',
+    })
+  })
 })
