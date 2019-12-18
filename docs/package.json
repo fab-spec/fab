@@ -10,9 +10,11 @@
     "docz:serve": "docz build && docz serve"
   },
   "devDependencies": {
-    "concurrently": "^5.0.2",
     "@fab/static": "^0.1.8",
+    "chokidar": "^3.3.1",
+    "concurrently": "^5.0.2",
     "docz": "^2.2.0",
+    "fast-glob": "^3.1.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
   }
