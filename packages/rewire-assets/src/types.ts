@@ -6,7 +6,7 @@ export interface RewireAssetsArgs extends PluginArgs {
 }
 
 export type InlineAssets = {
-  [filename: string]: { contents: string; content_type: string }
+  [filename: string]: { contents: string; content_type: string; immutable: boolean }
 }
 export type RenamedAssets = {
   [filename: string]: { asset_path: string; immutable: boolean }

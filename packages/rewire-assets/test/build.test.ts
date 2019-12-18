@@ -44,10 +44,12 @@ describe('Build time', () => {
       '/index.html': {
         contents: EXAMPLES.HTML,
         content_type: 'text/html; charset=utf-8',
+        immutable: false,
       },
       '/main.css': {
         contents: EXAMPLES.CSS,
         content_type: 'text/css; charset=utf-8',
+        immutable: false,
       },
     })
   })
@@ -73,6 +75,7 @@ describe('Build time', () => {
       '/index.html': {
         contents: EXAMPLES.HTML,
         content_type: 'text/html; charset=utf-8',
+        immutable: false,
       },
     })
 
@@ -80,6 +83,39 @@ describe('Build time', () => {
       '/main.css': {
         asset_path: `/_assets/main.${css_hash}.css`,
         immutable: false,
+      },
+    })
+  })
+
+  it('should base immutability decision based on filename', async () => {
+    const files = {
+      '/index.a1b2c3d4.html': EXAMPLES.HTML,
+      '/main.e5f6a7b8.css': EXAMPLES.CSS,
+    }
+    const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
+    await build(
+      {
+        'inline-threshold': EXAMPLES.CSS.length - 1,
+        'treat-as-immutable': /\.[0-9A-F]{8,}\./i,
+      },
+      proto_fab
+    )
+
+    expect([...proto_fab.files.entries()]).to.deep.equal([
+      [`/_assets/main.e5f6a7b8.css`, EXAMPLES.CSS],
+    ])
+    expect(proto_fab.metadata.rewire_assets.inlined_assets).to.deep.equal({
+      '/index.a1b2c3d4.html': {
+        contents: EXAMPLES.HTML,
+        content_type: 'text/html; charset=utf-8',
+        immutable: true,
+      },
+    })
+
+    expect(proto_fab.metadata.rewire_assets.renamed_assets).to.deep.equal({
+      '/main.e5f6a7b8.css': {
+        asset_path: `/_assets/main.e5f6a7b8.css`,
+        immutable: true,
       },
     })
   })

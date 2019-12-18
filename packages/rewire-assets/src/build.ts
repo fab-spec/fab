@@ -48,6 +48,7 @@ export async function build(
     inlined_assets[filename] = {
       contents: proto_fab.files.get(filename)!,
       content_type: getContentType(filename),
+      immutable: !!immutable_regexp.exec(filename),
     }
     // We got this, yo.
     proto_fab.files.delete(filename)
