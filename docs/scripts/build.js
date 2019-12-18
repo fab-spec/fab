@@ -7,7 +7,7 @@ try {
   fs.mkdirSync(path.resolve(__dirname, `../readmes`))
 } catch (err) {}
 
-const entries = glob.sync('packages/*/README.md')
+const entries = glob.sync(path.resolve(__dirname, '../../packages/*/README.md'))
 for (const entry of entries) {
   copyPackageReadmeToDocs(entry)
 }

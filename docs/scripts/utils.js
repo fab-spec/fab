@@ -4,7 +4,7 @@ const path = require('path')
 const copyPackageReadmeToDocs = (source) => {
   if (!source.endsWith('README.md')) return
 
-  const [, packageName] = source.split('/')
+  const [_, packageName] = source.match(/\/packages\/([^\/]+)\//)
 
   const destination = path.resolve(__dirname, `../readmes/${packageName}.md`)
   fs.copyFileSync(source, destination)

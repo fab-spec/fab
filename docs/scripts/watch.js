@@ -8,13 +8,11 @@ try {
 } catch (err) {}
 
 chokidar
-  .watch('packages/*/README.md', { cwd: path.resolve(__dirname, '../../') })
+  .watch(path.resolve(__dirname, '../../packages/*/README.md'))
   .on('all', (event, source) => {
     copyPackageReadmeToDocs(source)
   })
 
-chokidar
-  .watch('README.md', { cwd: path.resolve(__dirname, '../../') })
-  .on('all', (event, source) => {
-    copyHomePackageReadmeToDocs(source)
-  })
+chokidar.watch(path.resolve(__dirname, '../../README.md')).on('all', (event, source) => {
+  copyHomePackageReadmeToDocs(source)
+})
