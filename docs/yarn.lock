@@ -10469,7 +10469,7 @@ react-frame-component@^4.1.1:
 
 react-helmet-async@^1.0.4:
   version "1.0.4"
-  resolved "https://registry.npmjs.org/react-helmet-async/-/react-helmet-async-1.0.4.tgz#079ef10b7fefcaee6240fefd150711e62463cc97"
+  resolved "https://registry.yarnpkg.com/react-helmet-async/-/react-helmet-async-1.0.4.tgz#079ef10b7fefcaee6240fefd150711e62463cc97"
   integrity sha512-KTGHE9sz8N7+fCkZ2a3vzXH9eIkiTNhL2NhKR7XzzQl3WsGlCHh76arauJUIiGdfhjeMp7DY7PkASAmYFXeJYg==
   dependencies:
     "@babel/runtime" "^7.3.4"
