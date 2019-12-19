@@ -3,6 +3,7 @@ import { ServeHtmlArgs, ServeHtmlMetadata, ServerHtmls } from './types'
 import cheerio from 'cheerio'
 import mustache from 'mustache'
 import { DEFAULT_INJECTIONS } from './constants'
+import { addInjectionPoint } from './injections/env'
 
 export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMetadata>) {
   const { 'match-html': match_html = /\.html$/i, injections = DEFAULT_INJECTIONS } = args
@@ -20,7 +21,7 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
       )
 
       if (injections.env) {
-        $('head').prepend('{{{ FAB_ENV_INJECTION }}}')
+        addInjectionPoint($)
       }
       // $('script').attr('nonce', '{{ FAB_NONCE }}')
 

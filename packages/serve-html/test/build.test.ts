@@ -60,4 +60,17 @@ describe('Build time', () => {
       '<html><head><title>HTML Test</title></head><body>here</body></html>',
     ])
   })
+
+  it(`should explode if you try to use an injection it doesn't know about`, async () => {
+    const proto_fab = new ProtoFab<ServeHtmlMetadata>()
+    await build(
+      {
+        injections: {
+          // @ts-ignore
+          'no-existo': {},
+        },
+      },
+      proto_fab
+    )
+  })
 })

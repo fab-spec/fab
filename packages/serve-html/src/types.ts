@@ -1,10 +1,15 @@
 import { PluginArgs, PluginMetadata } from '@fab/core/src'
 
+export type EnvInjectionConfig = {
+  name?: string
+}
+
 export interface ServeHtmlArgs extends PluginArgs {
   'match-html'?: RegExp
   injections?: {
-    env?: {
-      name?: string
+    env?: EnvInjectionConfig
+    csp?: {
+      name: string
     }
   }
 }

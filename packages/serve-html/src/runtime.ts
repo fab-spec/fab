@@ -2,6 +2,15 @@ import { ServeHtmlArgs, ServeHtmlMetadata } from './types'
 import { FabPluginRuntime, matchPath } from '@fab/core'
 import mustache from 'mustache'
 import { DEFAULT_INJECTIONS } from './constants'
+import { generateReplacements } from './injections/env'
+
+// Todo: this should be part of the context.
+// Maybe it should be optional though, with this as the fallback.
+const getNonce = () => {
+  return Math.random()
+    .toString(16)
+    .slice(2)
+}
 
 export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
   args: ServeHtmlArgs,
@@ -23,9 +32,7 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
       }
 
       if (injections.env) {
-        const name = injections.env.name || DEFAULT_INJECTIONS.env.name
-        const settings_json = JSON.stringify(settings)
-        replacements.FAB_ENV_INJECTION = `<script>window.${name}=${settings_json};</script>`
+        Object.assign(replacements, generateReplacements(injections.env, settings))
       }
 
       const rendered = writer.renderTokens(
