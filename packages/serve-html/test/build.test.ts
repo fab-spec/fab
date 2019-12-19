@@ -41,4 +41,23 @@ describe('Build time', () => {
       '<title>HTML Test</title></head><body>here</body></html>',
     ])
   })
+
+  it(`should not make room for FAB_SETTINGS if 'env' isn't passed`, async () => {
+    const files = {
+      '/index.html':
+        '<html><head><title>HTML Test</title></head><body>here</body></html>',
+    }
+    const proto_fab = new ProtoFab<ServeHtmlMetadata>(files)
+    await build(
+      {
+        injections: {},
+      },
+      proto_fab
+    )
+    const htmls = proto_fab.metadata.serve_html.htmls
+    expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
+    expect(htmls['/index.html'].map((tokens) => tokens[1])).to.deep.equal([
+      '<html><head><title>HTML Test</title></head><body>here</body></html>',
+    ])
+  })
 })

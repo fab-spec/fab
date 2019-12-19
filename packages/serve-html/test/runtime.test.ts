@@ -62,4 +62,24 @@ describe('Runtime', () => {
       '<html><head><script>window.FAB_SETTINGS={"SOME_VAR":"some value"};</script><title>{{{ titleStr }}}</title></head><body>{{ bodyText }}</body></html>'
     )
   })
+
+  it('should inject settings with a different global', async () => {
+    const args = {
+      injections: {
+        env: {
+          name: 'ANOTHER_GLOBAL_NAME',
+        },
+      },
+    }
+    const files = {
+      '/index.html': `<html><head><title>HTML Test</title></head><body>here</body></html>`,
+    }
+    const proto_fab = await doBuild(files, args)
+
+    const renderer = runtime(args, proto_fab.metadata)
+    const response = await renderer(requestObj('/', { SOME_VAR: 'some value' }))
+    expect(await response?.text()).to.equal(
+      '<html><head><script>window.ANOTHER_GLOBAL_NAME={"SOME_VAR":"some value"};</script><title>HTML Test</title></head><body>here</body></html>'
+    )
+  })
 })
