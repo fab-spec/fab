@@ -48,4 +48,18 @@ describe('Runtime', () => {
       '<html><head><script>window.FAB_SETTINGS={"MULTIPLE":"vars","ARE":"ok too"};</script><title>HTML Test</title></head><body>here</body></html>'
     )
   })
+
+  it('should ignore existing mustache templates', async () => {
+    const args = {}
+    const files = {
+      '/index.html': `<html><head><title>{{{ titleStr }}}</title></head><body>{{ bodyText }}</body></html>`,
+    }
+    const proto_fab = await doBuild(files, args)
+
+    const renderer = runtime(args, proto_fab.metadata)
+    const response = await renderer(requestObj('/', { SOME_VAR: 'some value' }))
+    expect(await response?.text()).to.equal(
+      '<html><head><script>window.FAB_SETTINGS={"SOME_VAR":"some value"};</script><title>{{{ titleStr }}}</title></head><body>{{ bodyText }}</body></html>'
+    )
+  })
 })

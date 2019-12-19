@@ -21,6 +21,8 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
           FAB_ENV_INJECTION: `<script>window.FAB_SETTINGS=${JSON.stringify(
             settings
           )};</script>`,
+          OPEN_TRIPLE: '{{{',
+          OPEN_DOUBLE: '{{',
         }),
         null,
         null
