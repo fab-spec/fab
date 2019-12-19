@@ -6,6 +6,8 @@ import json from '@rollup/plugin-json'
 // @ts-ignore
 import hypothetical from 'rollup-plugin-hypothetical'
 import { log } from '../helpers'
+// @ts-ignore
+import alias from '@rollup/plugin-alias'
 
 export class Compiler {
   static async compile(proto_fab: ProtoFab, render_plugins: string[]) {
@@ -14,6 +16,11 @@ export class Compiler {
     const bundle = await rollup({
       input: '@fab/cli/lib/runtime',
       plugins: [
+        alias({
+          entries: {
+            path: require.resolve('path-browserify'),
+          },
+        }),
         hypothetical({
           files: {
             'user-defined-pipeline': generatePipelineJs(render_plugins),
@@ -21,7 +28,9 @@ export class Compiler {
           },
           allowFallthrough: true,
         }),
-        resolve(),
+        resolve({
+          preferBuiltins: true,
+        }),
         commonjs(),
         json(),
       ],

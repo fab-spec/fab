@@ -36,6 +36,7 @@ export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> =
         },
       })
     }
+
     return undefined
   }
 }

@@ -21,19 +21,7 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
       // $('script').attr('nonce', '{{ FAB_NONCE }}')
 
       const template = $.html()
-      console.log(mustache.parse(template))
       htmls[filename] = mustache.parse(template)
-
-      // console.log(
-      //   new mustache.Writer().renderTokens(
-      //     tokens,
-      //     new mustache.Context({
-      //       FAB_ENV_INJECTION: 'HIHIHIHI',
-      //     }),
-      //     null,
-      //     null
-      //   )
-      // )
     }
   }
 

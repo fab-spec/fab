@@ -22,9 +22,10 @@ export default class Builder {
               PluginArgs,
               PluginMetadata
             >,
-          () =>
+          (e) =>
             new InvalidConfigError(
-              `Cannot find module '${plugin_name}', which was referenced in the 'build' config.\nAre you sure it's installed?`
+              `Cannot find module '${plugin_name}', which was referenced in the 'build' config.\nAre you sure it's installed?`,
+              e
             )
         )
 
