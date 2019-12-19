@@ -8,11 +8,13 @@ import hypothetical from 'rollup-plugin-hypothetical'
 import { log } from '../helpers'
 // @ts-ignore
 import alias from '@rollup/plugin-alias'
+import { BuildFailedError } from '../errors'
 
 export class Compiler {
   static async compile(proto_fab: ProtoFab, render_plugins: string[]) {
     console.log("It's compilin' time!")
 
+    const warnings: string[] = []
     const bundle = await rollup({
       input: '@fab/cli/lib/runtime',
       plugins: [
@@ -34,10 +36,26 @@ export class Compiler {
         commonjs(),
         json(),
       ],
+      onwarn(warning, handler) {
+        if (warning.code === 'UNRESOLVED_IMPORT') {
+          warnings.push(
+            `Could not find module '${warning.source}' during build of '${warning.importer}'`
+          )
+        } else {
+          handler(warning)
+        }
+      },
     })
+
     const {
       output: [output, ...chunks],
     } = await bundle.generate({ format: 'iife', exports: 'named' })
+
+    if (warnings.length > 0) {
+      throw new BuildFailedError(
+        `Errors encountered during Rollup build:\n\n  - ${warnings.join('\n  - ')}\n`
+      )
+    }
     // console.log(output)
 
     if (chunks.length > 0) {
