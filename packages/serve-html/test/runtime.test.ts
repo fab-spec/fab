@@ -3,8 +3,9 @@ import { FabFilesObject, FabRequestContext, FabSettings, ProtoFab } from '@fab/c
 import { build } from '../src/build'
 import { runtime } from '../src/runtime'
 import { ServeHtmlArgs, ServeHtmlMetadata } from '../src/types'
-import { Request, Response } from 'node-fetch'
 
+// todo: must be a better way to define this for the test run
+import { Request, Response } from 'node-fetch'
 // @ts-ignore
 global.Request = Request
 // @ts-ignore
@@ -16,10 +17,9 @@ async function doBuild(files: FabFilesObject, args: ServeHtmlArgs) {
   return proto_fab
 }
 
-function request(path: string, settings: FabSettings): FabRequestContext {
+function requestObj(path: string, settings: FabSettings): FabRequestContext {
+  // @ts-ignore our renderer only uses these two parts of the context
   return {
-    // @ts-ignore todo: figure out how to make node-fetch work here.
-    request: new Request(path),
     url: new URL(`https://example.com${path}`),
     settings,
   }
@@ -38,12 +38,12 @@ describe('Runtime', () => {
     const proto_fab = await doBuild(files, args)
 
     const renderer = runtime(args, proto_fab.metadata)
-    const response = await renderer(request('/', { SOME_VAR: 'some value' }))
+    const response = await renderer(requestObj('/', { SOME_VAR: 'some value' }))
     expect(await response?.text()).to.equal(
       '<html><head><script>window.FAB_SETTINGS={"SOME_VAR":"some value"};</script><title>HTML Test</title></head><body>here</body></html>'
     )
 
-    const reponse2 = await renderer(request('/', { MULTIPLE: 'vars', ARE: 'ok too' }))
+    const reponse2 = await renderer(requestObj('/', { MULTIPLE: 'vars', ARE: 'ok too' }))
     expect(await reponse2?.text()).to.equal(
       '<html><head><script>window.FAB_SETTINGS={"MULTIPLE":"vars","ARE":"ok too"};</script><title>HTML Test</title></head><body>here</body></html>'
     )
