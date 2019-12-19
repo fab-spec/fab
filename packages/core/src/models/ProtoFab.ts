@@ -1,11 +1,17 @@
 import { filenameOutsideFabLocations, getContentType } from '../helpers'
-import { FabFileMetadata, FabFiles, FabMetadata, PluginMetadata } from '../types'
+import {
+  FabFileMetadata,
+  FabFiles,
+  FabFilesObject,
+  FabMetadata,
+  PluginMetadata,
+} from '../types'
 
 export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   files: FabFiles
   metadata: U
 
-  constructor(init_files: { [k: string]: string } = {}) {
+  constructor(init_files: FabFilesObject = {}) {
     this.files = new Map(Object.entries(init_files))
     this.metadata = {} as U
   }
