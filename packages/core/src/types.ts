@@ -1,7 +1,7 @@
 import { ProtoFab } from './models/ProtoFab'
 
 export interface PluginArgs {
-  [arg_name: string]: string | number | RegExp | undefined
+  [arg_name: string]: any
 }
 
 export interface BuildConfig {
@@ -46,14 +46,17 @@ export type FabPluginRuntime<T extends PluginArgs, U extends PluginMetadata> = (
 
 /*
  * A FabRequestResponder is an async function that optionally returns
- * a Response. If this request is not one that this responder needs
- * to deal with, it returns undefined.
+ * a Response. If this responder should not handle this request, it
+ * returns undefined and the next renderer is invoked.
  * */
-type FabRequestResponder = (context: {
+export type FabRequestContext = {
   request: Request
   settings: FabSettings
   url: URL
-}) => Promise<Response | undefined>
+}
+export type FabRequestResponder = (
+  context: FabRequestContext
+) => Promise<Response | undefined>
 
 /*
  * The outermost FAB renderer has to follow the spec exactly
@@ -65,6 +68,7 @@ export interface FabPlugin<T extends PluginArgs, U extends PluginMetadata> {
   render: FabPluginRuntime<T, U>
 }
 
+export type FabFilesObject = { [k: string]: string }
 export type FabFiles = Map<string, string>
 export type FabFileMetadata = {
   [filename: string]: {

@@ -21,9 +21,13 @@ This module acts as a catch-all, with different behaviour based on the type of f
   build: {
     // ... all existing plugins should go here, rewire-assets should be last
     '@fab/rewire-assets': {
-      // No config required, see below for defaults
+      // Can be left blank. See below for config options
     },
   },
+  runtime: [
+    // ... existing plugins ahead
+    '@fab/rewire-assets',
+  ],
 }
 ```
 
