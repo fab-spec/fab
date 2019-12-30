@@ -6,11 +6,7 @@ import Builder from '../actions/Builder'
 export default class Build extends Command {
   static description = 'describe the command here'
 
-  static examples = [
-    `$ fab hello
-hello world from ./src/hello.ts!
-`,
-  ]
+  static examples = [`$ fab build`, `$ fab build --config=fab.config.json5`]
 
   static flags = {
     help: flags.help({ char: 'h' }),

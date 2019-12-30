@@ -81,3 +81,9 @@ export type FabMetadata = {
   file_metadata: FabFileMetadata
   plugin_metadata: PluginMetadata
 }
+
+export type ServerArgs = {
+  port: string
+  cert: string | undefined
+  key: string | undefined
+}
