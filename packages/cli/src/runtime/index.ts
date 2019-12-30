@@ -39,3 +39,8 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
     headers: {},
   })
 }
+
+export const isEverythingOk = () => {
+  console.log('CHECKING THAT EVERYTHING IS OK')
+  return 'YEP'
+}

@@ -35,6 +35,7 @@
     "fs-extra": "^8.1.0",
     "get-stream": "^5.1.0",
     "isolated-vm": "^3.0.0",
+    "node-fetch": "^2.6.0",
     "yauzl": "^2.10.0"
   },
   "publishConfig": {
