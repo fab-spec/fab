@@ -88,7 +88,7 @@ export type ServerArgs = {
   key: string | undefined
 }
 
-export enum RuntimeType {
+export enum SandboxType {
   v8isolate,
   nodeVm,
 }

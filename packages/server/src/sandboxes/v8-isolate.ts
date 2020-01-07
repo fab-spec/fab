@@ -1,7 +1,9 @@
 import fs from 'fs-extra'
 import ivm from 'isolated-vm'
+import { SandboxedRenderer } from '@fab/core'
+import { FabSettings } from '@fab/core/src'
 
-export default async (src: string) => {
+export default async (src: string): Promise<SandboxedRenderer> => {
   const isolate = new ivm.Isolate({ memoryLimit: 128 })
   const context = await isolate.createContext()
   console.log({ context })
@@ -58,4 +60,18 @@ export default async (src: string) => {
   const renderRef = await g.get('FAB_render')
   console.log({ renderRef })
   console.log(await renderRef.apply(undefined))
+
+  return {
+    async render(request: Request, settings: FabSettings) {
+      console.log('RENDERING')
+      return new Response(`V8 Runtime not implemented`, {
+        status: 500,
+        headers: {},
+      })
+    },
+    getSettings(env: string) {
+      console.log('GETTING SETTINGS')
+      return {}
+    },
+  }
 }
