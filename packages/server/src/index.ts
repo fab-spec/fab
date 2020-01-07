@@ -9,6 +9,7 @@ import url from 'url'
 import http from 'http'
 import express from 'express'
 import concat from 'concat-stream'
+import { Request as NodeFetchRequest } from 'node-fetch'
 
 export default class Server {
   private filename: string
@@ -67,7 +68,7 @@ export default class Server {
             const method = req.method
             const headers: any = req.headers
             const url = `${req.protocol}://${req.headers.host}${req.url}`
-            const fetch_req = new Request(url, {
+            const fetch_req = new NodeFetchRequest(url, {
               method,
               headers,
               ...(method === 'POST' ? { body: req.body } : {}),
@@ -76,8 +77,10 @@ export default class Server {
             const production_settings = renderer.getSettings
               ? renderer.getSettings('production')
               : {}
+            console.log(production_settings)
             const fetch_res = await renderer.render(
-              fetch_req,
+              // @ts-ignore
+              fetch_req as Request,
               Object.assign(
                 {
                   injected: 'variables',

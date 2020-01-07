@@ -42,5 +42,5 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 }
 
 export const getSettings: FabSpecGetSettings = (env: string) => {
-  return {}
+  return { yeah: 'boy' }
 }
