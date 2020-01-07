@@ -62,6 +62,7 @@ export type FabRequestResponder = (
  * The outermost FAB renderer has to follow the spec exactly
  * */
 export type FabSpecRender = (request: Request, settings: FabSettings) => Promise<Response>
+export type FabSpecGetSettings = (env: string) => FabSettings
 
 export interface FabPlugin<T extends PluginArgs, U extends PluginMetadata> {
   build: FabBuildStep<T, U>
@@ -91,4 +92,9 @@ export type ServerArgs = {
 export enum SandboxType {
   v8isolate,
   nodeVm,
+}
+
+export type SandboxedRenderer = {
+  render: FabSpecRender
+  getSettings: FabSpecGetSettings
 }

@@ -7,6 +7,7 @@ import {
   PluginArgs,
   PluginMetadata,
   FabMetadata,
+  FabSpecGetSettings,
 } from '@fab/core'
 import { render as render_404 } from './404'
 
@@ -40,13 +41,6 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
   })
 }
 
-export const isEverythingOk = () => {
-  console.log('CHECKING THAT EVERYTHING IS OK')
-  const response = new Response(`Error! Expected a plugin to respond!`, {
-    status: 500,
-    headers: {},
-  })
-  console.log(response)
-  console.log('UM')
-  return response
+export const getSettings: FabSpecGetSettings = (env: string) => {
+  return {}
 }
