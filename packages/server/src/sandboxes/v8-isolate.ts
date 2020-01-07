@@ -1,10 +1,10 @@
 import fs from 'fs-extra'
 import ivm from 'isolated-vm'
-import { SandboxedRenderer } from '@fab/core'
+import { FabSpecExports } from '@fab/core'
 import { FabSettings } from '@fab/core/src'
 import { Response as NodeFetchResponse } from 'node-fetch'
 
-export default async (src: string): Promise<SandboxedRenderer> => {
+export default async (src: string): Promise<FabSpecExports> => {
   const isolate = new ivm.Isolate({ memoryLimit: 128 })
   const context = await isolate.createContext()
   console.log({ context })

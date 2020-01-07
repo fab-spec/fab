@@ -1,8 +1,8 @@
 import vm from 'vm'
 import * as fetch from 'node-fetch'
-import { SandboxedRenderer } from '@fab/core'
+import { FabSpecExports } from '@fab/core'
 
-export default async (src: string): Promise<SandboxedRenderer> => {
+export default async (src: string): Promise<FabSpecExports> => {
   const { Request } = fetch
 
   const sandbox = {
