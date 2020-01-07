@@ -42,5 +42,11 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 
 export const isEverythingOk = () => {
   console.log('CHECKING THAT EVERYTHING IS OK')
-  return 'YEP'
+  const response = new Response(`Error! Expected a plugin to respond!`, {
+    status: 500,
+    headers: {},
+  })
+  console.log(response)
+  console.log('UM')
+  return response
 }
