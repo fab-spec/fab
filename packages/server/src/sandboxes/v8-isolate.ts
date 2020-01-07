@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import ivm from 'isolated-vm'
 import { SandboxedRenderer } from '@fab/core'
 import { FabSettings } from '@fab/core/src'
+import { Response as NodeFetchResponse } from 'node-fetch'
 
 export default async (src: string): Promise<SandboxedRenderer> => {
   const isolate = new ivm.Isolate({ memoryLimit: 128 })
@@ -31,7 +32,11 @@ export default async (src: string): Promise<SandboxedRenderer> => {
     iife = ${src};
     function FAB_render(...args) {
       console.log(JSON.stringify(Object.keys(iife)))
-      return bridge.wrapValue(iife.isEverythingOk(...args))
+      return bridge.wrapValue(iife.render(...args))
+    }
+    function FAB_getSettings(...args) {
+      console.log(JSON.stringify(Object.keys(iife)))
+      return bridge.wrapValue(iife.getSettings(...args))
     }
   `)
 
@@ -58,20 +63,21 @@ export default async (src: string): Promise<SandboxedRenderer> => {
   const iifeRef = await g.get('iife')
   console.log({ iifeRef })
   const renderRef = await g.get('FAB_render')
-  console.log({ renderRef })
-  console.log(await renderRef.apply(undefined))
+  const settingsRef = await g.get('FAB_getSettings')
 
   return {
     async render(request: Request, settings: FabSettings) {
       console.log('RENDERING')
-      return new Response(`V8 Runtime not implemented`, {
+      const response = new NodeFetchResponse(`V8 Runtime not implemented`, {
         status: 500,
         headers: {},
       })
+      // @ts-ignore
+      return response as Response
     },
     getSettings(env: string) {
       console.log('GETTING SETTINGS')
-      return {}
+      return settingsRef.applySync(env)
     },
   }
 }
