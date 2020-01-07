@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command'
 import { InvalidConfigError } from '../errors'
-import { ServerArgs } from '@fab/core'
+import { ServerArgs, RuntimeType } from '@fab/core'
 
 export default class Serve extends Command {
   static description = 'Serve a FAB in a local NodeJS Express server'
@@ -25,6 +25,10 @@ export default class Serve extends Command {
     key: flags.string({
       description: 'Key for the SSL Certificate',
     }),
+    'experimental-v8-runtime': flags.boolean({
+      description:
+        'Enable experimental V8::Isolate Runtime (in development, currently non-functional)',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -38,7 +42,9 @@ export default class Serve extends Command {
       )
 
     const server = new Server(args.file, flags as ServerArgs)
-    await server.serve()
+    await server.serve(
+      flags['experimental-v8-runtime'] ? RuntimeType.v8isolate : RuntimeType.nodeVm
+    )
   }
 
   requireServer() {

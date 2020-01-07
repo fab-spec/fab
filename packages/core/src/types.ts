@@ -87,3 +87,8 @@ export type ServerArgs = {
   cert: string | undefined
   key: string | undefined
 }
+
+export enum RuntimeType {
+  v8isolate,
+  nodeVm,
+}
