@@ -19,7 +19,7 @@ it('should allow creation of a new CRA project', async () => {
 
   await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
   await shell(`cat .env`, { cwd })
-  await shell(`fab init -y`, { cwd })
+  await shell(`fab init -y --skip-install`, { cwd })
   await shell(`yarn build:fab`, { cwd })
 
   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)

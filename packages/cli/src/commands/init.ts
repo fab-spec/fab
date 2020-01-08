@@ -19,12 +19,15 @@ export default class Init extends Command {
       description:
         'Assume yes to all prompts (must be in the root directory of a project)',
     }),
+    'skip-install': flags.boolean({
+      description: 'Do not attempt to npm install anything',
+    }),
   }
 
   static args = []
 
   async run() {
     const { args, flags } = this.parse(Init)
-    await Initializer.init(flags.config, flags.yes)
+    await Initializer.init(flags.config, flags.yes, flags['skip-install'])
   }
 }

@@ -72,7 +72,7 @@ type PackageJson = {
 }
 
 export default class Initializer {
-  static async init(config_filename: string, yes: boolean) {
+  static async init(config_filename: string, yes: boolean, skip_install: boolean) {
     if (!yes)
       throw new FabInitError(`Haven't figured out prompting the user yet, use -y!`)
     /* First, figure out the nearest package.json */
@@ -109,7 +109,9 @@ export default class Initializer {
     await this.addBuildFabScript(package_json_path, package_json, framework)
 
     /* Finally, install the dependencies */
-    await this.installDependencies(root_dir, framework)
+    if (!skip_install) {
+      await this.installDependencies(root_dir, framework)
+    }
   }
 
   private static async getPackageJson(package_json_path: string) {
