@@ -36,6 +36,7 @@ USAGE
 
 - [`fab build`](#fab-build)
 - [`fab help [COMMAND]`](#fab-help-command)
+- [`fab serve [FILE]`](#fab-serve-file)
 
 ## `fab build`
 
@@ -72,5 +73,28 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.1/src/commands/help.ts)_
+
+## `fab serve [FILE]`
+
+Serve a FAB in a local NodeJS Express server
+
+```
+USAGE
+  $ fab serve [FILE]
+
+OPTIONS
+  -h, --help                 show CLI help
+  --cert=cert                SSL certificate to use
+  --experimental-v8-sandbox  Enable experimental V8::Isolate Runtime (in development, currently non-functional)
+  --key=key                  Key for the SSL Certificate
+  --port=port                (required) [default: 3000] Port to use
+
+EXAMPLES
+  $ fab serve fab.zip
+  $ fab serve --port=3001 fab.zip
+  $ fab serve --cert=local-ssl.cert --key=local-ssl.key fab.zip
+```
+
+_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.4/lib/commands/serve.js)_
 
 <!-- commandsstop -->
