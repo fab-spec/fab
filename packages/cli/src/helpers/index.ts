@@ -4,4 +4,7 @@ export const log = {
   error(str: string) {
     console.log(chalk.red(str))
   },
+  warn(str: string) {
+    console.log(chalk.red(str))
+  },
 }
