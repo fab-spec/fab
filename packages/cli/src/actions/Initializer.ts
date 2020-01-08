@@ -49,7 +49,7 @@ export default class Initializer {
         `Visit https://fab.dev/kb/configuration for a guide to manually creating one.`
       )
     } else {
-      console.log(`Found a ${FrameworkNames[project_type]} project`)
+      console.log(`Found a ${FrameworkNames[project_type]} project, proceeding...`)
     }
   }
 
@@ -101,6 +101,6 @@ export default class Initializer {
       )
     }
 
-    return false
+    return true
   }
 }
