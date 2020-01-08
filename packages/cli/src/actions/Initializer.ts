@@ -15,12 +15,24 @@ enum KnownFrameworkTypes {
   Next9,
 }
 
-type FrameworkInfo = { name: string; plugins: BuildConfig }
+type FrameworkInfo = {
+  name: string
+  plugins: BuildConfig
+  scripts: { [name: string]: string }
+}
+
+const DEFAULT_DEPS = ['@fab/cli', '@fab/server']
+
 const Frameworks: {
   [key in KnownFrameworkTypes]: FrameworkInfo
 } = {
   [KnownFrameworkTypes.CreateReactApp]: {
     name: 'Create React App',
+    scripts: {
+      'build:fab': 'npm run build && npm run fab:build',
+      'fab:build': 'fab build',
+      'fab:serve': 'fab serve fab.zip',
+    },
     plugins: {
       '@fab/input-static': {
         dir: 'build',
@@ -31,6 +43,11 @@ const Frameworks: {
   },
   [KnownFrameworkTypes.Next9]: {
     name: 'NextJS v9+',
+    scripts: {
+      'build:fab': 'npm run build && npm run fab:build',
+      'fab:build': 'fab build',
+      'fab:serve': 'fab serve fab.zip',
+    },
     plugins: {
       '@fab/input-nextjs': {},
       '@fab/serve-html': {},
@@ -74,7 +91,7 @@ export default class Initializer {
     const package_json = await this.getPackageJson(package_json_path)
     const project_type = await this.determineProjectType(package_json)
 
-    if (!project_type) {
+    if (typeof project_type !== 'number') {
       log.warn(`Could not find a known framework to auto-generate config!`)
       log.warn(
         `Visit https://fab.dev/kb/configuration for a guide to manually creating one.`
@@ -87,6 +104,9 @@ export default class Initializer {
 
     /* Next, generate/update the FAB config file */
     await this.updateConfig(root_dir, config_filename, framework)
+
+    /* Then, update the package.json to add a build:fab script */
+    await this.addBuildFabScript(package_json_path, package_json, framework)
 
     /* Finally, install the dependencies */
     await this.installDependencies(root_dir, framework)
@@ -110,8 +130,8 @@ export default class Initializer {
   }
 
   static async isNext9(package_json: PackageJson) {
-    const nextjs_version = (package_json.dependencies || package_json.devDependencies)
-      ?.next
+    const nextjs_version =
+      package_json.dependencies?.['next'] || package_json.devDependencies?.['next']
     if (!nextjs_version) return false
     const activeNextProject =
       (await fs.pathExists('.next')) || package_json.scripts?.build?.match(/next build/)
@@ -129,8 +149,9 @@ export default class Initializer {
   }
 
   static async isCreateReactApp(package_json: PackageJson) {
-    const react_scripts_version = (package_json.dependencies ||
-      package_json.devDependencies)?.['react-scripts']
+    const react_scripts_version =
+      package_json.dependencies?.['react-scripts'] ||
+      package_json.devDependencies?.['react-scripts']
     if (!react_scripts_version) return false
 
     if (semver.lt(react_scripts_version, '2.0.0')) {
@@ -143,12 +164,12 @@ export default class Initializer {
   }
 
   private static async installDependencies(root_dir: string, framework: FrameworkInfo) {
-    const dependencies = Object.keys(framework.plugins)
+    const dependencies = [...DEFAULT_DEPS, ...Object.keys(framework.plugins)]
     const use_yarn = fs.pathExists(path.join(root_dir, 'yarn.lock'))
     log.info(
-      `Installing required development dependencies (${dependencies.join(', ')}) using ${
-        use_yarn ? 'yarn' : 'npm'
-      }`
+      `Installing required development dependencies:\n  ${dependencies.join(
+        '\n  '
+      )}\nusing ${use_yarn ? 'yarn' : 'npm'}`
     )
     if (use_yarn) {
       await execa('yarn', ['add', '--dev', ...dependencies], { cwd: root_dir })
@@ -178,5 +199,30 @@ export default class Initializer {
     } else {
       return JSON5Config.generate(BASE_CONFIG)
     }
+  }
+
+  private static async addBuildFabScript(
+    package_json_path: string,
+    package_json: any,
+    framework: FrameworkInfo
+  ) {
+    if (package_json.scripts?.build?.['build:fab']) {
+      log.info(`Already detected a build:fab command, skipping`)
+      return
+    }
+    await fs.writeFile(
+      package_json_path,
+      JSON.stringify(
+        {
+          ...package_json,
+          scripts: {
+            ...package_json.scripts,
+            ...framework.scripts,
+          },
+        },
+        null,
+        2
+      )
+    )
   }
 }
