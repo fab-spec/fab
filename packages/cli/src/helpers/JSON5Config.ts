@@ -2,8 +2,8 @@ import * as fs from 'fs-extra'
 import { FabConfig, a_sume, s_sume } from '@fab/core'
 import * as jju from 'jju'
 import regexParser from 'regex-parser'
-import { MissingConfig } from '../errors/MissingConfig'
-import { InvalidConfigError } from '../errors/InvalidConfig'
+import { MissingConfig, InvalidConfigError } from '../errors'
+import prettier from 'prettier'
 
 export default class JSON5Config {
   str_contents: string
@@ -30,6 +30,14 @@ export default class JSON5Config {
     return new JSON5Config(str_contents, data)
   }
 
+  static generate(data: FabConfig) {
+    console.log('YEAH?')
+    return new JSON5Config(
+      prettier.format(jju.stringify(data), { parser: 'json-stringify' }),
+      data
+    )
+  }
+
   constructor(str_contents: string, data: FabConfig) {
     // todo: can we generate a validator from the TS definition
     if (!data.build) {
@@ -46,5 +54,14 @@ export default class JSON5Config {
 
     this.str_contents = str_contents
     this.data = data
+  }
+
+  async write(file_path: string) {
+    await fs.writeFile(
+      file_path,
+      prettier.format(jju.update(this.str_contents, this.data), {
+        parser: 'json-stringify',
+      })
+    )
   }
 }
