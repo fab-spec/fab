@@ -9,7 +9,7 @@ it('should allow creation of a tmp dir', async () => {
   expect(stdout).toMatch('tmp')
 })
 
-it.skip('should allow creation of a new CRA project', async () => {
+it('should allow creation of a new CRA project', async () => {
   const dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
   await shell(`ls -l ${dir.path}`)
   await shell(`yarn create react-app cra-test`, { cwd: dir.path })
@@ -19,8 +19,8 @@ it.skip('should allow creation of a new CRA project', async () => {
 
   await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
   await shell(`cat .env`, { cwd })
-  await shell(`yarn build`, { cwd })
-  await shell(`fab-static build`, { cwd })
+  await shell(`fab init -y`, { cwd })
+  await shell(`yarn build:fab`, { cwd })
 
   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
   expect(files_after_fab_build).toMatch('fab.zip')
