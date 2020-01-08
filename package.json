@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "build": "lerna run build --parallel",
-    "build:codesandbox": "npm run link-all && lerna exec -- npm pack",
+    "build:codesandbox": "lerna exec -- npm pack",
     "build:watch": "lerna run build:watch --parallel",
     "clean": "lerna run clean --parallel",
     "link-all": "lerna exec -- yarn link",
