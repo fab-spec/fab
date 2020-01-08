@@ -58,16 +58,6 @@ export type FabRequestResponder = (
   context: FabRequestContext
 ) => Promise<Response | undefined>
 
-/*
- * The outermost FAB renderer has to follow the spec exactly
- * */
-export type FabSpecRender = (request: Request, settings: FabSettings) => Promise<Response>
-
-export interface FabPlugin<T extends PluginArgs, U extends PluginMetadata> {
-  build: FabBuildStep<T, U>
-  render: FabPluginRuntime<T, U>
-}
-
 export type FabFilesObject = { [k: string]: string }
 export type FabFiles = Map<string, string>
 export type FabFileMetadata = {
@@ -80,4 +70,28 @@ export type FabFileMetadata = {
 export type FabMetadata = {
   file_metadata: FabFileMetadata
   plugin_metadata: PluginMetadata
+}
+
+export type ServerArgs = {
+  port: string
+  cert: string | undefined
+  key: string | undefined
+}
+
+export enum SandboxType {
+  v8isolate,
+  nodeVm,
+}
+
+/*
+ * The outermost FAB exported functions, that cross the boundary
+ * between the platform-specific runtimes (@fab/server,
+ * @fab/cf-workers-wrapper, Linc.sh etc) and the FAB itself.
+ * */
+export type FabSpecRender = (request: Request, settings: FabSettings) => Promise<Response>
+export type FabSpecGetSettings = (env: string) => FabSettings
+
+export type FabSpecExports = {
+  render: FabSpecRender
+  getSettings: FabSpecGetSettings
 }

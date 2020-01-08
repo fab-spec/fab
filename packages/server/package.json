@@ -1,0 +1,48 @@
+{
+  "name": "@fab/server",
+  "version": "0.0.1",
+  "description": "NodeJS FAB Server",
+  "keywords": [
+    "fab"
+  ],
+  "homepage": "https://github.com/fab-spec/fab#readme",
+  "bugs": {
+    "url": "https://github.com/fab-spec/fab/issues"
+  },
+  "repository": "fab-spec/fab",
+  "license": "MIT",
+  "author": "Glen Maddern",
+  "files": [
+    "lib",
+    "esm"
+  ],
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
+  "scripts": {
+    "build": "yarn build:cjs && yarn build:esm",
+    "build:cjs": "tsc --module commonjs --outDir lib",
+    "build:esm": "tsc --module esnext --outDir esm",
+    "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
+    "clean": "rm -rf esm lib",
+    "prepack": "npm run clean && npm run build",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@fab/core": "^0.0.4",
+    "@fly/v8env": "^0.54.0",
+    "@types/concat-stream": "^1.6.0",
+    "@types/express": "^4.17.2",
+    "@types/node": "^12.12.14",
+    "@types/yauzl": "^2.9.1",
+    "express": "^4.17.1",
+    "fs-extra": "^8.1.0",
+    "get-stream": "^5.1.0",
+    "isolated-vm": "^3.0.0",
+    "node-fetch": "^2.6.0",
+    "yauzl": "^2.10.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -7,6 +7,7 @@ import {
   PluginArgs,
   PluginMetadata,
   FabMetadata,
+  FabSpecGetSettings,
 } from '@fab/core'
 import { render as render_404 } from './404'
 
@@ -38,4 +39,8 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
     status: 500,
     headers: {},
   })
+}
+
+export const getSettings: FabSpecGetSettings = (env: string) => {
+  return { yeah: 'boy' }
 }
