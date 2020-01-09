@@ -42,7 +42,17 @@ export default class Builder {
     }
 
     log(`Copying static files`)
-    await fs.copy(path.join(dir, 'static'), path.join(int_dir, 'static'))
+    const static_dir = path.join(dir, 'static');
+    console.log({static_dir})
+    if (await fs.pathExists(static_dir)) {
+      await fs.copy(static_dir, path.join(int_dir, 'static'))
+    }
+
+    log(`Copying public files`)
+    const public_dir = path.join(dir, 'public');
+    if (await fs.pathExists(public_dir)) {
+      await fs.copy(public_dir, path.join(int_dir, 'public'))
+    }
 
     log(`Generating includes for the server files`)
     await generateIncludes(dir, path.join(int_dir, '_server'), next_dir_name)
