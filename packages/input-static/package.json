@@ -1,6 +1,6 @@
 {
   "name": "@fab/input-static",
-  "version": "0.0.5-alpha.2",
+  "version": "0.0.5-alpha.3",
   "description": "Module to handle a directory of HTML & assets",
   "keywords": [
     "fab"
@@ -30,7 +30,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.5-alpha.2",
+    "@fab/core": "0.0.5-alpha.3",
     "@types/node": "^12.12.14",
     "fs-extra": "^8.1.0",
     "globby": "^10"
