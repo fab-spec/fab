@@ -14,7 +14,8 @@
     "test": "lerna run test --stream --parallel",
     "test:watch": "lerna run test --stream --parallel -- --watch",
     "typecheck": "tsc --noEmit",
-    "publish:prerelease": "lerna publish --force-publish --canary --dist-tag=prerelease"
+    "version:prerelease": "lerna version prerelease --no-git-tag-version --exact --force-publish --yes",
+    "publish:prerelease": "lerna publish from-package --yes --dist-tag next"
   },
   "husky": {
     "hooks": {
