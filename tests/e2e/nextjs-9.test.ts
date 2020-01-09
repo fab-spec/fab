@@ -2,7 +2,7 @@ import * as tmp from 'tmp-promise'
 import * as fs from 'fs-extra'
 import { shell, cmd } from '../utils'
 
-it('should allow creation of a new NextJS project into a FAB', async () => {
+it.skip('should allow creation of a new NextJS project into a FAB', async () => {
   const dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
   await shell(`ls -l ${dir.path}`)
   await shell(`yarn create next-app nextjs9-test`, { cwd: dir.path })
