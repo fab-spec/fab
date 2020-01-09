@@ -33,4 +33,6 @@ it('should allow creation of a new CRA project into a FAB', async () => {
     'test:fab:serve': 'fab serve fab.zip',
     'test:fab:test-local': 'sleep 1 && curl -v http://localhost:3000',
   }
+
+  await shell(`yarn test:fab`, { cwd })
 })
