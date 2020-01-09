@@ -34,7 +34,29 @@ USAGE
 
 <!-- commands -->
 
+- [`fab build`](#fab-build)
 - [`fab help [COMMAND]`](#fab-help-command)
+- [`fab init`](#fab-init)
+- [`fab serve [FILE]`](#fab-serve-file)
+
+## `fab build`
+
+describe the command here
+
+```
+USAGE
+  $ fab build
+
+OPTIONS
+  -c, --config=config  [default: fab.config.json5] Path to config file
+  -h, --help           show CLI help
+
+EXAMPLES
+  $ fab build
+  $ fab build --config=fab.config.json5
+```
+
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.5-alpha.0/lib/commands/build.js)_
 
 ## `fab help [COMMAND]`
 
@@ -52,5 +74,49 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.1/src/commands/help.ts)_
+
+## `fab init`
+
+Generate a FAB config on a new project
+
+```
+USAGE
+  $ fab init
+
+OPTIONS
+  -c, --config=config  [default: fab.config.json5] Config filename
+  -h, --help           show CLI help
+  -y, --yes            Assume yes to all prompts (must be in the root directory of a project)
+  --skip-install       Do not attempt to npm install anything
+
+EXAMPLES
+  $ fab init
+  $ fab init --config=fab.config.json5
+```
+
+_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.0.5-alpha.0/lib/commands/init.js)_
+
+## `fab serve [FILE]`
+
+Serve a FAB in a local NodeJS Express server
+
+```
+USAGE
+  $ fab serve [FILE]
+
+OPTIONS
+  -h, --help                 show CLI help
+  --cert=cert                SSL certificate to use
+  --experimental-v8-sandbox  Enable experimental V8::Isolate Runtime (in development, currently non-functional)
+  --key=key                  Key for the SSL Certificate
+  --port=port                (required) [default: 3000] Port to use
+
+EXAMPLES
+  $ fab serve fab.zip
+  $ fab serve --port=3001 fab.zip
+  $ fab serve --cert=local-ssl.cert --key=local-ssl.key fab.zip
+```
+
+_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.5-alpha.0/lib/commands/serve.js)_
 
 <!-- commandsstop -->
