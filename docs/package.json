@@ -6,7 +6,7 @@
   "scripts": {
     "build:fab": "npm run docz:build && fab-static .docz/dist",
     "docz:build": "node scripts/build.js && docz build",
-    "docz:dev": "concurrently \"docz dev\" \"node scripts/watch.js\"",
+    "docz:dev": "concurrently \"docz dev --port=2999\" \"node scripts/watch.js\"",
     "docz:serve": "docz build && docz serve"
   },
   "devDependencies": {
