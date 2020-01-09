@@ -1,5 +1,5 @@
 const fab = require('./server.js')
-const s3_bucket_name = require('./s3-bucket-name').default
+const s3_bucket_name = require('./s3-bucket-name')
 const asset_base_url = `https://s3.amazonaws.com/${s3_bucket_name}`
 
 const handleRequest = async (request) => {
@@ -12,7 +12,7 @@ const handleRequest = async (request) => {
     if (settings.then && typeof settings.then == 'function') {
       settings = await settings
     }
-    return await fab.runtime(request, settings)
+    return await fab.render(request, settings)
   }
 }
 
