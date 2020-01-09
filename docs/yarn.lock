@@ -4314,7 +4314,7 @@ docz-utils@^2.1.0:
 
 docz@^2.2.0:
   version "2.2.0"
-  resolved "https://registry.npmjs.org/docz/-/docz-2.2.0.tgz#a7d22ce256c437d068bf88ae7b13ca5d581f65ef"
+  resolved "https://registry.yarnpkg.com/docz/-/docz-2.2.0.tgz#a7d22ce256c437d068bf88ae7b13ca5d581f65ef"
   integrity sha512-rsxjQABy07dDqq5rus0TBx64FI2DL7KN+11mv394bRFINqC/T0WZTruKzVSGjsodrTBmIGhW47t5iqMB14XQyw==
   dependencies:
     "@emotion/core" "^10.0.16"
