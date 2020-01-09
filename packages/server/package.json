@@ -1,6 +1,6 @@
 {
   "name": "@fab/server",
-  "version": "0.0.5-alpha.1",
+  "version": "0.0.5-alpha.2",
   "description": "NodeJS FAB Server",
   "keywords": [
     "fab"
@@ -29,7 +29,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.5-alpha.1",
+    "@fab/core": "0.0.5-alpha.2",
     "@fly/v8env": "^0.54.0",
     "@types/concat-stream": "^1.6.0",
     "@types/express": "^4.17.2",
@@ -38,7 +38,6 @@
     "express": "^4.17.1",
     "fs-extra": "^8.1.0",
     "get-stream": "^5.1.0",
-    "isolated-vm": "^3.0.0",
     "node-fetch": "^2.6.0",
     "yauzl": "^2.10.0"
   },

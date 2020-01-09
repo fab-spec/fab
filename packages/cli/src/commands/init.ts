@@ -22,12 +22,15 @@ export default class Init extends Command {
     'skip-install': flags.boolean({
       description: 'Do not attempt to npm install anything',
     }),
+    version: flags.string({
+      description: 'What NPM version or dist-tag to use for installing FAB packages',
+    }),
   }
 
   static args = []
 
   async run() {
     const { args, flags } = this.parse(Init)
-    await Initializer.init(flags.config, flags.yes, flags['skip-install'])
+    await Initializer.init(flags.config, flags.yes, flags['skip-install'], flags.version)
   }
 }

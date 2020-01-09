@@ -72,7 +72,12 @@ type PackageJson = {
 }
 
 export default class Initializer {
-  static async init(config_filename: string, yes: boolean, skip_install: boolean) {
+  static async init(
+    config_filename: string,
+    yes: boolean,
+    skip_install: boolean,
+    version: string | undefined
+  ) {
     if (!yes)
       throw new FabInitError(`Haven't figured out prompting the user yet, use -y!`)
     /* First, figure out the nearest package.json */
@@ -110,7 +115,7 @@ export default class Initializer {
 
     /* Finally, install the dependencies */
     if (!skip_install) {
-      await this.installDependencies(root_dir, framework)
+      await this.installDependencies(root_dir, version, framework)
     }
   }
 
@@ -165,8 +170,14 @@ export default class Initializer {
     return true
   }
 
-  private static async installDependencies(root_dir: string, framework: FrameworkInfo) {
-    const dependencies = [...DEFAULT_DEPS, ...Object.keys(framework.plugins)]
+  private static async installDependencies(
+    root_dir: string,
+    version: string | undefined,
+    framework: FrameworkInfo
+  ) {
+    const dependencies = [...DEFAULT_DEPS, ...Object.keys(framework.plugins)].map((dep) =>
+      version ? `${dep}@${version}` : dep
+    )
     const use_yarn = fs.pathExists(path.join(root_dir, 'yarn.lock'))
     log.info(
       `Installing required development dependencies:\n  ${dependencies.join(
