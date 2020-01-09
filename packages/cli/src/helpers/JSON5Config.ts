@@ -1,6 +1,6 @@
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 import { FabConfig, a_sume, s_sume } from '@fab/core'
-import * as jju from 'jju'
+import jju from 'jju'
 import regexParser from 'regex-parser'
 import { MissingConfig, InvalidConfigError } from '../errors'
 import prettier from 'prettier'

@@ -12,12 +12,18 @@ export type FabSettings = {
   [var_name: string]: string
 }
 
+export type DeployConfig = {
+  cf_workers_name?: string
+  s3_asset_bucket?: string
+}
+
 export interface FabConfig {
   build: BuildConfig
   runtime: string[]
   settings?: {
     [env_name: string]: FabSettings
   }
+  deploy?: DeployConfig
 }
 
 export interface PluginMetadata {
