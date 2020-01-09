@@ -3,6 +3,10 @@ name: Home
 route: /
 ---
 
+## *Note:* THESE DOCS ARE OUT OF DATE. A NEW VERSION HAS APPEARED.
+
+The FAB v1 docs are now live at http://fab.dev.
+
 ***<h3 align="center"><br/><img width="461" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53997145-306ba300-418f-11e9-91d0-b44e6df85d4c.png"/></h3>***
 
 # FAB Specification
@@ -13,9 +17,9 @@ They unify **static sites, single page applications (SPAs) as well as server-ren
 
 https://github.com/fab-spec/fab
 
-## *Note:* Major overhaul underway
+## *Note:* THESE DOCS ARE OUT OF DATE. A NEW VERSION HAS APPEARED.
 
-The FAB tooling is being rebuilt in preparation for a v1 release. See the [next](https://github.com/fab-spec/fab/tree/next) branch for latest progress.
+The FAB v1 docs are now live at http://fab.dev.
 
 ## Overview
 
