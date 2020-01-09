@@ -35,9 +35,9 @@ export default async (src: string): Promise<FabSpecExports> => {
       console.log(JSON.stringify(Object.keys(iife)))
       return bridge.wrapValue(iife.render(...args))
     }
-    function FAB_getSettings(...args) {
+    function FAB_getMetadata(...args) {
       console.log(JSON.stringify(Object.keys(iife)))
-      return bridge.wrapValue(iife.getSettings(...args))
+      return iife.metadata
     }
   `)
 
@@ -64,7 +64,9 @@ export default async (src: string): Promise<FabSpecExports> => {
   const iifeRef = await g.get('iife')
   console.log({ iifeRef })
   const renderRef = await g.get('FAB_render')
-  const settingsRef = await g.get('FAB_getSettings')
+  const metadataRef = await g.get('FAB_getMetadata')
+
+  const metadata = metadataRef()
 
   return {
     async render(request: Request, settings: FabSettings) {
@@ -76,9 +78,6 @@ export default async (src: string): Promise<FabSpecExports> => {
       // @ts-ignore
       return response as Response
     },
-    getSettings(env: string) {
-      console.log('GETTING SETTINGS')
-      return settingsRef.applySync(env)
-    },
+    metadata,
   }
 }

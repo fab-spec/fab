@@ -7,7 +7,7 @@ import {
   PluginArgs,
   PluginMetadata,
   FabMetadata,
-  FabSpecGetSettings,
+  FabSpecMetadata,
 } from '@fab/core'
 import { render as render_404 } from './404'
 
@@ -41,6 +41,11 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
   })
 }
 
-export const getSettings: FabSpecGetSettings = (env: string) => {
-  return {}
+export const metadata: FabSpecMetadata = {
+  production_settings: {},
+}
+
+/* Legacy support for env settings */
+export const getProdSettings = () => {
+  return metadata.production_settings
 }
