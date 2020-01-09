@@ -22,6 +22,7 @@ type FrameworkInfo = {
 }
 
 const DEFAULT_DEPS = ['@fab/cli', '@fab/server']
+const GITIGNORE_LINES = ['/.fab', '/fab.zip']
 
 const Frameworks: {
   [key in KnownFrameworkTypes]: FrameworkInfo
@@ -49,7 +50,9 @@ const Frameworks: {
       'fab:serve': 'fab serve fab.zip',
     },
     plugins: {
-      '@fab/input-nextjs': {},
+      '@fab/input-nextjs': {
+        dir: '.next',
+      },
       '@fab/serve-html': {},
       '@fab/rewire-assets': {},
     },
@@ -72,7 +75,12 @@ type PackageJson = {
 }
 
 export default class Initializer {
-  static async init(config_filename: string, yes: boolean, skip_install: boolean) {
+  static async init(
+    config_filename: string,
+    yes: boolean,
+    skip_install: boolean,
+    version: string | undefined
+  ) {
     if (!yes)
       throw new FabInitError(`Haven't figured out prompting the user yet, use -y!`)
     /* First, figure out the nearest package.json */
@@ -108,9 +116,12 @@ export default class Initializer {
     /* Then, update the package.json to add a build:fab script */
     await this.addBuildFabScript(package_json_path, package_json, framework)
 
+    /* Update the .gitignore file (if it exists) to add .fab and fab.zip */
+    await this.addGitIgnores(root_dir)
+
     /* Finally, install the dependencies */
     if (!skip_install) {
-      await this.installDependencies(root_dir, framework)
+      await this.installDependencies(root_dir, version, framework)
     }
   }
 
@@ -165,8 +176,14 @@ export default class Initializer {
     return true
   }
 
-  private static async installDependencies(root_dir: string, framework: FrameworkInfo) {
-    const dependencies = [...DEFAULT_DEPS, ...Object.keys(framework.plugins)]
+  private static async installDependencies(
+    root_dir: string,
+    version: string | undefined,
+    framework: FrameworkInfo
+  ) {
+    const dependencies = [...DEFAULT_DEPS, ...Object.keys(framework.plugins)].map((dep) =>
+      version ? `${dep}@${version}` : dep
+    )
     const use_yarn = fs.pathExists(path.join(root_dir, 'yarn.lock'))
     log.info(
       `Installing required development dependencies:\n  ${dependencies.join(
@@ -226,5 +243,21 @@ export default class Initializer {
         2
       )
     )
+  }
+
+  private static async addGitIgnores(root_dir: string) {
+    const gitignore_path = path.join(root_dir, '.gitignore')
+    if (await fs.pathExists(gitignore_path)) {
+      const gitignore = await fs.readFile(gitignore_path, 'utf8')
+      const ignore_lines = gitignore.split('\n').map((line) => line.trim())
+      const lines_set = new Set(ignore_lines)
+      const lines_to_add = GITIGNORE_LINES.filter((line) => !lines_set.has(line))
+      if (lines_to_add.length > 0) {
+        await fs.writeFile(
+          gitignore_path,
+          [...ignore_lines, ...lines_to_add].join('\n') + '\n'
+        )
+      }
+    }
   }
 }
