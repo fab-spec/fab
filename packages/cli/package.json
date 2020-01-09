@@ -13,6 +13,7 @@
   "files": [
     "/bin",
     "/lib",
+    "/templates",
     "/oclif.manifest.json"
   ],
   "main": "lib/index.js",
@@ -64,6 +65,7 @@
     "rollup-plugin-hypothetical": "^2.1.0",
     "semver": "^7.1.1",
     "shelljs": "^0.8.3",
+    "theros": "^1.0.6",
     "tslib": "^1"
   },
   "devDependencies": {

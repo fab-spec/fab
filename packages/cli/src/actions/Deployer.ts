@@ -64,7 +64,7 @@ export default class Deployer {
     shell.exec('mkdir -p .fab/deploy/cf')
     shell.exec('mv .fab/deploy/_assets .fab/deploy/s3')
     shell.exec(
-      `cp ${path.resolve(__dirname, '../files/wrangler-template/*')} .fab/deploy/cf`
+      `cp ${path.resolve(__dirname, '../../templates/deploy/wrangler/*')} .fab/deploy/cf`
     )
     await fs.writeFile(
       '.fab/deploy/cf/wrangler.toml',
