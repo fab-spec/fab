@@ -73,6 +73,7 @@ type = "webpack"
 zone_id = ""
 private = false
 account_id = "${cf_account_id}"
+workers_dev = true
 route = ""
 `
     )
