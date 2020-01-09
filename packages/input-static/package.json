@@ -1,7 +1,7 @@
 {
   "name": "@fab/input-static",
   "version": "0.0.4",
-  "description": "Module to handle files outside _assets",
+  "description": "Module to handle a directory of HTML & assets",
   "keywords": [
     "fab"
   ],
