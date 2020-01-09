@@ -21,7 +21,7 @@ $ npm install -g @fab/cli
 $ fab COMMAND
 running command...
 $ fab (-v|--version|version)
-@fab/cli/0.0.4 darwin-x64 node-v13.5.0
+@fab/cli/0.0.5-alpha.0 darwin-x64 node-v13.5.0
 $ fab --help [COMMAND]
 USAGE
   $ fab COMMAND
@@ -34,28 +34,7 @@ USAGE
 
 <!-- commands -->
 
-- [`fab build`](#fab-build)
 - [`fab help [COMMAND]`](#fab-help-command)
-- [`fab serve [FILE]`](#fab-serve-file)
-
-## `fab build`
-
-describe the command here
-
-```
-USAGE
-  $ fab build
-
-OPTIONS
-  -c, --config=config  [default: fab.config.json5] Path to config file
-  -h, --help           show CLI help
-
-EXAMPLE
-  $ fab hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.4/lib/commands/build.js)_
 
 ## `fab help [COMMAND]`
 
@@ -73,28 +52,5 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.1/src/commands/help.ts)_
-
-## `fab serve [FILE]`
-
-Serve a FAB in a local NodeJS Express server
-
-```
-USAGE
-  $ fab serve [FILE]
-
-OPTIONS
-  -h, --help                 show CLI help
-  --cert=cert                SSL certificate to use
-  --experimental-v8-sandbox  Enable experimental V8::Isolate Runtime (in development, currently non-functional)
-  --key=key                  Key for the SSL Certificate
-  --port=port                (required) [default: 3000] Port to use
-
-EXAMPLES
-  $ fab serve fab.zip
-  $ fab serve --port=3001 fab.zip
-  $ fab serve --cert=local-ssl.cert --key=local-ssl.key fab.zip
-```
-
-_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.4/lib/commands/serve.js)_
 
 <!-- commandsstop -->
