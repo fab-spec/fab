@@ -50,7 +50,9 @@ const Frameworks: {
       'fab:serve': 'fab serve fab.zip',
     },
     plugins: {
-      '@fab/input-nextjs': {},
+      '@fab/input-nextjs': {
+        dir: '.next',
+      },
       '@fab/serve-html': {},
       '@fab/rewire-assets': {},
     },
@@ -114,7 +116,6 @@ export default class Initializer {
     /* Then, update the package.json to add a build:fab script */
     await this.addBuildFabScript(package_json_path, package_json, framework)
 
-    console.log('GITIGNORE!')
     /* Update the .gitignore file (if it exists) to add .fab and fab.zip */
     await this.addGitIgnores(root_dir)
 
