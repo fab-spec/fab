@@ -31,7 +31,6 @@ export default class JSON5Config {
   }
 
   static generate(data: FabConfig) {
-    console.log('YEAH?')
     return new JSON5Config(
       prettier.format(jju.stringify(data), { parser: 'json-stringify' }),
       data

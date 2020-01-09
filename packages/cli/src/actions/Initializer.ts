@@ -22,6 +22,7 @@ type FrameworkInfo = {
 }
 
 const DEFAULT_DEPS = ['@fab/cli', '@fab/server']
+const GITIGNORE_LINES = ['/.fab', '/fab.zip']
 
 const Frameworks: {
   [key in KnownFrameworkTypes]: FrameworkInfo
@@ -112,6 +113,10 @@ export default class Initializer {
 
     /* Then, update the package.json to add a build:fab script */
     await this.addBuildFabScript(package_json_path, package_json, framework)
+
+    console.log('GITIGNORE!')
+    /* Update the .gitignore file (if it exists) to add .fab and fab.zip */
+    await this.addGitIgnores(root_dir)
 
     /* Finally, install the dependencies */
     if (!skip_install) {
@@ -237,5 +242,21 @@ export default class Initializer {
         2
       )
     )
+  }
+
+  private static async addGitIgnores(root_dir: string) {
+    const gitignore_path = path.join(root_dir, '.gitignore')
+    if (await fs.pathExists(gitignore_path)) {
+      const gitignore = await fs.readFile(gitignore_path, 'utf8')
+      const ignore_lines = gitignore.split('\n').map((line) => line.trim())
+      const lines_set = new Set(ignore_lines)
+      const lines_to_add = GITIGNORE_LINES.filter((line) => !lines_set.has(line))
+      if (lines_to_add.length > 0) {
+        await fs.writeFile(
+          gitignore_path,
+          [...ignore_lines, ...lines_to_add].join('\n') + '\n'
+        )
+      }
+    }
   }
 }
