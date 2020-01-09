@@ -10,7 +10,6 @@ it('should allow creation of a new NextJS project into a FAB', async () => {
   const { stdout: files } = await cmd(`ls -l ${cwd}`)
   expect(files).toMatch('package.json')
 
-  await shell(`cat .env`, { cwd })
   await shell(`fab init -y --skip-install --version=next`, { cwd })
   await shell(`yarn build:fab`, { cwd })
 
