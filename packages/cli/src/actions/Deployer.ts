@@ -81,7 +81,9 @@ route = ""
       '.fab/deploy/cf/s3-bucket-name.js',
       `module.exports = "${s3_asset_bucket}"`
     )
-    shell.exec(`mv .fab/deploy/server.js .fab/deploy/cf`)
+    // Super quick and dirty hack to get around the rollup IIFE thing
+    shell.exec(`echo "module.exports =" > .fab/deploy/cf/server.js`)
+    shell.exec(`cat .fab/deploy/server.js >> .fab/deploy/cf/server.js`)
 
     log.info(`Creating bucket and uploading _assets to S3`)
 

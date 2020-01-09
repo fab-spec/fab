@@ -49,7 +49,7 @@ export class Compiler {
 
     const {
       output: [output, ...chunks],
-    } = await bundle.generate({ format: 'cjs', exports: 'named' })
+    } = await bundle.generate({ format: 'iife', exports: 'named' })
 
     if (warnings.length > 0) {
       throw new BuildFailedError(
