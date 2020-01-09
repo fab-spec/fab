@@ -1,6 +1,7 @@
 import { Command, flags } from '@oclif/command'
 import { InvalidConfigError } from '../errors'
 import { ServerArgs, SandboxType } from '@fab/core'
+import Server from '@fab/server'
 
 export default class Serve extends Command {
   static description = 'Serve a FAB in a local NodeJS Express server'
@@ -35,23 +36,10 @@ export default class Serve extends Command {
 
   async run() {
     const { args, flags } = this.parse(Serve)
-    const Server = this.requireServer()
-    if (!Server)
-      throw new InvalidConfigError(
-        `Something went wrong requiring @fab/server. It had no default export.`
-      )
 
     const server = new Server(args.file, flags as ServerArgs)
     await server.serve(
       flags['experimental-v8-sandbox'] ? SandboxType.v8isolate : SandboxType.nodeVm
     )
-  }
-
-  requireServer() {
-    try {
-      return require('@fab/server').default
-    } catch (e) {
-      throw new InvalidConfigError(`Cannot find @fab/server. You need to install it.`)
-    }
   }
 }

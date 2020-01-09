@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@fab/core": "^0.0.4",
+    "@fab/server": "^0.0.1",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
