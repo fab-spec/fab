@@ -30,7 +30,7 @@ it('should allow creation of a new CRA project into a FAB', async () => {
   package_json.scripts = {
     ...package_json.scripts,
     'test:fab': 'run-p --race "test:fab:*"',
-    'test:fab:serve': 'fab serve fab.zip',
+    'test:fab:serve': 'npx @fab/serve fab.zip',
     'test:fab:test-local': 'sleep 1 && curl -v http://localhost:3000',
   }
 
