@@ -89,9 +89,11 @@ export enum SandboxType {
  * @fab/cf-workers-wrapper, Linc.sh etc) and the FAB itself.
  * */
 export type FabSpecRender = (request: Request, settings: FabSettings) => Promise<Response>
-export type FabSpecGetSettings = (env: string) => FabSettings
+export type FabSpecMetadata = {
+  production_settings: FabSettings
+}
 
 export type FabSpecExports = {
   render: FabSpecRender
-  getSettings: FabSpecGetSettings
+  metadata: FabSpecMetadata
 }

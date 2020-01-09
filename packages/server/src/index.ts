@@ -74,9 +74,7 @@ export default class Server {
               ...(method === 'POST' ? { body: req.body } : {}),
             })
 
-            const production_settings = renderer.getSettings
-              ? renderer.getSettings('production')
-              : {}
+            const production_settings = renderer.metadata?.production_settings
             console.log(production_settings)
             const fetch_res = await renderer.render(
               // @ts-ignore
