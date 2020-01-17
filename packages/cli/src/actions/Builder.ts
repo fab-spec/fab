@@ -39,6 +39,7 @@ export default class Builder {
       const is_relative = isRelative(plugin_name)
       const plugin_path = relativeToConfig(config_path, plugin_name)
       const path_slash_require = plugin_path + '/runtime'
+      console.log({ is_relative, plugin_path, path_slash_require })
 
       const module_slash_require = safeRequire(path_slash_require)
       if (module_slash_require && !module_slash_require.runtime) {
@@ -46,7 +47,7 @@ export default class Builder {
           `Requiring '${path_slash_require}' didn't export a 'runtime' function, but the filename indicates it probably should. Falling back to '${plugin_path}'`
         )
       }
-      const module = safeRequire(path_slash_require)
+      const module = safeRequire(plugin_path)
       if (!is_relative && !module) {
         throw new InvalidConfigError(
           `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
