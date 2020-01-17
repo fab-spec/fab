@@ -18,8 +18,7 @@ export type DeployConfig = {
 }
 
 export interface FabConfig {
-  build: BuildConfig
-  runtime: string[]
+  plugins: BuildConfig
   settings?: {
     [env_name: string]: FabSettings
   }

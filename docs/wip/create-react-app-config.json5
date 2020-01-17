@@ -1,6 +1,6 @@
 // fab.config.json5
 {
-  build: {
+  plugins: {
     'render-html': {
       //shorthand for @fab/render-html
       dir: 'build',
@@ -17,7 +17,6 @@
       immutable: ['/static/*'],
     },
   },
-  runtime: ['render-html', 'rewrite-assets'],
   settings: {
     production: './production-settings.json',
     staging: {

@@ -1,5 +1,5 @@
 {
-  build: {
+  plugins: {
     '@fab/input-static': {
       dir: 'src',
     },
@@ -7,5 +7,4 @@
       other: 'ag',
     },
   },
-  runtime: [],
 }

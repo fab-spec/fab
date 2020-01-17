@@ -12,18 +12,13 @@ In the FAB ecosystem, however, we want the ability for a compiled FAB to be link
 
 ```json5
 {
-  build: {
+  plugins: {
     // ...
     '@fab/serve-html': {
       // Can be left blank. See below for config options
     },
     // ...
   },
-  runtime: [
-    // ...
-    '@fab/serve-html',
-    // ...
-  ],
 }
 ```
 

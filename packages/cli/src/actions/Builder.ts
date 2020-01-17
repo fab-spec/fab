@@ -14,7 +14,7 @@ import { InvalidConfigError, InvalidPluginError } from '../errors'
 
 export default class Builder {
   static async build(config_path: string, config: FabConfig) {
-    const build_plugins = Object.entries(config.build).map(
+    const build_plugins = Object.entries(config.plugins).map(
       ([plugin_name, plugin_args]) => {
         const builder = s_sume(
           () =>
@@ -43,7 +43,7 @@ export default class Builder {
       }
     )
 
-    const runtime_plugins = config.runtime.map((plugin_name) => {
+    const runtime_plugins = Object.keys(config.plugins).map((plugin_name) => {
       const requireable_plugin = relativeToConfig(config_path, plugin_name)
 
       const runtime = s_sume(

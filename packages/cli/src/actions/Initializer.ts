@@ -19,7 +19,6 @@ type FrameworkInfo = {
   name: string
   plugins: BuildConfig
   scripts: { [name: string]: string }
-  runtime: string[]
 }
 
 const DEFAULT_DEPS = ['@fab/cli', '@fab/server']
@@ -42,7 +41,6 @@ const Frameworks: {
       '@fab/serve-html': {},
       '@fab/rewire-assets': {},
     },
-    runtime: ['@fab/rewire-assets', '@fab/serve-html'],
   },
   [KnownFrameworkTypes.Next9]: {
     name: 'NextJS v9+',
@@ -58,13 +56,11 @@ const Frameworks: {
       '@fab/serve-html': {},
       '@fab/rewire-assets': {},
     },
-    runtime: ['@fab/input-nextjs', '@fab/rewire-assets', '@fab/serve-html'],
   },
 }
 
 const BASE_CONFIG: FabConfig = {
-  build: {},
-  runtime: [],
+  plugins: {},
   settings: {},
 }
 
@@ -208,10 +204,10 @@ export default class Initializer {
   ) {
     const config_path = path.join(root_dir, config_filename)
     const config = await this.readExistingConfig(config_path)
-    if (Object.keys(config.data.build).length > 0) {
+    if (Object.keys(config.data.plugins).length > 0) {
       log.warn(`Existing config has a "build" section. Overwriting since -y is set.`)
     }
-    config.data.build = framework.plugins
+    config.data.plugins = framework.plugins
     await config.write(config_filename)
   }
 

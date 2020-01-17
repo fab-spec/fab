@@ -1,10 +1,7 @@
 {
-  build: {
+  plugins: {
     '@fab/input-static': {
       dir: 'src',
     },
   },
-  runtime: [
-    './plugins/no-runtime'
-  ],
 }

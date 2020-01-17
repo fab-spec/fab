@@ -1,8 +1,7 @@
 {
-  build: {
+  plugins: {
     '@fab/no-existo': {
       other: 'ag',
     },
   },
-  runtime: [],
 }
