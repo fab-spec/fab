@@ -11,6 +11,12 @@ import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { relativeToConfig } from '../helpers/paths'
 import { InvalidConfigError, InvalidPluginError } from '../errors'
+import { log } from '../helpers'
+
+type RuntimePlugin = {
+  path: string
+  runtime: FabPluginRuntime<PluginArgs, PluginMetadata>
+}
 
 export default class Builder {
   static async build(config_path: string, config: FabConfig) {
@@ -43,49 +49,46 @@ export default class Builder {
       }
     )
 
-    const runtime_plugins = Object.keys(config.plugins).map((plugin_name) => {
-      const requireable_plugin = relativeToConfig(config_path, plugin_name)
+    const runtime_plugins = Object.keys(config.plugins)
+      .map((plugin_name) => {
+        const requireable_plugin = relativeToConfig(config_path, plugin_name)
 
-      const runtime = s_sume(
-        () => {
-          try {
-            return require(requireable_plugin + '/runtime').runtime as FabPluginRuntime<
-              PluginArgs,
-              PluginMetadata
-            >
-          } catch (e) {
-            return require(requireable_plugin).runtime as FabPluginRuntime<
-              PluginArgs,
-              PluginMetadata
-            >
-          }
-        },
-        () =>
-          new InvalidConfigError(
-            `The plugin '${plugin_name}' could not be found!\n` +
-              `Looked for ${requireable_plugin +
-                '/runtime'} and ${requireable_plugin}, expected a named export 'runtime'.`
-          )
-      )
+        const lookForRuntimeExport = (path: string) => {
+          const { runtime } = require(path)
+          return typeof runtime === 'function' ? path : undefined
+        }
+        const explicit_require = requireable_plugin + '/runtime'
 
-      if (!runtime) {
-        new InvalidPluginError(
-          plugin_name,
-          `The plugin '${plugin_name}' has no 'runtime' export, but is referenced in the 'runtime' section of the config!\n` +
-            `Looked in ${requireable_plugin +
-              '/runtime'} and ${requireable_plugin}, expected a named export 'runtime'.`
+        const path_with_runtime = s_sume(
+          () => {
+            try {
+              const path = lookForRuntimeExport(explicit_require)
+              if (path) return path
+              log.warn(
+                `Requiring '${explicit_require}' didn't export a 'runtime' function. Falling back to '${requireable_plugin}'`
+              )
+              return lookForRuntimeExport(requireable_plugin)
+            } catch (e) {
+              return lookForRuntimeExport(requireable_plugin)
+            }
+          },
+          () =>
+            new InvalidConfigError(
+              `The plugin '${plugin_name}' could not be found!\n` +
+                `Looked for ${explicit_require} first, then tried ${requireable_plugin}`
+            )
         )
-      }
 
-      return requireable_plugin
-    })
+        return path_with_runtime
+      })
+      .filter((path): path is string => typeof path === 'string')
 
     const proto_fab = new ProtoFab()
     for (const { plugin_name, builder, plugin_args } of build_plugins) {
-      console.log({ plugin_name, builder, plugin_args })
       await builder(plugin_args, proto_fab)
     }
 
+    console.log([runtime_plugins])
     await Compiler.compile(proto_fab, runtime_plugins)
     await Generator.generate(proto_fab)
   }
