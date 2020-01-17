@@ -46,11 +46,9 @@ describe('build', () => {
     .catch((err) => {
       expect(err.message).to.contain('Config file contains errors!')
     })
-    .it('should check that the plugin exists', (ctx) => {
-      expect(ctx.stdout).to.contain(`The plugin '@fab/no-existo' could not be found!`)
-      expect(ctx.stdout).to.contain(
-        'Looked for @fab/no-existo/runtime first, then tried @fab/no-existo'
-      )
+    .it('should report that the module cannot be found', (ctx) => {
+      expect(ctx.stdout).to.contain(`Cannot find module '@fab/no-existo'`)
+      expect(ctx.stdout).to.contain(`Are you sure it's installed?`)
     })
 
   const no_runtime_config = `${__dirname}/fixtures/fab.missing-local-file.json5`

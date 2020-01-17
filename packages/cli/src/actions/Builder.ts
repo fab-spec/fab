@@ -9,7 +9,7 @@ import {
 } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
-import { relativeToConfig } from '../helpers/paths'
+import { isRelative, relativeToConfig } from '../helpers/paths'
 import { InvalidConfigError, InvalidPluginError } from '../errors'
 import { log } from '../helpers'
 
@@ -36,6 +36,7 @@ export default class Builder {
     const runtime_plugins: Array<string> = []
 
     Object.entries(config.plugins).forEach(([plugin_name, plugin_args]) => {
+      const is_relative = isRelative(plugin_name)
       const plugin_path = relativeToConfig(config_path, plugin_name)
       const path_slash_require = plugin_path + '/runtime'
 
@@ -46,6 +47,11 @@ export default class Builder {
         )
       }
       const module = safeRequire(path_slash_require)
+      if (!is_relative && !module) {
+        throw new InvalidConfigError(
+          `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
+        )
+      }
       if (!module_slash_require && !module)
         throw new InvalidConfigError(
           `The plugin '${plugin_name}' could not be found!\n` +
@@ -65,21 +71,6 @@ export default class Builder {
           plugin_args,
         })
       }
-
-      const builder = s_sume(
-        () =>
-          require(relativeToConfig(config_path, plugin_name)).build as FabBuildStep<
-            PluginArgs,
-            PluginMetadata
-          >,
-        (e) =>
-          new InvalidConfigError(
-            `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`,
-            e
-          )
-      )
-
-      return
     })
 
     const proto_fab = new ProtoFab()
