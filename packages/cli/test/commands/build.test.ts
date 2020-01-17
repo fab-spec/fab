@@ -46,23 +46,26 @@ describe('build', () => {
     .catch((err) => {
       expect(err.message).to.contain('Config file contains errors!')
     })
-    .it('should report that the module cannot be found', (ctx) => {
-      expect(ctx.stdout).to.contain(`Cannot find module '@fab/no-existo'`)
+    .it('should check that the plugin exists', (ctx) => {
+      expect(ctx.stdout).to.contain(`The plugin '@fab/no-existo' could not be found!`)
+      expect(ctx.stdout).to.contain(
+        'Looked for @fab/no-existo/runtime first, then tried @fab/no-existo'
+      )
     })
 
-  const no_runtime_config = `${__dirname}/fixtures/fab.plugin-no-runtime.json5`
+  const no_runtime_config = `${__dirname}/fixtures/fab.missing-local-file.json5`
   test
     .stdout()
     .command(['build', '--config', no_runtime_config])
     .catch((err) => {
       expect(err.message).to.equal('Config file contains errors!')
     })
-    .it('should check that the plugin has a runtime entry point', (ctx) => {
+    .it('should check that the plugin exists', (ctx) => {
       expect(ctx.stdout).to.contain(
-        `The plugin './plugins/no-runtime' could not be found!`
+        `The plugin './plugins/no-existo' could not be found!`
       )
       expect(ctx.stdout).to.match(
-        /Looked for .*\/plugins\/no-runtime\/runtime and .*\/plugins\/no-runtime/
+        /Looked for .*\/plugins\/no-existo\/runtime first, then .*\/plugins\/no-existo/
       )
     })
 })
