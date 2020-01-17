@@ -19,6 +19,7 @@ type FrameworkInfo = {
   name: string
   plugins: BuildConfig
   scripts: { [name: string]: string }
+  runtime: string[]
 }
 
 const DEFAULT_DEPS = ['@fab/cli', '@fab/server']
@@ -41,6 +42,7 @@ const Frameworks: {
       '@fab/serve-html': {},
       '@fab/rewire-assets': {},
     },
+    runtime: ['@fab/rewire-assets', '@fab/serve-html'],
   },
   [KnownFrameworkTypes.Next9]: {
     name: 'NextJS v9+',
@@ -56,6 +58,7 @@ const Frameworks: {
       '@fab/serve-html': {},
       '@fab/rewire-assets': {},
     },
+    runtime: ['@fab/input-nextjs', '@fab/rewire-assets', '@fab/serve-html'],
   },
 }
 
