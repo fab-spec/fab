@@ -35,11 +35,7 @@ In FAB v0, `@fab/compile` has a catch-all rule that moves any file not in either
 ```json5
 // fab.config.json
 {
-  build: {
-    '@fab/render-html': {},
-    '@fab/rewrite-assets': {},
-  },
-  render: {
+  plugins: {
     '@fab/render-html': {},
     '@fab/rewrite-assets': {
       'treat-as-immutable': ['/static/*'],

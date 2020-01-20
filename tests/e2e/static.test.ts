@@ -26,7 +26,7 @@ describe('dir of static assets', () => {
         `fab build -c fab.empty-config.json5`,
         opts
       )
-      expect(stdout).toContain(`The FAB config file is missing a 'build' property.`)
+      expect(stdout).toContain(`The FAB config file is missing a 'plugins' property.`)
       expect(stderr).toContain(`Config file contains errors!`)
     })
 

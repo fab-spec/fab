@@ -18,8 +18,7 @@ export type DeployConfig = {
 }
 
 export interface FabConfig {
-  build: BuildConfig
-  runtime: string[]
+  plugins: BuildConfig
   settings?: {
     [env_name: string]: FabSettings
   }
@@ -37,10 +36,10 @@ export interface PluginMetadata {
  * and manipulates it in some way, perhaps setting metadata
  * to be used in the renderer.
  * */
-export type FabBuildStep<T extends PluginArgs, U extends PluginMetadata> = (
-  args: T,
-  proto_fab: ProtoFab<U>
-) => Promise<void>
+export type FabBuildStep<
+  T extends PluginArgs = PluginArgs,
+  U extends PluginMetadata = PluginArgs
+> = (args: T, proto_fab: ProtoFab<U>) => Promise<void>
 
 /*
  * A FabPluginRuntime is a setup function that returns a FabRequestResponder.

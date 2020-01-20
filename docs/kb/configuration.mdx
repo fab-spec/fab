@@ -1,0 +1,38 @@
+---
+name: 'Configuration'
+route: '/kb/configuration'
+menu: Knowledge Base
+---
+
+# Configuration
+
+FAB builds use a `fab.config.json5` file:
+
+```json5
+// fab.config.json5
+{
+  plugins: {
+    '@fab/input-static': {
+      dir: 'dist', // Read files from this directory
+    },
+    '@fab/serve-html': {
+      // Enrich HTML files with:
+      injections: {
+        env: {
+          name: 'FAB_SETTINGS', // which global variable to use?
+        },
+        csp: {
+          nonce: true,
+        },
+      },
+    },
+    '@fab/rewire-assets': {},
+  },
+  settings: {
+    production: './production-settings.json',
+    staging: {
+      API_URL: 'https://staging.lol.com',
+    },
+  },
+}
+```

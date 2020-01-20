@@ -39,11 +39,11 @@ export default class JSON5Config {
 
   constructor(str_contents: string, data: FabConfig) {
     // todo: can we generate a validator from the TS definition
-    if (!data.build) {
-      throw new InvalidConfigError(`The FAB config file is missing a 'build' property.`)
+    if (!data.plugins) {
+      throw new InvalidConfigError(`The FAB config file is missing a 'plugins' property.`)
     }
 
-    for (const [plugin, args] of Object.entries(data.build)) {
+    for (const [plugin, args] of Object.entries(data.plugins)) {
       for (const [k, v] of Object.entries(args)) {
         if (typeof v === 'string' && v.match(/^\/.*\/([gimy]*)$/)) {
           args[k] = regexParser(v as string)
