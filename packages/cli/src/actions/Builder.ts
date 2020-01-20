@@ -19,8 +19,9 @@ type RuntimePlugin = {
 }
 
 const safeRequire = (path: string) => {
+  require('typescript-require')
   try {
-    return require(path)
+    return require(require.resolve(path))
   } catch (e) {
     return null
   }
@@ -58,6 +59,7 @@ export default class Builder {
           `The plugin '${plugin_name}' could not be found!\n` +
             `Looked for ${path_slash_require} first, then tried ${plugin_path}`
         )
+      console.log(module_slash_require)
       if (typeof module_slash_require?.runtime === 'function') {
         runtime_plugins.push(path_slash_require)
       } else if (typeof module?.runtime === 'function') {

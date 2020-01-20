@@ -25,10 +25,12 @@ export interface FabConfig {
   deploy?: DeployConfig
 }
 
+export interface PluginMetadataContent {
+  [metadata_name: string]: any
+}
+
 export interface PluginMetadata {
-  [plugin_name: string]: {
-    [metadata_name: string]: any
-  }
+  [plugin_name: string]: PluginMetadataContent
 }
 
 /*
@@ -38,16 +40,16 @@ export interface PluginMetadata {
  * */
 export type FabBuildStep<
   T extends PluginArgs = PluginArgs,
-  U extends PluginMetadata = PluginArgs
+  U extends PluginMetadata = PluginMetadata
 > = (args: T, proto_fab: ProtoFab<U>) => Promise<void>
 
 /*
  * A FabPluginRuntime is a setup function that returns a FabRequestResponder.
  * */
-export type FabPluginRuntime<T extends PluginArgs, U extends PluginMetadata> = (
-  args: T,
-  metadata: U
-) => FabRequestResponder
+export type FabPluginRuntime<
+  T extends PluginArgs = PluginArgs,
+  U extends PluginMetadata = PluginMetadata
+> = (args: T, metadata: U) => FabRequestResponder
 
 /*
  * A FabRequestResponder is an async function that optionally returns

@@ -16,7 +16,7 @@ export class Compiler {
 
     const warnings: string[] = []
     const bundle = await rollup({
-      input: '@fab/cli/lib/runtime',
+      input: require.resolve('@fab/cli/lib/runtime'),
       plugins: [
         alias({
           entries: {

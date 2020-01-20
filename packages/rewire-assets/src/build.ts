@@ -1,4 +1,4 @@
-import { ProtoFab } from '@fab/core/src'
+import { ProtoFab } from '@fab/core'
 import {
   InlineAssets,
   RenamedAssets,
