@@ -12,18 +12,33 @@ import { Generator } from './Generator'
 import { isRelative, relativeToConfig } from '../helpers/paths'
 import { InvalidConfigError, InvalidPluginError } from '../errors'
 import { log } from '../helpers'
+import { rollupCompile } from '../helpers/rollup'
 
 type RuntimePlugin = {
   path: string
   runtime: FabPluginRuntime<PluginArgs, PluginMetadata>
 }
 
-const safeRequire = (path: string) => {
-  require('typescript-require')
+const safeResolve = (path: string) => {
   try {
-    return require(require.resolve(path))
+    return require.resolve(path)
   } catch (e) {
     return null
+  }
+}
+
+const safeRequire = async (path: string) => {
+  try {
+    return require(path)
+  } catch (e) {
+    try {
+      const {
+        output: [output, ...chunks],
+      } = await rollupCompile(path, { format: 'cjs' })
+      return eval(output.code)
+    } catch (e) {
+      return null
+    }
   }
 }
 
@@ -36,45 +51,53 @@ export default class Builder {
     }> = []
     const runtime_plugins: Array<string> = []
 
-    Object.entries(config.plugins).forEach(([plugin_name, plugin_args]) => {
+    for (const [plugin_name, plugin_args] of Object.entries(config.plugins)) {
       const is_relative = isRelative(plugin_name)
-      const plugin_path = relativeToConfig(config_path, plugin_name)
-      const path_slash_require = plugin_path + '/runtime'
-      console.log({ is_relative, plugin_path, path_slash_require })
+      const relative_path = relativeToConfig(config_path, plugin_name)
+      const plugin_path = safeResolve(relative_path)
+      const path_slash_require = safeResolve(relative_path + '/runtime')
+      console.log({ is_relative, plugin_path, relative_path, path_slash_require })
 
-      const module_slash_require = safeRequire(path_slash_require)
-      if (module_slash_require && !module_slash_require.runtime) {
-        log.warn(
-          `Requiring '${path_slash_require}' didn't export a 'runtime' function, but the filename indicates it probably should. Falling back to '${plugin_path}'`
-        )
+      if (path_slash_require) {
+        const module_slash_require = await safeRequire(path_slash_require)
+        console.log(module_slash_require)
+        if (!module_slash_require.runtime) {
+          log.warn(
+            `Requiring '${path_slash_require}' didn't export a 'runtime' function, but the filename indicates it probably should. Falling back to '${plugin_path}'`
+          )
+        }
+        // runtime_plugins.push(path_slash_require)
       }
-      const module = safeRequire(plugin_path)
-      if (!is_relative && !module) {
-        throw new InvalidConfigError(
-          `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
-        )
-      }
-      if (!module_slash_require && !module)
-        throw new InvalidConfigError(
-          `The plugin '${plugin_name}' could not be found!\n` +
-            `Looked for ${path_slash_require} first, then tried ${plugin_path}`
-        )
-      console.log(module_slash_require)
-      if (typeof module_slash_require?.runtime === 'function') {
-        runtime_plugins.push(path_slash_require)
-      } else if (typeof module?.runtime === 'function') {
-        runtime_plugins.push(plugin_path)
-      }
-
-      if (typeof module?.build === 'function') {
-        const builder = module.build as FabBuildStep<PluginArgs, PluginMetadata>
-        build_plugins.push({
-          plugin_name,
-          builder,
-          plugin_args,
-        })
-      }
-    })
+      //
+      // const module_slash_require = safeResolve(path_slash_require)
+      // }
+      // const module = safeRequire(plugin_path)
+      // if (!is_relative && !module) {
+      //   throw new InvalidConfigError(
+      //     `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
+      //   )
+      // }
+      // if (!module_slash_require && !module)
+      //   throw new InvalidConfigError(
+      //     `The plugin '${plugin_name}' could not be found!\n` +
+      //       `Looked for ${path_slash_require} first, then tried ${plugin_path}`
+      //   )
+      // console.log(module_slash_require)
+      // if (typeof module_slash_require?.runtime === 'function') {
+      //   runtime_plugins.push(path_slash_require)
+      // } else if (typeof module?.runtime === 'function') {
+      //   runtime_plugins.push(plugin_path)
+      // }
+      //
+      // if (typeof module?.build === 'function') {
+      //   const builder = module.build as FabBuildStep<PluginArgs, PluginMetadata>
+      //   build_plugins.push({
+      //     plugin_name,
+      //     builder,
+      //     plugin_args,
+      //   })
+      // }
+    }
 
     const proto_fab = new ProtoFab()
     for (const { plugin_name, builder, plugin_args } of build_plugins) {

@@ -1,55 +1,34 @@
 import { ProtoFab } from '@fab/core'
-import { rollup } from 'rollup'
-import resolve from '@rollup/plugin-node-resolve'
-import commonjs from 'rollup-plugin-commonjs'
-import json from '@rollup/plugin-json'
-// @ts-ignore
-import hypothetical from 'rollup-plugin-hypothetical'
 import { log } from '../helpers'
-// @ts-ignore
-import alias from '@rollup/plugin-alias'
 import { BuildFailedError } from '../errors'
+import { rollupCompile } from '../helpers/rollup'
 
 export class Compiler {
   static async compile(proto_fab: ProtoFab, render_plugins: string[]) {
     console.log("It's compilin' time!")
 
     const warnings: string[] = []
-    const bundle = await rollup({
-      input: require.resolve('@fab/cli/lib/runtime'),
-      plugins: [
-        alias({
-          entries: {
-            path: require.resolve('path-browserify'),
-          },
-        }),
-        hypothetical({
-          files: {
-            'user-defined-pipeline': generatePipelineJs(render_plugins),
-            'fab-metadata': generateFabMetadataJs(proto_fab),
-          },
-          allowFallthrough: true,
-        }),
-        resolve({
-          preferBuiltins: true,
-        }),
-        commonjs(),
-        json(),
-      ],
-      onwarn(warning, handler) {
-        if (warning.code === 'UNRESOLVED_IMPORT') {
-          warnings.push(
-            `Could not find module '${warning.source}' during build of '${warning.importer}'`
-          )
-        } else {
-          handler(warning)
-        }
-      },
-    })
-
     const {
       output: [output, ...chunks],
-    } = await bundle.generate({ format: 'iife', exports: 'named' })
+    } = await rollupCompile(
+      require.resolve('@fab/cli/lib/runtime'),
+      { format: 'iife', exports: 'named' },
+      {
+        'user-defined-pipeline': generatePipelineJs(render_plugins),
+        'fab-metadata': generateFabMetadataJs(proto_fab),
+      },
+      {
+        onwarn(warning, handler) {
+          if (warning.code === 'UNRESOLVED_IMPORT') {
+            warnings.push(
+              `Could not find module '${warning.source}' during build of '${warning.importer}'`
+            )
+          } else {
+            handler(warning)
+          }
+        },
+      }
+    )
 
     if (warnings.length > 0) {
       throw new BuildFailedError(

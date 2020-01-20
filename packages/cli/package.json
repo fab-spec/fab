@@ -67,8 +67,7 @@
     "semver": "^7.1.1",
     "shelljs": "^0.8.3",
     "theros": "^1.0.6",
-    "tslib": "^1",
-    "typescript-require": "^0.2.10"
+    "tslib": "^1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1"
