@@ -9,7 +9,7 @@ menu: Knowledge Base
 What makes FAB plugins different to other JS web tooling is that plugins are can be invoked during _both_ compile time & at runtime. What this means is that a plugin can read/manipulate a FAB as it's being constructed, and _also_ inject the server-side code needed. This is best demonstrated with a simple example:
 
 ```js
-// server/old-blog-url-format
+// server/old-blog-url-format.js
 
 export const build = async (args, proto_fab) => {
   // Attach an object to proto_fab.metadata, which is serialised
