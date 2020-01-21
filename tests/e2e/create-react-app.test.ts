@@ -38,6 +38,9 @@ it('should allow creation of a new CRA project into a FAB', async () => {
   const { stdout: test_fab_output } = await cmd(`yarn test:fab`, { cwd })
 
   expect(test_fab_output).toMatch(
-    /^<!DOCTYPE html>.*<script>window.FAB_SETTINGS={.*"__fab_server":"@fab\/server"};/
+    /^<!DOCTYPE html>.*<script>window.FAB_SETTINGS={.*"__fab_server":"@fab\/server"/
   )
+
+  // Add a runtime plugin that returns some response
+  // Then test for that response.
 })
