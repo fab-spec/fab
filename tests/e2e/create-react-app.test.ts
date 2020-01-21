@@ -25,7 +25,7 @@ it('should allow creation of a new CRA project into a FAB', async () => {
   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
   expect(files_after_fab_build).toMatch('fab.zip')
 
-  await shell(`yarn add npm-run-all`)
+  await shell(`yarn add npm-run-all`, { cwd })
   const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
   package_json.scripts = {
     ...package_json.scripts,
@@ -33,6 +33,7 @@ it('should allow creation of a new CRA project into a FAB', async () => {
     'test:fab:serve': 'npx @fab/serve fab.zip',
     'test:fab:test-local': 'sleep 1 && curl -v http://localhost:3000',
   }
+  await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
 
   await shell(`yarn test:fab`, { cwd })
 })
