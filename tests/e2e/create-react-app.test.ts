@@ -56,12 +56,16 @@ describe('Create React App E2E Test', () => {
       const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
       expect(files_after_fab_build).toMatch('fab.zip')
 
-      server_process = execa('yarn fab:serve')
+      server_process = cmd('yarn fab:serve', { cwd })
+      console.log({ server_process })
     })
 
     it('should return a 200 on /', async () => {
       const { stdout: first_response } = await cmd(
-        `curl -I --retry 5 --retry-connrefused http://localhost:3123/`
+        `curl -I --retry 5 --retry-connrefused http://localhost:3123/`,
+        {
+          cwd,
+        }
       )
 
       expect(first_response).toContain(`HTTP/1.1 200 OK`)
