@@ -29,8 +29,8 @@ it('should allow creation of a new CRA project into a FAB', async () => {
   const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
   package_json.scripts = {
     ...package_json.scripts,
-    'test:fab': 'echo true',
-    'test:fab:serve': 'npx @fab/serve fab.zip',
+    'test:fab': 'run-p --race "test:fab:*"',
+    'test:fab:serve': 'fab serve fab.zip',
     'test:fab:test-local': 'sleep 1 && curl -v http://localhost:3000',
   }
   await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
