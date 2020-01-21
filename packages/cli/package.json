@@ -71,7 +71,8 @@
     "tslib": "^1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1"
+    "@oclif/dev-cli": "^1",
+    "tmp-promise": "^2.0.2"
   },
   "engines": {
     "node": ">=8.0.0"

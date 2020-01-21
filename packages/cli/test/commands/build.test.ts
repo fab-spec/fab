@@ -26,7 +26,7 @@ describe('build', () => {
       expect(ctx.stdout).to.contain('fab init')
     })
 
-  const empty_config = `${__dirname}/fixtures/fab.empty-config.json5`
+  const empty_config = `${__dirname}/../fixtures/fab.empty-config.json5`
   test
     .stdout()
     .command(['build', '--config', empty_config])
@@ -39,7 +39,7 @@ describe('build', () => {
       )
     })
 
-  const unknown_module_config = `${__dirname}/fixtures/fab.unknown-module.json5`
+  const unknown_module_config = `${__dirname}/../fixtures/fab.unknown-module.json5`
   test
     .stdout()
     .command(['build', '--config', unknown_module_config])
@@ -51,7 +51,7 @@ describe('build', () => {
       expect(ctx.stdout).to.contain(`Are you sure it's installed?`)
     })
 
-  const no_runtime_config = `${__dirname}/fixtures/fab.missing-local-file.json5`
+  const no_runtime_config = `${__dirname}/../fixtures/fab.missing-local-file.json5`
   test
     .stdout()
     .command(['build', '--config', no_runtime_config])
@@ -63,7 +63,7 @@ describe('build', () => {
         `The plugin './plugins/no-existo' could not be found!`
       )
       expect(ctx.stdout).to.match(
-        /Looked for .*\/plugins\/no-existo\/runtime first, then .*\/plugins\/no-existo/
+        /Looked for .*\/plugins\/no-existo\/runtime & .*\/plugins\/no-existo/
       )
     })
 })

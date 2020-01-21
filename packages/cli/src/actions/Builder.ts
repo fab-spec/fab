@@ -39,20 +39,40 @@ const safeRequire = async (path: string) => {
   }
 }
 
+type BuildPlugin = {
+  plugin_name: string
+  builder: FabBuildStep
+  plugin_args: PluginArgs
+}
+type Plugins = {
+  build_plugins: BuildPlugin[]
+  runtime_plugins: string[]
+}
+
 export default class Builder {
   static async build(config_path: string, config: FabConfig) {
-    const build_plugins: Array<{
-      plugin_name: string
-      builder: FabBuildStep
-      plugin_args: PluginArgs
-    }> = []
-    const runtime_plugins: Array<string> = []
+    const { build_plugins, runtime_plugins } = await this.getPlugins(config_path, config)
+
+    const proto_fab = new ProtoFab()
+    for (const { plugin_name, builder, plugin_args } of build_plugins) {
+      console.log(`Building ${plugin_name}:`)
+      await builder(plugin_args, proto_fab)
+    }
+    console.log([runtime_plugins])
+    await Compiler.compile(proto_fab, runtime_plugins)
+    await Generator.generate(proto_fab)
+  }
+
+  static async getPlugins(config_path: string, config: FabConfig): Promise<Plugins> {
+    const build_plugins: BuildPlugin[] = []
+    const runtime_plugins: string[] = []
 
     for (const [plugin_name, plugin_args] of Object.entries(config.plugins)) {
       const is_relative = isRelative(plugin_name)
       const relative_path = relativeToConfig(config_path, plugin_name)
       const plugin_path = safeResolve(relative_path)
-      const path_slash_require = safeResolve(relative_path + '/runtime')
+      const relative_slash_require = relative_path + '/runtime'
+      const path_slash_require = safeResolve(relative_slash_require)
       console.log({ is_relative, plugin_path, relative_path, path_slash_require })
 
       let runtime_plugin, build_plugin
@@ -61,7 +81,7 @@ export default class Builder {
         throw is_relative
           ? new InvalidConfigError(
               `The plugin '${plugin_name}' could not be found!\n` +
-                `Looked for ${path_slash_require} first, then tried ${plugin_path}`
+                `Looked for ${relative_slash_require} & ${relative_path}`
             )
           : new InvalidConfigError(
               `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
@@ -77,7 +97,7 @@ export default class Builder {
           runtime_plugin = path_slash_require
         } else {
           log.warn(
-            `Requiring '${path_slash_require}' didn't export a 'runtime' function, but the filename indicates it probably should. Falling back to '${plugin_path}'`
+            `Requiring '${relative_slash_require}' didn't export a 'runtime' function, but the filename indicates it probably should. Falling back to '${plugin_path}'`
           )
         }
       }
@@ -103,18 +123,16 @@ export default class Builder {
         }
       }
 
+      if (!runtime_plugin && !build_plugin) {
+        log.warn(
+          `Plugin ${plugin_name} exports neither a "build" or "runtime" export, ignoring it.`
+        )
+      }
+
       if (runtime_plugin) runtime_plugins.push(runtime_plugin)
       if (build_plugin) build_plugins.push(build_plugin)
     }
 
-    const proto_fab = new ProtoFab()
-    for (const { plugin_name, builder, plugin_args } of build_plugins) {
-      console.log(`Building ${plugin_name}:`)
-      await builder(plugin_args, proto_fab)
-    }
-
-    console.log([runtime_plugins])
-    await Compiler.compile(proto_fab, runtime_plugins)
-    await Generator.generate(proto_fab)
+    return { build_plugins, runtime_plugins }
   }
 }

@@ -1,0 +1,7 @@
+{
+  plugins: {
+    './plugins/build-and-render': {
+      arg: 'value',
+    },
+  },
+}
