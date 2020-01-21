@@ -25,7 +25,7 @@ describe('Builder', () => {
       ['./plugins/both-in-one-ts-file.ts', { now: 'bring it home' }],
     ])
     expect(runtime_plugins).to.deep.equal([
-      path.resolve(`${__dirname}/../fixtur  es/plugins/build-and-render/runtime.js`),
+      path.resolve(`${__dirname}/../fixtures/plugins/build-and-render/runtime.js`),
       path.resolve(`${__dirname}/../fixtures/plugins/runtime-only.js`),
       path.resolve(`${__dirname}/../fixtures/plugins/both-in-one-ts-file.ts`),
     ])
