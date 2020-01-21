@@ -49,6 +49,12 @@ describe('Create React App E2E Test', () => {
   describe('fab build tests', () => {
     let server_process: ExecaChildProcess | undefined
 
+    const request = async (args: string, path: string) => {
+      const curl_cmd = `curl ${args} --retry 5 --retry-connrefused http://localhost:3123`
+      const { stdout } = await cmd(curl_cmd + path, { cwd })
+      return stdout
+    }
+
     beforeEach(async () => {
       await shell(`rm -f fab.zip`, { cwd })
       await shell(`yarn build:fab`, { cwd })
@@ -61,14 +67,11 @@ describe('Create React App E2E Test', () => {
     })
 
     it('should return a 200 on /', async () => {
-      const { stdout: first_response } = await cmd(
-        `curl -I --retry 5 --retry-connrefused http://localhost:3123/`,
-        {
-          cwd,
-        }
-      )
-
-      expect(first_response).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/')).toContain(`HTTP/1.1 200 OK`)
+      const homepage_response = await request('', '/')
+      expect(homepage_response).toContain(`<!DOCTYPE html>`)
+      expect(homepage_response).toContain(`window.FAB_SETTINGS`)
+      expect(homepage_response).toContain(`"__fab_server":"@fab/server"`)
     })
 
     afterEach(async () => {
