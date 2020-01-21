@@ -82,8 +82,7 @@ export default class Server {
               fetch_req as Request,
               Object.assign(
                 {
-                  injected: 'variables',
-                  should: 'work!',
+                  __fab_server: '@fab/server',
                 },
                 production_settings
               )

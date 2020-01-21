@@ -31,9 +31,13 @@ it('should allow creation of a new CRA project into a FAB', async () => {
     ...package_json.scripts,
     'test:fab': 'run-p --race "test:fab:*"',
     'test:fab:serve': 'fab serve fab.zip',
-    'test:fab:test-local': 'sleep 1 && curl -v http://localhost:3000',
+    'test:fab:test-local': 'curl -v --retry 3 --retry-connrefused http://localhost:3000/',
   }
   await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
 
-  await shell(`yarn test:fab`, { cwd })
+  const { stdout: test_fab_output } = await cmd(`yarn test:fab`, { cwd })
+
+  expect(test_fab_output).toMatch(
+    /^<!DOCTYPE html>.*<script>window.FAB_SETTINGS={.*"__fab_server":"@fab\/server"};/
+  )
 })
