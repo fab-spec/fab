@@ -63,7 +63,6 @@ describe('Create React App E2E Test', () => {
       expect(files_after_fab_build).toMatch('fab.zip')
 
       server_process = cmd('yarn fab:serve', { cwd })
-      console.log({ server_process })
     })
 
     it('should return a 200 on /', async () => {
