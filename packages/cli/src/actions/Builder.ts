@@ -13,11 +13,8 @@ import { isRelative, relativeToConfig } from '../helpers/paths'
 import { InvalidConfigError, InvalidPluginError } from '../errors'
 import { log } from '../helpers'
 import { rollupCompile } from '../helpers/rollup'
-
-type RuntimePlugin = {
-  path: string
-  runtime: FabPluginRuntime<PluginArgs, PluginMetadata>
-}
+// @ts-ignore
+import nodeEval from 'node-eval'
 
 const safeResolve = (path: string) => {
   try {
@@ -34,8 +31,8 @@ const safeRequire = async (path: string) => {
     try {
       const {
         output: [output, ...chunks],
-      } = await rollupCompile(path, { format: 'cjs' })
-      return eval(output.code)
+      } = await rollupCompile(path, { format: 'cjs', exports: 'named' })
+      return nodeEval(output.code)
     } catch (e) {
       return null
     }
@@ -58,45 +55,56 @@ export default class Builder {
       const path_slash_require = safeResolve(relative_path + '/runtime')
       console.log({ is_relative, plugin_path, relative_path, path_slash_require })
 
+      let runtime_plugin, build_plugin
+
+      if (!plugin_path && !path_slash_require) {
+        throw is_relative
+          ? new InvalidConfigError(
+              `The plugin '${plugin_name}' could not be found!\n` +
+                `Looked for ${path_slash_require} first, then tried ${plugin_path}`
+            )
+          : new InvalidConfigError(
+              `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
+            )
+      }
+
       if (path_slash_require) {
         const module_slash_require = await safeRequire(path_slash_require)
         console.log(module_slash_require)
-        if (!module_slash_require.runtime) {
+        console.log(module_slash_require.runtime)
+        console.log(typeof module_slash_require.runtime)
+        if (typeof module_slash_require.runtime === 'function') {
+          runtime_plugin = path_slash_require
+        } else {
           log.warn(
             `Requiring '${path_slash_require}' didn't export a 'runtime' function, but the filename indicates it probably should. Falling back to '${plugin_path}'`
           )
         }
-        // runtime_plugins.push(path_slash_require)
       }
-      //
-      // const module_slash_require = safeResolve(path_slash_require)
-      // }
-      // const module = safeRequire(plugin_path)
-      // if (!is_relative && !module) {
-      //   throw new InvalidConfigError(
-      //     `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
-      //   )
-      // }
-      // if (!module_slash_require && !module)
-      //   throw new InvalidConfigError(
-      //     `The plugin '${plugin_name}' could not be found!\n` +
-      //       `Looked for ${path_slash_require} first, then tried ${plugin_path}`
-      //   )
-      // console.log(module_slash_require)
-      // if (typeof module_slash_require?.runtime === 'function') {
-      //   runtime_plugins.push(path_slash_require)
-      // } else if (typeof module?.runtime === 'function') {
-      //   runtime_plugins.push(plugin_path)
-      // }
-      //
-      // if (typeof module?.build === 'function') {
-      //   const builder = module.build as FabBuildStep<PluginArgs, PluginMetadata>
-      //   build_plugins.push({
-      //     plugin_name,
-      //     builder,
-      //     plugin_args,
-      //   })
-      // }
+
+      if (plugin_path) {
+        const module = await safeRequire(plugin_path)
+
+        if (typeof module.build === 'function') {
+          build_plugin = {
+            plugin_name,
+            builder: module.build,
+            plugin_args,
+          }
+        }
+        if (typeof module.runtime === 'function') {
+          if (runtime_plugin) {
+            log.warn(
+              `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
+            )
+          } else {
+            runtime_plugin = path_slash_require
+          }
+        }
+      }
+
+      if (runtime_plugin) runtime_plugins.push(runtime_plugin)
+      if (build_plugin) build_plugins.push(build_plugin)
     }
 
     const proto_fab = new ProtoFab()
