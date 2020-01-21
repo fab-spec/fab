@@ -43,6 +43,7 @@
     "@rollup/plugin-alias": "^2.2.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^6.0.0",
+    "@rollup/plugin-typescript": "^2.1.0",
     "@types/decompress": "^4.2.3",
     "@types/fs-extra": "^8.0.1",
     "@types/jju": "^1.4.1",

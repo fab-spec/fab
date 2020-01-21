@@ -24,6 +24,7 @@ const safeRequire = async (path: string) => {
       const {
         output: [output, ...chunks],
       } = await rollupCompile(path, { format: 'cjs', exports: 'named' })
+      // console.log(output.code)
       return nodeEval(output.code)
     } catch (e) {
       return null

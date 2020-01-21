@@ -1,16 +1,19 @@
 {
   plugins: {
     './plugins/build-and-render': {
-      first: 'plugin'
+      first: 'plugin',
     },
     './plugins/build-only': {
-      then: 'this one'
+      then: 'this one',
     },
     './plugins/runtime-only': {
-      thirdly: 'this'
+      thirdly: 'this',
     },
     './plugins/empty': {
-      now: 'bring it home'
+      set: 'it up',
+    },
+    './plugins/both-in-one-ts-file.ts': {
+      now: 'bring it home',
     },
   },
 }

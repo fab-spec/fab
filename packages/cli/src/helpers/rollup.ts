@@ -2,6 +2,7 @@ import { OutputOptions, rollup, RollupOptions } from 'rollup'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import json from '@rollup/plugin-json'
+import typescript from '@rollup/plugin-typescript'
 
 // @ts-ignore
 import alias from '@rollup/plugin-alias'
@@ -30,6 +31,7 @@ export async function rollupCompile(
         preferBuiltins: true,
       }),
       commonjs(),
+      typescript(),
       json(),
     ],
     ...options,
