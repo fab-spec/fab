@@ -72,6 +72,8 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
+    "@types/capture-console": "^1.0.0",
+    "capture-console": "^1.0.1",
     "tmp-promise": "^2.0.2"
   },
   "engines": {

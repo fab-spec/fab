@@ -1,7 +1,16 @@
 {
   plugins: {
     './plugins/build-and-render': {
-      arg: 'value',
+      first: 'plugin'
+    },
+    './plugins/build-only': {
+      then: 'this one'
+    },
+    './plugins/runtime-only': {
+      thirdly: 'this'
+    },
+    './plugins/empty': {
+      now: 'bring it home'
     },
   },
 }

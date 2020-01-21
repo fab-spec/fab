@@ -1,16 +1,8 @@
-import {
-  FabBuildStep,
-  FabConfig,
-  FabPluginRuntime,
-  PluginArgs,
-  PluginMetadata,
-  ProtoFab,
-  s_sume,
-} from '@fab/core'
+import { FabBuildStep, FabConfig, PluginArgs, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { isRelative, relativeToConfig } from '../helpers/paths'
-import { InvalidConfigError, InvalidPluginError } from '../errors'
+import { InvalidConfigError } from '../errors'
 import { log } from '../helpers'
 import { rollupCompile } from '../helpers/rollup'
 // @ts-ignore
@@ -104,6 +96,9 @@ export default class Builder {
 
       if (plugin_path) {
         const module = await safeRequire(plugin_path)
+        console.log(module)
+        console.log(module.runtime)
+        console.log(typeof module.runtime)
 
         if (typeof module.build === 'function') {
           build_plugin = {
@@ -113,12 +108,13 @@ export default class Builder {
           }
         }
         if (typeof module.runtime === 'function') {
+          console.log('GOT RUNTIME')
           if (runtime_plugin) {
             log.warn(
               `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
             )
           } else {
-            runtime_plugin = path_slash_require
+            runtime_plugin = plugin_path
           }
         }
       }

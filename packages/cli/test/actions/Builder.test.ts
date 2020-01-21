@@ -1,16 +1,36 @@
 import { expect } from 'chai'
-import { ProtoFab } from '@fab/core'
 import Builder from '../../src/actions/Builder'
 import JSON5Config from '../../src/helpers/JSON5Config'
+import path from 'path'
+import { captureStdout } from '../helpers'
 
 describe('Builder', () => {
   it('should find the local plugin', async () => {
-    const no_runtime_config = `${__dirname}/fixtures/fab.local-plugin.json5`
-    const { build_plugins, runtime_plugins } = await Builder.getPlugins(
-      no_runtime_config,
-      (await JSON5Config.readFrom(no_runtime_config)).data
+    const no_runtime_config = `${__dirname}/../fixtures/fab.local-plugins.json5`
+
+    const { stdout, result } = await captureStdout(
+      async () =>
+        Builder.getPlugins(
+          no_runtime_config,
+          (await JSON5Config.readFrom(no_runtime_config)).data
+        ),
+      { quiet: false }
     )
-    expect(build_plugins).to.be.empty()
-    expect(runtime_plugins).to.be.empty()
+
+    const { build_plugins, runtime_plugins } = result
+
+    expect(
+      build_plugins.map(({ plugin_name, plugin_args }) => [plugin_name, plugin_args])
+    ).to.deep.equal([
+      ['./plugins/build-and-render', { first: 'plugin' }],
+      ['./plugins/build-only', { then: 'this one' }],
+    ])
+    expect(runtime_plugins).to.deep.equal([
+      path.resolve(`${__dirname}/../fixtures/plugins/build-and-render/runtime.js`),
+      path.resolve(`${__dirname}/../fixtures/plugins/runtime-only.js`),
+    ])
+    expect(stdout).to.contain(
+      'Plugin ./plugins/empty exports neither a "build" or "runtime" export, ignoring it.'
+    )
   })
 })
