@@ -1,0 +1,19 @@
+{
+  plugins: {
+    './plugins/build-and-render': {
+      first: 'plugin',
+    },
+    './plugins/build-only': {
+      then: 'this one',
+    },
+    './plugins/runtime-only': {
+      thirdly: 'this',
+    },
+    './plugins/empty': {
+      set: 'it up',
+    },
+    './plugins/both-in-one-ts-file.ts': {
+      now: 'bring it home',
+    },
+  },
+}

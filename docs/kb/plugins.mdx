@@ -1,0 +1,58 @@
+---
+name: 'Plugins'
+route: '/kb/plugins'
+menu: Knowledge Base
+---
+
+# Plugins
+
+What makes FAB plugins different to other JS web tooling is that plugins are can be invoked during _both_ compile time & at runtime. What this means is that a plugin can read/manipulate a FAB as it's being constructed, and _also_ inject the server-side code needed. This is best demonstrated with a simple example:
+
+```js
+// server/old-blog-url-format.js
+
+export const build = async (args, proto_fab) => {
+  // Attach an object to proto_fab.metadata, which is serialised
+  // and passed to your runtime as the second argument
+  proto_fab.metadata.blog_rewrites = {}
+
+  for (const filename of proto_fab.files.keys()) {
+    // Look for anything looking like /blog/123-new-post-format
+    const new_blog_format = filename.match(/^\/blog\/(\d+)/)
+    if (new_blog_format) {
+      const blog_id = new_blog_format[1]
+      // Make a record that this `blog_id` now lives at `filename`
+      proto_fab.metadata.blog_rewrites[blog_id] = filename
+    }
+  }
+}
+
+export const runtime = (args, metadata) => {
+  // Runtime functions are synchronous in order to perform any
+  // setup needed.
+  const { blog_rewrites } = metadata
+
+  // They return an async function that can intervene on any request
+  return async ({ request, settings, url }) => {
+    // Only respond on request for the old URL pattern /articles/123
+    const old_blog_format = url.pathname.match(/^\/articles\/(\d+)/)
+    if (!old_blog_format) return
+
+    // Same as before, pull the `blog_id` off the URL
+    const blog_id = old_blog_format[1]
+    const new_blog_url = blog_rewrites[blog_id]
+    if (!new_blog_url) {
+      // If that `blog_id` doesn't exist, return a 404
+      return new Response(null, { status: 404 })
+    } else {
+      // Otherwise return a 301 Moved Permanently
+      return new Response(null, {
+        status: 301,
+        headers: {
+          Location: new_blog_url,
+        },
+      })
+    }
+  }
+}
+```
