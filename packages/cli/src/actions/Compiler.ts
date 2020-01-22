@@ -1,31 +1,19 @@
 import { ProtoFab } from '@fab/core'
 import { log } from '../helpers'
 import { BuildFailedError } from '../errors'
-import { rollupCompile } from '../helpers/rollup'
+import Rollup from '../helpers/rollup'
 
 export class Compiler {
-  static async compile(proto_fab: ProtoFab, render_plugins: string[]) {
+  static async compile(proto_fab: ProtoFab, render_plugins: string[], rollup: Rollup) {
     console.log("It's compilin' time!")
 
-    const warnings: string[] = []
-    const {
-      output: [output, ...chunks],
-    } = await rollupCompile(
+    const { output, warnings } = await rollup.compile(
       require.resolve('@fab/cli/lib/runtime'),
-      { format: 'iife', exports: 'named' },
       {
-        'user-defined-pipeline': generatePipelineJs(render_plugins),
-        'fab-metadata': generateFabMetadataJs(proto_fab),
-      },
-      {
-        onwarn(warning, handler) {
-          if (warning.code === 'UNRESOLVED_IMPORT') {
-            warnings.push(
-              `Could not find module '${warning.source}' during build of '${warning.importer}'`
-            )
-          } else {
-            handler(warning)
-          }
+        generate: { format: 'iife', exports: 'named' },
+        hypotheticals: {
+          'user-defined-pipeline': generatePipelineJs(render_plugins),
+          'fab-metadata': generateFabMetadataJs(proto_fab),
         },
       }
     )
@@ -37,12 +25,7 @@ export class Compiler {
     }
     // console.log(output)
 
-    if (chunks.length > 0) {
-      log.error(`WARNING: Didn't expect there to be more than one chunk created! Got:`)
-      console.log(chunks)
-    }
-
-    proto_fab.files.set('/server.js', output.code)
+    proto_fab.files.set('/server.js', output)
   }
 }
 

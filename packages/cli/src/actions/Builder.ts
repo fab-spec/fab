@@ -2,33 +2,15 @@ import { FabBuildStep, FabConfig, PluginArgs, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { isRelative, relativeToConfig } from '../helpers/paths'
-import { InvalidConfigError } from '../errors'
+import { BuildFailedError, InvalidConfigError } from '../errors'
 import { log } from '../helpers'
-import { rollupCompile } from '../helpers/rollup'
-// @ts-ignore
-import nodeEval from 'node-eval'
+import Rollup from '../helpers/rollup'
 
 const safeResolve = (path: string) => {
   try {
     return require.resolve(path)
   } catch (e) {
     return null
-  }
-}
-
-const safeRequire = async (path: string) => {
-  try {
-    return require(path)
-  } catch (e) {
-    try {
-      const {
-        output: [output, ...chunks],
-      } = await rollupCompile(path, { format: 'cjs', exports: 'named' })
-      // console.log(output.code)
-      return nodeEval(output.code)
-    } catch (e) {
-      return null
-    }
   }
 }
 
@@ -44,7 +26,12 @@ type Plugins = {
 
 export default class Builder {
   static async build(config_path: string, config: FabConfig) {
-    const { build_plugins, runtime_plugins } = await this.getPlugins(config_path, config)
+    const rollup = new Rollup(config)
+    const { build_plugins, runtime_plugins } = await this.getPlugins(
+      config_path,
+      config,
+      rollup
+    )
 
     const proto_fab = new ProtoFab()
     for (const { plugin_name, builder, plugin_args } of build_plugins) {
@@ -52,11 +39,15 @@ export default class Builder {
       await builder(plugin_args, proto_fab)
     }
     console.log([runtime_plugins])
-    await Compiler.compile(proto_fab, runtime_plugins)
+    await Compiler.compile(proto_fab, runtime_plugins, rollup)
     await Generator.generate(proto_fab)
   }
 
-  static async getPlugins(config_path: string, config: FabConfig): Promise<Plugins> {
+  static async getPlugins(
+    config_path: string,
+    config: FabConfig,
+    rollup: Rollup
+  ): Promise<Plugins> {
     const build_plugins: BuildPlugin[] = []
     const runtime_plugins: string[] = []
 
@@ -82,7 +73,7 @@ export default class Builder {
       }
 
       if (path_slash_require) {
-        const module_slash_require = await safeRequire(path_slash_require)
+        const module_slash_require = await rollup.safeRequire(path_slash_require)
         console.log(module_slash_require)
         console.log(module_slash_require.runtime)
         console.log(typeof module_slash_require.runtime)
@@ -96,7 +87,7 @@ export default class Builder {
       }
 
       if (plugin_path) {
-        const module = await safeRequire(plugin_path)
+        const module = (await rollup.safeRequire(plugin_path)) || {}
         console.log(module)
         console.log(module.runtime)
         console.log(typeof module.runtime)
