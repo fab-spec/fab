@@ -59,12 +59,12 @@ describe('Create React App E2E Test', () => {
   describe('fab build tests', () => {
     let server_process: ExecaChildProcess | null = null
 
-    const cancelServer = async () => {
+    const cancelServer = () => {
       console.log('CANCELLING')
       console.log({ server_process: server_process?.constructor?.name })
       if (server_process) {
         try {
-          await shell(`kill -9 ${server_process.pid}`)
+          shell(`kill -9 ${server_process.pid}`)
         } catch (e) {
           console.log('CANCELLED')
         }
@@ -73,7 +73,7 @@ describe('Create React App E2E Test', () => {
     }
 
     const createServer = async () => {
-      await cancelServer()
+      cancelServer()
       await shell(`rm -f fab.zip`, { cwd })
       await shell(`yarn build:fab`, { cwd })
 
@@ -134,8 +134,12 @@ describe('Create React App E2E Test', () => {
       expect(hello_response).toContain('HELLO WORLD!')
     })
 
-    afterEach(async () => {
-      await cancelServer()
+    afterEach(() => {
+      cancelServer()
+    })
+
+    afterAll(() => {
+      cancelServer()
     })
   })
 })
