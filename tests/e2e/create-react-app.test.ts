@@ -64,7 +64,7 @@ describe('Create React App E2E Test', () => {
       console.log({ server_process: server_process?.constructor?.name })
       if (server_process) {
         try {
-          server_process.kill()
+          server_process.cancel()
           await server_process
         } catch (e) {
           console.log('CANCELLED')
