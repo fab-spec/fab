@@ -16,14 +16,17 @@ import { log } from './index'
 
 export default class Rollup {
   private config: FabConfig
+  private plugins: any[]
 
   constructor(config: FabConfig) {
     this.config = config
+    this.plugins = []
     if (this.config.rollup_plugins) {
       for (const [rollup_plugin_name, plugin_args] of Object.entries(
         this.config.rollup_plugins
       )) {
         const rollup_plugin = this.loadPlugin(rollup_plugin_name)
+        this.plugins.push(rollup_plugin(plugin_args))
       }
     }
   }
@@ -44,6 +47,8 @@ export default class Rollup {
   }
 
   async safeRequire(path: string) {
+    console.log('REQUIRE TIME')
+    console.log(path)
     try {
       return require(path)
     } catch (e) {
@@ -89,9 +94,55 @@ export default class Rollup {
         resolve({
           preferBuiltins: true,
         }),
-        commonjs(),
+        commonjs({
+          namedExports: {
+            'node_modules/react/index.js': [
+              'cloneElement',
+              'createContext',
+              'Component',
+              'createElement',
+            ],
+            'node_modules/react-dom/server.js': [
+              'renderToString',
+              'renderToStaticMarkup',
+              'renderToNodeStream',
+              'renderToStaticNodeStream',
+              'version',
+            ],
+            'node_modules/react-dom/index.js': ['render', 'hydrate'],
+            'node_modules/react-is/index.js': [
+              'isElement',
+              'isValidElementType',
+              'ForwardRef',
+            ],
+            'node_modules/prop-types/index.js': [
+              'array',
+              'bool',
+              'func',
+              'number',
+              'object',
+              'string',
+              'symbol',
+              'any',
+              'arrayOf',
+              'element',
+              'elementType',
+              'instanceOf',
+              'node',
+              'objectOf',
+              'oneOf',
+              'oneOfType',
+              'shape',
+              'exact',
+              'checkPropTypes',
+              'resetWarningCache',
+              'PropTypes',
+            ],
+          },
+        }),
         typescript(),
         json(),
+        ...this.plugins,
       ],
 
       onwarn(warning, handler) {
