@@ -32,7 +32,6 @@ export default class Server {
     }
 
     const files = await readFilesFromZip(this.filename)
-    console.log(files)
 
     const src_buffer = files['/server.js']
     if (!src_buffer) {
@@ -75,7 +74,6 @@ export default class Server {
             })
 
             const production_settings = renderer.metadata?.production_settings
-            console.log(production_settings)
             const fetch_res = await renderer.render(
               // @ts-ignore
               fetch_req as Request,
@@ -112,5 +110,7 @@ export default class Server {
       //   ? https.createServer({ key: this.key, cert: this.cert }, app)
       server.listen(this.port, resolve)
     })
+
+    console.log(`Serving ${this.filename} on http://localhost:${this.port}`)
   }
 }
