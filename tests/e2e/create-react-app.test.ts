@@ -47,7 +47,15 @@ describe('Create React App E2E Test', () => {
   })
 
   describe('fab build tests', () => {
-    let server_process: ExecaChildProcess | undefined
+    let server_process: ExecaChildProcess | null = null
+
+    async function cancelServer() {
+      if (server_process) {
+        server_process.cancel()
+        await server_process
+        server_process = null
+      }
+    }
 
     const request = async (args: string, path: string) => {
       const curl_cmd = `curl ${args} --retry 5 --retry-connrefused http://localhost:3123`
@@ -56,6 +64,7 @@ describe('Create React App E2E Test', () => {
     }
 
     beforeEach(async () => {
+      await cancelServer()
       await shell(`rm -f fab.zip`, { cwd })
       await shell(`yarn build:fab`, { cwd })
 
@@ -74,7 +83,7 @@ describe('Create React App E2E Test', () => {
     })
 
     afterEach(async () => {
-      if (server_process) await server_process.cancel()
+      await cancelServer()
     })
   })
 })
