@@ -4,7 +4,7 @@ import path from 'path'
 import semver from 'semver'
 import execa from 'execa'
 
-import { BuildConfig, FabConfig } from '@fab/core'
+import { PluginConfig, FabConfig } from '@fab/core'
 
 import { FabInitError } from '../errors'
 import { log } from '../helpers'
@@ -17,7 +17,7 @@ enum KnownFrameworkTypes {
 
 type FrameworkInfo = {
   name: string
-  plugins: BuildConfig
+  plugins: PluginConfig
   scripts: { [name: string]: string }
 }
 

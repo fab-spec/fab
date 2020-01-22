@@ -4,7 +4,7 @@ export interface PluginArgs {
   [arg_name: string]: any
 }
 
-export interface BuildConfig {
+export interface PluginConfig {
   [plugin_name: string]: PluginArgs
 }
 
@@ -18,11 +18,12 @@ export type DeployConfig = {
 }
 
 export interface FabConfig {
-  plugins: BuildConfig
+  plugins: PluginConfig
   settings?: {
     [env_name: string]: FabSettings
   }
   deploy?: DeployConfig
+  rollup_plugins?: PluginConfig
 }
 
 export interface PluginMetadataContent {
