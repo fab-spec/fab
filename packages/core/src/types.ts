@@ -23,7 +23,6 @@ export interface FabConfig {
     [env_name: string]: FabSettings
   }
   deploy?: DeployConfig
-  rollup_plugins?: PluginConfig
 }
 
 export interface PluginMetadataContent {

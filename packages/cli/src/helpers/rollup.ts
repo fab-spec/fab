@@ -20,42 +20,17 @@ export default class Rollup {
 
   constructor(config: FabConfig) {
     this.config = config
-    if (this.config.rollup_plugins) {
-      for (const [rollup_plugin_name, plugin_args] of Object.entries(
-        this.config.rollup_plugins
-      )) {
-        const rollup_plugin = this.loadPlugin(rollup_plugin_name)
-        /* Loading the plugin would go here. It's easy enough, but do we want
-         * to expose this kind of control? */
-      }
-    }
-  }
-
-  private loadPlugin(rollup_plugin_name: string) {
-    // When using `fab build` globally, search the local project's node_modules too.
-    // There's probably a better way to do this but I don't know it.
-    const paths = [`${process.cwd()}/node_modules`, ...(require.resolve.paths('') || [])]
-    try {
-      return require(require.resolve(rollup_plugin_name, { paths }))
-    } catch (e) {
-      throw new BuildFailedError(
-        `FAB Config references Rollup plugin '${rollup_plugin_name}'. Are you sure it's installed?\nRollup reported the following:\n  ${
-          e.toString().split('\n')[0]
-        }`
-      )
-    }
   }
 
   async compileAndRequire(path: string) {
     try {
       const contents = await fs.readFile(path, 'utf8')
       // console.log({contents})
-      const no_exports = contents.replace(/^.*?\(/, '(')
-      // console.log({no_exports})
-      const src = `
-        export const { build, runtime } = ${no_exports}
-      `
-      console.log(src)
+      const src = contents.replace(
+        /^\s*module.exports =/,
+        'export const { build, runtime } ='
+      )
+      console.log({ src })
       const { output } = await this.compile('./entry-module', {
         generate: { format: 'cjs', exports: 'named' },
         hypotheticals: {

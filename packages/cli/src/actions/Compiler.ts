@@ -17,9 +17,9 @@ export class Compiler {
       'fab-metadata': generateFabMetadataJs(proto_fab),
     }
 
-    render_plugins.forEach((plugin) => {
-      hypotheticals[plugin.path] = plugin.src
-    })
+    // render_plugins.forEach((plugin) => {
+    //   hypotheticals[plugin.path] = plugin.src
+    // })
 
     const { output, warnings } = await rollup.compile(
       require.resolve('@fab/cli/lib/runtime'),
