@@ -73,14 +73,12 @@ export default class Builder {
 
       console.log('For @fab/something/runtime, expect it to be rollup-able.')
       if (path_slash_require) {
-        const { module: module_slash_require, src } = await rollup.compileAndRequire(
-          path_slash_require
-        )
+        const module_slash_require = await rollup.compileAndRequire(path_slash_require)
         console.log(
           'By nodeEval-ing the rolled-up code, and getting a `runtime` function, we good.'
         )
         if (typeof module_slash_require.runtime === 'function') {
-          runtime_plugin = { path: path_slash_require, src }
+          runtime_plugin = path_slash_require
         } else {
           console.log(
             "_Technically_, if this exports nothing we can still look elsewhere, but it's weird"
