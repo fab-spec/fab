@@ -5,9 +5,8 @@ import json from '@rollup/plugin-json'
 import typescript from '@rollup/plugin-typescript'
 import builtins from 'rollup-plugin-node-builtins'
 import globals from 'rollup-plugin-node-globals'
+import fs from 'fs-extra'
 
-// @ts-ignore
-import alias from '@rollup/plugin-alias'
 // @ts-ignore
 import hypothetical from 'rollup-plugin-hypothetical'
 import { FabConfig } from '@fab/core'
@@ -49,10 +48,24 @@ export default class Rollup {
 
   async compileAndRequire(path: string) {
     try {
-      const { output } = await this.compile(path, {
+      const contents = await fs.readFile(path, 'utf8')
+      // console.log({contents})
+      const no_exports = contents.replace(/^.*?\(/, '(')
+      // console.log({no_exports})
+      const src = `
+        export const { build, runtime } = ${no_exports}
+      `
+      console.log(src)
+      const { output } = await this.compile('./entry-module', {
         generate: { format: 'cjs', exports: 'named' },
+        hypotheticals: {
+          './entry-module': src,
+        },
       })
-      return nodeEval(output, 'my-filename-is-um.js')
+      return {
+        src,
+        module: nodeEval(output),
+      }
     } catch (rollup_e) {
       throw new BuildFailedError(
         `Rollup build failed for plugin ${path}. Rollup reported the following:\n  ${rollup_e}`

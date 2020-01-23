@@ -2,19 +2,30 @@ import { ProtoFab } from '@fab/core'
 import { log } from '../helpers'
 import { BuildFailedError } from '../errors'
 import Rollup from '../helpers/rollup'
+import { RuntimePlugin } from '../types'
 
 export class Compiler {
-  static async compile(proto_fab: ProtoFab, render_plugins: string[], rollup: Rollup) {
+  static async compile(
+    proto_fab: ProtoFab,
+    render_plugins: RuntimePlugin[],
+    rollup: Rollup
+  ) {
     console.log("It's compilin' time!")
+
+    const hypotheticals: { [key: string]: string } = {
+      'user-defined-pipeline': generatePipelineJs(render_plugins),
+      'fab-metadata': generateFabMetadataJs(proto_fab),
+    }
+
+    render_plugins.forEach((plugin) => {
+      hypotheticals[plugin.path] = plugin.src
+    })
 
     const { output, warnings } = await rollup.compile(
       require.resolve('@fab/cli/lib/runtime'),
       {
         generate: { format: 'iife', exports: 'named' },
-        hypotheticals: {
-          'user-defined-pipeline': generatePipelineJs(render_plugins),
-          'fab-metadata': generateFabMetadataJs(proto_fab),
-        },
+        hypotheticals,
       }
     )
 
@@ -29,10 +40,10 @@ export class Compiler {
   }
 }
 
-function generatePipelineJs(plugin_runtimes: string[]) {
+function generatePipelineJs(plugin_runtimes: RuntimePlugin[]) {
   return `
     ${plugin_runtimes
-      .map((plugin, i) => `import { runtime as runtime_${i} } from '${plugin}'`)
+      .map((plugin, i) => `import { runtime as runtime_${i} } from '${plugin.path}'`)
       .join('\n')}
 
     export const runtimes = [

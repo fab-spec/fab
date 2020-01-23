@@ -40,7 +40,6 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
-    "@rollup/plugin-alias": "^2.2.0",
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^6.0.0",
     "@rollup/plugin-typescript": "^2.1.0",
