@@ -14,6 +14,14 @@ const safeResolve = (path: string) => {
   }
 }
 
+const safeRequire = (path: string) => {
+  try {
+    return require(path)
+  } catch (e) {
+    return null
+  }
+}
+
 type BuildPlugin = {
   plugin_name: string
   builder: FabBuildStep
@@ -72,41 +80,69 @@ export default class Builder {
             )
       }
 
+      // For @fab/something/runtime, expect it to be rollup-able.
       if (path_slash_require) {
         const module_slash_require = await rollup.compileAndRequire(path_slash_require)
-        console.log(module_slash_require)
-        console.log(module_slash_require.runtime)
-        console.log(typeof module_slash_require.runtime)
+        // By nodeEval-ing the rolled-up code, and getting a `runtime` function, we good.
         if (typeof module_slash_require.runtime === 'function') {
           runtime_plugin = path_slash_require
         } else {
+          // _Technically_, if this exports nothing we can still look elsewhere, but it's weird
           log.warn(
             `Requiring '${relative_slash_require}' didn't export a 'runtime' function, but the filename indicates it probably should. Falling back to '${plugin_path}'`
           )
         }
       }
 
+      // This needs to handle files and modules that export `build`, `runtime`, or both.
       if (plugin_path) {
-        const module = (await rollup.compileAndRequire(plugin_path)) || {}
-        console.log(module)
-        console.log(module.runtime)
-        console.log(typeof module.runtime)
-
-        if (typeof module.build === 'function') {
-          build_plugin = {
-            plugin_name,
-            builder: module.build,
-            plugin_args,
+        // First question, can Node require it directly?
+        const node_require = safeRequire(plugin_path)
+        if (node_require) {
+          if (typeof node_require.runtime === 'function') {
+            // If so, and it exports a runtime function, make sure Rollup is ok with it
+            // (since that's what's about to compile it into the FAB)
+            if (runtime_plugin) {
+              // Unless, of course, we already loaded it from /runtime.
+              log.warn(
+                `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
+              )
+            } else {
+              await rollup.compileAndRequire(plugin_path)
+              runtime_plugin = plugin_path
+            }
           }
-        }
-        if (typeof module.runtime === 'function') {
-          console.log('GOT RUNTIME')
-          if (runtime_plugin) {
-            log.warn(
-              `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
-            )
+
+          // Given that we have a ridgy didge node module, chances are it exports `build`
+          if (typeof node_require.build === 'function') {
+            build_plugin = {
+              plugin_name,
+              builder: node_require.build,
+              plugin_args,
+            }
           } else {
-            runtime_plugin = plugin_path
+            // Ok, so node can't require this, but it does exist. It must be rollup-able.
+            const module = await rollup.compileAndRequire(plugin_path)
+
+            // After all this, anything it exports, we'll take.
+            if (typeof module.build === 'function') {
+              build_plugin = {
+                plugin_name,
+                builder: module.build,
+                plugin_args,
+              }
+            }
+
+            if (typeof module.runtime === 'function') {
+              // Again, unless we already have one
+              if (runtime_plugin) {
+                log.warn(
+                  `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
+                )
+              } else {
+                runtime_plugin = plugin_path
+              }
+            }
           }
         }
       }
