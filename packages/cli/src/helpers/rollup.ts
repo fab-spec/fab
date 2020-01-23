@@ -52,7 +52,7 @@ export default class Rollup {
       const { output } = await this.compile(path, {
         generate: { format: 'cjs', exports: 'named' },
       })
-      return nodeEval(output)
+      return nodeEval(output, 'my-filename-is-um.js')
     } catch (rollup_e) {
       throw new BuildFailedError(
         `Rollup build failed for plugin ${path}. Rollup reported the following:\n  ${rollup_e}`
@@ -86,9 +86,9 @@ export default class Rollup {
           files: hypotheticals,
           allowFallthrough: true,
         }),
-        // resolve({
-        //   preferBuiltins: true,
-        // }),
+        resolve({
+          preferBuiltins: true,
+        }),
         globals(),
         builtins(),
         commonjs({

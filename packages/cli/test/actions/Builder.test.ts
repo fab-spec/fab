@@ -3,16 +3,15 @@ import Builder from '../../src/actions/Builder'
 import JSON5Config from '../../src/helpers/JSON5Config'
 import path from 'path'
 import { captureStdout } from '../helpers'
+import Rollup from '../../src/helpers/rollup'
 
 describe('Builder', () => {
   it('should find the local plugin', async () => {
     const no_runtime_config = `${__dirname}/../fixtures/fab.local-plugins.json5`
 
+    const config = (await JSON5Config.readFrom(no_runtime_config)).data
     const { stdout, result } = await captureStdout(async () =>
-      Builder.getPlugins(
-        no_runtime_config,
-        (await JSON5Config.readFrom(no_runtime_config)).data
-      )
+      Builder.getPlugins(no_runtime_config, config, new Rollup(config))
     )
 
     const { build_plugins, runtime_plugins } = result

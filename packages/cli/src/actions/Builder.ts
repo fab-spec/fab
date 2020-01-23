@@ -120,28 +120,28 @@ export default class Builder {
               builder: node_require.build,
               plugin_args,
             }
-          } else {
-            // Ok, so node can't require this, but it does exist. It must be rollup-able.
-            const module = await rollup.compileAndRequire(plugin_path)
+          }
+        } else {
+          // Ok, so node can't require this, but it does exist. It must be rollup-able.
+          const module = await rollup.compileAndRequire(plugin_path)
 
-            // After all this, anything it exports, we'll take.
-            if (typeof module.build === 'function') {
-              build_plugin = {
-                plugin_name,
-                builder: module.build,
-                plugin_args,
-              }
+          // After all this, anything it exports, we'll take.
+          if (typeof module.build === 'function') {
+            build_plugin = {
+              plugin_name,
+              builder: module.build,
+              plugin_args,
             }
+          }
 
-            if (typeof module.runtime === 'function') {
-              // Again, unless we already have one
-              if (runtime_plugin) {
-                log.warn(
-                  `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
-                )
-              } else {
-                runtime_plugin = plugin_path
-              }
+          if (typeof module.runtime === 'function') {
+            // Again, unless we already have one
+            if (runtime_plugin) {
+              log.warn(
+                `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
+              )
+            } else {
+              runtime_plugin = plugin_path
             }
           }
         }
