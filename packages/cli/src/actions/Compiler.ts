@@ -2,9 +2,14 @@ import { ProtoFab } from '@fab/core'
 import { log } from '../helpers'
 import { BuildFailedError } from '../errors'
 import Rollup from '../helpers/rollup'
+import { RuntimePlugin } from '../types'
 
 export class Compiler {
-  static async compile(proto_fab: ProtoFab, render_plugins: string[], rollup: Rollup) {
+  static async compile(
+    proto_fab: ProtoFab,
+    render_plugins: RuntimePlugin[],
+    rollup: Rollup
+  ) {
     console.log("It's compilin' time!")
 
     const { output, warnings } = await rollup.compile(
@@ -29,10 +34,10 @@ export class Compiler {
   }
 }
 
-function generatePipelineJs(plugin_runtimes: string[]) {
+function generatePipelineJs(plugin_runtimes: RuntimePlugin[]) {
   return `
     ${plugin_runtimes
-      .map((plugin, i) => `import { runtime as runtime_${i} } from '${plugin}'`)
+      .map((plugin, i) => `import { runtime as runtime_${i} } from '${plugin.path}'`)
       .join('\n')}
 
     export const runtimes = [

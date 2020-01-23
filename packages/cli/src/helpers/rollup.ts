@@ -37,7 +37,10 @@ export default class Rollup {
           './entry-module': src,
         },
       })
-      return nodeEval(output, 'some-file.ts')
+      return {
+        src,
+        module: nodeEval(output),
+      }
     } catch (rollup_e) {
       throw new BuildFailedError(
         `Rollup build failed for plugin ${path}. Rollup reported the following:\n  ${rollup_e}`

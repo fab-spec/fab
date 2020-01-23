@@ -11,5 +11,5 @@ export type BuildPlugin = {
 }
 export type Plugins = {
   build_plugins: BuildPlugin[]
-  runtime_plugins: string[]
+  runtime_plugins: RuntimePlugin[]
 }

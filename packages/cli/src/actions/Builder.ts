@@ -48,7 +48,7 @@ export default class Builder {
     rollup: Rollup
   ): Promise<Plugins> {
     const build_plugins: BuildPlugin[] = []
-    const runtime_plugins: string[] = []
+    const runtime_plugins: RuntimePlugin[] = []
 
     for (const [plugin_name, plugin_args] of Object.entries(config.plugins)) {
       const is_relative = isRelative(plugin_name)
@@ -73,12 +73,14 @@ export default class Builder {
 
       console.log('For @fab/something/runtime, expect it to be rollup-able.')
       if (path_slash_require) {
-        const module_slash_require = await rollup.compileAndRequire(path_slash_require)
+        const { module: module_slash_require, src } = await rollup.compileAndRequire(
+          path_slash_require
+        )
         console.log(
           'By nodeEval-ing the rolled-up code, and getting a `runtime` function, we good.'
         )
         if (typeof module_slash_require.runtime === 'function') {
-          runtime_plugin = path_slash_require
+          runtime_plugin = { path: path_slash_require, src }
         } else {
           console.log(
             "_Technically_, if this exports nothing we can still look elsewhere, but it's weird"
@@ -103,8 +105,8 @@ export default class Builder {
                 `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
               )
             } else {
-              await rollup.compileAndRequire(plugin_path)
-              runtime_plugin = plugin_path
+              const { src } = await rollup.compileAndRequire(plugin_path)
+              runtime_plugin = { path: plugin_path, src }
             }
           }
 
@@ -117,8 +119,8 @@ export default class Builder {
             }
           }
         } else {
+          const { module, src } = await rollup.compileAndRequire(plugin_path)
           // Ok, so node can't require this, but it does exist. It must be rollup-able.
-          const module = await rollup.compileAndRequire(plugin_path)
 
           // After all this, anything it exports, we'll take.
           if (typeof module.build === 'function') {
@@ -136,7 +138,7 @@ export default class Builder {
                 `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
               )
             } else {
-              runtime_plugin = plugin_path
+              runtime_plugin = { path: plugin_path, src }
             }
           }
         }
