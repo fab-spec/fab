@@ -30,7 +30,7 @@ export default class Rollup {
         /^\s*module.exports =/,
         'export const { build, runtime } ='
       )
-      console.log({ src })
+      // console.log({ src })
       const { output } = await this.compile(path, {
         generate: { format: 'cjs', exports: 'named' },
         hypotheticals: {
@@ -99,11 +99,11 @@ export default class Rollup {
       console.log(chunks)
     }
 
-    console.log('#### INPUT ####')
-    console.log(input)
-    console.log('#### OUTPUT ####')
-    console.log(output.code)
-    console.log('\n\n')
+    // console.log('#### INPUT ####')
+    // console.log(input)
+    // console.log('#### OUTPUT ####')
+    // console.log(output.code)
+    // console.log('\n\n')
     return { warnings, output: output.code }
   }
 }

@@ -37,7 +37,7 @@ export default class Builder {
       console.log(`Building ${plugin_name}:`)
       await builder(plugin_args, proto_fab)
     }
-    console.log([runtime_plugins])
+    console.log({ RUNTIME_PLUGINS: runtime_plugins.map((p) => p.path) })
     await Compiler.compile(proto_fab, runtime_plugins, rollup)
     await Generator.generate(proto_fab)
   }
@@ -71,20 +71,16 @@ export default class Builder {
             )
       }
 
-      console.log('For @fab/something/runtime, expect it to be rollup-able.')
+      // For @fab/something/runtime, expect it to be rollup-able.
       if (path_slash_require) {
         const { module: module_slash_require, src } = await rollup.compileAndRequire(
           path_slash_require
         )
-        console.log(
-          'By nodeEval-ing the rolled-up code, and getting a `runtime` function, we good.'
-        )
+        // 'By nodeEval-ing the rolled-up code, and getting a `runtime` function, we good.'
         if (typeof module_slash_require.runtime === 'function') {
           runtime_plugin = { path: path_slash_require, src }
         } else {
-          console.log(
-            "_Technically_, if this exports nothing we can still look elsewhere, but it's weird"
-          )
+          //  "_Technically_, if this exports nothing we can still look elsewhere, but it's weird"
           log.warn(
             `Requiring '${relative_slash_require}' didn't export a 'runtime' function, but the filename indicates it probably should. Falling back to '${plugin_path}'`
           )
