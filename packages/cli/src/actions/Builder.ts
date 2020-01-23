@@ -48,7 +48,7 @@ export default class Builder {
     rollup: Rollup
   ): Promise<Plugins> {
     const build_plugins: BuildPlugin[] = []
-    const runtime_plugins: RuntimePlugin[] = []
+    const runtime_plugins: string[] = []
 
     for (const [plugin_name, plugin_args] of Object.entries(config.plugins)) {
       const is_relative = isRelative(plugin_name)
@@ -105,8 +105,8 @@ export default class Builder {
                 `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
               )
             } else {
-              const { src } = await rollup.compileAndRequire(plugin_path)
-              runtime_plugin = { path: plugin_path, src }
+              await rollup.compileAndRequire(plugin_path)
+              runtime_plugin = plugin_path
             }
           }
 
@@ -119,8 +119,8 @@ export default class Builder {
             }
           }
         } else {
-          const { module, src } = await rollup.compileAndRequire(plugin_path)
           // Ok, so node can't require this, but it does exist. It must be rollup-able.
+          const module = await rollup.compileAndRequire(plugin_path)
 
           // After all this, anything it exports, we'll take.
           if (typeof module.build === 'function') {
@@ -138,7 +138,7 @@ export default class Builder {
                 `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
               )
             } else {
-              runtime_plugin = { path: plugin_path, src }
+              runtime_plugin = plugin_path
             }
           }
         }

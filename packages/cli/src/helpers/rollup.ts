@@ -31,16 +31,13 @@ export default class Rollup {
         'export const { build, runtime } ='
       )
       console.log({ src })
-      const { output } = await this.compile('./entry-module', {
+      const { output } = await this.compile(path, {
         generate: { format: 'cjs', exports: 'named' },
         hypotheticals: {
           './entry-module': src,
         },
       })
-      return {
-        src,
-        module: nodeEval(output),
-      }
+      return nodeEval(output, 'some-file.ts')
     } catch (rollup_e) {
       throw new BuildFailedError(
         `Rollup build failed for plugin ${path}. Rollup reported the following:\n  ${rollup_e}`
