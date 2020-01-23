@@ -23,6 +23,14 @@ export default class Rollup {
   }
 
   async compileAndRequire(path: string) {
+    const { src, output } = await this.safeCompile(path)
+    return {
+      src,
+      module: nodeEval(output),
+    }
+  }
+
+  async safeCompile(path: string) {
     try {
       const contents = await fs.readFile(path, 'utf8')
       // console.log({contents})
@@ -39,7 +47,7 @@ export default class Rollup {
       })
       return {
         src,
-        module: nodeEval(output),
+        output,
       }
     } catch (rollup_e) {
       throw new BuildFailedError(
