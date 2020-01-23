@@ -73,7 +73,7 @@ export default class Builder {
       }
 
       if (path_slash_require) {
-        const module_slash_require = await rollup.safeRequire(path_slash_require)
+        const module_slash_require = await rollup.compileAndRequire(path_slash_require)
         console.log(module_slash_require)
         console.log(module_slash_require.runtime)
         console.log(typeof module_slash_require.runtime)
@@ -87,7 +87,7 @@ export default class Builder {
       }
 
       if (plugin_path) {
-        const module = (await rollup.safeRequire(plugin_path)) || {}
+        const module = (await rollup.compileAndRequire(plugin_path)) || {}
         console.log(module)
         console.log(module.runtime)
         console.log(typeof module.runtime)

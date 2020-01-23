@@ -3,6 +3,8 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import json from '@rollup/plugin-json'
 import typescript from '@rollup/plugin-typescript'
+import builtins from 'rollup-plugin-node-builtins'
+import globals from 'rollup-plugin-node-globals'
 
 // @ts-ignore
 import alias from '@rollup/plugin-alias'
@@ -24,6 +26,8 @@ export default class Rollup {
         this.config.rollup_plugins
       )) {
         const rollup_plugin = this.loadPlugin(rollup_plugin_name)
+        /* Loading the plugin would go here. It's easy enough, but do we want
+         * to expose this kind of control? */
       }
     }
   }
@@ -43,21 +47,39 @@ export default class Rollup {
     }
   }
 
-  async safeRequire(path: string) {
-    try {
-      return require(path)
-    } catch (e) {
+  async compileAndRequire(path: string, try_node_require_first: boolean = false) {
+    if (try_node_require_first) {
       try {
-        const { output } = await this.compile(path, {
-          generate: { format: 'cjs', exports: 'named' },
-        })
-        return nodeEval(output)
-      } catch (e) {
-        throw new BuildFailedError(
-          `Rollup build failed for plugin ${path}. Rollup reported the following:\n  ${e}`
-        )
+        return require(path)
+      } catch (node_e) {
+        try {
+          return await this.generate(path)
+        } catch (rollup_e) {
+          throw new BuildFailedError(
+            `Rollup build failed for plugin ${path}. Rollup reported the following:\n  ${rollup_e}`
+          )
+        }
+      }
+    } else {
+      try {
+        return await this.generate(path)
+      } catch (rollup_e) {
+        try {
+          return require(path)
+        } catch (node_e) {
+          throw new BuildFailedError(
+            `Rollup build failed for plugin ${path}. Rollup reported the following:\n  ${rollup_e}`
+          )
+        }
       }
     }
+  }
+
+  private async generate(path: string) {
+    const { output } = await this.compile(path, {
+      generate: { format: 'cjs', exports: 'named' },
+    })
+    return nodeEval(output)
   }
 
   async compile(
@@ -86,10 +108,14 @@ export default class Rollup {
           files: hypotheticals,
           allowFallthrough: true,
         }),
-        resolve({
-          preferBuiltins: true,
+        // resolve({
+        //   preferBuiltins: true,
+        // }),
+        globals(),
+        builtins(),
+        commonjs({
+          include: /fab-server/,
         }),
-        commonjs(),
         typescript(),
         json(),
       ],
@@ -114,6 +140,11 @@ export default class Rollup {
       console.log(chunks)
     }
 
+    console.log('#### INPUT ####')
+    console.log(input)
+    console.log('#### OUTPUT ####')
+    console.log(output.code)
+    console.log('\n\n')
     return { warnings, output: output.code }
   }
 }
