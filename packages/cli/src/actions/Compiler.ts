@@ -12,14 +12,20 @@ export class Compiler {
   ) {
     console.log("It's compilin' time!")
 
+    const hypotheticals: { [key: string]: string } = {
+      'user-defined-pipeline': generatePipelineJs(render_plugins),
+      'fab-metadata': generateFabMetadataJs(proto_fab),
+    }
+
+    render_plugins.forEach((plugin) => {
+      hypotheticals[plugin.path] = plugin.src
+    })
+
     const { output, warnings } = await rollup.compile(
       require.resolve('@fab/cli/lib/runtime'),
       {
         generate: { format: 'iife', exports: 'named' },
-        hypotheticals: {
-          'user-defined-pipeline': generatePipelineJs(render_plugins),
-          'fab-metadata': generateFabMetadataJs(proto_fab),
-        },
+        hypotheticals,
       }
     )
 
