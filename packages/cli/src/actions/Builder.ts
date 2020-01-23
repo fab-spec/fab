@@ -91,20 +91,16 @@ export default class Builder {
         }
       }
 
-      console.log(
-        'This needs to handle files and modules that export `build`, `runtime`, or both.'
-      )
+      // This needs to handle files and modules that export `build`, `runtime`, or both.
       if (plugin_path) {
-        console.log('First question, can Node require it directly?')
+        // First question, can Node require it directly?
         const node_require = safeRequire(plugin_path)
         if (node_require) {
           if (typeof node_require.runtime === 'function') {
-            console.log(
-              'If so, and it exports a runtime function, make sure Rollup is ok with it'
-            )
-            console.log("(since that's what's about to compile it into the FAB)")
+            // If so, and it exports a runtime function, make sure Rollup is ok with it
+            // (since that's what's about to compile it into the FAB)
             if (runtime_plugin) {
-              console.log('Unless, of course, we already loaded it from /runtime.')
+              // Unless, of course, we already loaded it from /runtime.
               log.warn(
                 `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
               )
@@ -114,9 +110,7 @@ export default class Builder {
             }
           }
 
-          console.log(
-            'Given that we have a ridgy didge node module, chances are it exports `build`'
-          )
+          // Given that we have a ridgy didge node module, chances are it exports `build`
           if (typeof node_require.build === 'function') {
             build_plugin = {
               plugin_name,
@@ -125,12 +119,10 @@ export default class Builder {
             }
           }
         } else {
-          console.log(
-            "Ok, so node can't require this, but it does exist. It must be rollup-able."
-          )
           const { module, src } = await rollup.compileAndRequire(plugin_path)
+          // Ok, so node can't require this, but it does exist. It must be rollup-able.
 
-          console.log("After all this, anything it exports, we'll take.")
+          // After all this, anything it exports, we'll take.
           if (typeof module.build === 'function') {
             build_plugin = {
               plugin_name,
@@ -140,7 +132,7 @@ export default class Builder {
           }
 
           if (typeof module.runtime === 'function') {
-            console.log('Again, unless we already have one')
+            // Again, unless we already have one
             if (runtime_plugin) {
               log.warn(
                 `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
