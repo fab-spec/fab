@@ -77,11 +77,6 @@ export default class Rollup {
     const bundle = await rollup({
       input,
       plugins: [
-        alias({
-          entries: {
-            path: require.resolve('path-browserify'),
-          },
-        }),
         hypothetical({
           files: hypotheticals,
           allowFallthrough: true,
@@ -91,9 +86,7 @@ export default class Rollup {
         }),
         globals(),
         builtins(),
-        commonjs({
-          include: /fab-server/,
-        }),
+        commonjs(),
         typescript(),
         json(),
       ],

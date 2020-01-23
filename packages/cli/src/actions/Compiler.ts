@@ -10,7 +10,7 @@ export class Compiler {
     const { output, warnings } = await rollup.compile(
       require.resolve('@fab/cli/lib/runtime'),
       {
-        generate: { format: 'cjs', exports: 'named' },
+        generate: { format: 'iife', exports: 'named' },
         hypotheticals: {
           'user-defined-pipeline': generatePipelineJs(render_plugins),
           'fab-metadata': generateFabMetadataJs(proto_fab),
