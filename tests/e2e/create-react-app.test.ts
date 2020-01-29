@@ -77,6 +77,11 @@ describe('Create React App E2E Test', () => {
       expect(files_after_fab_build).toMatch('fab.zip')
 
       server_process = cmd('yarn fab:serve', { cwd })
+      // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)
+      await Promise.race([
+        server_process,
+        new Promise((resolve) => setTimeout(resolve, 1000)),
+      ])
     }
 
     const request = async (args: string, path: string) => {
