@@ -3,7 +3,7 @@ import * as fs from 'fs-extra'
 import { shell, cmd } from '../utils'
 import * as execa from 'execa'
 import { ExecaChildProcess } from 'execa'
-import JSON5Config from '@fab/cli/src/helpers/JSON5Config'
+import JSON5Config from '@fab/cli/lib/helpers/JSON5Config'
 
 describe('Create React App E2E Test', () => {
   let tmpdir: string
