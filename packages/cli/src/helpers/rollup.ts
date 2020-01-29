@@ -24,9 +24,19 @@ export default class Rollup {
 
   async compileAndRequire(path: string) {
     const { src, output } = await this.safeCompile(path)
-    return {
-      src,
-      module: nodeEval(output),
+    try {
+      return {
+        src,
+        module: nodeEval(output),
+      }
+    } catch (e) {
+      log.error(`Couldn't node-eval ${path}!`)
+      log.error(
+        `Writing out before/after to fab-build-rollup-input.js & fab-build-node-eval-error.js`
+      )
+      await fs.writeFile('./fab-build-rollup-input.js', src)
+      await fs.writeFile('./fab-build-node-eval-error.js', output)
+      throw e
     }
   }
 
@@ -80,7 +90,6 @@ export default class Rollup {
         resolve({
           preferBuiltins: true,
         }),
-        globals(),
         builtins(),
         commonjs(),
         typescript(),
