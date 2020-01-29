@@ -1,10 +1,8 @@
 import { ServeHtmlArgs, ServeHtmlMetadata, ServerHtml } from './types'
-import { FabPluginRuntime } from '@fab/core'
+import { FabPluginRuntime, matchPath, FabRequestContext, FabSettings } from '@fab/core'
 import mustache from 'mustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
-import { matchPath } from '@fab/core/esm/runtime'
-import { FabRequestContext, FabSettings } from '@fab/core/src'
 
 // Todo: this should be part of the context.
 // Maybe it should be optional though, with this as the fallback.

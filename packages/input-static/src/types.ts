@@ -1,4 +1,4 @@
-import { PluginArgs, PluginMetadata } from '@fab/core/src'
+import { PluginArgs, PluginMetadata } from '@fab/core'
 
 export interface InputStaticArgs extends PluginArgs {
   dir: string

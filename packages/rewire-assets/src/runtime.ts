@@ -1,6 +1,5 @@
 import { RewireAssetsArgs, RewireAssetsMetadata } from './types'
-import { FabPluginRuntime } from '@fab/core'
-import { getCacheHeaders, matchPath } from '@fab/core/esm/runtime'
+import { FabPluginRuntime, getCacheHeaders, matchPath } from '@fab/core'
 
 export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> = (
   args: RewireAssetsArgs,

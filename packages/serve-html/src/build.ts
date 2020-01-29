@@ -1,4 +1,4 @@
-import { ProtoFab } from '@fab/core/src'
+import { ProtoFab } from '@fab/core'
 import { ServeHtmlArgs, ServeHtmlMetadata, ServerHtmls } from './types'
 import cheerio from 'cheerio'
 import mustache from 'mustache'
