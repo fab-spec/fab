@@ -30,6 +30,11 @@ describe('Create React App E2E Test', () => {
     await cancelServer()
   })
 
+  afterAll(async () => {
+    console.log('AFTER ALL')
+    await cancelServer()
+  })
+
   it('should allow creation of a new CRA project in a tmp dir', async () => {
     if (process.env.FAB_E2E_CRA_DIR) {
       cwd = process.env.FAB_E2E_CRA_DIR
