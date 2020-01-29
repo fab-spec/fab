@@ -1,0 +1,33 @@
+---
+name: 'Plugin Runtime Responders'
+route: '/kb/plugin-runtime-responders'
+menu: Knowledge Base
+---
+
+Most of the time, if you're looking into customising the server-side functionality of a FAB, you want to introduce a file with a `runtime` function that sets up a `Responder`. The simple case looks like this:
+
+```js
+export function runtime(args, metadata) {
+  return async function responder(request_context) {
+    return new Response('HI', {
+      status: 200,
+    })
+  }
+}
+```
+
+The `runtime` function is synchronous, and receives two parameters:
+
+* Any `args`, passed in from the `fab.config.json5`. Given the following config:
+
+```
+{
+  plugins: {
+    './src/fab-server.js': {
+      some: 'argument'
+    }
+  }
+}
+```
+
+the `args` argument to `render` would be `{"some": "argument"}`. Normal [value conversion](/kb/)

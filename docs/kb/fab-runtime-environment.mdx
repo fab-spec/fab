@@ -1,0 +1,33 @@
+---
+name: 'Runtime Environment'
+route: '/kb/fab-runtime-environment'
+menu: Knowledge Base
+---
+
+# FAB Runtime Environment
+
+When a FAB is being executed, it is running in a `V8::Isolate` container, with the following global variables:
+
+```js
+{
+  fetch: fetch,
+  Request: fetch.Request,
+  Response: fetch.Response,
+  Headers: fetch.Headers,
+  URL: URL,
+  console: {
+    log: console.log,
+    error: console.error,
+  },
+  NODE_ENV: 'server',
+  process: {
+    env: {
+      NODE_ENV: 'server',
+    },
+  },
+  setTimeout,
+  setImmediate,
+  clearTimeout,
+}
+```
+
