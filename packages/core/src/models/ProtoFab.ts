@@ -1,4 +1,3 @@
-import { filenameOutsideFabLocations, getContentType } from '../helpers'
 import {
   FabFileMetadata,
   FabFiles,
@@ -6,6 +5,7 @@ import {
   FabMetadata,
   PluginMetadata,
 } from '../types'
+import { filenameOutsideFabLocations, getContentType } from '../runtime'
 
 export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   files: FabFiles
