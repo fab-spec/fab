@@ -3,6 +3,7 @@ import * as fs from 'fs-extra'
 import { shell, cmd } from '../utils'
 import * as execa from 'execa'
 import { ExecaChildProcess } from 'execa'
+import JSON5Config from '@fab/cli/src/helpers/JSON5Config'
 
 describe('Create React App E2E Test', () => {
   let tmpdir: string
@@ -45,15 +46,10 @@ describe('Create React App E2E Test', () => {
       'fab:serve': 'fab serve fab.zip --port=3123',
     }
     await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
+    await shell(`yarn build:fab`, { cwd })
 
-    // const { stdout: test_fab_output } = await cmd(`yarn test:fab`, { cwd })
-    //
-    // expect(test_fab_output).toMatch(
-    //   /^<!DOCTYPE html>.*<script>window.FAB_SETTINGS={.*"__fab_server":"@fab\/server"/
-    // )
-
-    // Add a runtime plugin that returns some response
-    // Then test for that response.
+    const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
+    expect(files_after_fab_build).toMatch('fab.zip')
   })
 
   describe('fab build tests', () => {
@@ -75,7 +71,7 @@ describe('Create React App E2E Test', () => {
     const createServer = async () => {
       cancelServer()
       await shell(`rm -f fab.zip`, { cwd })
-      await shell(`yarn build:fab`, { cwd })
+      await shell(`yarn fab:build`, { cwd })
 
       const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
       expect(files_after_fab_build).toMatch('fab.zip')
@@ -89,7 +85,7 @@ describe('Create React App E2E Test', () => {
       return stdout
     }
 
-    it('should return a 200 on /', async () => {
+    it('should return a 200 on / and /hello', async () => {
       await createServer()
       expect(await request('-I', '/')).toContain(`HTTP/1.1 200 OK`)
       expect(await request('-I', '/hello')).toContain(`HTTP/1.1 200 OK`)
@@ -103,7 +99,7 @@ describe('Create React App E2E Test', () => {
       expect(hello_response).toEqual(homepage_response)
     })
 
-    it('should return a 200 on /', async () => {
+    it('should allow a plugin to override /hello', async () => {
       await fs.ensureDir(`${cwd}/fab-plugins`)
       await fs.writeFile(
         `${cwd}/fab-plugins/hello-world.js`,
@@ -119,6 +115,10 @@ describe('Create React App E2E Test', () => {
           }
         }`
       )
+
+      const config = await JSON5Config.readFrom(`${cwd}/fab.config.json5`)
+      config.data.plugins['./fab-plugins/hello-world'] = {}
+      await config.write(`${cwd}/fab.config.json5`)
 
       await createServer()
       expect(await request('-I', '/')).toContain(`HTTP/1.1 200 OK`)
