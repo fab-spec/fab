@@ -16,11 +16,10 @@
     "lib",
     "esm",
     "src",
-    "runtime.js"
+    "runtime.js",
+    "build.js"
   ],
-  "main": "lib/build.js",
-  "module": "esm/build.js",
-  "types": "esm/build.d.ts",
+  "types": "esm/index.d.ts",
   "scripts": {
     "build": "yarn build:cjs && yarn build:esm",
     "build:cjs": "tsc --module commonjs --outDir lib",
