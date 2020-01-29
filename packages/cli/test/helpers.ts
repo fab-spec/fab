@@ -21,6 +21,7 @@ export async function captureStdout<T>(
 
     return { stdout: output, result }
   } catch (e) {
+    console.log('CAUGHT')
     capcon.stopCapture(process.stdout)
     console.log(output)
     console.log(e)

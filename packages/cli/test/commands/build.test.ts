@@ -63,7 +63,7 @@ describe('build', () => {
         `The plugin './plugins/no-existo' could not be found!`
       )
       expect(ctx.stdout).to.match(
-        /Looked for .*\/plugins\/no-existo\/runtime & .*\/plugins\/no-existo/
+        /Looked for .*\/plugins\/no-existo\/build, .*\/plugins\/no-existo\/runtime & .*\/plugins\/no-existo/
       )
     })
 })

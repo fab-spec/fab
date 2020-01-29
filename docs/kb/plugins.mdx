@@ -61,6 +61,8 @@ export const runtime = (args, metadata) => {
 
 Though you _can_ use a single file to export both a `build` and `runtime` export, for anything more sophisticated you're going to want to have separate files. This is because the two commands run at different times, in quite different environments. `build` is called by the CLI, so has access to the full NodeJS ecosystem of tools, and direct access to the filesystem. `runtime`, on the other hand, is **compiled into the FAB itself**. This means it, and its dependencies, _need to be compatible with the [FAB Runtime Environment](/kb/fab-runtime-environment)_, which is pure JS, no NodeJS at all.
 
+## Plugin resolution
+
 We handle (read: hide from the user) this complexity by allowing a single plugin entry to represent both, while keeping the files separate. For example, for a plugin config like:
 
 ```json5
@@ -123,7 +125,7 @@ interface MyPluginArgs extends PluginArgs {
   'from-config'?: string
 }
 
-export interface MyPluginMetadata extends PluginMetadata {
+interface MyPluginMetadata extends PluginMetadata {
   my_plugin_name: {
     my_metadata_object: {
       // Define what you want to pass from build to runtime
@@ -131,12 +133,12 @@ export interface MyPluginMetadata extends PluginMetadata {
   }
 }
 
-export const build: FabBuildStep = async (args: PluginArgs, proto_fab: ProtoFab) => {
+export const build: FabBuildStep = async (args: MyPluginArgs, proto_fab: ProtoFab<MyPluginMetadata>) => {
   // Make changes to proto_fab
 }
 
-export const runtime: FabPluginRuntime = (args: PluginArgs, metadata: PluginMetadata) => {
-  const { my_metadata_object } = metadata
+export const runtime: FabPluginRuntime = (args: MyPluginArgs, metadata: MyPluginMetadata) => {
+  const { my_metadata_object } = metadata.my_plugin_name
 
   return async ({
     request,
@@ -152,3 +154,11 @@ export const runtime: FabPluginRuntime = (args: PluginArgs, metadata: PluginMeta
   }
 }
 ```
+
+## Restrictions
+
+At the moment, the plugin loading system isn't as sophisticated as we'd like it to be. These issues track our progress towards each of them. If there's anything else you're interested in proposing [raise an issue](https://github.com/fab-spec/fab/issues/new).
+
+* [Plugins that use ES Modules or Typescript syntax can't be used for the `build` step](https://github.com/fab-spec/fab/issues/66)
+* [Typescript plugins aren't typechecked](https://github.com/fab-spec/fab/issues/65)
+* [Runtime plugins aren't checked for validity before being passed to the Compiler](https://github.com/fab-spec/fab/issues/67)

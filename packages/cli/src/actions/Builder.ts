@@ -2,7 +2,7 @@ import { FabBuildStep, FabConfig, PluginArgs, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { isRelative, relativeToConfig } from '../helpers/paths'
-import { InvalidConfigError } from '../errors'
+import { BuildFailedError, InvalidConfigError } from '../errors'
 import { log } from '../helpers'
 import { rollupCompile } from '../helpers/rollup'
 // @ts-ignore
@@ -20,15 +20,7 @@ const safeRequire = async (path: string) => {
   try {
     return require(path)
   } catch (e) {
-    try {
-      const {
-        output: [output, ...chunks],
-      } = await rollupCompile(path, { format: 'cjs', exports: 'named' })
-      // console.log(output.code)
-      return nodeEval(output.code)
-    } catch (e) {
-      return null
-    }
+    return null
   }
 }
 
@@ -63,58 +55,81 @@ export default class Builder {
     for (const [plugin_name, plugin_args] of Object.entries(config.plugins)) {
       const is_relative = isRelative(plugin_name)
       const relative_path = relativeToConfig(config_path, plugin_name)
-      const plugin_path = safeResolve(relative_path)
+      const relative_slash_build = relative_path + '/build'
       const relative_slash_require = relative_path + '/runtime'
+      const plugin_path = safeResolve(relative_path)
+      const path_slash_build = safeResolve(relative_slash_build)
       const path_slash_require = safeResolve(relative_slash_require)
+
       console.log({ is_relative, plugin_path, relative_path, path_slash_require })
 
       let runtime_plugin, build_plugin
 
-      if (!plugin_path && !path_slash_require) {
-        throw is_relative
-          ? new InvalidConfigError(
-              `The plugin '${plugin_name}' could not be found!\n` +
-                `Looked for ${relative_slash_require} & ${relative_path}`
-            )
-          : new InvalidConfigError(
-              `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
-            )
-      }
-
-      if (path_slash_require) {
-        const module_slash_require = await safeRequire(path_slash_require)
-        console.log(module_slash_require)
-        console.log(module_slash_require.runtime)
-        console.log(typeof module_slash_require.runtime)
-        if (typeof module_slash_require.runtime === 'function') {
-          runtime_plugin = path_slash_require
-        } else {
+      if (path_slash_build || path_slash_require) {
+        if (plugin_path) {
+          const found_paths = [path_slash_build, path_slash_require].filter((x) => x)
           log.warn(
-            `Requiring '${relative_slash_require}' didn't export a 'runtime' function, but the filename indicates it probably should. Falling back to '${plugin_path}'`
+            `For plugin '${plugin_name}', we found ${found_paths.join(
+              ' & '
+            )}, but also ${relative_path} resolved to ${plugin_path}.
+            This won't be used, as /build and /runtime resolutions take precedence.
+            See https://fab.dev/kb/plugins#plugin-resolution for more info.`
           )
         }
-      }
 
-      if (plugin_path) {
-        const module = await safeRequire(plugin_path)
-        console.log(module)
-        console.log(module.runtime)
-        console.log(typeof module.runtime)
+        if (path_slash_build) {
+          const module = await safeRequire(path_slash_build)
 
-        if (typeof module.build === 'function') {
-          build_plugin = {
-            plugin_name,
-            builder: module.build,
-            plugin_args,
-          }
-        }
-        if (typeof module.runtime === 'function') {
-          console.log('GOT RUNTIME')
-          if (runtime_plugin) {
-            log.warn(
-              `Plugin ${plugin_name} exports a 'runtime' function, but we've already loaded it from '${path_slash_require}'.`
+          if (!module) {
+            throw new BuildFailedError(
+              `Error occurred requiring ${path_slash_build}.
+              Maybe it's using syntax that NodeJS can't interpret?
+              See https://fab.dev/kb/plugins#restrictions for more info.`
+            )
+          } else if (typeof module.build !== 'function') {
+            throw new BuildFailedError(
+              `Module ${path_slash_build} didn't export a 'build' function!`
             )
           } else {
+            build_plugin = {
+              plugin_name,
+              builder: module.build,
+              plugin_args,
+            }
+          }
+        }
+
+        if (path_slash_require) {
+          runtime_plugin = path_slash_require
+        }
+      } else {
+        if (!plugin_path) {
+          throw is_relative
+            ? new InvalidConfigError(
+                `The plugin '${plugin_name}' could not be found!\n` +
+                  `Looked for ${relative_slash_build}, ${relative_slash_require} & ${relative_path}`
+              )
+            : new InvalidConfigError(
+                `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
+              )
+        }
+
+        const module = await safeRequire(plugin_path)
+
+        if (!module) {
+          // This can happen if the plugin is runtime-only and uses non-CJS syntax,
+          // so just pass it through as a runtime plugin.
+          // Relevant issue: https://github.com/fab-spec/fab/issues/67
+          runtime_plugin = plugin_path
+        } else {
+          if (typeof module.build === 'function') {
+            build_plugin = {
+              plugin_name,
+              builder: module.build,
+              plugin_args,
+            }
+          }
+          if (typeof module.runtime === 'function') {
             runtime_plugin = plugin_path
           }
         }
