@@ -63,7 +63,13 @@ export type FabRequestContext = {
 }
 export type FabRequestResponder = (
   context: FabRequestContext
-) => Promise<Response | undefined>
+) => Promise<Response | undefined | Directive>
+
+export type ResponseInterceptor = (response: Response) => Response
+
+export type Directive = {
+  interceptResponse?: ResponseInterceptor
+}
 
 export type FabFilesObject = { [k: string]: string }
 export type FabFiles = Map<string, string>

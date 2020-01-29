@@ -56,12 +56,16 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
       return render(html, settings)
     }
 
-    // return {
-    //   interceptResponse(response: Response) {
-    //     if (response.status === 404) {
-    //     }
-    //   },
-    // }
+    const fallback = matchPath(htmls, '/')
+
+    if (fallback) {
+      return {
+        interceptResponse(response: Response) {
+          return response.status === 404 ? render(fallback, settings) : response
+        },
+      }
+    }
+
     return undefined
   }
 }
