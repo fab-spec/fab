@@ -5,7 +5,7 @@ import {
   RewireAssetsArgs,
   RewireAssetsMetadata,
 } from './types'
-import { filenameOutsideFabLocations, getContentType } from '@fab/core'
+import { filenameOutsideFabLocations, getContentType } from '@fab/core/esm/runtime'
 import hasha from 'hasha'
 import path from 'path'
 import { InvalidConfigError } from '@fab/cli'
