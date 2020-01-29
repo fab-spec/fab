@@ -1,39 +1,13 @@
 import * as tmp from 'tmp-promise'
 import * as fs from 'fs-extra'
 import { shell, cmd } from '../utils'
+import * as execa from 'execa'
 import { ExecaChildProcess } from 'execa'
 import JSON5Config from '@fab/cli/lib/helpers/JSON5Config'
 
 describe('Create React App E2E Test', () => {
   let tmpdir: string
   let cwd: string
-
-  let server_process: ExecaChildProcess | null = null
-
-  const cancelServer = async () => {
-    console.log({ server_process: server_process?.constructor?.name })
-    if (server_process) {
-      console.log('CANCELLING')
-      try {
-        server_process.cancel()
-        await server_process
-      } catch (e) {
-        console.log('CAUGHT')
-      }
-      console.log('CANCELLED')
-      server_process = null
-    }
-  }
-
-  afterEach(async () => {
-    console.log('AFTER EACH')
-    await cancelServer()
-  })
-
-  afterAll(async () => {
-    console.log('AFTER ALL')
-    await cancelServer()
-  })
 
   it('should allow creation of a new CRA project in a tmp dir', async () => {
     if (process.env.FAB_E2E_CRA_DIR) {
@@ -79,8 +53,23 @@ describe('Create React App E2E Test', () => {
   })
 
   describe('fab build tests', () => {
+    let server_process: ExecaChildProcess | null = null
+
+    const cancelServer = () => {
+      console.log('CANCELLING')
+      console.log({ server_process: server_process?.constructor?.name })
+      if (server_process) {
+        try {
+          server_process.cancel()
+        } catch (e) {
+          console.log('CANCELLED')
+        }
+        server_process = null
+      }
+    }
+
     const createServer = async () => {
-      await cancelServer()
+      cancelServer()
       await shell(`rm -f fab.zip`, { cwd })
       await shell(`yarn fab:build`, { cwd })
 
@@ -88,11 +77,6 @@ describe('Create React App E2E Test', () => {
       expect(files_after_fab_build).toMatch('fab.zip')
 
       server_process = cmd('yarn fab:serve', { cwd })
-      // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)
-      await Promise.race([
-        server_process,
-        new Promise((resolve) => setTimeout(resolve, 1000)),
-      ])
     }
 
     const request = async (args: string, path: string) => {
@@ -148,6 +132,14 @@ describe('Create React App E2E Test', () => {
       const hello_response = await request('', '/hello')
       expect(hello_response).not.toEqual(homepage_response)
       expect(hello_response).toContain('HELLO WORLD!')
+    })
+
+    afterEach(() => {
+      cancelServer()
+    })
+
+    afterAll(() => {
+      cancelServer()
     })
   })
 })
