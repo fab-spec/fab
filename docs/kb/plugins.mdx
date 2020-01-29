@@ -61,9 +61,7 @@ export const runtime = (args, metadata) => {
 
 Though you _can_ use a single file to export both a `build` and `runtime` export, for anything more sophisticated you're going to want to have separate files. This is because the two commands run at different times, in quite different environments. `build` is called by the CLI, so has access to the full NodeJS ecosystem of tools, and direct access to the filesystem. `runtime`, on the other hand, is **compiled into the FAB itself**. This means it, and its dependencies, _need to be compatible with the [FAB Runtime Environment](/kb/fab-runtime-environment)_, which is pure JS, no NodeJS at all.
 
-The FAB plugins, then, use their `main` export of `index.js` to export the `build` function, and also publish a `/runtime.js` file.
-
-So, for a plugin config like:
+We handle (read: hide from the user) this complexity by allowing a single plugin entry to represent both, while keeping the files separate. For example, for a plugin config like:
 
 ```json5
 {
@@ -73,5 +71,18 @@ So, for a plugin config like:
 }
 ```
 
-First, we try to resolve `@fab/some-plugin/runtime`, and if it's found, it's compiled using Rollup and expected to contain a `runtime` export.
+We first look to resolve `@fab/some-plugin/runtime` and `@fab/some-plugin/build`, which are then required and integrated at the relevant stage (and assumed to only export their respective functions). If _neither_ of those files exist, we require `@fab/some-plugin` and look for `build` and `runtime` in its exports.
 
+Note: most `@fab/xxx` plugins do not have a `main` entry in their `package.json` file, meaning they cannot be required without adding `/build` or `/runtime`. It's a bit weird, but it's the best I could come up with!
+
+Also note: this works the same with relative path plugins, like `./src/fab-server`:
+
+```json5
+{
+  plugins: {
+    './src/fab-server': { /* ... */ }
+  }
+}
+```
+
+This will "just work" if `src/fab-server` is a directory with `build.js` and/or `runtime.js` inside it, or if it is a file `src/fab-server.js` that exports `build` or `runtime` functions.
