@@ -134,16 +134,17 @@ describe('Create React App E2E Test', () => {
       config.data.plugins['./fab-plugins/hello-world'] = {}
       await config.write(`${cwd}/fab.config.json5`)
 
-      await createServer()
-      expect(await request('-I', '/')).toContain(`HTTP/1.1 200 OK`)
-      expect(await request('-I', '/hello')).toContain(`HTTP/1.1 200 OK`)
+      const port = getPort()
+      await createServer(port)
+      expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/hello', port)).toContain(`HTTP/1.1 200 OK`)
 
-      const homepage_response = await request('', '/')
+      const homepage_response = await request('', '/', port)
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
       expect(homepage_response).toContain(`window.FAB_SETTINGS`)
       expect(homepage_response).toContain(`"__fab_server":"@fab/server"`)
 
-      const hello_response = await request('', '/hello')
+      const hello_response = await request('', '/hello', port)
       expect(hello_response).not.toEqual(homepage_response)
       expect(hello_response).toContain('HELLO WORLD!')
     })
