@@ -58,13 +58,12 @@ describe('Create React App E2E Test', () => {
   describe('fab build tests', () => {
     let server_process: ExecaChildProcess | null = null
 
-    const cancelServer = async () => {
+    const cancelServer = () => {
       console.log('CANCELLING')
       console.log({ server_process: server_process?.constructor?.name })
       if (server_process) {
         try {
           server_process.cancel()
-          await server_process
         } catch (e) {
           console.log('CANCELLED')
         }
@@ -73,7 +72,7 @@ describe('Create React App E2E Test', () => {
     }
 
     const createServer = async (port: number) => {
-      await cancelServer()
+      cancelServer()
       await shell(`rm -f fab.zip`, { cwd })
       await shell(`yarn fab:build`, { cwd })
 
