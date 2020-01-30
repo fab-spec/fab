@@ -64,11 +64,7 @@ describe('Create React App E2E Test', () => {
       if (server_process) {
         try {
           server_process.cancel()
-          console.log('Waiting 5 seconds for it to finish')
-          await Promise.race([
-            server_process,
-            new Promise((resolve) => setTimeout(resolve, 5000)),
-          ])
+          await server_process
         } catch (e) {
           console.log('CANCELLED')
         }
@@ -149,8 +145,8 @@ describe('Create React App E2E Test', () => {
       expect(hello_response).toContain('HELLO WORLD!')
     })
 
-    afterAll(() => {
-      cancelServer()
+    afterAll(async () => {
+      await cancelServer()
     })
   })
 })
