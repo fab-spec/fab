@@ -84,7 +84,7 @@ describe('Create React App E2E Test', () => {
       const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
       expect(files_after_fab_build).toMatch('fab.zip')
 
-      server_process = cmd(`PORT=${port} yarn fab:serve`, { cwd })
+      server_process = cmd(`yarn fab:serve --port=${port}`, { cwd })
       // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)
       await Promise.race([
         server_process,
