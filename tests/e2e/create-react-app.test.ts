@@ -55,12 +55,17 @@ describe('Create React App E2E Test', () => {
   describe('fab build tests', () => {
     let server_process: ExecaChildProcess | null = null
 
-    const cancelServer = () => {
+    const cancelServer = async () => {
       console.log('CANCELLING')
       console.log({ server_process: server_process?.constructor?.name })
       if (server_process) {
         try {
           server_process.cancel()
+          console.log('Waiting 5 seconds for it to finish')
+          await Promise.race([
+            server_process,
+            new Promise((resolve) => setTimeout(resolve, 5000)),
+          ])
         } catch (e) {
           console.log('CANCELLED')
         }
@@ -69,7 +74,7 @@ describe('Create React App E2E Test', () => {
     }
 
     const createServer = async () => {
-      cancelServer()
+      await cancelServer()
       await shell(`rm -f fab.zip`, { cwd })
       await shell(`yarn fab:build`, { cwd })
 
@@ -137,10 +142,6 @@ describe('Create React App E2E Test', () => {
       const hello_response = await request('', '/hello')
       expect(hello_response).not.toEqual(homepage_response)
       expect(hello_response).toContain('HELLO WORLD!')
-    })
-
-    afterEach(() => {
-      cancelServer()
     })
 
     afterAll(() => {
