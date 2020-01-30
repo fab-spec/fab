@@ -145,8 +145,8 @@ describe('Create React App E2E Test', () => {
       expect(hello_response).toContain('HELLO WORLD!')
     })
 
-    afterAll(async () => {
-      await cancelServer()
+    afterAll((done) => {
+      cancelServer().then(done)
     })
   })
 })
