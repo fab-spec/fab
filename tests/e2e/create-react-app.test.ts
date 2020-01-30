@@ -5,6 +5,9 @@ import * as execa from 'execa'
 import { ExecaChildProcess } from 'execa'
 import JSON5Config from '@fab/cli/lib/helpers/JSON5Config'
 
+let next_port = 3210
+const getPort = () => next_port++
+
 describe('Create React App E2E Test', () => {
   let tmpdir: string
   let cwd: string
@@ -43,7 +46,7 @@ describe('Create React App E2E Test', () => {
     const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
     package_json.scripts = {
       ...package_json.scripts,
-      'fab:serve': 'fab serve fab.zip --port=3123',
+      'fab:serve': 'fab serve fab.zip',
     }
     await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
     await shell(`yarn build:fab`, { cwd })
@@ -73,7 +76,7 @@ describe('Create React App E2E Test', () => {
       }
     }
 
-    const createServer = async () => {
+    const createServer = async (port: number) => {
       await cancelServer()
       await shell(`rm -f fab.zip`, { cwd })
       await shell(`yarn fab:build`, { cwd })
@@ -81,7 +84,7 @@ describe('Create React App E2E Test', () => {
       const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
       expect(files_after_fab_build).toMatch('fab.zip')
 
-      server_process = cmd('yarn fab:serve', { cwd })
+      server_process = cmd(`PORT=${port} yarn fab:serve`, { cwd })
       // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)
       await Promise.race([
         server_process,
@@ -89,23 +92,24 @@ describe('Create React App E2E Test', () => {
       ])
     }
 
-    const request = async (args: string, path: string) => {
-      const curl_cmd = `curl ${args} --retry 5 --retry-connrefused http://localhost:3123`
+    const request = async (args: string, path: string, port: number) => {
+      const curl_cmd = `curl ${args} --retry 5 --retry-connrefused http://localhost:${port}`
       const { stdout } = await shell(curl_cmd + path, { cwd })
       return stdout
     }
 
     it('should return a 200 on / and /hello', async () => {
-      await createServer()
-      expect(await request('-I', '/')).toContain(`HTTP/1.1 200 OK`)
-      expect(await request('-I', '/hello')).toContain(`HTTP/1.1 200 OK`)
+      const port = getPort()
+      await createServer(port)
+      expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/hello', port)).toContain(`HTTP/1.1 200 OK`)
 
-      const homepage_response = await request('', '/')
+      const homepage_response = await request('', '/', port)
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
       expect(homepage_response).toContain(`window.FAB_SETTINGS`)
       expect(homepage_response).toContain(`"__fab_server":"@fab/server"`)
 
-      const hello_response = await request('', '/hello')
+      const hello_response = await request('', '/hello', port)
       expect(hello_response).toEqual(homepage_response)
     })
 

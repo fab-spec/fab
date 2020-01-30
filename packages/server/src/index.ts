@@ -115,5 +115,7 @@ export default class Server {
       //   ? https.createServer({ key: this.key, cert: this.cert }, app)
       server.listen(this.port, resolve)
     })
+
+    console.log(`Listening on port ${this.port}`)
   }
 }
