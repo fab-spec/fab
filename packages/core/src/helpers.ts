@@ -1,5 +1,5 @@
-import mime from 'mime-types'
 import { DEFAULT_MIME_TYPE, IMMUTABLE_HEADERS, NON_IMMUTABLE_HEADERS } from './constants'
+import mime from 'mime-types'
 
 export async function a_sume<T>(fn: () => Promise<T>, throws: (e: Error) => Error) {
   try {

@@ -1,5 +1,5 @@
-import { ServeHtmlArgs, ServeHtmlMetadata } from './types'
-import { FabPluginRuntime, matchPath } from '@fab/core'
+import { ServeHtmlArgs, ServeHtmlMetadata, ServerHtml } from './types'
+import { FabPluginRuntime, matchPath, FabRequestContext, FabSettings } from '@fab/core'
 import mustache from 'mustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
@@ -21,35 +21,49 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
   const htmls = metadata.serve_html.htmls
   const writer = new mustache.Writer()
 
-  return async function({ url, settings }) {
+  function render(html: ServerHtml, settings: FabSettings) {
+    const replacements: { [token: string]: string } = {
+      OPEN_TRIPLE: '{{{',
+      OPEN_DOUBLE: '{{',
+    }
+
+    if (injections.env) {
+      Object.assign(replacements, generateReplacements(injections.env, settings))
+    }
+
+    const rendered = writer.renderTokens(
+      // @ts-ignore
+      html,
+      new mustache.Context(replacements),
+      null,
+      null
+    )
+
+    return new Response(rendered, {
+      status: 200,
+      statusText: 'OK',
+      headers: {
+        'Content-Type': 'text/html',
+      },
+    })
+  }
+
+  return async function({ url, settings }: FabRequestContext) {
     const { pathname } = url
 
     const html = matchPath(htmls, pathname)
     if (html) {
-      const replacements: { [token: string]: string } = {
-        OPEN_TRIPLE: '{{{',
-        OPEN_DOUBLE: '{{',
-      }
+      return render(html, settings)
+    }
 
-      if (injections.env) {
-        Object.assign(replacements, generateReplacements(injections.env, settings))
-      }
+    const fallback = matchPath(htmls, '/')
 
-      const rendered = writer.renderTokens(
-        // @ts-ignore
-        html,
-        new mustache.Context(replacements),
-        null,
-        null
-      )
-
-      return new Response(rendered, {
-        status: 200,
-        statusText: 'OK',
-        headers: {
-          'Content-Type': 'text/html',
+    if (fallback) {
+      return {
+        interceptResponse(response: Response) {
+          return response.status === 404 ? render(fallback, settings) : response
         },
-      })
+      }
     }
 
     return undefined

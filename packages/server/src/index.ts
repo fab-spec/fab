@@ -59,6 +59,7 @@ export default class Server {
 
       app.all('*', async (req, res) => {
         try {
+          console.log({ url: req.url })
           const pathname = url.parse(req.url!).pathname!
           if (pathname.startsWith('/_assets')) {
             res.setHeader('Content-Type', getContentType(pathname))
@@ -75,30 +76,32 @@ export default class Server {
             })
 
             const production_settings = renderer.metadata?.production_settings
-            console.log(production_settings)
+            // console.log({production_settings})
             const fetch_res = await renderer.render(
               // @ts-ignore
               fetch_req as Request,
               Object.assign(
                 {
-                  injected: 'variables',
-                  should: 'work!',
+                  __fab_server: '@fab/server',
                 },
                 production_settings
               )
             )
+            console.log({ status: fetch_res.status })
             res.status(fetch_res.status)
             // This is a NodeFetch response, which has this method, but
             // the @fab/core types are from dom.ts, which doesn't. This
             // was the easiest workaround for now.
             // @ts-ignore
             const response_headers = fetch_res.headers.raw()
+            // console.log({response_headers})
             delete response_headers['content-encoding']
             Object.keys(response_headers).forEach((header) => {
               const values = response_headers[header]
               res.set(header, values.length === 1 ? values[0] : values)
             })
             const blob = await fetch_res.arrayBuffer()
+            // console.log({response: Buffer.from(blob).toString()})
             res.send(Buffer.from(blob))
           }
         } catch (e) {
@@ -112,5 +115,7 @@ export default class Server {
       //   ? https.createServer({ key: this.key, cert: this.cert }, app)
       server.listen(this.port, resolve)
     })
+
+    console.log(`Listening on port ${this.port}`)
   }
 }

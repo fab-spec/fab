@@ -1,6 +1,5 @@
 import fs from 'fs-extra'
-import { FabSpecExports } from '@fab/core'
-import { FabSettings } from '@fab/core/src'
+import { FabSpecExports, FabSettings } from '@fab/core'
 import { Response as NodeFetchResponse } from 'node-fetch'
 
 export default async (src: string): Promise<FabSpecExports> => {

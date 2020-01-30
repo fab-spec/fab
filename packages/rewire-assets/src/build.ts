@@ -1,11 +1,10 @@
-import { ProtoFab } from '@fab/core'
+import { ProtoFab, filenameOutsideFabLocations, getContentType } from '@fab/core'
 import {
   InlineAssets,
   RenamedAssets,
   RewireAssetsArgs,
   RewireAssetsMetadata,
 } from './types'
-import { filenameOutsideFabLocations, getContentType } from '@fab/core'
 import hasha from 'hasha'
 import path from 'path'
 import { InvalidConfigError } from '@fab/cli'

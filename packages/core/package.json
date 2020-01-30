@@ -10,7 +10,8 @@
   "files": [
     "lib",
     "esm",
-    "src"
+    "src",
+    "runtime.js"
   ],
   "main": "lib/index.js",
   "module": "esm/index.js",

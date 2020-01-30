@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import { FabConfig, a_sume, s_sume } from '@fab/core'
+import { FabConfig, a_sume, s_sume, REGEXP_VALUE_PATTERN } from '@fab/core'
 import jju from 'jju'
 import regexParser from 'regex-parser'
 import { MissingConfig, InvalidConfigError } from '../errors'
@@ -45,7 +45,7 @@ export default class JSON5Config {
 
     for (const [plugin, args] of Object.entries(data.plugins)) {
       for (const [k, v] of Object.entries(args)) {
-        if (typeof v === 'string' && v.match(/^\/.*\/([gimy]*)$/)) {
+        if (typeof v === 'string' && v.match(REGEXP_VALUE_PATTERN)) {
           args[k] = regexParser(v as string)
         }
       }

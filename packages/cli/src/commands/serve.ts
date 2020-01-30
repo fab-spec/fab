@@ -1,10 +1,11 @@
 import { Command, flags } from '@oclif/command'
-import { InvalidConfigError } from '../errors'
-import { ServerArgs, SandboxType } from '@fab/core'
+import { SandboxType, ServerArgs } from '@fab/core'
 import Server from '@fab/server'
+import { BuildFailedError } from '../errors'
+import { log } from '../helpers'
 
 export default class Serve extends Command {
-  static description = 'Serve a FAB in a local NodeJS Express server'
+  static description = 'fab serve: Serve a FAB in a local NodeJS Express server'
 
   static examples = [
     `$ fab serve fab.zip`,
@@ -37,7 +38,12 @@ export default class Serve extends Command {
   async run() {
     const { args, flags } = this.parse(Serve)
 
-    const server = new Server(args.file, flags as ServerArgs)
+    const { file } = args
+    if (!file) {
+      log.error('ERROR: You must provide a FAB filename to serve.\n')
+      this._help()
+    }
+    const server = new Server(file, flags as ServerArgs)
     await server.serve(
       flags['experimental-v8-sandbox'] ? SandboxType.v8isolate : SandboxType.nodeVm
     )

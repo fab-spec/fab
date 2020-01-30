@@ -1,4 +1,4 @@
-import { FabSettings } from '@fab/core/src'
+import { FabSettings } from '@fab/core'
 import { DEFAULT_INJECTIONS } from '../constants'
 import { EnvInjectionConfig } from '../types'
 

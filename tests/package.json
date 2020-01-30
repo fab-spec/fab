@@ -10,7 +10,7 @@
     "typescript": "^3.7.2"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --detectOpenHandles --forceExit --maxWorkers=10"
   },
   "dependencies": {
     "@types/jest": "^24.0.23"

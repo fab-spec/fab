@@ -4,6 +4,11 @@ export class BuildFailedError extends Error {
   constructor(message: string) {
     super(`Build failed!`)
 
-    log.error(`Build failed!\n\n${message}`)
+    log.error(
+      `Build failed!\n\n${message
+        .split('\n')
+        .map((line) => '  ' + line.trim())
+        .join('\n')}`
+    )
   }
 }

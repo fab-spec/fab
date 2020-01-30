@@ -1,7 +1,6 @@
 import { Command, flags } from '@oclif/command'
-import { DEFAULT_CONFIG_FILENAME } from '@fab/core/src'
+import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
 import Deployer from '../actions/Deployer'
-import JSON5Config from '../helpers/JSON5Config'
 
 export default class Deploy extends Command {
   static description = 'Command line deployer for FABs'
