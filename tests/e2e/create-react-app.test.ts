@@ -15,8 +15,10 @@ describe('Create React App E2E Test', () => {
   it('should allow creation of a new CRA project in a tmp dir', async () => {
     if (process.env.FAB_E2E_CRA_DIR) {
       cwd = process.env.FAB_E2E_CRA_DIR
-      if (!cwd.startsWith('/var/folders/' || !cwd.endsWith('/cra-test')))
-        throw new Error(`NOT TRASHING ${cwd}, SORRY.`)
+      if (!cwd.startsWith('/var/folders/' || !cwd.endsWith('/cra-test'))) {
+        // The value of FAB_E2E_CRA_DIR doesn't match the above, exiting.
+        process.exit(1)
+      }
       await shell(`git reset --hard`, { cwd })
       await shell(`git clean -df`, { cwd })
     } else {

@@ -45,6 +45,8 @@ const Frameworks: {
   [KnownFrameworkTypes.Next9]: {
     name: 'NextJS v9+',
     scripts: {
+      // Potentially, we should clear the .next dir before building, to make sure
+      // this FAB isn't publishing anything from a previous build.
       'build:fab': 'npm run build && npm run fab:build',
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',

@@ -1,15 +1,16 @@
 import { InputStaticArgs, InputStaticMetadata } from './types'
-import { ProtoFab } from '@fab/core'
+import { ProtoFab, FabBuildStep } from '@fab/core'
 import fs from 'fs-extra'
 import globby from 'globby'
 import path from 'path'
-import { InvalidConfigError } from '@fab/cli'
+import { InvalidConfigError, relativeToConfig } from '@fab/cli'
 
-export async function build(
-  args: InputStaticArgs,
-  proto_fab: ProtoFab<InputStaticMetadata>
-) {
-  const { dir } = args
+export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
+  args,
+  proto_fab,
+  config_path
+) => {
+  const dir = relativeToConfig(config_path, args.dir)
 
   if (!dir) {
     throw new InvalidConfigError(`@fab/input-static requires an argument of 'dir'.`)

@@ -1,5 +1,6 @@
 import chalk from 'chalk'
 import { Guid } from 'guid-typescript'
+export * from './paths'
 
 export const log = {
   notify(str: string) {
