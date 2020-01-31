@@ -1,8 +1,11 @@
 import { InputNextJSArgs, InputNextJSMetadata } from './types'
 import { ProtoFab, FabBuildStep } from '@fab/core'
 import path from 'path'
-import { InvalidConfigError } from '@fab/cli'
-import { preflightChecks } from './utils'
+import { InvalidConfigError, log } from '@fab/cli'
+import { preflightChecks } from './preflightChecks'
+import globby from 'globby'
+import fs from 'fs-extra'
+import generateIncludes from './generateIncludes'
 
 export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   args,
@@ -22,18 +25,19 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   )
   console.log({ next_dir_name, next_dir, asset_prefix })
 
-  // console.log(`I am input static! Reading files from ${dir}`)
-  //
-  // const files = await globby([path.join(dir, '**', '*')])
-  //
-  // console.log(`Reading their contents`)
-  //
-  // await Promise.all(
-  //   files.map(async (filename) => {
-  //     proto_fab.files!.set(
-  //       '/' + path.relative(dir, filename),
-  //       await fs.readFile(filename, 'utf8')
-  //     )
-  //   })
-  // )
+  log(`I am Input NextJS! Reading files from ${next_dir}`)
+  const pages_dir = path.join(next_dir, 'serverless', 'pages')
+
+  log(`Finding all static HTML pages`)
+  const html_files = await globby([`**/*.html`, `!_*`], { cwd: pages_dir })
+
+  await Promise.all(
+    html_files.map(async (filename) => {
+      proto_fab.files!.set('/' + filename, await fs.readFile(filename, 'utf8'))
+    })
+  )
+
+  log(`Finding all dynamic NextJS entry points`)
+  const js_renderers = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
+  const render_code = await generateIncludes(js_renderers, pages_dir)
 }

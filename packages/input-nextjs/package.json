@@ -33,7 +33,10 @@
     "@fab/core": "0.0.7-alpha.0",
     "@types/node": "^12.12.14",
     "fs-extra": "^8.1.0",
-    "globby": "^10"
+    "globby": "^11.0.0",
+    "prettier": "^1.19.1",
+    "shift-codegen": "^6.0.0",
+    "shift-parser": "^7.0.0"
   },
   "publishConfig": {
     "access": "public"
