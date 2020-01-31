@@ -9,6 +9,7 @@ import { BuildConfig, FabConfig } from '@fab/core'
 import { FabInitError } from '../errors'
 import { log } from '../helpers'
 import JSON5Config from '../helpers/JSON5Config'
+import chalk, { yellow } from 'chalk'
 
 enum KnownFrameworkTypes {
   CreateReactApp,
@@ -19,6 +20,7 @@ type FrameworkInfo = {
   name: string
   plugins: BuildConfig
   scripts: { [name: string]: string }
+  customConfig?: (root_dir: string) => void
 }
 
 const DEFAULT_DEPS = ['@fab/cli', '@fab/server']
@@ -57,6 +59,28 @@ const Frameworks: {
       },
       '@fab/serve-html': {},
       '@fab/rewire-assets': {},
+    },
+    async customConfig(root_dir: string) {
+      const config_path = path.join(root_dir, 'next.config.js')
+      if (await fs.pathExists(config_path)) {
+        const next_config = require(config_path)
+        if (next_config.target !== 'serverless') {
+          throw new FabInitError(`Your NextJS project needs to be configured for a serverless build.
+          ${
+            next_config.target
+              ? `Add 💛target: 'serverless'💛 to your 💛next.config.js💛 file.`
+              : `Currently your app is configured to build in 💛${next_config.target ||
+                  'server'}💛 mode.
+              Update this in your 💛next.config.js💛 by setting 💛target: 'serverless'💛`
+          }
+          `)
+        } else {
+          log(`Your app is already configured for a severless build. Proceeding.`)
+        }
+      } else {
+        log(`No 💛next.config.js💛 found, adding one to set 💛target: 'serverless'💛`)
+        await fs.writeFile(config_path, `module.exports = {\n  target: 'serverless'\n}\n`)
+      }
     },
   },
 }
@@ -119,6 +143,9 @@ export default class Initializer {
 
     /* Update the .gitignore file (if it exists) to add .fab and fab.zip */
     await this.addGitIgnores(root_dir)
+
+    /* Add any framework-specific config required */
+    if (framework.customConfig) await framework.customConfig(root_dir)
 
     /* Finally, install the dependencies */
     if (!skip_install) {

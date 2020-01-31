@@ -55,16 +55,6 @@ describe('Create React App E2E Test', () => {
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
 
-    // Set up NextJS for Serverless rendering
-    await fs.writeFile(
-      `${cwd}/next.config.js`,
-      `
-      module.exports = {
-        target: 'serverless'
-      }
-    `
-    )
-
     const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
     package_json.scripts = {
       ...package_json.scripts,
