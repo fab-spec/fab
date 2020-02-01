@@ -1,25 +1,21 @@
 import { expect } from 'chai'
 import { mergeWebpacks } from '../src/mergeWebpacks'
+import prettier from 'prettier'
 
 describe('mergeWebpacks', () => {
   it('should parse and merge two webpack files', () => {
-    expect(true).to.be(false)
     const makeFile = (entry_point: string, content: string) => `
       module.exports = (function(modules) {
-        // webpackBootstrap
-        // The module cache
         var installedModules = {}
 
-        // The require function
         function __webpack_require__(moduleId) {}
 
-        // Load entry module and return exports
-        return __webpack_require__((__webpack_require__.s = '${entry_point}'))
+        return ${entry_point}
       })(${content})
     `
 
     const fileA = makeFile(
-      'Cq4J',
+      `__webpack_require__((__webpack_require__.s = 'Cq4J'))`,
       `
       {
         'Cq4J': function(module, exports, __webpack_require__) {
@@ -33,7 +29,7 @@ describe('mergeWebpacks', () => {
     )
 
     const fileB = makeFile(
-      'C7Cc',
+      `__webpack_require__((__webpack_require__.s = 'C7Cc'))`,
       `
       {
         '+jru': function(module, exports, __webpack_require__) {
@@ -46,11 +42,33 @@ describe('mergeWebpacks', () => {
       `
     )
 
-    console.log(
-      mergeWebpacks({
-        '/a': fileA,
-        '/b': fileB,
-      })
+    expect(
+      prettier.format(
+        mergeWebpacks({
+          '/a': fileA,
+          '/b': fileB,
+        }),
+        { parser: 'babel' }
+      )
+    ).to.eq(
+      prettier.format(
+        makeFile(
+          `{'/a': __webpack_require__('Cq4J'), '/b': __webpack_require__('C7Cc')}`,
+          `
+      {
+        'Cq4J': function(module, exports, __webpack_require__) {
+          // Do something
+        },
+        '+jru': function(module, exports, __webpack_require__) {
+          // Do something else.
+        },
+        'C7Cc': function(module, exports, __webpack_require__) {
+          // Do a third thing
+        },
+      }
+      `
+        )
+      )
     )
   })
 })

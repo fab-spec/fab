@@ -26,9 +26,11 @@ type ExtractedInfo = {
 
 export const mergeWebpacks = (files: { [path: string]: string }) => {
   const extracted_info: ExtractedInfo = {}
+  let first_ast: any
 
   for (const [path, str_contents] of Object.entries(files)) {
     const ast = parseScript(str_contents)
+    if (!first_ast) first_ast = ast
 
     // Expect module.exports = ((...) => { ... entry_point }, { ... webpack contents ... })
     assert(ast.statements.length === 1)
@@ -63,5 +65,5 @@ export const mergeWebpacks = (files: { [path: string]: string }) => {
     extracted_info[path] = { entry_point, webpack_content }
   }
 
-  return ''
+  return codegen(first_ast, new FormattedCodeGen())
 }
