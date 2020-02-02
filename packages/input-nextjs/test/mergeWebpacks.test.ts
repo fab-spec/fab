@@ -19,10 +19,10 @@ describe('mergeWebpacks', () => {
       `
       {
         'Cq4J': function(module, exports, __webpack_require__) {
-          // Do something
+          console.log("Do something")
         },
         '+jru': function(module, exports, __webpack_require__) {
-          // Do something else.
+          console.log("Do something else")
         }
       }
       `
@@ -33,10 +33,10 @@ describe('mergeWebpacks', () => {
       `
       {
         '+jru': function(module, exports, __webpack_require__) {
-          // Do something else.
+          console.log("Do something else")
         },
         'C7Cc': function(module, exports, __webpack_require__) {
-          // Do a third thing
+          console.log("Do a third thing")
         },
       }
       `
@@ -57,13 +57,13 @@ describe('mergeWebpacks', () => {
           `
       {
         'Cq4J': function(module, exports, __webpack_require__) {
-          // Do something
+          console.log("Do something")
         },
         '+jru': function(module, exports, __webpack_require__) {
-          // Do something else.
+          console.log("Do something else")
         },
         'C7Cc': function(module, exports, __webpack_require__) {
-          // Do a third thing
+          console.log("Do a third thing")
         },
       }
       `

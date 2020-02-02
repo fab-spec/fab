@@ -30,7 +30,6 @@ export const mergeWebpacks = (files: { [path: string]: string }) => {
 
   for (const [path, str_contents] of Object.entries(files)) {
     const ast = parseScript(str_contents)
-    if (!first_ast) first_ast = ast
 
     // Expect module.exports = ((...) => { ... entry_point }, { ... webpack contents ... })
     assert(ast.statements.length === 1)
@@ -63,7 +62,8 @@ export const mergeWebpacks = (files: { [path: string]: string }) => {
     const webpack_content = iife.arguments[0]
 
     extracted_info[path] = { entry_point, webpack_content }
+    if (!first_ast) first_ast = { ast, ret_exp, webpack_s_assignment }
   }
 
-  return codegen(first_ast, new FormattedCodeGen())
+  return codegen(first_ast.ast, new FormattedCodeGen())
 }
