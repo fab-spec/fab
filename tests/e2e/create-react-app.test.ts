@@ -119,12 +119,13 @@ describe('Create React App E2E Test', () => {
         export const runtime = (args, metadata) => {
           return async ({ url }) => {
             if (url.pathname === '/hello') {
-              return new Response('HELLO WORLD!', {
+              return new Response('HELLO WORLD!\\n', {
                 status: 200
               })
             }
           }
-        }`
+        }
+        `
       )
 
       const config = await JSON5Config.readFrom(`${cwd}/fab.config.json5`)
