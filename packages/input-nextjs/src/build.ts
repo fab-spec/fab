@@ -13,6 +13,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   config_path
 ) => {
   // const { dir } = args
+  console.log('YES THIS UPDATES')
 
   if (proto_fab.files!.size > 0) {
     throw new InvalidConfigError(
