@@ -7,9 +7,7 @@ describe('mergeWebpacks', () => {
     const makeFile = (entry_point: string, content: string) => `
       module.exports = (function(modules) {
         var installedModules = {}
-
         function __webpack_require__(moduleId) {}
-
         return ${entry_point}
       })(${content})
     `

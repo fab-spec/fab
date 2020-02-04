@@ -18,18 +18,17 @@ import assert from 'assert'
 type ExtractedInfo = {
   [path: string]: {
     entry_point: string
-    webpack_content: {
-      [webpack_id: string]: any
-    }
+    webpack_modules: any[]
   }
 }
 
 export const mergeWebpacks = (files: { [path: string]: string }) => {
   const extracted_info: ExtractedInfo = {}
   let first_ast: any
+  const path_keys = Object.keys(files)
 
-  for (const [path, str_contents] of Object.entries(files)) {
-    const ast = parseScript(str_contents)
+  for (const path of path_keys) {
+    const ast = parseScript(files[path])
 
     // Expect module.exports = ((...) => { ... entry_point }, { ... webpack contents ... })
     assert(ast.statements.length === 1)
@@ -52,6 +51,7 @@ export const mergeWebpacks = (files: { [path: string]: string }) => {
     const ret_exp = preamble[preamble.length - 1]
     assert(ret_exp.type === 'ReturnStatement')
     assert(ret_exp.expression.type === 'CallExpression')
+    assert(ret_exp.expression.callee.name === '__webpack_require__')
     assert(ret_exp.expression.arguments.length === 1)
 
     const webpack_s_assignment = ret_exp.expression.arguments[0]
@@ -61,9 +61,42 @@ export const mergeWebpacks = (files: { [path: string]: string }) => {
     const entry_point = webpack_s_assignment.expression.value
     const webpack_content = iife.arguments[0]
 
-    extracted_info[path] = { entry_point, webpack_content }
-    if (!first_ast) first_ast = { ast, ret_exp, webpack_s_assignment }
+    extracted_info[path] = { entry_point, webpack_modules: webpack_content.properties }
+
+    if (!first_ast) first_ast = { ast, ret_exp, webpack_content }
   }
 
-  return codegen(first_ast.ast, new FormattedCodeGen())
+  const { ast, ret_exp, webpack_content } = first_ast
+
+  // We need an AST structure to graft the entry points together
+  const entry_point_object_src = `
+    call_expr({
+      ${path_keys
+        .map(
+          (path) =>
+            `"${path}": __webpack_require__('${extracted_info[path].entry_point}')`
+        )
+        .join(',\n  ')}
+    })
+  `
+  // console.log(entry_point_object_src)
+
+  const entry_point_replacement = parseScript(entry_point_object_src)
+  ret_exp.expression = entry_point_replacement.statements[0].expression.arguments[0]
+
+  const seen_keys = new Set()
+  webpack_content.properties = []
+
+  path_keys.forEach((path) => {
+    const { webpack_modules } = extracted_info[path]
+
+    webpack_modules.forEach((module) => {
+      if (seen_keys.has(module.name.value)) return
+
+      seen_keys.add(module.name.value)
+      webpack_content.properties.push(module)
+    })
+  })
+
+  return codegen(ast, new FormattedCodeGen())
 }
