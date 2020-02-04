@@ -4,7 +4,8 @@
     "packages/core",
     "packages/input-static",
     "packages/rewire-assets",
-    "packages/serve-html"
+    "packages/serve-html",
+    "packages/server"
   ],
   "buildCommand": "build:codesandbox",
   "sandboxes": ["dazzling-cray-t0ru6"]
