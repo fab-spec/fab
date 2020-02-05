@@ -33,17 +33,6 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   const pages_dir_hash = await md5dir(pages_dir)
   console.log({ pages_dir, pages_dir_hash })
 
-  const cache_dir = path.join(config_dir, '.fab', '.cache')
-  const renderer_cache = path.join(
-    cache_dir,
-    `${RENDERER}.${pages_dir_hash.slice(0, 7)}.js`
-  )
-
-  if (await fs.pathExists(renderer_cache)) {
-    proto_fab.hypotheticals[`${RENDERER}.js`] = await fs.readFile(renderer_cache, 'utf8')
-    return
-  }
-
   log(`Finding all static HTML pages`)
   const html_files = await globby([`**/*.html`, `!_*`], { cwd: pages_dir })
 
@@ -55,6 +44,20 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
       )
     })
   )
+
+  const cache_dir = path.join(config_dir, '.fab', '.cache')
+  const renderer_cache = path.join(
+    cache_dir,
+    `${RENDERER}.${pages_dir_hash.slice(0, 7)}.js`
+  )
+
+  if (await fs.pathExists(renderer_cache)) {
+    log(
+      `Reusing NextJS renderer cache 💛${path.relative(process.cwd(), renderer_cache)}💛`
+    )
+    proto_fab.hypotheticals[`${RENDERER}.js`] = await fs.readFile(renderer_cache, 'utf8')
+    return
+  }
 
   log(`Finding all dynamic NextJS entry points`)
   const js_renderers = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
