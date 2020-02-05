@@ -35,9 +35,7 @@
     "astring": "^1.4.3",
     "fs-extra": "^8.1.0",
     "globby": "^11.0.0",
-    "prettier": "^1.19.1",
-    "shift-codegen": "^6.0.0",
-    "shift-parser": "^7.0.0"
+    "prettier": "^1.19.1"
   },
   "publishConfig": {
     "access": "public"
