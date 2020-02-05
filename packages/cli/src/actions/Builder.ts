@@ -42,9 +42,6 @@ export default class Builder {
     for (const { plugin_name, builder, plugin_args } of build_plugins) {
       console.log(`Building ${plugin_name}:`)
       await builder(plugin_args, proto_fab, config_path)
-      if (plugin_name === '@fab/input-nextjs') {
-        runtime_plugins.push(path.resolve('./.fab/nextjs-renderers.js'))
-      }
     }
     console.log([runtime_plugins])
 
