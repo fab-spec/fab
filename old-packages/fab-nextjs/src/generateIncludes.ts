@@ -42,9 +42,7 @@ export default async function generateIncludes(
       /return __webpack_require__\(__webpack_require__\.s\s*=\s*"([^"]+)"\)[;\/* \n]*}\)/m
     )
     if (!match) {
-      error(
-        `Webpack compiled output for ${filepath} doesn't match expectations!`
-      )
+      error(`Webpack compiled output for ${filepath} doesn't match expectations!`)
       throw new Error('Unexpected compiled page output')
     }
 
@@ -104,9 +102,7 @@ export default async function generateIncludes(
   ${html_strings.join(',\n')}
 }`
 
-  const manifest_output_path = path.resolve(
-    path.join(output_dir, 'renderers.js')
-  )
+  const manifest_output_path = path.resolve(path.join(output_dir, 'renderers.js'))
   let manifest
   try {
     manifest = prettier.format(
@@ -126,5 +122,5 @@ export default async function generateIncludes(
 }
 
 const toParamPath = (next_path: string): string => {
-  return next_path.replace(/\[(\w+)\]/g, ':$1')
+  return next_path.replace(/\[(\w+)\]/g, '{:$1}')
 }

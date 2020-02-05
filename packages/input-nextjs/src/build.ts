@@ -13,8 +13,6 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   config_path
 ) => {
   // const { dir } = args
-  console.log('YES THIS UPDATES')
-
   if (proto_fab.files!.size > 0) {
     throw new InvalidConfigError(
       `@fab/input-nextjs must be the first 'input' plugin in the chain.`
@@ -34,11 +32,16 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
 
   await Promise.all(
     html_files.map(async (filename) => {
-      proto_fab.files!.set('/' + filename, await fs.readFile(filename, 'utf8'))
+      proto_fab.files!.set(
+        '/' + filename,
+        await fs.readFile(path.join(pages_dir, filename), 'utf8')
+      )
     })
   )
 
   log(`Finding all dynamic NextJS entry points`)
   const js_renderers = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
   const render_code = await generateIncludes(js_renderers, pages_dir)
+
+  await fs.writeFile('./.fab/nextjs-renderers.js', render_code)
 }
