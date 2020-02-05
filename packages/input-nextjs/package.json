@@ -32,6 +32,7 @@
   "dependencies": {
     "@fab/core": "0.0.7-alpha.2",
     "@types/node": "^12.12.14",
+    "acorn": "^7.1.0",
     "astring": "^1.4.3",
     "fs-extra": "^8.1.0",
     "globby": "^11.0.0",
