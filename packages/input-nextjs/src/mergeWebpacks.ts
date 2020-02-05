@@ -28,8 +28,6 @@ export const mergeWebpacks = (files: FabFilesObject) => {
   const path_keys = Object.keys(files)
 
   for (const path of path_keys) {
-    console.log({ path, first_ast })
-    console.log(files[path])
     const ast = acorn.parse(files[path])
 
     // Expect module.exports = ((...) => { ... entry_point }, { ... webpack contents ... })
@@ -84,7 +82,6 @@ export const mergeWebpacks = (files: FabFilesObject) => {
         .join(',\n  ')}
     })
   `
-  console.log(entry_point_object_src)
 
   const entry_point_replacement = acorn.parse(entry_point_object_src)
   // @ts-ignore

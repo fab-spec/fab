@@ -3,7 +3,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { FabFilesObject } from '@fab/core'
 
-export default async function generateIncludes(
+export default async function generateRenderer(
   js_renderers: string[],
   pages_dir: string
 ) {
@@ -23,7 +23,6 @@ export default async function generateIncludes(
       })
     )
 
-    console.log('ABOUT TO MERGE')
     return mergeWebpacks(renderer_files)
   } else {
     return `export default {}`
