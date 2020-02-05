@@ -1,5 +1,5 @@
 import { InputNextJSArgs, InputNextJSMetadata } from './types'
-import { ProtoFab, FabBuildStep } from '@fab/core'
+import { FabBuildStep } from '@fab/core'
 import path from 'path'
 import { InvalidConfigError, log } from '@fab/cli'
 import { preflightChecks } from './preflightChecks'
@@ -42,5 +42,5 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   log(`Finding all dynamic NextJS entry points`)
   const js_renderers = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
   const render_code = await generateIncludes(js_renderers, pages_dir)
-  proto_fab.hypotheticals['generated-nextjs-renderers'] = render_code
+  proto_fab.hypotheticals['generated-nextjs-renderers.js'] = render_code
 }
