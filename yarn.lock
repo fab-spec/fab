@@ -8026,6 +8026,18 @@ shelljs@^0.8.3:
     interpret "^1.0.0"
     rechoir "^0.6.2"
 
+shift-ast@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/shift-ast/-/shift-ast-6.0.0.tgz#7af2b102f8f9e856d84b4f299dde1cb5424540cc"
+  integrity sha512-XXxDcEBWVBzqWXfNYJlLyJ1/9kMvOXVRXiqPjkOrTCC5qRsBvEMJMRLLFhU3tn8ue56Y7IZyBE6bexFum5QLUw==
+
+shift-reducer@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/shift-reducer/-/shift-reducer-6.0.0.tgz#f0d4b3d4a2f5cdb606ff2e7b116759f790671d20"
+  integrity sha512-2rJraRP8drIOjvaE/sALa+0tGJmMVUzlmS3wIJerJbaYuCjpFAiF0WjkTOFVtz1144Nm/ECmqeG+7yRhuMVsMg==
+  dependencies:
+    shift-ast "6.0.0"
+
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"

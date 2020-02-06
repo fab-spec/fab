@@ -14,32 +14,6 @@ import md5dir from 'md5-dir/promise'
 const RENDERER = `generated-nextjs-renderers`
 const WEBPACKED = `webpacked-nextjs-renderers`
 
-async function getRenderCode(
-  renderer_cache: string,
-  pages_dir: string,
-  cache_dir: string
-) {
-  if (await fs.pathExists(renderer_cache)) {
-    log(
-      `Reusing NextJS renderer cache 💛${path.relative(process.cwd(), renderer_cache)}💛`
-    )
-    return await fs.readFile(renderer_cache, 'utf8')
-  }
-
-  log(`Finding all dynamic NextJS entry points`)
-  const js_renderers = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
-  const render_code = await generateRenderer(js_renderers, pages_dir)
-
-  // Write out the cache
-  await fs.ensureDir(cache_dir)
-  const previous_caches = await globby([`${RENDERER}.*.js`], { cwd: cache_dir })
-  await Promise.all(
-    previous_caches.map((cache) => fs.remove(path.join(cache_dir, cache)))
-  )
-  await fs.writeFile(renderer_cache, render_code)
-  return render_code
-}
-
 export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   args,
   proto_fab,
@@ -80,12 +54,16 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   )
 
   const render_code = await getRenderCode(renderer_cache, pages_dir, cache_dir)
+  // todo: hash render_code
 
   // TEMPORARY: webpack this file to inject all the required shims
   const webpacked_output = path.join(cache_dir, `${WEBPACKED}.js`)
+  console.log({ webpacked_output })
+
   await new Promise((resolve, reject) =>
     webpack(
       {
+        stats: 'verbose',
         mode: 'production',
         target: 'webworker',
         entry: renderer_cache,
@@ -93,8 +71,8 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
           minimize: false,
         },
         output: {
-          path: webpacked_output,
-          filename: 'server.js',
+          path: path.dirname(webpacked_output),
+          filename: path.basename(webpacked_output),
           library: 'server',
           libraryTarget: 'commonjs2',
         },
@@ -103,12 +81,29 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
             fs: require.resolve('memfs'),
           },
         },
+        externals: {
+          '@ampproject/toolbox-optimizer': '@ampproject/toolbox-optimizer',
+        },
+        // module: {
+        //   rules: [
+        //     {
+        //       test: /\.m?js$/,
+        //       exclude: /node_modules/,
+        //       use: {
+        //         loader: require.resolve('@sucrase/webpack-loader'),
+        //         options: {
+        //           transforms: ['typescript', 'imports']
+        //         }
+        //       }
+        //     },
+        //   ]
+        // }
       },
       (err, stats) => {
         if (err || stats.hasErrors()) {
           console.log('Build failed.')
           console.log(err)
-          console.log(stats.toJson().errors.toString())
+          console.log(stats && stats.toJson().errors.toString())
           reject()
         }
         resolve()
@@ -117,4 +112,30 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   )
 
   proto_fab.hypotheticals[`${RENDERER}.js`] = await fs.readFile(webpacked_output, 'utf8')
+}
+
+async function getRenderCode(
+  renderer_cache: string,
+  pages_dir: string,
+  cache_dir: string
+) {
+  if (await fs.pathExists(renderer_cache)) {
+    log(
+      `Reusing NextJS renderer cache 💛${path.relative(process.cwd(), renderer_cache)}💛`
+    )
+    return await fs.readFile(renderer_cache, 'utf8')
+  }
+
+  log(`Finding all dynamic NextJS entry points`)
+  const js_renderers = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
+  const render_code = await generateRenderer(js_renderers, pages_dir)
+
+  // Write out the cache while cleaning out any old caches
+  await fs.ensureDir(cache_dir)
+  const previous_caches = await globby([`${RENDERER}.*.js`], { cwd: cache_dir })
+  await Promise.all(
+    previous_caches.map((cache) => fs.remove(path.join(cache_dir, cache)))
+  )
+  await fs.writeFile(renderer_cache, render_code)
+  return render_code
 }

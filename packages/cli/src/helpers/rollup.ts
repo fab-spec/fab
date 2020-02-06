@@ -22,7 +22,7 @@ export async function rollupCompile(
 ) {
   const empty = require.resolve(__dirname + '/empty')
   const entries = {
-    // path: require.resolve('path-browserify'),
+    path: require.resolve('path-browserify'),
     // events: require.resolve('events/events'),
     // util: require.resolve('util/util'),
     // url: require.resolve('url/url'),
@@ -41,7 +41,7 @@ export async function rollupCompile(
     // // https: empty,//require.resolve('https-browserify'),
     // // zlib: empty,//require.resolve('browserify-zlib'),
     // vm: require.resolve('vm-browserify'),
-    // 'node-fetch': empty,
+    'node-fetch': empty,
   }
   console.log(entries)
 
