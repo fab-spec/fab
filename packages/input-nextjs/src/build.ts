@@ -6,11 +6,39 @@ import { preflightChecks } from './preflightChecks'
 import globby from 'globby'
 import fs from 'fs-extra'
 import generateRenderer from './generateRenderer'
+import webpack from 'webpack'
 
 // @ts-ignore
 import md5dir from 'md5-dir/promise'
 
 const RENDERER = `generated-nextjs-renderers`
+const WEBPACKED = `webpacked-nextjs-renderers`
+
+async function getRenderCode(
+  renderer_cache: string,
+  pages_dir: string,
+  cache_dir: string
+) {
+  if (await fs.pathExists(renderer_cache)) {
+    log(
+      `Reusing NextJS renderer cache 💛${path.relative(process.cwd(), renderer_cache)}💛`
+    )
+    return await fs.readFile(renderer_cache, 'utf8')
+  }
+
+  log(`Finding all dynamic NextJS entry points`)
+  const js_renderers = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
+  const render_code = await generateRenderer(js_renderers, pages_dir)
+
+  // Write out the cache
+  await fs.ensureDir(cache_dir)
+  const previous_caches = await globby([`${RENDERER}.*.js`], { cwd: cache_dir })
+  await Promise.all(
+    previous_caches.map((cache) => fs.remove(path.join(cache_dir, cache)))
+  )
+  await fs.writeFile(renderer_cache, render_code)
+  return render_code
+}
 
 export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   args,
@@ -51,25 +79,42 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     `${RENDERER}.${pages_dir_hash.slice(0, 7)}.js`
   )
 
-  if (await fs.pathExists(renderer_cache)) {
-    log(
-      `Reusing NextJS renderer cache 💛${path.relative(process.cwd(), renderer_cache)}💛`
+  const render_code = await getRenderCode(renderer_cache, pages_dir, cache_dir)
+
+  // TEMPORARY: webpack this file to inject all the required shims
+  const webpacked_output = path.join(cache_dir, `${WEBPACKED}.js`)
+  await new Promise((resolve, reject) =>
+    webpack(
+      {
+        mode: 'production',
+        target: 'webworker',
+        entry: renderer_cache,
+        optimization: {
+          minimize: false,
+        },
+        output: {
+          path: webpacked_output,
+          filename: 'server.js',
+          library: 'server',
+          libraryTarget: 'commonjs2',
+        },
+        resolve: {
+          alias: {
+            fs: require.resolve('memfs'),
+          },
+        },
+      },
+      (err, stats) => {
+        if (err || stats.hasErrors()) {
+          console.log('Build failed.')
+          console.log(err)
+          console.log(stats.toJson().errors.toString())
+          reject()
+        }
+        resolve()
+      }
     )
-    proto_fab.hypotheticals[`${RENDERER}.js`] = await fs.readFile(renderer_cache, 'utf8')
-    return
-  }
-
-  log(`Finding all dynamic NextJS entry points`)
-  const js_renderers = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
-  const render_code = await generateRenderer(js_renderers, pages_dir)
-
-  // Write out the cache
-  await fs.ensureDir(cache_dir)
-  const previous_caches = await globby([`${RENDERER}.*.js`], { cwd: cache_dir })
-  await Promise.all(
-    previous_caches.map((cache) => fs.remove(path.join(cache_dir, cache)))
   )
-  await fs.writeFile(renderer_cache, render_code)
 
-  proto_fab.hypotheticals[`${RENDERER}.js`] = render_code
+  proto_fab.hypotheticals[`${RENDERER}.js`] = await fs.readFile(webpacked_output, 'utf8')
 }
