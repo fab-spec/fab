@@ -138,7 +138,7 @@ describe('Create React App E2E Test', () => {
       expect(parseFloat(number)).toBeLessThan(1)
 
       const second_response = await request('', '/dynamic', port)
-      const [__, other_number] = dynamic_response.match(/random number of (\d\.\d+)/)!
+      const [__, other_number] = second_response.match(/random number of (\d\.\d+)/)!
       expect(number).not.toEqual(other_number)
       expect(parseFloat(other_number)).toBeGreaterThanOrEqual(0)
       expect(parseFloat(other_number)).toBeLessThan(1)
