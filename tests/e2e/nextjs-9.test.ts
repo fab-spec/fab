@@ -54,6 +54,9 @@ describe('Create React App E2E Test', () => {
     await shell(`fab init -y --skip-install --version=next`, { cwd })
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
+    expect(files_after_fab_init).toMatch('next.config.js')
+
+    await shell(`cp -R ${__dirname}/fixtures/nextjs/* ${cwd}/pages`)
 
     const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
     package_json.scripts = {
@@ -62,6 +65,12 @@ describe('Create React App E2E Test', () => {
     }
     await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
     await shell(`yarn build:fab`, { cwd })
+
+    const { stdout: built_pages } = await cmd(`ls -l ${cwd}/.next/serverless/pages`)
+    expect(built_pages).toMatch('index.html')
+    expect(built_pages).toMatch('dynamic.js')
+    expect(built_pages).toMatch('_error.js')
+    expect(built_pages).toMatch('background')
 
     const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_build).toMatch('fab.zip')

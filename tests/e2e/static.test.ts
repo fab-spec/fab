@@ -7,7 +7,7 @@ describe('dir of static assets', () => {
   beforeAll(async () => {
     const tmp_dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
     opts.cwd = `${tmp_dir.path}/static`
-    await shell(`cp -R ${__dirname}/static ${opts.cwd}`)
+    await shell(`cp -R ${__dirname}/fixtures/static ${opts.cwd}`)
   })
 
   describe('failure cases', () => {
