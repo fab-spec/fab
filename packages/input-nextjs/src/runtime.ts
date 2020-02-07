@@ -4,23 +4,25 @@ import renderers from 'generated-nextjs-renderers.js'
 // @ts-ignore
 import MockExpressResponse from './mock-express-response'
 import { parse } from 'url'
-// @ts-ignore
-import pathToRegexp from 'path-to-regexp'
+import { pathToRegexp } from 'path-to-regexp'
 
-//
-// const pathRenderers = {}
-// const regexpRenderers = []
-// Object.keys(renderers).forEach((path) => {
-//   if (path.match(/\:/)) {
-//     regexpRenderers.push({
-//       path_matcher: pathToRegexp(path),
-//       renderer: renderers[path],
-//     })
-//   } else {
-//     pathRenderers[path] = renderers[path]
-//   }
-// })
-//
+type Renderer = () => {}
+
+const pathRenderers: { [path: string]: Renderer } = {}
+const regexpRenderers: { path_matcher: RegExp; renderer: Renderer }[] = []
+Object.keys(renderers).forEach((path) => {
+  if (path.match(/{:/)) {
+    regexpRenderers.push({
+      path_matcher: pathToRegexp(path),
+      renderer: renderers[path],
+    })
+  } else {
+    pathRenderers[path] = renderers[path]
+  }
+})
+console.log({ pathRenderers })
+console.log({ regexpRenderers })
+
 // const getRenderer = (request_path) => {
 //   const exact_match = pathRenderers[request_path]
 //   if (exact_match) return exact_match
@@ -86,8 +88,8 @@ import pathToRegexp from 'path-to-regexp'
 //   return render404()
 // }
 //
-//
-// export function runtime() {
-//   console.log(renderers)
-//   return async function responder() {}
-// }
+
+export function runtime() {
+  console.log(renderers)
+  return async function responder() {}
+}

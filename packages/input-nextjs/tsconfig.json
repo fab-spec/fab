@@ -3,7 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@fab/*": ["node_modules/@fab/*/src"]
-    }
+    },
+    "allowJs": true
   },
   "include": ["src"]
 }

@@ -1311,6 +1311,13 @@
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
   integrity sha512-f5j5b/Gf71L+dbqxIpQ4Z2WlmI/mPJ0fOkGGmFgtb6sAu97EPczzbS3/tJKxmcYDj55OX6ssqwDAWOHIYDRDGA==
 
+"@types/path-to-regexp@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@types/path-to-regexp/-/path-to-regexp-1.7.0.tgz#f1af9d9c9db5f8ad80aa75ed424db665c48d6cd4"
+  integrity sha1-8a+dnJ21+K2AqnXtQk22ZcSNbNQ=
+  dependencies:
+    path-to-regexp "*"
+
 "@types/prettier@^1.19.0":
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-1.19.0.tgz#a2502fb7ce9b6626fdbfc2e2a496f472de1bdd05"
@@ -7041,6 +7048,11 @@ path-parse@^1.0.6:
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
   integrity sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw==
 
+path-to-regexp@*:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-6.1.0.tgz#0b18f88b7a0ce0bfae6a25990c909ab86f512427"
+  integrity sha512-h9DqehX3zZZDCEm+xbfU0ZmwCGFCAAraPJWMXJ4+v32NjZJilVg3k1TcKsRgIb8IQ/izZSaydDc1OhJCZvs2Dw==
+
 path-to-regexp@0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
@@ -8025,18 +8037,6 @@ shelljs@^0.8.3:
     glob "^7.0.0"
     interpret "^1.0.0"
     rechoir "^0.6.2"
-
-shift-ast@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/shift-ast/-/shift-ast-6.0.0.tgz#7af2b102f8f9e856d84b4f299dde1cb5424540cc"
-  integrity sha512-XXxDcEBWVBzqWXfNYJlLyJ1/9kMvOXVRXiqPjkOrTCC5qRsBvEMJMRLLFhU3tn8ue56Y7IZyBE6bexFum5QLUw==
-
-shift-reducer@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/shift-reducer/-/shift-reducer-6.0.0.tgz#f0d4b3d4a2f5cdb606ff2e7b116759f790671d20"
-  integrity sha512-2rJraRP8drIOjvaE/sALa+0tGJmMVUzlmS3wIJerJbaYuCjpFAiF0WjkTOFVtz1144Nm/ECmqeG+7yRhuMVsMg==
-  dependencies:
-    shift-ast "6.0.0"
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
