@@ -14,6 +14,7 @@ export type Injections = {
 export interface ServeHtmlArgs extends PluginArgs {
   'match-html'?: RegExp
   injections?: Injections
+  fallback?: string | boolean
 }
 
 export type ServerHtml = Array<Array<[string, string, number, number]>>
@@ -23,5 +24,6 @@ export type ServerHtmls = {
 export interface ServeHtmlMetadata extends PluginMetadata {
   serve_html: {
     htmls: ServerHtmls
+    resolved_fallback: string | undefined
   }
 }

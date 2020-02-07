@@ -5,7 +5,7 @@ import * as execa from 'execa'
 import { ExecaChildProcess } from 'execa'
 import JSON5Config from '@fab/cli/lib/helpers/JSON5Config'
 
-let next_port = 3210
+let next_port = 3310
 const getPort = () => next_port++
 
 describe('Create React App E2E Test', () => {
@@ -15,8 +15,10 @@ describe('Create React App E2E Test', () => {
   it('should allow creation of a new CRA project in a tmp dir', async () => {
     if (process.env.FAB_E2E_CRA_DIR) {
       cwd = process.env.FAB_E2E_CRA_DIR
-      if (!cwd.startsWith('/var/folders/' || !cwd.endsWith('/cra-test')))
-        throw new Error(`NOT TRASHING ${cwd}, SORRY.`)
+      if (!cwd.startsWith('/var/folders/' || !cwd.endsWith('/cra-test'))) {
+        // The value of FAB_E2E_CRA_DIR doesn't match the above, exiting.
+        process.exit(1)
+      }
       await shell(`git reset --hard`, { cwd })
       await shell(`git clean -df`, { cwd })
     } else {

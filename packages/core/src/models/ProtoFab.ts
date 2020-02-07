@@ -10,10 +10,12 @@ import { filenameOutsideFabLocations, getContentType } from '../helpers'
 export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   files: FabFiles
   metadata: U
+  hypotheticals: FabFilesObject
 
-  constructor(init_files: FabFilesObject = {}) {
+  constructor(init_files: FabFilesObject = {}, init_hypotheticals: FabFilesObject = {}) {
     this.files = new Map(Object.entries(init_files))
     this.metadata = {} as U
+    this.hypotheticals = init_hypotheticals
   }
 
   errorsPreventingCompilation(): string | undefined {

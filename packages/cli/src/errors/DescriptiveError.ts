@@ -5,7 +5,7 @@ export const createDescriptiveErrorClass = (error_name: string) => {
     constructor(message: string) {
       super(error_name)
 
-      log.error(`${error_name}\n\n${message}`)
+      log(`❤️${error_name}❤️\n\n${message}`)
     }
   }
 }

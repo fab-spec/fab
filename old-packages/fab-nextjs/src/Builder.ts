@@ -31,14 +31,13 @@ export default class Builder {
       )
     } else {
       if (asset_prefix !== '') {
-        error(`assetPrefix of '${asset_prefix}' not supported! You must use '/_assets' or not specify one.`)
+        error(
+          `assetPrefix of '${asset_prefix}' not supported! You must use '/_assets' or not specify one.`
+        )
         throw new Error('Unsupported assetPrefix')
       }
       log(`Copying .next/static to .fab/intermediate/_next/static`)
-      await fs.copy(
-        path.join(next_dir, 'static'),
-        path.join(int_dir, '_next', 'static')
-      )
+      await fs.copy(path.join(next_dir, 'static'), path.join(int_dir, '_next', 'static'))
     }
 
     log(`Copying static files`)
@@ -47,9 +46,7 @@ export default class Builder {
     log(`Generating includes for the server files`)
     await generateIncludes(dir, path.join(int_dir, '_server'), next_dir_name)
 
-    log(
-      `Copying server.js from @fab/nextjs to .fab/intermediate/_server/index.js`
-    )
+    log(`Copying server.js from @fab/nextjs to .fab/intermediate/_server/index.js`)
     await fs.copy(
       path.join(__dirname, 'files', 'server.js'),
       path.join(int_dir, '_server', 'index.js')
@@ -71,9 +68,7 @@ export default class Builder {
       path.join(int_dir, '_server', 'default-app-server.js')
     )
 
-    log(
-      `Copying mock-express-response from @fab/nextjs to .fab/intermediate/_server`
-    )
+    log(`Copying mock-express-response from @fab/nextjs to .fab/intermediate/_server`)
     await fs.copy(
       path.join(__dirname, 'files', 'mock-express-response'),
       path.join(int_dir, '_server', 'mock-express-response')
@@ -104,8 +99,8 @@ export default class Builder {
         path: path.resolve(path.join(int_dir, '_server', 'path-with-posix.js')),
         'app-server': server ? path.resolve(app_server_path) : './default-app-server.js',
         jimp: path.join(__dirname, 'files', 'jimp.js'),
-        'react-ssr-prepass': path.join(__dirname, 'files', 'jimp.js')
-      }
+        'react-ssr-prepass': path.join(__dirname, 'files', 'jimp.js'),
+      },
     })
   }
 
@@ -113,7 +108,7 @@ export default class Builder {
     dir: string
   ): Promise<{
     next_dir_name: string
-    next_dir: string,
+    next_dir: string
     asset_prefix: string
   }> {
     const next_config_path = `${dir}/next.config.js`
@@ -151,7 +146,7 @@ export default class Builder {
         `The path may be incorrect, or you haven't run 'npm run build' on this project yet.`
       )
 
-      throw new Error('Missing .next/build-manifest.json')
+      throw new Error(`Missing ${assets_path}`)
     }
 
     const asset_prefix = next_config.assetPrefix || ''

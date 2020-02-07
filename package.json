@@ -19,7 +19,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn typecheck"
     }
   },
   "lint-staged": {
@@ -49,6 +50,9 @@
     "ts-node": "^8",
     "tsconfig-paths": "^3.9.0",
     "typescript": "~3.7.2"
+  },
+  "resolutions": {
+    "shift-reducer": "6.0.0"
   },
   "version": "0.0.0"
 }

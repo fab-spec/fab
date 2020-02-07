@@ -15,11 +15,11 @@
   "files": [
     "lib",
     "esm",
-    "src"
+    "src",
+    "runtime.js",
+    "build.js"
   ],
-  "main": "lib/build.js",
-  "module": "esm/build.js",
-  "types": "esm/build.d.ts",
+  "types": "esm/index.d.ts",
   "scripts": {
     "build": "yarn build:cjs && yarn build:esm",
     "build:cjs": "tsc --module commonjs --outDir lib",
@@ -32,8 +32,16 @@
   "dependencies": {
     "@fab/core": "0.0.7-alpha.2",
     "@types/node": "^12.12.14",
+    "@types/path-to-regexp": "^1.7.0",
+    "acorn": "^7.1.0",
+    "astring": "^1.4.3",
     "fs-extra": "^8.1.0",
-    "globby": "^10"
+    "globby": "^11.0.0",
+    "md5-dir": "^0.2.0",
+    "memfs": "^3.0.4",
+    "mock-express-response": "^0.2.2",
+    "prettier": "^1.19.1",
+    "webpack": "^4.41.5"
   },
   "publishConfig": {
     "access": "public"

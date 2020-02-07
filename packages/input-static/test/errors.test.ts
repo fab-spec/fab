@@ -1,6 +1,7 @@
 import { PluginMetadata, ProtoFab } from '@fab/core'
 import { build } from '../src/build'
 import { shouldThrow } from '@fab/core/test/helpers'
+const dir = __dirname + '/fixtures'
 
 describe('@fab/input-static', () => {
   it('should require a dir argument', async () => {
@@ -18,22 +19,24 @@ describe('@fab/input-static', () => {
           {
             dir: './no-existo',
           },
-          new ProtoFab()
+          new ProtoFab(),
+          dir
         ),
       `@fab/input-static specifies a 'dir' of './no-existo', which doesn't exist.`
     )
   })
 
-  it('should check the dir exists', async () => {
+  it('should check that it is the first plugin', async () => {
     const proto_fab = new ProtoFab<PluginMetadata>()
     proto_fab.files.set('/a', 'something')
     await shouldThrow(
       () =>
         build(
           {
-            dir: __dirname + '/fixtures',
+            dir,
           },
-          proto_fab
+          proto_fab,
+          dir
         ),
       `@fab/input-static must be the first 'input' plugin in the chain.`
     )

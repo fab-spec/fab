@@ -14,6 +14,7 @@ export class Compiler {
       require.resolve('@fab/cli/lib/runtime'),
       { format: 'iife', exports: 'named' },
       {
+        ...proto_fab.hypotheticals,
         'user-defined-pipeline': generatePipelineJs(render_plugins),
         'fab-metadata': generateFabMetadataJs(proto_fab),
       },
