@@ -40,7 +40,9 @@ const Frameworks: {
       '@fab/input-static': {
         dir: 'build',
       },
-      '@fab/serve-html': {},
+      '@fab/serve-html': {
+        fallback: '/index.html',
+      },
       '@fab/rewire-assets': {},
     },
   },
@@ -57,7 +59,9 @@ const Frameworks: {
       '@fab/input-nextjs': {
         dir: '.next',
       },
-      '@fab/serve-html': {},
+      '@fab/serve-html': {
+        fallback: false,
+      },
       '@fab/rewire-assets': {},
     },
     async customConfig(root_dir: string) {
@@ -65,15 +69,16 @@ const Frameworks: {
       if (await fs.pathExists(config_path)) {
         const next_config = require(config_path)
         if (next_config.target !== 'serverless') {
-          throw new FabInitError(`Your NextJS project needs to be configured for a serverless build.
-          ${
-            next_config.target
-              ? `Add 💛target: 'serverless'💛 to your 💛next.config.js💛 file.`
-              : `Currently your app is configured to build in 💛${next_config.target ||
-                  'server'}💛 mode.
-              Update this in your 💛next.config.js💛 by setting 💛target: 'serverless'💛`
-          }
-          `)
+          throw new FabInitError(
+            `Your NextJS project needs to be configured for a serverless build.
+            ${
+              next_config.target
+                ? `Add 💛target: 'serverless'💛 to your 💛next.config.js💛 file.`
+                : `Currently your app is configured to build in 💛${next_config.target ||
+                    'server'}💛 mode.
+                Update this in your 💛next.config.js💛 by setting 💛target: 'serverless'💛`
+            }`
+          )
         } else {
           log(`Your app is already configured for a severless build. Proceeding.`)
         }

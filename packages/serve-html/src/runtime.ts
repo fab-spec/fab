@@ -18,7 +18,7 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
 ) => {
   const { injections = DEFAULT_INJECTIONS } = args
 
-  const htmls = metadata.serve_html.htmls
+  const { htmls, resolved_fallback } = metadata.serve_html
   const writer = new mustache.Writer()
 
   function render(html: ServerHtml, settings: FabSettings) {
@@ -56,12 +56,12 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
       return render(html, settings)
     }
 
-    const fallback = matchPath(htmls, '/')
-
-    if (fallback) {
+    if (resolved_fallback) {
       return {
         interceptResponse(response: Response) {
-          return response.status === 404 ? render(fallback, settings) : response
+          return response.status === 404
+            ? render(htmls[resolved_fallback], settings)
+            : response
         },
       }
     }

@@ -1,10 +1,11 @@
 import { InputStaticArgs, InputStaticMetadata } from './types'
-import { ProtoFab, FabBuildStep } from '@fab/core'
+import { FabBuildStep } from '@fab/core'
 import fs from 'fs-extra'
 import globby from 'globby'
 import path from 'path'
 import { InvalidConfigError, relativeToConfig } from '@fab/cli'
-import { log } from '@fab/cli/src'
+import { _log } from '@fab/cli'
+const log = _log(`💚[@fab/input-static]💚 `)
 
 export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
   args,
@@ -12,7 +13,6 @@ export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
   config_path
 ) => {
   const { dir } = args
-  console.log({ dir })
 
   if (!dir) {
     throw new InvalidConfigError(`@fab/input-static requires an argument of 'dir'.`)
@@ -31,10 +31,10 @@ export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
     )
   }
 
-  console.log(`I am input static! Reading files from ${dir}`)
+  log(`Reading files from ${dir}:`)
   const files = await globby([`**/*`], { cwd: abs_dir })
 
-  console.log(`Reading their contents`)
+  log(`Reading their contents`)
 
   await Promise.all(
     files.map(async (filename) => {
