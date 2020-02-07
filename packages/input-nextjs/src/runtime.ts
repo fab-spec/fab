@@ -1,7 +1,8 @@
 // @ts-ignore
-import renderers from 'generated-nextjs-renderers.js'
-// @ts-ignore
-import MockExpressResponse from './mock-express-response'
+import __generated from 'generated-nextjs-renderers.js'
+console.log({ __generated })
+const { renderers, MockExpressResponse } = __generated
+
 import { pathToRegexp } from 'path-to-regexp'
 import { FabRequestResponder } from '@fab/core'
 
@@ -58,7 +59,7 @@ export function runtime() {
           request: local_req,
         })
         // @ts-ignore
-        await renderer.runtime(local_req, response)
+        await renderer.render(local_req, response)
         // @ts-ignore
         return new Response(response._getString(), {
           status: response.statusCode,

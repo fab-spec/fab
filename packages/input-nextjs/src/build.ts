@@ -60,13 +60,23 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   const webpacked_output = path.join(cache_dir, `${WEBPACKED}.js`)
   console.log({ webpacked_output })
 
+  const entry_point = `
+    const renderers = require('${renderer_cache}')
+    const MockExpressResponse = require('${require.resolve(
+      path.join(__dirname, 'mock-express-response')
+    )}')
+    module.exports = { renderers, MockExpressResponse }
+  `
+  const entry_file = path.join(cache_dir, 'entry-point.js')
+  await fs.writeFile(entry_file, entry_point)
+
   await new Promise((resolve, reject) =>
     webpack(
       {
         stats: 'verbose',
         mode: 'production',
         target: 'webworker',
-        entry: renderer_cache,
+        entry: entry_file,
         optimization: {
           minimize: false,
         },
