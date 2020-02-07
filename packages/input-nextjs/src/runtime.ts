@@ -1,6 +1,5 @@
 // @ts-ignore
 import __generated from 'generated-nextjs-renderers.js'
-console.log({ __generated })
 const { renderers, MockExpressResponse } = __generated
 
 import { pathToRegexp } from 'path-to-regexp'

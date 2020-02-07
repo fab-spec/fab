@@ -48,22 +48,25 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   )
 
   const cache_dir = path.join(config_dir, '.fab', '.cache')
-  const renderer_cache = path.join(
+  const render_code_file = path.join(
     cache_dir,
     `${RENDERER}.${pages_dir_hash.slice(0, 7)}.js`
   )
 
-  const render_code = await getRenderCode(renderer_cache, pages_dir, cache_dir)
+  const render_code_src = await getRenderCode(render_code_file, pages_dir, cache_dir)
   // todo: hash render_code
 
   // TEMPORARY: webpack this file to inject all the required shims
   const webpacked_output = path.join(cache_dir, `${WEBPACKED}.js`)
   console.log({ webpacked_output })
 
+  const shims_dir = path.join(__dirname, 'shims')
+
   const entry_point = `
-    const renderers = require('${renderer_cache}')
-    const MockExpressResponse = require('${require.resolve(
-      path.join(__dirname, 'mock-express-response')
+    const renderers = require('${render_code_file}')
+    const MockExpressResponse = require('${path.join(
+      shims_dir,
+      'mock-express-response'
     )}')
     module.exports = { renderers, MockExpressResponse }
   `
@@ -89,6 +92,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
         resolve: {
           alias: {
             fs: require.resolve('memfs'),
+            path: path.join(shims_dir, 'path-with-posix'),
           },
         },
         externals: {
