@@ -79,6 +79,7 @@ describe('Create React App E2E Test', () => {
 
   describe('fab build tests', () => {
     let server_process: ExecaChildProcess | null = null
+    let port: number
 
     const cancelServer = () => {
       console.log('CANCELLING')
@@ -115,9 +116,12 @@ describe('Create React App E2E Test', () => {
       return stdout
     }
 
-    it('should return a static page', async () => {
-      const port = getPort()
+    beforeAll(async () => {
+      port = getPort()
       await createServer(port)
+    })
+
+    it('should return a static page', async () => {
       expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
 
       const homepage_response = await request('', '/', port)
@@ -127,8 +131,6 @@ describe('Create React App E2E Test', () => {
     })
 
     it('should return a dynamic page', async () => {
-      const port = getPort()
-      await createServer(port)
       expect(await request('-I', '/dynamic', port)).toContain(`HTTP/1.1 200 OK`)
 
       const dynamic_response = await request('', '/dynamic', port)
@@ -147,8 +149,6 @@ describe('Create React App E2E Test', () => {
     })
 
     it('should render a page with a parameter in the url', async () => {
-      const port = getPort()
-      await createServer(port)
       expect(await request('-I', '/background/300', port)).toContain(`HTTP/1.1 200 OK`)
       expect(await request('-I', '/background/400', port)).toContain(`HTTP/1.1 200 OK`)
 
@@ -160,8 +160,6 @@ describe('Create React App E2E Test', () => {
     })
 
     it('should render the NextJS error page', async () => {
-      const port = getPort()
-      await createServer(port)
       expect(await request('-I', '/lol', port)).toContain(`404`)
 
       const error_page = await request('', '/lol', port)
