@@ -11,7 +11,7 @@ const Bill = ({ size }) => (
     <Nav />
 
     <div className="background">
-      Rendered with a background of size ${size}
+      {`Rendered with a background of size ${size}`}
     </div>
 
     <style jsx>{`

@@ -133,15 +133,39 @@ describe('Create React App E2E Test', () => {
 
       const dynamic_response = await request('', '/dynamic', port)
       expect(dynamic_response).toContain(`This page was rendered on the server`)
-      const [_, number] = dynamic_response.match(/random number of (\d\.\d+)/)!
+      const [_, number] = dynamic_response.match(/random number of[ <!\->]*(\d\.\d+)/)!
       expect(parseFloat(number)).toBeGreaterThanOrEqual(0)
       expect(parseFloat(number)).toBeLessThan(1)
 
       const second_response = await request('', '/dynamic', port)
-      const [__, other_number] = second_response.match(/random number of (\d\.\d+)/)!
+      const [__, other_number] = second_response.match(
+        /random number of[ <!\->]*(\d\.\d+)/
+      )!
       expect(number).not.toEqual(other_number)
       expect(parseFloat(other_number)).toBeGreaterThanOrEqual(0)
       expect(parseFloat(other_number)).toBeLessThan(1)
+    })
+
+    it('should render a page with a parameter in the url', async () => {
+      const port = getPort()
+      await createServer(port)
+      expect(await request('-I', '/background/300', port)).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/background/400', port)).toContain(`HTTP/1.1 200 OK`)
+
+      const response_300 = await request('', '/background/300', port)
+      expect(response_300).toContain(`Rendered with a background of size 300`)
+
+      const response_400 = await request('', '/background/400', port)
+      expect(response_400).toContain(`Rendered with a background of size 400`)
+    })
+
+    it('should render the NextJS error page', async () => {
+      const port = getPort()
+      await createServer(port)
+      expect(await request('-I', '/lol', port)).toContain(`404`)
+
+      const error_page = await request('', '/lol', port)
+      expect(error_page).toContain(`This page could not be found`)
     })
 
     afterAll(() => {
