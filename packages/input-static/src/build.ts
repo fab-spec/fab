@@ -11,12 +11,16 @@ export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
   proto_fab,
   config_path
 ) => {
-  const dir = relativeToConfig(config_path, args.dir)
+  const { dir } = args
+  console.log({ dir })
 
   if (!dir) {
     throw new InvalidConfigError(`@fab/input-static requires an argument of 'dir'.`)
   }
-  if (!(await fs.pathExists(dir))) {
+
+  const abs_dir = relativeToConfig(config_path, dir, false)
+
+  if (!(await fs.pathExists(abs_dir))) {
     throw new InvalidConfigError(
       `@fab/input-static specifies a 'dir' of '${dir}', which doesn't exist.`
     )
@@ -28,13 +32,16 @@ export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
   }
 
   console.log(`I am input static! Reading files from ${dir}`)
-  const files = await globby([`**/*`], { cwd: dir })
+  const files = await globby([`**/*`], { cwd: abs_dir })
 
   console.log(`Reading their contents`)
 
   await Promise.all(
     files.map(async (filename) => {
-      proto_fab.files!.set('/' + filename, await fs.readFile(filename, 'utf8'))
+      proto_fab.files!.set(
+        '/' + filename,
+        await fs.readFile(path.join(abs_dir, filename), 'utf8')
+      )
     })
   )
 }
