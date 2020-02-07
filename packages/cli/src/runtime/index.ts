@@ -33,10 +33,11 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
     if (!response) continue
 
     if (response instanceof Response) {
-      return response_interceptors.reduce(
-        (response, interceptor) => interceptor(response),
-        response
-      )
+      let response_in_chain = response
+      for (const interceptor of response_interceptors) {
+        response_in_chain = await interceptor(response_in_chain)
+      }
+      return response_in_chain
     }
 
     const directive = response as Directive
