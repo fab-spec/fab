@@ -1,6 +1,7 @@
 import * as tmp from 'tmp-promise'
 import * as fs from 'fs-extra'
 import { shell, cmd } from '../utils'
+import { ExecaChildProcess } from 'execa'
 
 /*
 it.skip('should allow creation of a new NextJS project into a FAB', async () => {
@@ -56,7 +57,7 @@ describe('Create React App E2E Test', () => {
     expect(files_after_fab_init).toMatch('fab.config.json5')
     expect(files_after_fab_init).toMatch('next.config.js')
 
-    await shell(`cp -R ${__dirname}/fixtures/nextjs/* ${cwd}/pages`)
+    await shell(`cp -R ${__dirname}/fixtures/nextjs/pages ${cwd}`)
 
     const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
     package_json.scripts = {
@@ -74,5 +75,77 @@ describe('Create React App E2E Test', () => {
 
     const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_build).toMatch('fab.zip')
+  })
+
+  describe('fab build tests', () => {
+    let server_process: ExecaChildProcess | null = null
+
+    const cancelServer = () => {
+      console.log('CANCELLING')
+      console.log({ server_process: server_process?.constructor?.name })
+      if (server_process) {
+        try {
+          server_process.cancel()
+        } catch (e) {
+          console.log('CANCELLED')
+        }
+        server_process = null
+      }
+    }
+
+    const createServer = async (port: number) => {
+      cancelServer()
+      await shell(`rm -f fab.zip`, { cwd })
+      await shell(`yarn fab:build`, { cwd })
+
+      const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
+      expect(files_after_fab_build).toMatch('fab.zip')
+
+      server_process = cmd(`yarn fab:serve --port=${port}`, { cwd })
+      // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)
+      await Promise.race([
+        server_process,
+        new Promise((resolve) => setTimeout(resolve, 1000)),
+      ])
+    }
+
+    const request = async (args: string, path: string, port: number) => {
+      const curl_cmd = `curl ${args} --retry 5 --retry-connrefused http://localhost:${port}`
+      const { stdout } = await shell(curl_cmd + path, { cwd })
+      return stdout
+    }
+
+    it('should return a static page', async () => {
+      const port = getPort()
+      await createServer(port)
+      expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
+
+      const homepage_response = await request('', '/', port)
+      expect(homepage_response).toContain(`<!DOCTYPE html>`)
+      expect(homepage_response).toContain(`window.FAB_SETTINGS`)
+      expect(homepage_response).toContain(`"__fab_server":"@fab/server"`)
+    })
+
+    it('should return a dynamic page', async () => {
+      const port = getPort()
+      await createServer(port)
+      expect(await request('-I', '/dynamic', port)).toContain(`HTTP/1.1 200 OK`)
+
+      const dynamic_response = await request('', '/dynamic', port)
+      expect(dynamic_response).toContain(`This page was rendered on the server`)
+      const [_, number] = dynamic_response.match(/random number of (\d\.\d+)/)!
+      expect(parseFloat(number)).toBeGreaterThanOrEqual(0)
+      expect(parseFloat(number)).toBeLessThan(1)
+
+      const second_response = await request('', '/dynamic', port)
+      const [__, other_number] = dynamic_response.match(/random number of (\d\.\d+)/)!
+      expect(number).not.toEqual(other_number)
+      expect(parseFloat(other_number)).toBeGreaterThanOrEqual(0)
+      expect(parseFloat(other_number)).toBeLessThan(1)
+    })
+
+    afterAll(() => {
+      cancelServer()
+    })
   })
 })
