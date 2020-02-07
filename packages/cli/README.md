@@ -34,10 +34,30 @@ USAGE
 
 <!-- commands -->
 
+- [`fab build`](#fab-build)
 - [`fab deploy [FILE]`](#fab-deploy-file)
 - [`fab help [COMMAND]`](#fab-help-command)
 - [`fab init`](#fab-init)
 - [`fab serve [FILE]`](#fab-serve-file)
+
+## `fab build`
+
+describe the command here
+
+```
+USAGE
+  $ fab build
+
+OPTIONS
+  -c, --config=config  [default: fab.config.json5] Path to config file
+  -h, --help           show CLI help
+
+EXAMPLES
+  $ fab build
+  $ fab build --config=fab.config.json5
+```
+
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.4/lib/commands/build.js)_
 
 ## `fab deploy [FILE]`
 
