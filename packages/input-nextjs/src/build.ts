@@ -84,20 +84,6 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
         externals: {
           '@ampproject/toolbox-optimizer': '@ampproject/toolbox-optimizer',
         },
-        // module: {
-        //   rules: [
-        //     {
-        //       test: /\.m?js$/,
-        //       exclude: /node_modules/,
-        //       use: {
-        //         loader: require.resolve('@sucrase/webpack-loader'),
-        //         options: {
-        //           transforms: ['typescript', 'imports']
-        //         }
-        //       }
-        //     },
-        //   ]
-        // }
       },
       (err, stats) => {
         if (err || stats.hasErrors()) {
