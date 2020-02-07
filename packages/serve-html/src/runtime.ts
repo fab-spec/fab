@@ -58,7 +58,7 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
 
     if (resolved_fallback) {
       return {
-        interceptResponse(response: Response) {
+        async interceptResponse(response: Response) {
           return response.status === 404
             ? render(htmls[resolved_fallback], settings)
             : response

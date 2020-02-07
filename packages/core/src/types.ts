@@ -65,7 +65,7 @@ export type FabRequestResponder = (
   context: FabRequestContext
 ) => Promise<Response | undefined | Directive>
 
-export type ResponseInterceptor = (response: Response) => Response
+export type ResponseInterceptor = (response: Response) => Promise<Response>
 
 export type Directive = {
   interceptResponse?: ResponseInterceptor

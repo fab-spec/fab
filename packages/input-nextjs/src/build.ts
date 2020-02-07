@@ -1,12 +1,14 @@
 import { InputNextJSArgs, InputNextJSMetadata } from './types'
 import { FabBuildStep } from '@fab/core'
 import path from 'path'
-import { InvalidConfigError, log } from '@fab/cli'
+import { InvalidConfigError, _log } from '@fab/cli'
 import { preflightChecks } from './preflightChecks'
 import globby from 'globby'
 import fs from 'fs-extra'
 import generateRenderer from './generateRenderer'
 import webpack from 'webpack'
+
+const log = _log(`[💚@fab/input-nextjs💚] `)
 
 // @ts-ignore
 import md5dir from 'md5-dir/promise'
@@ -46,6 +48,8 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
       )
     })
   )
+
+  log(`Found 💛${html_files.length} static html pages💛.`)
 
   const cache_dir = path.join(config_dir, '.fab', '.cache')
   const render_code_file = path.join(
@@ -127,8 +131,10 @@ async function getRenderCode(
   }
 
   log(`Finding all dynamic NextJS entry points`)
-  const js_renderers = await globby([`**/*.js`, `!_*`], { cwd: pages_dir })
+  const js_renderers = await globby([`**/*.js`], { cwd: pages_dir })
   const render_code = await generateRenderer(js_renderers, pages_dir)
+
+  log(`Found 💛${js_renderers.length} dynamic pages💛.`)
 
   // Write out the cache while cleaning out any old caches
   await fs.ensureDir(cache_dir)
