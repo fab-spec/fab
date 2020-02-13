@@ -161,6 +161,7 @@ describe('Create React App E2E Test', () => {
 
       const config = await JSON5Config.readFrom(`${cwd}/fab.config.json5`)
       config.data.settings!.production.E2E_TEST = 'extremely working!'
+      config.data.settings!.production.OTHER_SETTING = 'production value'
       await config.write(`${cwd}/fab.config.json5`)
 
       await buildFab()
@@ -175,6 +176,7 @@ describe('Create React App E2E Test', () => {
       const homepage_response = await request('', '/', port)
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
       expect(homepage_response).toContain(`"E2E_TEST":"extremely working!"`)
+      expect(homepage_response).toContain(`"OTHER_SETTING":"production value"`)
 
       config.data.settings!.staging = { E2E_TEST: 'totes overridden!' }
       await config.write(`${cwd}/fab.config.json5`)
@@ -192,6 +194,7 @@ describe('Create React App E2E Test', () => {
       expect(staging_response).toContain(`<!DOCTYPE html>`)
       expect(staging_response).toContain(`"E2E_TEST":"totes overridden!"`)
       expect(staging_response).not.toContain(`"E2E_TEST":"extremely working!"`)
+      expect(staging_response).toContain(`"OTHER_SETTING":"production value"`)
     })
 
     afterAll(() => {
