@@ -38,12 +38,14 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
 
   serialisable(): FabMetadata {
     const file_metadata: FabFileMetadata = {}
-    for (const [filename, contents] of this.files.entries()) {
-      file_metadata[filename] = {
-        content_type: getContentType(filename),
-        content_length: contents.length,
-      }
-    }
+    Array.from(this.files.keys())
+      .sort()
+      .forEach((filename) => {
+        file_metadata[filename] = {
+          content_type: getContentType(filename),
+          content_length: this.files.get(filename)!.length,
+        }
+      })
     return {
       file_metadata,
       plugin_metadata: this.metadata,

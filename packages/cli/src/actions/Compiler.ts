@@ -1,10 +1,10 @@
-import { ProtoFab } from '@fab/core'
+import { ProtoFab, FabConfig } from '@fab/core'
 import { log } from '../helpers'
 import { BuildFailedError } from '../errors'
 import { rollupCompile } from '../helpers/rollup'
 
 export class Compiler {
-  static async compile(proto_fab: ProtoFab, render_plugins: string[]) {
+  static async compile(config: FabConfig, proto_fab: ProtoFab, render_plugins: string[]) {
     console.log("It's compilin' time!")
 
     const warnings: string[] = []
@@ -17,6 +17,7 @@ export class Compiler {
         ...proto_fab.hypotheticals,
         'user-defined-pipeline': generatePipelineJs(render_plugins),
         'fab-metadata': generateFabMetadataJs(proto_fab),
+        'production-settings': generateProductionSettings(config),
       },
       {
         onwarn(warning, handler) {
@@ -62,5 +63,13 @@ function generatePipelineJs(plugin_runtimes: string[]) {
 function generateFabMetadataJs(proto_fab: ProtoFab) {
   return `
     export const fab_metadata = ${proto_fab.toJSON()};
+  `
+}
+
+function generateProductionSettings(config: FabConfig) {
+  return `
+    export const production_settings = ${JSON.stringify(
+      config.settings?.production || {}
+    )}
   `
 }

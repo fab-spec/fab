@@ -45,7 +45,7 @@ export default class Builder {
     }
     console.log([runtime_plugins])
 
-    await Compiler.compile(proto_fab, runtime_plugins)
+    await Compiler.compile(config, proto_fab, runtime_plugins)
     await Generator.generate(proto_fab)
   }
 

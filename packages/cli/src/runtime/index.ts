@@ -17,6 +17,8 @@ import { render as render_404 } from './404'
 import { runtimes } from 'user-defined-pipeline'
 // @ts-ignore
 import { fab_metadata } from 'fab-metadata'
+// @ts-ignore
+import { production_settings } from 'production-settings'
 import { Directive, ResponseInterceptor } from '@fab/core/src'
 
 const pipeline = [...(runtimes as FabPluginRuntime[]), render_404].map((runtime) =>
@@ -55,7 +57,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 }
 
 export const metadata: FabSpecMetadata = {
-  production_settings: {},
+  production_settings,
 }
 
 /* Legacy support for env settings */
