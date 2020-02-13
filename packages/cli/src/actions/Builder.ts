@@ -3,10 +3,6 @@ import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { log, isRelative, relativeToConfig } from '../helpers'
 import { BuildFailedError, InvalidConfigError } from '../errors'
-import { rollupCompile } from '../helpers/rollup'
-// @ts-ignore
-import nodeEval from 'node-eval'
-import * as path from 'path'
 
 const safeResolve = (path: string) => {
   try {

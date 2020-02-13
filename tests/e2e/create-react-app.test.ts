@@ -79,10 +79,10 @@ describe('Create React App E2E Test', () => {
       cancelServer()
 
       server_process = cmd(`yarn fab:serve --port=${port} ${args}`, { cwd })
-      // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)
+      // See if `server_process` explodes in the first 2 seconds (e.g. if the port is in use)
       await Promise.race([
         server_process,
-        new Promise((resolve) => setTimeout(resolve, 1000)),
+        new Promise((resolve) => setTimeout(resolve, 2000)),
       ])
     }
 
