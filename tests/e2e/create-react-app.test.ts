@@ -1,9 +1,11 @@
 import * as tmp from 'tmp-promise'
 import * as fs from 'fs-extra'
 import { shell, cmd } from '../utils'
-import * as execa from 'execa'
 import { ExecaChildProcess } from 'execa'
 import JSON5Config from '@fab/cli/lib/helpers/JSON5Config'
+
+// @ts-ignore
+import md5file from 'md5-file/promise'
 
 let next_port = 3310
 const getPort = () => next_port++
@@ -73,20 +75,23 @@ describe('Create React App E2E Test', () => {
       }
     }
 
-    const createServer = async (port: number) => {
+    const createServer = async (port: number, args?: string) => {
       cancelServer()
-      await shell(`rm -f fab.zip`, { cwd })
-      await shell(`yarn fab:build`, { cwd })
 
-      const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
-      expect(files_after_fab_build).toMatch('fab.zip')
-
-      server_process = cmd(`yarn fab:serve --port=${port}`, { cwd })
+      server_process = cmd(`yarn fab:serve --port=${port} ${args}`, { cwd })
       // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)
       await Promise.race([
         server_process,
         new Promise((resolve) => setTimeout(resolve, 1000)),
       ])
+    }
+
+    const buildFab = async () => {
+      await shell(`rm -f fab.zip`, { cwd })
+      await shell(`yarn fab:build`, { cwd })
+
+      const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
+      expect(files_after_fab_build).toMatch('fab.zip')
     }
 
     const request = async (args: string, path: string, port: number) => {
@@ -96,6 +101,7 @@ describe('Create React App E2E Test', () => {
     }
 
     it('should return a 200 on / and /hello', async () => {
+      await buildFab()
       const port = getPort()
       await createServer(port)
       expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
@@ -132,6 +138,7 @@ describe('Create React App E2E Test', () => {
       config.data.plugins['./fab-plugins/hello-world'] = {}
       await config.write(`${cwd}/fab.config.json5`)
 
+      await buildFab()
       const port = getPort()
       await createServer(port)
       expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
@@ -145,6 +152,46 @@ describe('Create React App E2E Test', () => {
       const hello_response = await request('', '/hello', port)
       expect(hello_response).not.toEqual(homepage_response)
       expect(hello_response).toContain('HELLO WORLD!')
+    })
+
+    it('should reflect settings changes', async () => {
+      await buildFab()
+      const first_fab_md5 = await md5file(`${cwd}/fab.zip`)
+      console.log({ first_fab_md5 })
+
+      const config = await JSON5Config.readFrom(`${cwd}/fab.config.json5`)
+      config.data.settings!.production.E2E_TEST = 'extremely working!'
+      await config.write(`${cwd}/fab.config.json5`)
+
+      await buildFab()
+      const second_fab_md5 = await md5file(`${cwd}/fab.zip`)
+      console.log({ second_fab_md5 })
+      expect(second_fab_md5).not.toEqual(first_fab_md5)
+
+      const port = getPort()
+      await createServer(port)
+      expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
+
+      const homepage_response = await request('', '/', port)
+      expect(homepage_response).toContain(`<!DOCTYPE html>`)
+      expect(homepage_response).toContain(`"E2E_TEST":"extremely working!"`)
+
+      config.data.settings!.staging = { E2E_TEST: 'totes overridden!' }
+      await config.write(`${cwd}/fab.config.json5`)
+      await buildFab()
+      const third_fab_md5 = await md5file(`${cwd}/fab.zip`)
+      console.log({ third_fab_md5 })
+      // Changing non-production settings doesn't change the bundle id
+      expect(third_fab_md5).toEqual(second_fab_md5)
+
+      const next_port = getPort()
+      await createServer(next_port, '--environment=staging')
+      expect(await request('-I', '/', next_port)).toContain(`HTTP/1.1 200 OK`)
+
+      const staging_response = await request('', '/', next_port)
+      expect(staging_response).toContain(`<!DOCTYPE html>`)
+      expect(staging_response).toContain(`"E2E_TEST":"totes overridden!"`)
+      expect(staging_response).not.toContain(`"E2E_TEST":"extremely working!"`)
     })
 
     afterAll(() => {
