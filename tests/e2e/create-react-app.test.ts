@@ -185,7 +185,7 @@ describe('Create React App E2E Test', () => {
       expect(third_fab_md5).toEqual(second_fab_md5)
 
       const next_port = getPort()
-      await createServer(next_port, '--environment=staging')
+      await createServer(next_port, '--env=staging')
       expect(await request('-I', '/', next_port)).toContain(`HTTP/1.1 200 OK`)
 
       const staging_response = await request('', '/', next_port)

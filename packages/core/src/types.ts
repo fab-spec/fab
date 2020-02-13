@@ -89,6 +89,8 @@ export type ServerArgs = {
   port: string
   cert: string | undefined
   key: string | undefined
+  env: string | undefined
+  config: string
 }
 
 export enum SandboxType {
