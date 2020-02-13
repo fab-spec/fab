@@ -5,7 +5,7 @@ import { ExecaChildProcess } from 'execa'
 import JSON5Config from '@fab/cli/lib/helpers/JSON5Config'
 
 // @ts-ignore
-import md5file from 'md5-file/promise'
+import * as md5file from 'md5-file/promise'
 
 let next_port = 3310
 const getPort = () => next_port++
@@ -75,7 +75,7 @@ describe('Create React App E2E Test', () => {
       }
     }
 
-    const createServer = async (port: number, args?: string) => {
+    const createServer = async (port: number, args: string = '') => {
       cancelServer()
 
       server_process = cmd(`yarn fab:serve --port=${port} ${args}`, { cwd })
@@ -95,7 +95,7 @@ describe('Create React App E2E Test', () => {
     }
 
     const request = async (args: string, path: string, port: number) => {
-      const curl_cmd = `curl ${args} --retry 5 --retry-connrefused http://localhost:${port}`
+      const curl_cmd = `curl ${args} --retry 2 --retry-connrefused http://localhost:${port}`
       const { stdout } = await shell(curl_cmd + path, { cwd })
       return stdout
     }
