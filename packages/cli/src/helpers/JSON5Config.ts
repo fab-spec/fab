@@ -30,11 +30,8 @@ export default class JSON5Config {
     return new JSON5Config(str_contents, data)
   }
 
-  static generate(data: FabConfig) {
-    return new JSON5Config(
-      prettier.format(jju.stringify(data), { parser: 'json-stringify' }),
-      data
-    )
+  static generate(data: string) {
+    return new JSON5Config(data, jju.parse(data))
   }
 
   constructor(str_contents: string, data: FabConfig) {
@@ -59,7 +56,7 @@ export default class JSON5Config {
     await fs.writeFile(
       file_path,
       prettier.format(jju.update(this.str_contents, this.data), {
-        parser: 'json-stringify',
+        parser: 'json5',
       })
     )
   }

@@ -90,10 +90,23 @@ const Frameworks: {
   },
 }
 
-const BASE_CONFIG: FabConfig = {
-  plugins: {},
-  settings: {},
+const BASE_CONFIG: string = `// For more information, see https://fab.dev/kb/configuration
+{
+  plugins: {
+    // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins
+  },
+  settings: {
+    // This section defines the variables that are injected, depending on environment.
+    // See https://fab.dev/kb/settings for more info.
+    production: {
+      // This environment is special. These variables get compiled into the FAB itself,
+      // allowing for many production-specific optimisations. See https://fab.dev/kb/production
+      // Example setting:
+      // API_URL: 'https://api.example.com/graphql'
+    },
+  },
 }
+`
 
 type StringMap = {
   [key: string]: string
