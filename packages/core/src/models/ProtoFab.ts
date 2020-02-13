@@ -6,6 +6,7 @@ import {
   PluginMetadata,
 } from '../types'
 import { filenameOutsideFabLocations, getContentType } from '../helpers'
+import jsonKeysSort from 'json-keys-sort'
 
 export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   files: FabFiles
@@ -38,14 +39,12 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
 
   serialisable(): FabMetadata {
     const file_metadata: FabFileMetadata = {}
-    Array.from(this.files.keys())
-      .sort()
-      .forEach((filename) => {
-        file_metadata[filename] = {
-          content_type: getContentType(filename),
-          content_length: this.files.get(filename)!.length,
-        }
-      })
+    for (const [filename, contents] of this.files.entries()) {
+      file_metadata[filename] = {
+        content_type: getContentType(filename),
+        content_length: contents.length,
+      }
+    }
     return {
       file_metadata,
       plugin_metadata: this.metadata,
@@ -53,6 +52,6 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   }
 
   toJSON(): string {
-    return JSON.stringify(this.serialisable())
+    return JSON.stringify(jsonKeysSort.sort(this.serialisable()))
   }
 }
