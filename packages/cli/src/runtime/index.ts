@@ -19,7 +19,7 @@ import { runtimes } from 'user-defined-pipeline'
 import { fab_metadata } from 'fab-metadata'
 // @ts-ignore
 import { production_settings } from 'production-settings'
-import { Directive, ResponseInterceptor } from '@fab/core/src'
+import { Directive, ResponseInterceptor } from '@fab/core'
 
 const pipeline = [...(runtimes as FabPluginRuntime[]), render_404].map((runtime) =>
   runtime({}, (fab_metadata as FabMetadata).plugin_metadata)

@@ -2,7 +2,7 @@ import { Command, flags } from '@oclif/command'
 import { SandboxType, ServerArgs } from '@fab/core'
 import Server from '@fab/server'
 import { log } from '../helpers'
-import { DEFAULT_CONFIG_FILENAME } from '@fab/core/src'
+import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
 
 export default class Serve extends Command {
   static description = 'fab serve: Serve a FAB in a local NodeJS Express server'

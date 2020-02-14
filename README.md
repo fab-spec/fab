@@ -2,6 +2,8 @@
 
 [![Join discussion on Discord](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
 
+**NOTE: these docs are for the `next` branch, which is in public pre-release, and active development.** For the docs related to FAB v0, (e.g. standalone tools like `@fab/stati://fab.devc` & `@fab/compile`) which are now in maintenance mode, see [fab-docs--production--v0.branch.linc-preview.sh](https://fab-docs--production--v0.branch.linc-preview.sh/).
+
 See current version of the docs at https://fab-docs--production--next.branch.linc-preview.sh/, or [join the discussion on Discord](https://discord.gg/Qvj3pJY)
 
 # FAB Specification
