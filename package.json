@@ -54,7 +54,7 @@
     "typescript": "~3.7.2"
   },
   "resolutions": {
-    "shift-reducer": "6.0.0"
+    "bl@~0.8.1": "0.9.5"
   },
   "version": "0.0.0"
 }
