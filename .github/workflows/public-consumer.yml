@@ -30,6 +30,7 @@ jobs:
       run: |
         cd tests
         yarn
+        yarn add @fab/cli
         yarn test
       env:
         CI: true
