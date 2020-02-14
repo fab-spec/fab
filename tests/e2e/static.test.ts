@@ -10,6 +10,7 @@ describe('dir of static assets', () => {
     await shell(`cp -R ${__dirname}/fixtures/static ${opts.cwd}`)
 
     if (process.env.PUBLIC_PACKAGES) {
+      await shell('npm init -y', opts)
       await shell('yarn add @fab/input-static', opts)
     }
   })

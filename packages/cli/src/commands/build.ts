@@ -4,7 +4,7 @@ import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
 import Builder from '../actions/Builder'
 
 export default class Build extends Command {
-  static description = 'describe the command here'
+  static description = 'Generate a FAB given the config (usually in fab.config.json5)'
 
   static examples = [`$ fab build`, `$ fab build --config=fab.config.json5`]
 
