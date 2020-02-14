@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit",
     "version:patch": "lerna version patch --exact --force-publish --yes",
     "version:prerelease": "lerna version prerelease --exact --force-publish --yes",
-    "publish:latest": "lerna publish from-git --yes --dist-tag latest",
+    "publish:latest": "lerna publish from-package --yes --dist-tag latest",
     "publish:next": "lerna publish from-package --yes --dist-tag next"
   },
   "husky": {
