@@ -14,9 +14,10 @@
     "test": "lerna run test --stream --parallel",
     "test:watch": "lerna run test --stream --parallel -- --watch",
     "typecheck": "tsc --noEmit",
+    "version:patch": "lerna version patch --exact --force-publish --yes",
     "version:prerelease": "lerna version prerelease --exact --force-publish --yes",
-    "dist-tag:latest": "lerna publish from-git --yes --dist-tag latest",
-    "publish:prerelease": "lerna publish from-package --yes --dist-tag next"
+    "publish:latest": "lerna publish from-git --yes --dist-tag latest",
+    "publish:next": "lerna publish from-package --yes --dist-tag next"
   },
   "husky": {
     "hooks": {
