@@ -2,7 +2,7 @@ import * as tmp from 'tmp-promise'
 import * as fs from 'fs-extra'
 import { shell, cmd } from '../utils'
 import { ExecaChildProcess } from 'execa'
-import JSON5Config from '@fab/cli/lib/helpers/JSON5Config'
+import { JSON5Config } from '@fab/cli'
 
 // @ts-ignore
 import * as md5file from 'md5-file/promise'
