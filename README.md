@@ -3,11 +3,9 @@ name: Home
 route: /
 ---
 
-## *Note:* THESE DOCS ARE OUT OF DATE. A NEW VERSION HAS APPEARED.
-
-The FAB v1 docs are now live at http://fab.dev.
-
 ***<h3 align="center"><br/><img width="461" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53997145-306ba300-418f-11e9-91d0-b44e6df85d4c.png"/></h3>***
+
+**NOTE: these docs are for the `v0` branch, which is now in maintenance-only mode.** For the docs related to FAB v1, which is now in public alpha, see [https://fab.dev](https://fab.dev)
 
 # FAB Specification
 
