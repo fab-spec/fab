@@ -13,6 +13,9 @@ describe('dir of static assets', () => {
       await shell('npm init -y', opts)
       await shell('yarn add @fab/input-static', opts)
     }
+
+    await shell(`ls -al node_modules`, opts)
+    await shell(`ls -al node_modules/@fab`, opts)
   })
 
   describe('failure cases', () => {
