@@ -5,6 +5,17 @@ export default {
   files: ['./{readmes,kb,guides}/*.{md|mdx}'],
   themesDir: './',
   public: 'public/',
+  menu: [
+    'Introduction', // auto ordered menu "Introduction"
+    {
+      name: 'Guides', // manually oredered menu "Guides"
+      menu: ['Theming'], // oredered items for "Guides"
+    },
+    {
+      name: 'Components', // manually oredered menu "Components"
+      menu: ['Grid'], // // oredered items for "Components"
+    },
+  ],
   themeConfig: {
     colors: { sidebar: { bg: '#EEF1F5' } },
     styles: {

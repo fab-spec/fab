@@ -25,7 +25,6 @@ const copyHomePackageReadmeToDocs = (source) => {
   const newContent = `---
 name: 'Home'
 route: '/'
-order: 0
 ---
 ${contentWithoutFrontMatter}
 `
