@@ -8,6 +8,10 @@ describe('dir of static assets', () => {
     const tmp_dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
     opts.cwd = `${tmp_dir.path}/static`
     await shell(`cp -R ${__dirname}/fixtures/static ${opts.cwd}`)
+
+    if (process.env.PUBLIC_PACKAGES) {
+      await shell('yarn add @fab/input-static', opts)
+    }
   })
 
   describe('failure cases', () => {
