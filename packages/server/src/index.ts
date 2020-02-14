@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 
 import { ServerArgs, SandboxType, getContentType } from '@fab/core'
-import { InvalidConfigError } from '@fab/cli'
+import { InvalidConfigError, JSON5Config } from '@fab/cli'
 import { readFilesFromZip } from './utils'
 import v8_sandbox from './sandboxes/v8-isolate'
 import node_vm_sandbox from './sandboxes/node-vm'
@@ -14,22 +14,28 @@ import { Request as NodeFetchRequest } from 'node-fetch'
 export default class Server {
   private filename: string
   private port: number
+  private config: string
+  private env: string | undefined
 
   constructor(filename: string, args: ServerArgs) {
     this.filename = filename
     this.port = parseInt(args.port)
-
     //  TODO: cert stuff
 
     if (isNaN(this.port)) {
       throw new InvalidConfigError(`Invalid port, expected a number, got '${args.port}'`)
     }
+
+    this.config = args.config
+    this.env = args.env
   }
 
   async serve(runtimeType: SandboxType) {
     if (!(await fs.pathExists(this.filename))) {
       throw new InvalidConfigError(`Could not find file '${this.filename}'`)
     }
+
+    const settings_overrides = await this.getSettingsOverrides()
 
     const files = await readFilesFromZip(this.filename)
     console.log(files)
@@ -84,7 +90,8 @@ export default class Server {
                 {
                   __fab_server: '@fab/server',
                 },
-                production_settings
+                production_settings,
+                settings_overrides
               )
             )
             console.log({ status: fetch_res.status })
@@ -117,5 +124,18 @@ export default class Server {
     })
 
     console.log(`Listening on port ${this.port}`)
+  }
+
+  private async getSettingsOverrides() {
+    if (!this.env) return {}
+
+    const config = await JSON5Config.readFrom(this.config)
+    const overrides = config.data.settings?.[this.env]
+    if (!overrides) {
+      throw new InvalidConfigError(
+        `No environment '${this.env}' found in ${this.config}!`
+      )
+    }
+    return overrides
   }
 }

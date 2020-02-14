@@ -14,8 +14,10 @@
     "test": "lerna run test --stream --parallel",
     "test:watch": "lerna run test --stream --parallel -- --watch",
     "typecheck": "tsc --noEmit",
+    "version:patch": "lerna version patch --exact --force-publish --yes",
     "version:prerelease": "lerna version prerelease --exact --force-publish --yes",
-    "publish:prerelease": "lerna publish from-package --yes --dist-tag next"
+    "publish:latest": "lerna publish from-package --yes --dist-tag latest",
+    "publish:next": "lerna publish from-package --yes --dist-tag next"
   },
   "husky": {
     "hooks": {
@@ -52,7 +54,7 @@
     "typescript": "~3.7.2"
   },
   "resolutions": {
-    "shift-reducer": "6.0.0"
+    "bl@~0.8.1": "0.9.5"
   },
   "version": "0.0.0"
 }

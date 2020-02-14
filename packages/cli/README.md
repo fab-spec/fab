@@ -21,7 +21,7 @@ $ npm install -g @fab/cli
 $ fab COMMAND
 running command...
 $ fab (-v|--version|version)
-@fab/cli/0.0.7-alpha.4 darwin-x64 node-v13.6.0
+@fab/cli/0.0.7-alpha.7 darwin-x64 node-v13.6.0
 $ fab --help [COMMAND]
 USAGE
   $ fab COMMAND
@@ -57,7 +57,7 @@ EXAMPLES
   $ fab build --config=fab.config.json5
 ```
 
-_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.4/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.7/lib/commands/build.js)_
 
 ## `fab deploy [FILE]`
 
@@ -82,7 +82,7 @@ EXAMPLE
   $ fab-cf-workers deploy fab.zip
 ```
 
-_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.4/lib/commands/deploy.js)_
+_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.7/lib/commands/deploy.js)_
 
 ## `fab help [COMMAND]`
 
@@ -121,7 +121,7 @@ EXAMPLES
   $ fab init --config=fab.config.json5
 ```
 
-_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.4/lib/commands/init.js)_
+_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.7/lib/commands/init.js)_
 
 ## `fab serve [FILE]`
 
@@ -132,18 +132,28 @@ USAGE
   $ fab serve [FILE]
 
 OPTIONS
+  -c, --config=config        [default: fab.config.json5] Path to config file. Only used for SETTINGS in conjunction with
+                             --env.
+
   -h, --help                 show CLI help
+
   --cert=cert                SSL certificate to use
+
+  --env=env                  Override production settings with a different environment defined in your FAB config file.
+
   --experimental-v8-sandbox  Enable experimental V8::Isolate Runtime (in development, currently non-functional)
+
   --key=key                  Key for the SSL Certificate
+
   --port=port                (required) [default: 3000] Port to use
 
 EXAMPLES
   $ fab serve fab.zip
   $ fab serve --port=3001 fab.zip
   $ fab serve --cert=local-ssl.cert --key=local-ssl.key fab.zip
+  $ fab serve --env=staging fab.zip
 ```
 
-_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.4/lib/commands/serve.js)_
+_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.7/lib/commands/serve.js)_
 
 <!-- commandsstop -->

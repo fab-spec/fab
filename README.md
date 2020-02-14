@@ -2,7 +2,7 @@
 
 [![Join discussion on Discord](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
 
-See current version of the docs at https://fab-docs--production--next.branch.linc-preview.sh/, or [join the discussion on Discord](https://discord.gg/Qvj3pJY)
+**NOTE: these docs are for the `next` branch, which is in public pre-release, and active development.** For the docs related to FAB v0, (e.g. standalone tools like `@fab/static` & `@fab/compile`) which are now in maintenance mode, see [fab-docs--production--v0.branch.linc-preview.sh](https://fab-docs--production--v0.branch.linc-preview.sh/).
 
 # FAB Specification
 
@@ -11,10 +11,6 @@ See current version of the docs at https://fab-docs--production--next.branch.lin
 They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms. Its goal is to do for frontend applications what Docker has done for infrastructure—a standard for interoperable tooling.
 
 https://github.com/fab-spec/fab
-
-## _Note:_ Major overhaul underway
-
-The FAB tooling is being rebuilt in preparation for a v1 release. See the [next](https://github.com/fab-spec/fab/tree/next) branch for latest progress.
 
 ## Overview
 

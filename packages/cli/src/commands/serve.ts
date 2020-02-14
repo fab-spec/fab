@@ -1,8 +1,8 @@
 import { Command, flags } from '@oclif/command'
 import { SandboxType, ServerArgs } from '@fab/core'
 import Server from '@fab/server'
-import { BuildFailedError } from '../errors'
 import { log } from '../helpers'
+import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
 
 export default class Serve extends Command {
   static description = 'fab serve: Serve a FAB in a local NodeJS Express server'
@@ -11,6 +11,7 @@ export default class Serve extends Command {
     `$ fab serve fab.zip`,
     `$ fab serve --port=3001 fab.zip`,
     `$ fab serve --cert=local-ssl.cert --key=local-ssl.key fab.zip`,
+    `$ fab serve --env=staging fab.zip`,
   ]
 
   static flags = {
@@ -30,6 +31,16 @@ export default class Serve extends Command {
     'experimental-v8-sandbox': flags.boolean({
       description:
         'Enable experimental V8::Isolate Runtime (in development, currently non-functional)',
+    }),
+    env: flags.string({
+      description:
+        'Override production settings with a different environment defined in your FAB config file.',
+    }),
+    config: flags.string({
+      char: 'c',
+      description:
+        'Path to config file. Only used for SETTINGS in conjunction with --env.',
+      default: DEFAULT_CONFIG_FILENAME,
     }),
   }
 
