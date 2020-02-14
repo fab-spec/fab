@@ -1,0 +1,33 @@
+name: FAB CI
+
+on:
+  push:
+    branches:
+      - next
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Globally install @fab/cli
+      run: |
+        yarn global add @fab/cli
+    - name: Run e2e tests
+      run: |
+        cd tests
+        yarn
+        yarn test
+      env:
+        CI: true
+        PUBLIC_PACKAGES: true

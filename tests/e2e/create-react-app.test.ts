@@ -24,8 +24,10 @@ describe('Create React App E2E Test', () => {
       await shell(`git reset --hard`, { cwd })
       await shell(`git clean -df`, { cwd })
     } else {
-      // Create the tmp dir (inside the workspace if on Github Actions)
-      const dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
+      // Create the tmp dir (inside the workspace if on Github Actions running locally)
+      const dir = await tmp.dir({
+        dir: !process.env.PUBLIC_PACKAGES && process.env.GITHUB_WORKSPACE,
+      })
       tmpdir = dir.path
       expect(tmpdir).toMatch('tmp')
 
@@ -43,7 +45,10 @@ describe('Create React App E2E Test', () => {
     // up with a different version of... something. I can't remember. This fixes it tho.
     await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
     await shell(`cat .env`, { cwd })
-    await shell(`fab init -y --skip-install --version=next`, { cwd })
+    await shell(
+      `fab init -y ${process.env.PUBLIC_PACKAGES ? '' : '--skip-install --version=next'}`,
+      { cwd }
+    )
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
 
