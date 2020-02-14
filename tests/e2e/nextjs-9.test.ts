@@ -21,9 +21,7 @@ describe('Create React App E2E Test', () => {
       await shell(`git clean -df`, { cwd })
     } else {
       // Create the tmp dir (inside the workspace if on Github Actions)
-      const dir = await tmp.dir({
-        dir: !process.env.PUBLIC_PACKAGES && process.env.GITHUB_WORKSPACE,
-      })
+      const dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
       tmpdir = dir.path
       expect(tmpdir).toMatch('tmp')
 

@@ -5,9 +5,7 @@ describe('dir of static assets', () => {
   const opts = { cwd: '' }
 
   beforeAll(async () => {
-    const tmp_dir = await tmp.dir({
-      dir: !process.env.PUBLIC_PACKAGES && process.env.GITHUB_WORKSPACE,
-    })
+    const tmp_dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
     opts.cwd = `${tmp_dir.path}/static`
     await shell(`cp -R ${__dirname}/fixtures/static ${opts.cwd}`)
   })
