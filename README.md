@@ -15,10 +15,6 @@ They unify **static sites, single page applications (SPAs) as well as server-ren
 
 https://github.com/fab-spec/fab
 
-## *Note:* THESE DOCS ARE OUT OF DATE. A NEW VERSION HAS APPEARED.
-
-The FAB v1 docs are now live at http://fab.dev.
-
 ## Overview
 
 <img width="100%" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/63136503-b5e46080-c015-11e9-9f69-c974e11d9528.png"/>
