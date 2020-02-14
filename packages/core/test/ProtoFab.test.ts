@@ -21,8 +21,8 @@ describe('ProtoFab', () => {
     const expected = {
       file_metadata: {
         '/index.html': {
-          content_type: 'text/html; charset=utf-8',
           content_length: 12,
+          content_type: 'text/html; charset=utf-8',
         },
       },
       plugin_metadata: {},
