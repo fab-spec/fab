@@ -14,7 +14,7 @@ describe('Build time', () => {
     }
     const proto_fab = new ProtoFab<ServeHtmlMetadata>(files)
     await build({}, proto_fab)
-    expect([...proto_fab.files.entries()]).to.deep.equal([...Object.entries(files)])
+    expect(proto_fab._getEntries()).to.deep.equal([...Object.entries(files)])
   })
 
   it('should remove HTML files from the list', async () => {
@@ -23,7 +23,7 @@ describe('Build time', () => {
     }
     const proto_fab = new ProtoFab<ServeHtmlMetadata>(files)
     await build({}, proto_fab)
-    expect([...proto_fab.files.entries()]).to.deep.equal([])
+    expect(proto_fab._getEntries()).to.deep.equal([])
   })
 
   it('should compile the HTML files into a template', async () => {

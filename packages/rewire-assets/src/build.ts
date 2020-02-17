@@ -8,7 +8,8 @@ import {
 import hasha from 'hasha'
 import path from 'path'
 import { InvalidConfigError } from '@fab/cli'
-import { isBinary } from 'istextorbinary'
+// @ts-ignore
+import { isBinaryPromise } from 'istextorbinary'
 
 export async function build(
   args: RewireAssetsArgs,
@@ -32,7 +33,10 @@ export async function build(
   const to_rename = []
   for (const [filename, contents] of proto_fab.files.entries()) {
     if (filenameOutsideFabLocations(filename)) {
-      if (contents.length > inline_threshold || isBinary(filename)) {
+      if (
+        contents.length > inline_threshold ||
+        (await isBinaryPromise(filename, contents))
+      ) {
         to_rename.push(filename)
       } else {
         to_inline.push(filename)

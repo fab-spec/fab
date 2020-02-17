@@ -20,7 +20,7 @@ describe('Build time', () => {
     }
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
     await build({}, proto_fab)
-    expect([...proto_fab.files.entries()]).to.deep.equal([...Object.entries(files)])
+    expect(proto_fab._getEntries()).to.deep.equal([...Object.entries(files)])
   })
 
   it('should ignore server file', async () => {
@@ -29,7 +29,7 @@ describe('Build time', () => {
     }
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
     await build({}, proto_fab)
-    expect([...proto_fab.files.entries()]).to.deep.equal([...Object.entries(files)])
+    expect(proto_fab._getEntries()).to.deep.equal([...Object.entries(files)])
   })
 
   it('should inline small files by default', async () => {
@@ -39,7 +39,7 @@ describe('Build time', () => {
     }
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
     await build({}, proto_fab)
-    expect([...proto_fab.files.entries()]).to.deep.equal([])
+    expect(proto_fab._getEntries()).to.deep.equal([])
     expect(proto_fab.metadata.rewire_assets.inlined_assets).to.deep.equal({
       '/index.html': {
         contents: EXAMPLES.HTML,
@@ -68,7 +68,7 @@ describe('Build time', () => {
       proto_fab
     )
 
-    expect([...proto_fab.files.entries()]).to.deep.equal([
+    expect(proto_fab._getEntries()).to.deep.equal([
       [`/_assets/main.${css_hash}.css`, EXAMPLES.CSS],
     ])
     expect(proto_fab.metadata.rewire_assets.inlined_assets).to.deep.equal({
@@ -101,7 +101,7 @@ describe('Build time', () => {
       proto_fab
     )
 
-    expect([...proto_fab.files.entries()]).to.deep.equal([
+    expect(proto_fab._getEntries()).to.deep.equal([
       [`/_assets/main.e5f6a7b8.css`, EXAMPLES.CSS],
     ])
     expect(proto_fab.metadata.rewire_assets.inlined_assets).to.deep.equal({
