@@ -20,31 +20,9 @@ https://github.com/fab-spec/fab
 👉 <em>Read more about the <a href="https://fab.dev/kb/fab-structure">FAB Structure</a></em>.
 </p>
 
-## Framework adapters
+## Getting started
 
-> **Note:** for now, you probably want to get started with [**@fab/static**](./packages/fab-static). It's a zero-config compiler for static sites with hooks to add **as much server-side logic as most apps need**.
-
-Working with one of these projects? Read the following
-
-- Create React App: [**@fab/static** — Usage with Create React App](./packages/fab-static)
-- Gatsby: [**@fab/static** — Gatsby installations](./packages/fab-static)
-- Any other static site renderer: [**@fab/static** — Usage with many HTML files](./packages/fab-static)
-- NextJS: [**@fab/nextjs**](./packages/fab-nextjs)
-- AfterJS: [**@fab/afterjs**](./packages/fab-afterjs)
-
-Thinking of writing your own adapter? Head to [**@fab/compile**](./packages/fab-compile) to understand the low-level compilation API. Then get in touch, we're happy to help!
-
-## Deployment adapters
-
-💎 FABs are **portable**. That is, once they're compiled, they can be deployed to any number of
-
-- Lambda@Edge: [**@fab/lambda-edge-packager**](https://github.com/fab-spec/lambda-edge-packager)
-- Cloudflare Workers: [**@fab/cf-workers**](./packages/fab-cf-workers)
-- NodeJS: [**@fab/serve**](./packages/fab-serve)
-- Docker: _coming soon_
-- Heroku: _coming soon_
-
-Thinking of writing your own deployment adapter? Read on to understand the runtime requirements of FABs, then check [`@fab/serve`](./packages/fab-serve) for some sample code.
+Want to try building a FAB from your project? Head to [https://fab.dev/guides/getting-started](https://fab.dev/guides/getting-started).
 
 ## The FAB format
 

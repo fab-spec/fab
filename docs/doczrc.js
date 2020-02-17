@@ -6,14 +6,14 @@ export default {
   themesDir: './',
   public: 'public/',
   menu: [
-    'Introduction', // auto ordered menu "Introduction"
+    'Home',
     {
-      name: 'Guides', // manually oredered menu "Guides"
-      menu: ['Theming'], // oredered items for "Guides"
+      name: 'Guides',
+      menu: ['Getting Started'],
     },
     {
-      name: 'Components', // manually oredered menu "Components"
-      menu: ['Grid'], // // oredered items for "Components"
+      name: 'Knowledge Base',
+      menu: ['Configuration', 'Plugins', 'Settings'],
     },
   ],
   themeConfig: {
