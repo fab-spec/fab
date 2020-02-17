@@ -19,7 +19,13 @@ export async function preflightChecks(
     `)
   }
 
-  const next_config = require(next_config_path)
+  const next_config_at_path = require(next_config_path)
+
+  const next_config =
+    typeof next_config_at_path === 'function'
+      ? next_config_at_path('', {})
+      : next_config_at_path
+
   if (next_config.target !== 'serverless') {
     throw new BuildFailedError(`Not serverless build
       NextJS project needs to be set to ${chalk.yellow('target: serverless')}
