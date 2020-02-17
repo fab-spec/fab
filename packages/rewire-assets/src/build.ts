@@ -8,6 +8,7 @@ import {
 import hasha from 'hasha'
 import path from 'path'
 import { InvalidConfigError } from '@fab/cli'
+import { isBinary } from 'istextorbinary'
 
 export async function build(
   args: RewireAssetsArgs,
@@ -31,7 +32,7 @@ export async function build(
   const to_rename = []
   for (const [filename, contents] of proto_fab.files.entries()) {
     if (filenameOutsideFabLocations(filename)) {
-      if (contents.length > inline_threshold) {
+      if (contents.length > inline_threshold || isBinary(filename)) {
         to_rename.push(filename)
       } else {
         to_inline.push(filename)
@@ -42,7 +43,7 @@ export async function build(
   const inlined_assets: InlineAssets = {}
   for (const filename of to_inline) {
     inlined_assets[filename] = {
-      contents: proto_fab.files.get(filename)!,
+      contents: proto_fab.files.get(filename)!.toString('utf8'),
       content_type: getContentType(filename),
       immutable: !!immutable_regexp.exec(filename),
     }

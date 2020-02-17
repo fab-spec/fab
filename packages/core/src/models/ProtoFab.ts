@@ -14,7 +14,12 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   hypotheticals: FabFilesObject
 
   constructor(init_files: FabFilesObject = {}, init_hypotheticals: FabFilesObject = {}) {
-    this.files = new Map(Object.entries(init_files))
+    this.files = new Map(
+      Object.entries(init_files).map(([filename, contents]) => [
+        filename,
+        Buffer.from(contents),
+      ])
+    )
     this.metadata = {} as U
     this.hypotheticals = init_hypotheticals
   }
