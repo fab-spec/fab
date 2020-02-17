@@ -7,6 +7,7 @@ import {
 } from '../types'
 import { filenameOutsideFabLocations, getContentType } from '../helpers'
 import jsonKeysSort from 'json-keys-sort'
+import { RewireAssetsMetadata } from '@fab/rewire-assets/src/types'
 
 export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   files: FabFiles
@@ -14,7 +15,12 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   hypotheticals: FabFilesObject
 
   constructor(init_files: FabFilesObject = {}, init_hypotheticals: FabFilesObject = {}) {
-    this.files = new Map(Object.entries(init_files))
+    this.files = new Map(
+      Object.entries(init_files).map(([filename, contents]) => [
+        filename,
+        Buffer.from(contents),
+      ])
+    )
     this.metadata = {} as U
     this.hypotheticals = init_hypotheticals
   }
@@ -53,5 +59,14 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
 
   toJSON(): string {
     return JSON.stringify(jsonKeysSort.sort(this.serialisable()))
+  }
+
+  // For testing
+
+  _getEntries() {
+    return [...this.files.entries()].map(([filename, contents]) => [
+      filename,
+      contents.toString('utf8'),
+    ])
   }
 }

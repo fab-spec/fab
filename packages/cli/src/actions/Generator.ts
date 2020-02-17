@@ -22,6 +22,7 @@ You might need to add @fab/rewire-assets to your 'build' config. See https://fab
     await fs.emptyDir('.fab/build')
     for (const [filename, contents] of proto_fab.files.entries()) {
       const path = `.fab/build${filename}`
+      console.log({ path, length: contents.length })
       await fs.ensureFile(path)
       await fs.writeFile(path, contents)
     }

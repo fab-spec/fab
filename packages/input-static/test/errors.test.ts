@@ -28,7 +28,7 @@ describe('@fab/input-static', () => {
 
   it('should check that it is the first plugin', async () => {
     const proto_fab = new ProtoFab<PluginMetadata>()
-    proto_fab.files.set('/a', 'something')
+    proto_fab.files.set('/a', Buffer.from('something'))
     await shouldThrow(
       () =>
         build(

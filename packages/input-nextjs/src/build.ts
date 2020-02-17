@@ -44,7 +44,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     html_files.map(async (filename) => {
       proto_fab.files!.set(
         '/' + filename,
-        await fs.readFile(path.join(pages_dir, filename), 'utf8')
+        await fs.readFile(path.join(pages_dir, filename))
       )
     })
   )

@@ -23,9 +23,11 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
       proto_fab.files.delete(filename)
 
       const $ = cheerio.load(
-        contents.replace(/{{{|{{/g, (match) =>
-          match.length === 3 ? `{{{ OPEN_TRIPLE }}}` : `{{{ OPEN_DOUBLE }}}`
-        )
+        contents
+          .toString('utf8')
+          .replace(/{{{|{{/g, (match) =>
+            match.length === 3 ? `{{{ OPEN_TRIPLE }}}` : `{{{ OPEN_DOUBLE }}}`
+          )
       )
 
       if (injections.env) {

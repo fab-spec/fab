@@ -44,7 +44,7 @@ export class Compiler {
       console.log(chunks)
     }
 
-    proto_fab.files.set('/server.js', output.code)
+    proto_fab.files.set('/server.js', Buffer.from(output.code))
   }
 }
 

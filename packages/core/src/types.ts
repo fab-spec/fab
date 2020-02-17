@@ -72,7 +72,7 @@ export type Directive = {
 }
 
 export type FabFilesObject = { [k: string]: string }
-export type FabFiles = Map<string, string>
+export type FabFiles = Map<string, Buffer>
 export type FabFileMetadata = {
   [filename: string]: {
     content_type: string
