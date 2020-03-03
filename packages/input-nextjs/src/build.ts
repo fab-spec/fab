@@ -97,10 +97,8 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
           alias: {
             fs: require.resolve('memfs'),
             path: path.join(shims_dir, 'path-with-posix'),
+            '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
           },
-        },
-        externals: {
-          '@ampproject/toolbox-optimizer': '@ampproject/toolbox-optimizer',
         },
       },
       (err, stats) => {
