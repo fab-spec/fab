@@ -27,8 +27,8 @@ export default async (src: string): Promise<FabSpecExports> => {
   }
 
   const script = new vm.Script(src)
-  const exp = {}
-  const ctx = Object.assign({}, sandbox, { module: { exports: exp } })
-  const renderer = script.runInNewContext(ctx)
-  return renderer
+  const exp: any = {}
+  const ctx = Object.assign({}, sandbox, { module: { exports: exp }, exports: exp })
+  script.runInNewContext(ctx)
+  return exp
 }

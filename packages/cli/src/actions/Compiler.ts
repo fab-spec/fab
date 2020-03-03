@@ -12,7 +12,7 @@ export class Compiler {
       output: [output, ...chunks],
     } = await rollupCompile(
       require.resolve('@fab/cli/lib/runtime'),
-      { format: 'iife', exports: 'named' },
+      { format: 'umd', exports: 'named', name: '__fab' },
       {
         ...proto_fab.hypotheticals,
         'user-defined-pipeline': generatePipelineJs(render_plugins),
