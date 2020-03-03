@@ -1,14 +1,11 @@
 import React from 'react'
 import Head from 'next/head'
-import Nav from '../../components/nav'
 
 const Bill = ({ size }) => (
   <div>
     <Head>
       <title>NextJS & FAB demo</title>
     </Head>
-
-    <Nav />
 
     <div className="background">
       {`Rendered with a background of size ${size}`}
