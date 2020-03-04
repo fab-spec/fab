@@ -1,6 +1,6 @@
 {
   "name": "@fab/cli",
-  "version": "0.0.7-alpha.8",
+  "version": "0.0.7-alpha.10",
   "description": "The CLI entry-point for the FAB ecosystem",
   "keywords": [
     "oclif"
@@ -35,8 +35,8 @@
   },
   "dependencies": {
     "@cloudflare/wrangler": "^1.6.0",
-    "@fab/core": "0.0.7-alpha.8",
-    "@fab/server": "0.0.7-alpha.8",
+    "@fab/core": "0.0.7-alpha.10",
+    "@fab/server": "0.0.7-alpha.10",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
