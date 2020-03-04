@@ -230,7 +230,7 @@ export default class Initializer {
     const dependencies = [...DEFAULT_DEPS, ...Object.keys(framework.plugins)].map((dep) =>
       version ? `${dep}@${version}` : dep
     )
-    const use_yarn = fs.pathExists(path.join(root_dir, 'yarn.lock'))
+    const use_yarn = await fs.pathExists(path.join(root_dir, 'yarn.lock'))
     log.info(
       `Installing required development dependencies:\n  ${dependencies.join(
         '\n  '
