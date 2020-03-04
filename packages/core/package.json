@@ -1,6 +1,6 @@
 {
   "name": "@fab/core",
-  "version": "0.0.7-alpha.10",
+  "version": "0.0.7-alpha.11",
   "private": false,
   "description": "Common code for all FAB projects",
   "homepage": "https://github.com/fab-spec/fab",
