@@ -89,9 +89,9 @@ describe('Create React App E2E Test', () => {
       ])
     }
 
-    const buildFab = async () => {
+    const buildFab = async (global = false) => {
       await shell(`rm -f fab.zip`, { cwd })
-      await shell(`yarn fab:build`, { cwd })
+      await shell(global ? `fab build` : `yarn fab:build`, { cwd })
 
       const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
       expect(files_after_fab_build).toMatch('fab.zip')
@@ -104,6 +104,10 @@ describe('Create React App E2E Test', () => {
     }
 
     it('should return a 200 on / and /hello', async () => {
+      // Test that global builds work too
+      if (process.env.PUBLIC_PACKAGES) {
+        await buildFab(true)
+      }
       await buildFab()
       const port = getPort()
       await createServer(port)

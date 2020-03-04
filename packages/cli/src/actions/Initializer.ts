@@ -230,7 +230,7 @@ export default class Initializer {
     const dependencies = [...DEFAULT_DEPS, ...Object.keys(framework.plugins)].map((dep) =>
       version ? `${dep}@${version}` : dep
     )
-    const use_yarn = fs.pathExists(path.join(root_dir, 'yarn.lock'))
+    const use_yarn = await fs.pathExists(path.join(root_dir, 'yarn.lock'))
     log.info(
       `Installing required development dependencies:\n  ${dependencies.join(
         '\n  '
@@ -252,7 +252,7 @@ export default class Initializer {
     const config_path = path.join(root_dir, config_filename)
     const config = await this.readExistingConfig(config_path)
     if (Object.keys(config.data.plugins).length > 0) {
-      log.warn(`Existing config has a "build" section. Overwriting since -y is set.`)
+      log.warn(`Existing config has a "plugins" section. Overwriting since -y is set.`)
     }
     config.data.plugins = framework.plugins
     await config.write(config_filename)
