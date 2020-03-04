@@ -4,9 +4,9 @@ import { Generator } from './Generator'
 import { log, isRelative, relativeToConfig } from '../helpers'
 import { BuildFailedError, InvalidConfigError } from '../errors'
 
-const safeResolve = (path: string) => {
+const safeResolve = (path: string, config_path: string) => {
   try {
-    return require.resolve(path)
+    return require.resolve(path, { paths: [config_path] })
   } catch (e) {
     return null
   }
@@ -54,9 +54,9 @@ export default class Builder {
       const relative_path = relativeToConfig(config_path, plugin_name)
       const relative_slash_build = relative_path + '/build'
       const relative_slash_require = relative_path + '/runtime'
-      const plugin_path = safeResolve(relative_path)
-      const path_slash_build = safeResolve(relative_slash_build)
-      const path_slash_require = safeResolve(relative_slash_require)
+      const plugin_path = safeResolve(relative_path, config_path)
+      const path_slash_build = safeResolve(relative_slash_build, config_path)
+      const path_slash_require = safeResolve(relative_slash_require, config_path)
 
       console.log({ is_relative, plugin_path, relative_path, path_slash_require })
 

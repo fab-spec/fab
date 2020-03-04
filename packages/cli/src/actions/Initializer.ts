@@ -252,7 +252,7 @@ export default class Initializer {
     const config_path = path.join(root_dir, config_filename)
     const config = await this.readExistingConfig(config_path)
     if (Object.keys(config.data.plugins).length > 0) {
-      log.warn(`Existing config has a "build" section. Overwriting since -y is set.`)
+      log.warn(`Existing config has a "plugins" section. Overwriting since -y is set.`)
     }
     config.data.plugins = framework.plugins
     await config.write(config_filename)
