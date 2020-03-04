@@ -3,8 +3,6 @@ import * as fetch from 'node-fetch'
 import { FabSpecExports } from '@fab/core'
 
 export default async (src: string): Promise<FabSpecExports> => {
-  const { Request } = fetch
-
   const sandbox = {
     fetch: fetch,
     Request: fetch.Request,
