@@ -1,0 +1,37 @@
+{
+  "name": "@fab/sandbox-node-vm",
+  "version": "0.0.7-alpha.9",
+  "description": "FAB runtime sandbox using Node's 'vm'",
+  "keywords": [
+    "fab"
+  ],
+  "homepage": "https://github.com/fab-spec/fab#readme",
+  "bugs": {
+    "url": "https://github.com/fab-spec/fab/issues"
+  },
+  "repository": "fab-spec/fab",
+  "license": "MIT",
+  "author": "Glen Maddern",
+  "files": [
+    "lib",
+    "esm"
+  ],
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
+  "scripts": {
+    "build": "yarn build:cjs && yarn build:esm",
+    "build:cjs": "tsc --module commonjs --outDir lib",
+    "build:esm": "tsc --module esnext --outDir esm",
+    "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
+    "clean": "rm -rf esm lib",
+    "prepack": "npm run clean && npm run build"
+  },
+  "dependencies": {
+    "@fab/core": "0.0.7-alpha.9",
+    "node-fetch": "^2.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
