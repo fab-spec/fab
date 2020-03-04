@@ -80,13 +80,21 @@ describe('Create React App E2E Test', () => {
       }
     }
 
-    const createServer = async (port: number) => {
-      cancelServer()
+    const buildFab = async (global = false) => {
       await shell(`rm -f fab.zip`, { cwd })
-      await shell(`yarn fab:build`, { cwd })
+      await shell(global ? `fab build` : `yarn fab:build`, { cwd })
 
       const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
       expect(files_after_fab_build).toMatch('fab.zip')
+    }
+
+    const createServer = async (port: number) => {
+      cancelServer()
+      // Test that global builds work too
+      if (process.env.PUBLIC_PACKAGES) {
+        await buildFab(true)
+      }
+      await buildFab()
 
       server_process = cmd(`yarn fab:serve --port=${port}`, { cwd })
       // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)
