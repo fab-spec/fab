@@ -14,8 +14,9 @@
     "test": "lerna run test --stream --parallel",
     "test:watch": "lerna run test --stream --parallel -- --watch",
     "typecheck": "tsc --noEmit",
-    "version:patch": "lerna version patch --exact --force-publish --yes",
-    "version:prerelease": "lerna version prerelease --exact --force-publish --yes",
+    "release:prerelease-latest": "yarn version:prerelease && yarn publish:latest && git commit --amend --no-edit && git push && git push --tags",
+    "version:patch": "lerna version patch --exact --force-publish --yes --no-push",
+    "version:prerelease": "lerna version prerelease --exact --force-publish --yes --no-push",
     "publish:latest": "lerna publish from-package --yes --dist-tag latest",
     "publish:next": "lerna publish from-package --yes --dist-tag next"
   },
