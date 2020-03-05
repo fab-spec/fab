@@ -1,0 +1,267 @@
+
+   Deployment artifact & hosting runtime for frontend applications
+
+Abstract
+
+   This document describes a format to package up any browser based
+   application, regardless of patterns, framework or toolkit so that it
+   can run in any hosting environment that confirms to the hosting
+   specification.
+   It is aiming to achieve for frontends what Docker did for backends.
+
+Requirements Language
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in BCP
+   14 [RFC2119][RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+Table of Contents
+
+   1.  Introduction
+      1.1.  Terminology
+   2.  Anatomy of a frontend application
+      2.1.  Server
+      2.2.  Client Side Assets
+   3.  Design considerations & constraints
+      3.1.  Reliability
+      3.2.  Compatibility
+         3.2.1.  Application compatibility
+         3.2.2.  Hosting compatibility
+         3.2.3.  Advanced use-cases
+      3.3.  Performance
+      3.4.  Developer Experience
+         3.4.1.  Application developers
+         3.4.2.  Application framework developers
+         3.4.3.  Hosting Provider developers
+   4.  Frontend Application Bundle format
+      4.1  Static Assets
+         4.1.1  URL pathname
+         4.1.2  Caching behaviour
+         4.1.3  Performance optimisations
+      4.2  Server component
+
+
+1. Introduction
+   
+   Frontend applications (Applications running in a browser and often
+   connecting to one or backends via APIs) are gaining popularity,
+   leading to an explosion of practices, libraries, frameworks and 
+   toolkits.
+   And at the same time the options for hosting have ballooned as well.
+   
+   Not too long ago the two main options were either static hosting or
+   running your own servers, possibly on an Infrastructure as a Service
+   solution (IaaS).
+   But now we have an entire range of options ranging from static
+   hosting, through serverless (edge) hosting, Platforms as a Service
+   and IaaS.
+
+   Frontend Application Bundle is a specification which both describes a
+   deployment artifact and a hosting runtime. So that any frontend 
+   application can be run in any server that is implements the hosting
+   runtime.
+   
+   In short, FAB is aiming to be the lingua franca between code on
+   one end and the hosting infra on the other.
+
+   The hope is that this will allow us to build the next level of
+   abstractions on top, just like it happened with Docker.
+
+1.1  Terminology
+
+   Frontend Application: An application that runs inside the browser and
+   may optionally connect to one or more backends for data and business
+   logic.
+
+
+2.  Anatomy of a frontend application
+
+   Any frontend application consists of two parts: a Server and Client
+   Side Assets.
+
+2.1  Server
+
+   The Server is the part of the application to responds to HTTP
+   requests. At a bare minimum the only thing it does is serve the
+   Client Side Assets.
+
+   But it may do a lot more, including, but not limited to, generating
+   HTML pages and other assets on the fly.
+
+   In many frontend applications, the server is a regular static file
+   hosting service that serves a static HTML file.
+
+2.2  Client Side Assets
+
+   The Client Side Assets are the files that contain the code and other
+   assets that run inside the browser such as Javascript or CSS files
+   images or configuration.
+
+
+3.  Design considerations & constraints
+
+   The design of the FAB specification is driven by a list of qualities
+   that we strive for in particular order. Whenever we need to make a
+   trade-off, the higher ordered quality weighs more heavily than lower
+   ordered qualities.
+   Implementors of the specification SHOULD follow the same list of
+   qualities when considering trade-offs.
+   
+   3.1.  Availability & Reliability
+
+   As FABs will be used by applications in production, it is
+   vital that reliability is our absolute top priority.
+   We MUST always strive to optimise for the availability of
+   applications. This implies a few other related qualities, such as
+   security, predictability, resilience and ability to recover from
+   errors.
+
+   It is this reliability that will generate trust in the ecosystem and
+   our deploys, allowing application developers to release more often.
+   This will generate a virtuous cycle of more frequent, less risky
+   releases.
+
+   There MUST NOT be any downtime for regular deploys.
+
+   Most importantly, the functional behaviour of an application MUST
+   be the same when run in different hosting environments with the same
+   settings.
+   A hosting environment MAY have different performance characteristics
+   and other optimisations.
+
+   3.2.  Compatibility
+
+   Because the purpose of Frontend Application bundles is to provide
+   a standard for packaging frontend applications and the runtime 
+   environment they run in, it is important that it is compatible with
+   as many different applications and hosting providers.
+
+   3.2.1.  Application compatibility
+
+   There are many different patterns, frameworks and practices when it
+   comes to frontend applications. Broadly speaking there are three 
+   patterns: "Pre-rendering", "Client-Side Rendering" (CSR) and
+   "Server-Side Rendering" (SSR).
+   And while we should always strive to support as wide a variety of
+   applications, we should optimise for the more dynamic ones, such as 
+   SSR and CSR.
+
+   And while we see great promise in non-Javascript languages on the
+   browser platform (particularly WebAssembly), we will not be
+   officially supporting it. Especially not for the server.
+
+   3.2.2.  Hosting compatibility
+
+   For FABs to be successful it needs to not only support a large amount
+   of applications, but also hosting providers.
+   
+   The requirements for a hosting provider should be as low as possible.
+   It should run on serverless (edge) hosting platforms, but also on
+   large distributed hosting clusters.
+
+   It must be possible to deploy the static assets and the server 
+   components to two seperate and specialised systems.
+
+   And lastly it should be possible to host FABs on hosting providers
+   that do not yet support FABs natively, so that the FAB community can
+   create adapters/wrappers for that particular hosting runtime.
+
+   3.2.3.  Advanced use-cases
+
+   A lot of advanced use-cases for FABs (blue/green deployments, canary
+   releases & A/B testing to name just a few) rely on the ability to run
+   multiple bundles in production concurrently. Either different
+   applications or different versions of the same application.
+   
+   Not every hosting provider must support these use-cases, but
+   decisions must not be made that make this impossible.
+
+   3.3.  Performance
+
+   Performance is critical for a lot of applications. So hosting
+   runtimes SHOULD automatically optimise as much as possible. And
+   both framework and application developers SHOULD be able to 
+   easily customise the behaviour of the server component to improve the
+   performance of the application.
+
+   3.4.  Developer Experience
+
+   No software ecosystem thrives without a focus on the experience of
+   the developers using it. We recognise 3 different types of
+   developers, each with different skills and objectives.
+
+   3.4.1.  Application developers
+
+   Application developers are the developers working on the frontend
+   application that will be used by end users.
+   
+   The experience they have with FABs are the most important one to
+   consider. Both because there are many more of them than both
+   framework and hosting runtime developers, but also because they have
+   less experience and knowledge when it comes to writing reliable and
+   performant applications to be able to make the right trade-off.
+
+   A lot of these developers may not even know they are using FABs.
+
+   3.4.2.  Application framework developers
+
+   Application framework developers are the people working on the
+   building blocks that are used by the Application Developers to
+   create their applications. It is these application frameworks that
+   may have logic to output a FAB as a deployment artefact.
+
+   By making it easy to output a FAB it will lower the bar for different
+   frameworks to support it natively.
+
+   3.4.3.  Hosting Provider developers
+
+   These are the developers working on the hosting runtimes. Their
+   experience isn't about making it easier, but to allow them to build
+   the best possible runtime that their hosting platform will allow
+   them to build.
+
+
+4.  Frontend Application Bundle format
+
+   A FAB is a regular zip file which mirrors the two components of a 
+   frontend application. It includes a director called '_assets', which
+   includes all the static assets that are used by the application and
+   a file called 'server.js' that handles all server logic.
+
+   -- server.js
+    |
+    - _assets - main.abcd1234.js
+              |
+              - main.bcdef567.css
+
+   4.1  Static Assets
+   
+   The '_assets' directory contains all static assets for the
+   application such as client side Javascript and CSS files, images,
+   configuration files or templates or any other content isn't
+   dynamically generated.
+
+   Because these files will be cached for a very long time in Content
+   Delivery Networks, intermediate proxies and client browsers, it is
+   RECOMMENDED that the filename includes a unique fingerprint based on
+   the content of the file such as (a part of) a hash of the contents.
+   
+   4.1.1  URL pathname
+
+   Hosting runtimes MUST make the files available on the '/_assets/' 
+   URL pathname for external HTTP clients.
+
+   4.1.2  Caching behaviour
+
+   To improve the performance of the frontend application, all files
+   served at the '/_assets/` URL pathname prefix MUST be served with the
+   following header:
+
+      Cache-Control: public, max-age=31536000, immutable
+
+   4.1.3  Performance optimisations
+
+   
+
