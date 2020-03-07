@@ -1,10 +1,10 @@
 import vm from 'vm'
 import * as fetch from 'node-fetch'
-import { FabSpecExports } from '@fab/core'
+import {FabSpecExports, FetchApi} from '@fab/core'
 
-export default async (src: string): Promise<FabSpecExports> => {
+export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports> => {
   const sandbox = {
-    fetch: fetch,
+    fetch: enhanced_fetch,
     Request: fetch.Request,
     Response: fetch.Response,
     Headers: fetch.Headers,
