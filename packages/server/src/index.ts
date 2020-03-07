@@ -1,15 +1,15 @@
 import fs from 'fs-extra'
 
-import {FetchApi, getContentType, SandboxType, ServerArgs} from '@fab/core'
-import {InvalidConfigError, JSON5Config} from '@fab/cli'
-import {readFilesFromZip} from './utils'
+import { FetchApi, getContentType, SandboxType, ServerArgs } from '@fab/core'
+import { InvalidConfigError, JSON5Config } from '@fab/cli'
+import { readFilesFromZip } from './utils'
 import v8_sandbox from './sandboxes/v8-isolate'
 import node_vm_sandbox from '@fab/sandbox-node-vm'
 import url from 'url'
 import http from 'http'
 import express from 'express'
 import concat from 'concat-stream'
-import fetch, {Request as NodeFetchRequest} from 'cross-fetch'
+import fetch, { Request as NodeFetchRequest } from 'cross-fetch'
 
 export default class Server {
   private filename: string
@@ -105,7 +105,7 @@ export default class Server {
               )
             )
             if (fetch_res instanceof NodeFetchRequest) {
-            console.log("GOT ME A NODE BOI REQUEST")
+              console.log('GOT ME A NODE BOI REQUEST')
               console.log(fetch_res)
               console.log(fetch_res.url)
               fetch_res = await enhanced_fetch(fetch_res)
