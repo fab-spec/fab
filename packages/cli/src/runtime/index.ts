@@ -34,6 +34,10 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
     const response = await responders({ request, settings, url })
     if (!response) continue
 
+    if (response instanceof Request) {
+      return response
+    }
+
     if (response instanceof Response) {
       let response_in_chain = response
       for (const interceptor of response_interceptors) {
@@ -42,6 +46,9 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
       return response_in_chain
     }
 
+    // Really want to throw a meaningful exception if you return something
+    // that isn't a "Directive", but that might be best done as a refactor
+    // of the whole "sync function returns async responder" API...
     const directive = response as Directive
     if (typeof directive.interceptResponse === 'function') {
       // Unshift rather than push, so the reduce runs in the right order above.
