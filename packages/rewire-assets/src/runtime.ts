@@ -1,5 +1,6 @@
 import { RewireAssetsArgs, RewireAssetsMetadata } from './types'
 import { FabPluginRuntime, getCacheHeaders, matchPath } from '@fab/core'
+import { NON_IMMUTABLE_HEADERS } from '@fab/core'
 
 export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> = (
   args: RewireAssetsArgs,
@@ -25,14 +26,16 @@ export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> =
 
     const renamed = matchPath(renamed_assets, pathname)
     if (renamed) {
-      return new Response(null, {
-        status: 302,
-        statusText: 'Found',
-        headers: {
-          Location: renamed.asset_path,
-          ...getCacheHeaders(renamed.immutable),
-        },
-      })
+      if (renamed.immutable) {
+        console.log("Returning new request!!")
+        return new Request(renamed.asset_path)
+      } else {
+        const response = await fetch(renamed.asset_path)
+        Object.entries(NON_IMMUTABLE_HEADERS).forEach(([k, v]) =>
+          response.headers.set(k, v)
+        )
+        return response
+      }
     }
 
     return undefined

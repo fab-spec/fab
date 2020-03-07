@@ -103,7 +103,10 @@ export enum SandboxType {
  * between the platform-specific runtimes (@fab/server,
  * @fab/cf-workers-wrapper, Linc.sh etc) and the FAB itself.
  * */
-export type FabSpecRender = (request: Request, settings: FabSettings) => Promise<Request | Response>
+export type FabSpecRender = (
+  request: Request,
+  settings: FabSettings
+) => Promise<Request | Response>
 export type FabSpecMetadata = {
   production_settings: FabSettings
 }
