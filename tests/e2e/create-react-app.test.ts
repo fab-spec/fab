@@ -6,6 +6,7 @@ import globby from 'globby'
 // @ts-ignore
 import md5file from 'md5-file/promise'
 import { buildFab, getPort, getWorkingDir } from './helpers'
+import path from 'path'
 
 describe('Create React App E2E Test', () => {
   let tmpdir: string
@@ -59,13 +60,13 @@ describe('Create React App E2E Test', () => {
     let server_process: ExecaChildProcess | null = null
 
     const cancelServer = () => {
-      console.log('CANCELLING')
-      console.log({ server_process: server_process?.constructor?.name })
+      // console.log('CANCELLING')
+      // console.log({ server_process: server_process?.constructor?.name })
       if (server_process) {
         try {
           server_process.cancel()
         } catch (e) {
-          console.log('CANCELLED')
+          // console.log('CANCELLED')
         }
         server_process = null
       }
@@ -113,8 +114,24 @@ describe('Create React App E2E Test', () => {
       const port = getPort()
       await createServer(port)
 
-      const main_js = await globby('build/static/js/main*.js', { cwd })
+      await shell('tree build', { cwd })
+
+      const globs = await globby('static/js/main*.js', { cwd: path.join(cwd, 'build') })
+      const main_js = globs[0]
       console.log({ main_js })
+      expect(main_js).toBeDefined()
+
+      const main_js_headers = await request('-I', `/${main_js}`, port)
+      expect(main_js_headers).toContain(`HTTP/1.1 200 OK`)
+      expect(main_js_headers).toMatch(/Cache-Control:.*immutable/i)
+      expect(main_js_headers).toMatch(/Content-Type:.*application\/javascript/i)
+      expect(main_js_headers).toContain(`ETag`)
+
+      const favicon_headers = await request('-I', `/favicon.ico`, port)
+      expect(favicon_headers).toContain(`HTTP/1.1 200 OK`)
+      expect(favicon_headers).toMatch(/Cache-Control:.*no-cache/i)
+      expect(favicon_headers).toMatch(/Content-Type:.*image\/vnd\.microsoft\.icon/i)
+      expect(favicon_headers).toContain(`ETag`)
     })
 
     it('should allow a plugin to override /hello', async () => {
