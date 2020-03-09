@@ -16,14 +16,14 @@ export const buildFab = async (cwd: string, global = false) => {
 const workspace_dir = path.resolve(__dirname, '../workspace')
 console.log({ workspace_dir })
 export const getWorkingDir = async (dirname: string, clean: boolean) => {
-  const working_dir = path.join(workspace_dir, dirname)
-  console.log({ working_dir })
+  const cwd = path.join(workspace_dir, dirname)
+  console.log({ working_dir: cwd })
 
-  if (clean && (await fs.pathExists(working_dir))) {
-    await fs.remove(working_dir)
+  if (clean && (await fs.pathExists(cwd))) {
+    await fs.remove(cwd)
   }
 
-  await fs.ensureDir(working_dir)
-  await shell(`git init`, { working_dir })
-  return working_dir
+  await fs.ensureDir(cwd)
+  await shell(`git init`, { cwd })
+  return cwd
 }

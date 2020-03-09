@@ -6,6 +6,7 @@ export const cmd = (command: string, ...opts: any) => {
 }
 
 export const shell = async (command: string, ...opts: any) => {
+  if (opts.cwd) process.stdout.write(`[${opts.cwd}] `)
   const promise = cmd(command, ...opts)
   promise.stdout!.pipe(process.stdout)
   promise.stderr!.pipe(process.stderr)

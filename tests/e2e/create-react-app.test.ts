@@ -21,7 +21,7 @@ describe('Create React App E2E Test', () => {
       // Create a new CRA project inside
       await shell(`yarn create react-app .`, { cwd })
       await shell(`git add .`, { cwd })
-      await shell(`git commit -m 'Post-create state'`, { cwd })
+      await shell(`git commit -m CREATED`, { cwd })
     }
     // Expect that {cwd} has a package.json
     const { stdout: files } = await cmd(`ls -l`, { cwd })
