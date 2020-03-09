@@ -4,6 +4,8 @@ const assetHandler = require('./assetHandler.js')
 let prodSettings = undefined
 const cache = caches.default
 
+global.orig_fetch = global.fetch
+
 const handleFabRequest = async (request) => {
   if (!prodSettings) {
     prodSettings = fab.getProdSettings ? await fab.getProdSettings() : {}
@@ -55,6 +57,24 @@ const redirectToHttps = (url) => {
 addEventListener('fetch', (event) => {
   const request = event.request
   const url = new URL(request.url)
+
+  global.fetch = async (resource, init) => {
+    let fetch_url = resource
+    if (resource instanceof Request) {
+      fetch_url = resource.url
+    }
+    if (fetch_url.startsWith('/')) {
+      let fetchReq = resource
+      if (typeof resource === 'string') {
+        fetchReq = new Request(resource)
+      }
+      fetchReq.url = url.origin + fetch_url
+      return await handleRequest(fetchReq)
+    } else {
+      return global.orig_fetch(resource, init)
+    }
+  }
+
   if (url.protocol === 'https:') {
     event.respondWith(handleCache(request))
   } else {
