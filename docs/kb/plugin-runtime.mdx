@@ -4,6 +4,8 @@ route: '/kb/plugin-runtime-responders'
 menu: Knowledge Base
 ---
 
+# Plugin Runtime Responders
+
 Most of the time, if you're looking into customising the server-side functionality of a FAB, you want to introduce a file with a `runtime` function that sets up a `Responder`. The simple case looks like this:
 
 ```js
@@ -45,7 +47,7 @@ export function runtime(args, metadata) {
   return async function responder(request_context) {
     const { url } = request_context
 
-    if (url.pathname === 'not-my-problem') {
+    if (url.pathname === '/not-my-problem') {
       return undefined
     }
 
@@ -59,15 +61,16 @@ export function runtime(args, metadata) {
     }
 
     if (url.pathname.startsWith('/api')) {
-      return await fetch(`https://example.backend${url.pathname}`)
+      return new Request(`https://example.backend${url.pathname}`)
     }
 
-    if (url.pathname === '/_assets/favicon.ico') {
-      return {
-        directive: 'asset_fetch',
-        immutable: false,
-        path: '/_assets/favicon.a1b2c3d4f3.ico',
-      }
+    if (url.pathname === '/favicon.ico') {
+      const response = await fetch('/_assets/favicon.a1b2c3d4f3.ico')
+      response.headers.set('cache-control', 'no-cache')
+      return response
+      // could do an api on top like
+      // return await FAB.fetchNoCache('/_assets/favicon.a1b2c3d4f3.ico')
+      // but probably not worth it, is it?
     }
   }
 }

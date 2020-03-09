@@ -63,7 +63,7 @@ export type FabRequestContext = {
 }
 export type FabRequestResponder = (
   context: FabRequestContext
-) => Promise<Response | undefined | Directive>
+) => Promise<undefined | Request | Response | Directive>
 
 export type ResponseInterceptor = (response: Response) => Promise<Response>
 
@@ -103,7 +103,10 @@ export enum SandboxType {
  * between the platform-specific runtimes (@fab/server,
  * @fab/cf-workers-wrapper, Linc.sh etc) and the FAB itself.
  * */
-export type FabSpecRender = (request: Request, settings: FabSettings) => Promise<Response>
+export type FabSpecRender = (
+  request: Request,
+  settings: FabSettings
+) => Promise<Request | Response>
 export type FabSpecMetadata = {
   production_settings: FabSettings
 }
@@ -112,3 +115,5 @@ export type FabSpecExports = {
   render: FabSpecRender
   metadata: FabSpecMetadata
 }
+
+export type FetchApi = (url: string | Request, init?: RequestInit) => Promise<Response>

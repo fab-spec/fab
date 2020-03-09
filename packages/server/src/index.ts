@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 
-import { ServerArgs, SandboxType, getContentType } from '@fab/core'
+import { FetchApi, getContentType, SandboxType, ServerArgs } from '@fab/core'
 import { InvalidConfigError, JSON5Config } from '@fab/cli'
 import { readFilesFromZip } from './utils'
 import v8_sandbox from './sandboxes/v8-isolate'
@@ -9,7 +9,7 @@ import url from 'url'
 import http from 'http'
 import express from 'express'
 import concat from 'concat-stream'
-import { Request as NodeFetchRequest } from 'node-fetch'
+import fetch, { Request as NodeFetchRequest } from 'cross-fetch'
 
 export default class Server {
   private filename: string
@@ -46,10 +46,20 @@ export default class Server {
     }
     const src = src_buffer.toString('utf8')
 
+    const enhanced_fetch: FetchApi = async (url, init?) => {
+      const request_url = typeof url === 'string' ? url : url.url
+      if (request_url.startsWith('/')) {
+        // Need a smarter wau to fetch assets, of course, but for now...
+        return fetch(`http://localhost:${this.port}${request_url}`, init)
+      }
+
+      return fetch(url, init)
+    }
+
     const renderer =
       (await runtimeType) === SandboxType.v8isolate
         ? await v8_sandbox(src)
-        : await node_vm_sandbox(src)
+        : await node_vm_sandbox(src, enhanced_fetch)
 
     await new Promise((resolve, reject) => {
       const app = express()
@@ -83,7 +93,7 @@ export default class Server {
 
             const production_settings = renderer.metadata?.production_settings
             // console.log({production_settings})
-            const fetch_res = await renderer.render(
+            let fetch_res = await renderer.render(
               // @ts-ignore
               fetch_req as Request,
               Object.assign(
@@ -94,6 +104,12 @@ export default class Server {
                 settings_overrides
               )
             )
+            if (fetch_res instanceof NodeFetchRequest) {
+              console.log('GOT ME A NODE BOI REQUEST')
+              console.log(fetch_res)
+              console.log(fetch_res.url)
+              fetch_res = await enhanced_fetch(fetch_res)
+            }
             console.log({ status: fetch_res.status })
             res.status(fetch_res.status)
             // This is a NodeFetch response, which has this method, but
@@ -123,7 +139,7 @@ export default class Server {
       server.listen(this.port, resolve)
     })
 
-    console.log(`Listening on port ${this.port}`)
+    console.log(`Listening on http://localhost:${this.port}`)
   }
 
   private async getSettingsOverrides() {

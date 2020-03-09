@@ -1,37 +1,32 @@
-import * as tmp from 'tmp-promise'
-import * as fs from 'fs-extra'
-import { shell, cmd } from '../utils'
+import fs from 'fs-extra'
+import { cmd, shell } from '../utils'
 import { ExecaChildProcess } from 'execa'
 import { JSON5Config } from '@fab/cli'
-
+import globby from 'globby'
 // @ts-ignore
-import * as md5file from 'md5-file/promise'
-
-let next_port = 3310
-const getPort = () => next_port++
+import md5file from 'md5-file/promise'
+import { buildFab, getPort, getWorkingDir } from './helpers'
+import path from 'path'
 
 describe('Create React App E2E Test', () => {
   let tmpdir: string
   let cwd: string
 
-  it('should allow creation of a new CRA project in a tmp dir', async () => {
-    if (process.env.FAB_E2E_CRA_DIR) {
-      cwd = process.env.FAB_E2E_CRA_DIR
-      if (!cwd.startsWith('/var/folders/' || !cwd.endsWith('/cra-test'))) {
-        // The value of FAB_E2E_CRA_DIR doesn't match the above, exiting.
-        process.exit(1)
-      }
+  it('should create a new CRA project', async () => {
+    cwd = await getWorkingDir('cra-test', !process.env.FAB_E2E_SKIP_CREATE)
+    if (process.env.FAB_E2E_SKIP_CREATE) {
+      console.log({ cwd })
       await shell(`git reset --hard`, { cwd })
       await shell(`git clean -df`, { cwd })
     } else {
-      // Create the tmp dir (inside the workspace if on Github Actions)
-      const dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
-      tmpdir = dir.path
-      expect(tmpdir).toMatch('tmp')
-
       // Create a new CRA project inside
-      await shell(`yarn create react-app cra-test`, { cwd: tmpdir })
-      cwd = `${tmpdir}/cra-test`
+      await shell(`yarn create react-app .`, { cwd })
+      // Skip git stuff on Github, it's only for rerunning locally
+      if (!process.env.GITHUB_WORKSPACE) {
+        await shell(`git init`, { cwd })
+        await shell(`git add .`, { cwd })
+        await shell(`git commit -m CREATED`, { cwd })
+      }
     }
     // Expect that {cwd} has a package.json
     const { stdout: files } = await cmd(`ls -l`, { cwd })
@@ -39,14 +34,13 @@ describe('Create React App E2E Test', () => {
   })
 
   it('should configure the CRA project to produce FABs', async () => {
-    // Running this on Github Actions complains because a package.json is found further
-    // up with a different version of... something. I can't remember. This fixes it tho.
-    await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
-    await shell(`cat .env`, { cwd })
-    await shell(
-      `fab init -y ${process.env.PUBLIC_PACKAGES ? '' : '--skip-install --version=next'}`,
-      { cwd }
-    )
+    // CRA normally doesn't like running in a directory with a package.json higher up
+    // for some particular dependency but it's not failing any more?
+    // await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
+    // await shell(`cat .env`, { cwd })
+    await shell(`fab init -y ${process.env.PUBLIC_PACKAGES ? '' : '--skip-install'}`, {
+      cwd,
+    })
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
 
@@ -66,13 +60,13 @@ describe('Create React App E2E Test', () => {
     let server_process: ExecaChildProcess | null = null
 
     const cancelServer = () => {
-      console.log('CANCELLING')
-      console.log({ server_process: server_process?.constructor?.name })
+      // console.log('CANCELLING')
+      // console.log({ server_process: server_process?.constructor?.name })
       if (server_process) {
         try {
           server_process.cancel()
         } catch (e) {
-          console.log('CANCELLED')
+          // console.log('CANCELLED')
         }
         server_process = null
       }
@@ -89,14 +83,6 @@ describe('Create React App E2E Test', () => {
       ])
     }
 
-    const buildFab = async (global = false) => {
-      await shell(`rm -f fab.zip`, { cwd })
-      await shell(global ? `fab build` : `yarn fab:build`, { cwd })
-
-      const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
-      expect(files_after_fab_build).toMatch('fab.zip')
-    }
-
     const request = async (args: string, path: string, port: number) => {
       const curl_cmd = `curl ${args} --retry 2 --retry-connrefused http://localhost:${port}`
       const { stdout } = await shell(curl_cmd + path, { cwd })
@@ -106,9 +92,9 @@ describe('Create React App E2E Test', () => {
     it('should return a 200 on / and /hello', async () => {
       // Test that global builds work too
       if (process.env.PUBLIC_PACKAGES) {
-        await buildFab(true)
+        await buildFab(cwd, true)
       }
-      await buildFab()
+      await buildFab(cwd)
       const port = getPort()
       await createServer(port)
       expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
@@ -121,6 +107,31 @@ describe('Create React App E2E Test', () => {
 
       const hello_response = await request('', '/hello', port)
       expect(hello_response).toEqual(homepage_response)
+    })
+
+    it('should return a correct cache headers on assets', async () => {
+      await buildFab(cwd)
+      const port = getPort()
+      await createServer(port)
+
+      // await shell('tree build', { cwd })
+
+      const globs = await globby('static/js/main*.js', { cwd: path.join(cwd, 'build') })
+      const main_js = globs[0]
+      console.log({ main_js })
+      expect(main_js).toBeDefined()
+
+      const main_js_headers = await request('-I', `/${main_js}`, port)
+      expect(main_js_headers).toContain(`HTTP/1.1 200 OK`)
+      expect(main_js_headers).toMatch(/Cache-Control:.*immutable/i)
+      expect(main_js_headers).toMatch(/Content-Type:.*application\/javascript/i)
+      expect(main_js_headers).toContain(`ETag`)
+
+      const favicon_headers = await request('-I', `/favicon.ico`, port)
+      expect(favicon_headers).toContain(`HTTP/1.1 200 OK`)
+      expect(favicon_headers).toMatch(/Cache-Control:.*no-cache/i)
+      expect(favicon_headers).toMatch(/Content-Type:.*image\/vnd\.microsoft\.icon/i)
+      expect(favicon_headers).toContain(`ETag`)
     })
 
     it('should allow a plugin to override /hello', async () => {
@@ -145,7 +156,7 @@ describe('Create React App E2E Test', () => {
       config.data.plugins['./fab-plugins/hello-world'] = {}
       await config.write(`${cwd}/fab.config.json5`)
 
-      await buildFab()
+      await buildFab(cwd)
       const port = getPort()
       await createServer(port)
       expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
@@ -162,7 +173,7 @@ describe('Create React App E2E Test', () => {
     })
 
     it('should reflect settings changes', async () => {
-      await buildFab()
+      await buildFab(cwd)
       const first_fab_md5 = await md5file(`${cwd}/fab.zip`)
       console.log({ first_fab_md5 })
 
@@ -171,7 +182,7 @@ describe('Create React App E2E Test', () => {
       config.data.settings!.production.OTHER_SETTING = 'production value'
       await config.write(`${cwd}/fab.config.json5`)
 
-      await buildFab()
+      await buildFab(cwd)
       const second_fab_md5 = await md5file(`${cwd}/fab.zip`)
       console.log({ second_fab_md5 })
       expect(second_fab_md5).not.toEqual(first_fab_md5)
@@ -187,7 +198,7 @@ describe('Create React App E2E Test', () => {
 
       config.data.settings!.staging = { E2E_TEST: 'totes overridden!' }
       await config.write(`${cwd}/fab.config.json5`)
-      await buildFab()
+      await buildFab(cwd)
       const third_fab_md5 = await md5file(`${cwd}/fab.zip`)
       console.log({ third_fab_md5 })
       // Changing non-production settings doesn't change the bundle id

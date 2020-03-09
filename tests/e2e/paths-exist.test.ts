@@ -1,4 +1,4 @@
-import * as execa from 'execa'
+import execa from 'execa'
 
 it('should have our packages installed', async () => {
   if (!process.env.PUBLIC_PACKAGES) {

@@ -1,4 +1,4 @@
-import * as tmp from 'tmp-promise'
+import tmp from 'tmp-promise'
 import { expectError, shell } from '../utils'
 
 describe('dir of static assets', () => {
