@@ -24,6 +24,5 @@ export const getWorkingDir = async (dirname: string, clean: boolean) => {
   }
 
   await fs.ensureDir(cwd)
-  await shell(`git init`, { cwd })
   return cwd
 }
