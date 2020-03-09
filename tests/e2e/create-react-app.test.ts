@@ -114,7 +114,7 @@ describe('Create React App E2E Test', () => {
       const port = getPort()
       await createServer(port)
 
-      await shell('tree build', { cwd })
+      // await shell('tree build', { cwd })
 
       const globs = await globby('static/js/main*.js', { cwd: path.join(cwd, 'build') })
       const main_js = globs[0]
