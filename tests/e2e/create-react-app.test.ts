@@ -88,7 +88,7 @@ describe('Create React App E2E Test', () => {
       return stdout
     }
 
-    it.skip('should return a 200 on / and /hello', async () => {
+    it('should return a 200 on / and /hello', async () => {
       // Test that global builds work too
       if (process.env.PUBLIC_PACKAGES) {
         await buildFab(cwd, true)
@@ -117,7 +117,7 @@ describe('Create React App E2E Test', () => {
       console.log({ main_js })
     })
 
-    it.skip('should allow a plugin to override /hello', async () => {
+    it('should allow a plugin to override /hello', async () => {
       await fs.ensureDir(`${cwd}/fab-plugins`)
       await fs.writeFile(
         `${cwd}/fab-plugins/hello-world.js`,
@@ -155,7 +155,7 @@ describe('Create React App E2E Test', () => {
       expect(hello_response).toContain('HELLO WORLD!')
     })
 
-    it.skip('should reflect settings changes', async () => {
+    it('should reflect settings changes', async () => {
       await buildFab(cwd)
       const first_fab_md5 = await md5file(`${cwd}/fab.zip`)
       console.log({ first_fab_md5 })
