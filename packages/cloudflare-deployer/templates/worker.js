@@ -6,6 +6,30 @@ const cache = caches.default
 
 global.orig_fetch = global.fetch
 
+let patchedFetch = false
+
+const patchGlobalFetch = (origin) => {
+  if (!patchedFetch) {
+    global.fetch = async (resource, init) => {
+      let fetch_url = resource
+      if (resource instanceof Request) {
+        fetch_url = resource.url
+      }
+      if (fetch_url.startsWith('/')) {
+        let fetchReq = resource
+        if (typeof resource === 'string') {
+          fetchReq = new Request(resource)
+        }
+        fetchReq.url = origin + fetch_url
+        return await handleRequest(fetchReq)
+      } else {
+        return global.orig_fetch(resource, init)
+      }
+    }
+    patchedFetch = true
+  }
+}
+
 const handleFabRequest = async (request) => {
   if (!prodSettings) {
     prodSettings = fab.getProdSettings ? await fab.getProdSettings() : {}
@@ -57,24 +81,7 @@ const redirectToHttps = (url) => {
 addEventListener('fetch', (event) => {
   const request = event.request
   const url = new URL(request.url)
-
-  global.fetch = async (resource, init) => {
-    let fetch_url = resource
-    if (resource instanceof Request) {
-      fetch_url = resource.url
-    }
-    if (fetch_url.startsWith('/')) {
-      let fetchReq = resource
-      if (typeof resource === 'string') {
-        fetchReq = new Request(resource)
-      }
-      fetchReq.url = url.origin + fetch_url
-      return await handleRequest(fetchReq)
-    } else {
-      return global.orig_fetch(resource, init)
-    }
-  }
-
+  patchGlobalFetch(url.origin)
   if (url.protocol === 'https:') {
     event.respondWith(handleCache(request))
   } else {
