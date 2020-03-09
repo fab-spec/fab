@@ -1,0 +1,20 @@
+{
+  "name": "@fab/cloudflare-deployer",
+  "version": "0.0.1",
+  "description": "Plugin for @fab/cli to deploy Frontend Application Bundles to Cloudflare Workers",
+  "main": "lib/main.js",
+  "license": "MIT",
+  "scripts": {
+    "ts-node": "ts-node",
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "@cloudflare/wrangler": "^1.8.1",
+    "@types/node": "^13.9.0",
+    "cpy": "^8.1.0",
+    "del": "^5.1.0",
+    "globby": "^11.0.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.3"
+  }
+}

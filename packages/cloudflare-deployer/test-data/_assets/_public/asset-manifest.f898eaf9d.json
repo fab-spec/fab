@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ffd63c87.chunk.css",
+    "main.js": "/static/js/main.a5e68ffe.chunk.js",
+    "main.js.map": "/static/js/main.a5e68ffe.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.26aea09c.js",
+    "runtime-main.js.map": "/static/js/runtime-main.26aea09c.js.map",
+    "static/js/2.473ba5f1.chunk.js": "/static/js/2.473ba5f1.chunk.js",
+    "static/js/2.473ba5f1.chunk.js.map": "/static/js/2.473ba5f1.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.096a7650f6e54d9a064e209e965590cf.js": "/precache-manifest.096a7650f6e54d9a064e209e965590cf.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.ffd63c87.chunk.css.map": "/static/css/main.ffd63c87.chunk.css.map",
+    "static/js/2.473ba5f1.chunk.js.LICENSE.txt": "/static/js/2.473ba5f1.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/static/media/Inter-UI-Regular.ada67516.woff2",
+    "static/media/extension.webp": "/static/media/extension.ab2c457c.webp",
+    "static/media/linc_heading_1.svg": "/static/media/linc_heading_1.740d4c46.svg",
+    "static/media/linc_screenshot_2.webp": "/static/media/linc_screenshot_2.58856de2.webp",
+    "static/media/logo_default.svg": "/static/media/logo_default.e925f90a.svg",
+    "static/media/logo_outline.svg": "/static/media/logo_outline.0824eb70.svg",
+    "static/media/screenshot_header.svg": "/static/media/screenshot_header.68cddab1.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.26aea09c.js",
+    "static/js/2.473ba5f1.chunk.js",
+    "static/css/main.ffd63c87.chunk.css",
+    "static/js/main.a5e68ffe.chunk.js"
+  ]
+}

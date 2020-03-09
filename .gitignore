@@ -9,3 +9,4 @@ package-lock.json
 oclif.manifest.json
 tsconfig.tsbuildinfo
 lerna-debug.log
+.env
