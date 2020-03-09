@@ -6,7 +6,7 @@ import { ExecaChildProcess } from 'execa'
 let next_port = 3210
 const getPort = () => next_port++
 
-describe('Create React App E2E Test', () => {
+describe.skip('Create React App E2E Test', () => {
   let tmpdir: string
   let cwd: string
 
