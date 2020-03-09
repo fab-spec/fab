@@ -15,11 +15,13 @@ describe('Create React App E2E Test', () => {
     cwd = await getWorkingDir('cra-test', !process.env.FAB_E2E_SKIP_CREATE)
     if (process.env.FAB_E2E_SKIP_CREATE) {
       console.log({ cwd })
-      await shell(`echo git reset --hard`, { cwd })
-      await shell(`echo git clean -df`, { cwd })
+      await shell(`git reset --hard`, { cwd })
+      await shell(`git clean -df`, { cwd })
     } else {
       // Create a new CRA project inside
       await shell(`yarn create react-app .`, { cwd })
+      await shell(`git add .`, { cwd })
+      await shell(`git commit -m 'Post-create state'`, { cwd })
     }
     // Expect that {cwd} has a package.json
     const { stdout: files } = await cmd(`ls -l`, { cwd })
@@ -49,7 +51,7 @@ describe('Create React App E2E Test', () => {
     expect(files_after_fab_build).toMatch('fab.zip')
   })
 
-  describe.skip('fab build tests', () => {
+  describe('fab build tests', () => {
     let server_process: ExecaChildProcess | null = null
 
     const cancelServer = () => {
