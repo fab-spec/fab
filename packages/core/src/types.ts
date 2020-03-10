@@ -69,6 +69,7 @@ export type ResponseInterceptor = (response: Response) => Promise<Response>
 
 export type Directive = {
   interceptResponse?: ResponseInterceptor
+  replaceRequest?: Request
 }
 
 export type FabFilesObject = { [k: string]: string }

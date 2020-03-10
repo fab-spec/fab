@@ -56,6 +56,9 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
       // I suppose I could use a library with a foldRight but I haven't.
       response_interceptors.unshift(directive.interceptResponse)
     }
+    if (directive.replaceRequest instanceof Request) {
+      chained_request = directive.replaceRequest
+    }
   }
 
   return new Response(`Error! Expected a plugin to respond!`, {

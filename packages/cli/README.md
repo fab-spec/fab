@@ -8,12 +8,14 @@
 [![License](https://img.shields.io/npm/l/@fab/cli.svg)](https://github.com/fab-spec/fab/blob/master/package.json)
 
 <!-- toc -->
-* [FAB Command Line Interface](#fab-command-line-interface)
-<!-- tocstop -->
+
+- [FAB Command Line Interface](#fab-command-line-interface)
+  <!-- tocstop -->
 
 ## Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @fab/cli
 $ fab COMMAND
@@ -25,16 +27,18 @@ USAGE
   $ fab COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 ## Commands
 
 <!-- commands -->
-* [`fab build`](#fab-build)
-* [`fab deploy [FILE]`](#fab-deploy-file)
-* [`fab help [COMMAND]`](#fab-help-command)
-* [`fab init`](#fab-init)
-* [`fab serve [FILE]`](#fab-serve-file)
+
+- [`fab build`](#fab-build)
+- [`fab deploy [FILE]`](#fab-deploy-file)
+- [`fab help [COMMAND]`](#fab-help-command)
+- [`fab init`](#fab-init)
+- [`fab serve [FILE]`](#fab-serve-file)
 
 ## `fab build`
 
@@ -151,4 +155,5 @@ EXAMPLES
 ```
 
 _See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.13/lib/commands/serve.js)_
+
 <!-- commandsstop -->
