@@ -35,6 +35,10 @@ interface Env {
   BASE_URL?: string
 }
 
+const isWorkerDotDev = (props: DeployProps) => {
+  return !props.zoneId
+}
+
 // function isDotDev(props: DeployProps): props is DotDevProps {
 //   return (props as RegularWorkerProps).zoneId === undefined
 // }
@@ -66,6 +70,21 @@ const generatePackageJson = async (dir: string) => {
   await writeFile(path.join(dir, 'package.json'), JSON.stringify({ main: 'index.js' }))
 }
 
+const generateWranglerToml = async (dir: string, env: any, props: DeployProps) => {
+  // await fs.writeFile(
+  //   '.fab/deploy/cf/wrangler.toml',
+
+  const toml = `
+name = "${props.name}"
+type = "webpack"
+zone_id = "${props.zoneId ? props.zoneId : ''}"
+private = false
+account_id = "${props.accountId}"
+workers_dev = ${isWorkerDotDev(props)}
+route = ""
+`
+}
+
 const generateURLHandler = async (
   baseURL: string,
   serverDir: string,
@@ -73,7 +92,7 @@ const generateURLHandler = async (
 ): Promise<Env> => {
   const files = await globby('**', { cwd: publicDir })
   const hash = files.reduce((acc: any, cur: string) => {
-    acc['/' + cur] = 'a'
+    acc['/' + cur] = true
     return acc
   }, {})
   await writeFile(path.join(serverDir, 'assets_manifest.json'), JSON.stringify(hash))
@@ -100,7 +119,8 @@ const generateAssetsHandler = async (
 const bundle = async (props: DeployProps) => {
   const { serverDir, publicDir } = await initDirs(props)
   await generatePackageJson(serverDir)
-  await generateAssetsHandler(props, serverDir, publicDir)
+  const env = await generateAssetsHandler(props, serverDir, publicDir)
+  console.log({ env })
 }
 
 const deploy = async (props: DeployProps) => {
