@@ -1,5 +1,5 @@
 import vm from 'vm'
-import * as fetch from 'node-fetch'
+import * as fetch from 'cross-fetch'
 import { FabSpecExports, FetchApi } from '@fab/core'
 
 export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports> => {
@@ -27,6 +27,6 @@ export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports>
   const script = new vm.Script(src)
   const exp: any = {}
   const ctx = Object.assign({}, sandbox, { module: { exports: exp }, exports: exp })
-  script.runInNewContext(ctx)
-  return exp
+  const retval = script.runInNewContext(ctx)
+  return Object.assign({}, exp, retval)
 }

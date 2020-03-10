@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { FabFilesObject, FabRequestContext, FabSettings, ProtoFab } from '@fab/core'
+import { FabFilesObject, FabResponderArgs, FabSettings, ProtoFab } from '@fab/core'
 import { build } from '../src/build'
 import { runtime } from '../src/runtime'
 import { ServeHtmlArgs, ServeHtmlMetadata } from '../src/types'
@@ -17,7 +17,7 @@ async function doBuild(files: FabFilesObject, args: ServeHtmlArgs) {
   return proto_fab
 }
 
-function requestObj(path: string, settings: FabSettings): FabRequestContext {
+function requestObj(path: string, settings: FabSettings): FabResponderArgs {
   // @ts-ignore our renderer only uses these two parts of the context
   return {
     url: new URL(`https://example.com${path}`),

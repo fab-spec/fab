@@ -29,9 +29,17 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
   const url = new URL(request.url)
 
   const response_interceptors: ResponseInterceptor[] = []
+  const context: { [key: string]: any } = {}
+
+  let chained_request = request
 
   for (const responders of pipeline) {
-    const response = await responders({ request, settings, url })
+    const response = await responders({
+      request: chained_request.clone(),
+      settings,
+      url,
+      context,
+    })
     if (!response) continue
 
     if (response instanceof Request) {
@@ -54,6 +62,9 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
       // Unshift rather than push, so the reduce runs in the right order above.
       // I suppose I could use a library with a foldRight but I haven't.
       response_interceptors.unshift(directive.interceptResponse)
+    }
+    if (directive.replaceRequest instanceof Request) {
+      chained_request = directive.replaceRequest
     }
   }
 

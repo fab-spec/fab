@@ -1,5 +1,5 @@
 import { ServeHtmlArgs, ServeHtmlMetadata, ServerHtml } from './types'
-import { FabPluginRuntime, matchPath, FabRequestContext, FabSettings } from '@fab/core'
+import { FabPluginRuntime, matchPath, FabResponderArgs, FabSettings } from '@fab/core'
 import mustache from 'mustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
@@ -48,7 +48,7 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
     })
   }
 
-  return async function({ url, settings }: FabRequestContext) {
+  return async function({ url, settings }: FabResponderArgs) {
     const { pathname } = url
 
     const html = matchPath(htmls, pathname)

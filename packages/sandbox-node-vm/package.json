@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@fab/core": "0.0.7-alpha.13",
-    "node-fetch": "^2.6.0"
+    "cross-fetch": "^3.0.4"
   },
   "publishConfig": {
     "access": "public"
