@@ -1,5 +1,5 @@
-import * as tmp from 'tmp-promise'
-import * as fs from 'fs-extra'
+import tmp from 'tmp-promise'
+import fs from 'fs-extra'
 import { shell, cmd } from '../utils'
 import { ExecaChildProcess } from 'execa'
 
