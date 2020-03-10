@@ -51,18 +51,22 @@ export type FabPluginRuntime<
   U extends PluginMetadata = PluginMetadata
 > = (args: T, metadata: U) => FabRequestResponder
 
+export type FabResponderMutableContext = {
+  [key: string]: any
+}
+export type FabResponderArgs = {
+  request: Request
+  settings: FabSettings
+  url: URL,
+  context: FabResponderMutableContext
+}
 /*
  * A FabRequestResponder is an async function that optionally returns
  * a Response. If this responder should not handle this request, it
  * returns undefined and the next renderer is invoked.
  * */
-export type FabRequestContext = {
-  request: Request
-  settings: FabSettings
-  url: URL
-}
 export type FabRequestResponder = (
-  context: FabRequestContext
+  context: FabResponderArgs
 ) => Promise<undefined | Request | Response | Directive>
 
 export type ResponseInterceptor = (response: Response) => Promise<Response>
