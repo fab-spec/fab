@@ -11,6 +11,12 @@ import express from 'express'
 import concat from 'concat-stream'
 import fetch, { Request as NodeFetchRequest } from 'cross-fetch'
 
+function isRequest(fetch_res: Request | Response): fetch_res is Request {
+  return (
+    fetch_res instanceof NodeFetchRequest || fetch_res.constructor?.name === 'Request'
+  )
+}
+
 export default class Server {
   private filename: string
   private port: number
@@ -48,6 +54,7 @@ export default class Server {
 
     const enhanced_fetch: FetchApi = async (url, init?) => {
       const request_url = typeof url === 'string' ? url : url.url
+      console.log({ request_url })
       if (request_url.startsWith('/')) {
         if (!request_url.startsWith('/_assets/')) {
           throw new Error('Fetching relative URLs for non-assets is not permitted.')
@@ -107,7 +114,7 @@ export default class Server {
                 settings_overrides
               )
             )
-            if (fetch_res instanceof NodeFetchRequest) {
+            if (isRequest(fetch_res)) {
               console.log('GOT ME A NODE BOI REQUEST')
               console.log(fetch_res)
               console.log(fetch_res.url)
