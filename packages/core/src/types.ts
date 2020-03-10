@@ -57,7 +57,7 @@ export type FabResponderMutableContext = {
 export type FabResponderArgs = {
   request: Request
   settings: FabSettings
-  url: URL,
+  url: URL
   context: FabResponderMutableContext
 }
 /*

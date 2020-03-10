@@ -29,7 +29,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
   const url = new URL(request.url)
 
   const response_interceptors: ResponseInterceptor[] = []
-  const context: {[key: string]: any} = {}
+  const context: { [key: string]: any } = {}
 
   let chained_request = request
 
