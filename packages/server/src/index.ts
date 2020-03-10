@@ -49,6 +49,9 @@ export default class Server {
     const enhanced_fetch: FetchApi = async (url, init?) => {
       const request_url = typeof url === 'string' ? url : url.url
       if (request_url.startsWith('/')) {
+        if (!request_url.startsWith('/_assets/')) {
+          throw new Error("Fetching relative URLs for non-assets is not permitted.")
+        }
         // Need a smarter wau to fetch assets, of course, but for now...
         return fetch(`http://localhost:${this.port}${request_url}`, init)
       }
