@@ -5,28 +5,20 @@ let prodSettings = undefined
 const cache = caches.default
 
 global.orig_fetch = global.fetch
-
-let patchedFetch = false
-
-const patchGlobalFetch = (origin) => {
-  if (!patchedFetch) {
-    global.fetch = async (resource, init) => {
-      let fetch_url = resource
-      if (resource instanceof Request) {
-        fetch_url = resource.url
-      }
-      if (fetch_url.startsWith('/')) {
-        let fetchReq = resource
-        if (typeof resource === 'string') {
-          fetchReq = new Request(resource)
-        }
-        fetchReq.url = origin + fetch_url
-        return await handleRequest(fetchReq)
-      } else {
-        return global.orig_fetch(resource, init)
-      }
+global.fetch = async (resource, init) => {
+  let fetch_url = resource
+  if (resource instanceof Request) {
+    fetch_url = resource.url
+  }
+  if (fetch_url.startsWith('/_assets/')) {
+    let fetchReq = resource
+    if (typeof resource === 'string') {
+      fetchReq = new Request(resource)
     }
-    patchedFetch = true
+    fetchReq.url = `https://localfabassets${fetch_url}`
+    return await handleCache(fetchReq)
+  } else {
+    return global.orig_fetch(resource, init)
   }
 }
 
@@ -37,7 +29,9 @@ const handleFabRequest = async (request) => {
   const result = await fab.render(request, prodSettings)
   if (result instanceof Request) {
     if (result.url.startsWith('/')) {
-      return await handleRequest(result)
+      const url = new URL(request.url)
+      result.url = url.origin + result.url
+      return await handleCache(result)
     } else {
       return await fetch(request)
     }
@@ -60,9 +54,9 @@ const handleRequest = async (request) => {
 const handleCache = async (request) => {
   let response = await cache.match(request)
   if (response) {
-    return event.respondWith(response)
+    return response
   } else {
-    const response = event.respondWith(handleRequest(request))
+    const response = await handleRequest(request)
     cache.put(request, response)
     return response
   }
@@ -81,7 +75,6 @@ const redirectToHttps = (url) => {
 addEventListener('fetch', (event) => {
   const request = event.request
   const url = new URL(request.url)
-  patchGlobalFetch(url.origin)
   if (url.protocol === 'https:') {
     event.respondWith(handleCache(request))
   } else {
