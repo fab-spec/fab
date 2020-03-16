@@ -3,8 +3,9 @@ module.exports = {
   testEnvironment: 'node',
   globals: {
     'ts-jest': {
-      tsConfig: './tsconfig.json'
-    }
+      tsConfig: './tsconfig.json',
+    },
   },
-  setupFilesAfterEnv: ['./jest.setup.js']
-};
+  setupFilesAfterEnv: ['./jest.setup.js'],
+  testPathIgnorePatterns: ['/workspace/'],
+}

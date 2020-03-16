@@ -5,11 +5,12 @@ import { JSON5Config } from '@fab/cli'
 import globby from 'globby'
 // @ts-ignore
 import md5file from 'md5-file/promise'
-import { buildFab, getPort, getWorkingDir } from './helpers'
+import { buildFab, CRA_PORTS, getPorts, getWorkingDir } from './helpers'
 import path from 'path'
 
+const getPort = getPorts(CRA_PORTS)
+
 describe('Create React App E2E Test', () => {
-  let tmpdir: string
   let cwd: string
 
   it('should create a new CRA project', async () => {

@@ -10,6 +10,7 @@ import path from 'path'
 import { InvalidConfigError } from '@fab/cli'
 // @ts-ignore
 import { isBinaryPromise } from 'istextorbinary'
+import { DEFAULT_IMMUTABILITY_CHECK } from './constants'
 
 export async function build(
   args: RewireAssetsArgs,
@@ -17,7 +18,7 @@ export async function build(
 ) {
   const {
     'inline-threshold': inline_threshold = 8192,
-    'treat-as-immutable': immutable_regexp = /\.[0-9A-F]{8,}\./i,
+    'treat-as-immutable': immutable_regexp = DEFAULT_IMMUTABILITY_CHECK,
   } = args
 
   if (Number.isNaN(inline_threshold)) {

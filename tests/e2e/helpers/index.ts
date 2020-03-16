@@ -2,8 +2,13 @@ import { cmd, shell } from '../../utils'
 import fs from 'fs-extra'
 import path from 'path'
 
-let next_port = 3310
-export const getPort = () => next_port++
+export const CRA_PORTS = 10100
+export const NEXTJS_PORTS = 10200
+
+export const getPorts = (first_port: number) => {
+  let next_port = first_port
+  return () => next_port++
+}
 
 export const buildFab = async (cwd: string, global = false) => {
   await shell(`rm -f fab.zip`, { cwd })
