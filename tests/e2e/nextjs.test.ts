@@ -1,33 +1,26 @@
-import tmp from 'tmp-promise'
 import fs from 'fs-extra'
 import { shell, cmd } from '../utils'
 import { ExecaChildProcess } from 'execa'
-
-let next_port = 3210
-const getPort = () => next_port++
+import { buildFab, getPort, getWorkingDir } from './helpers'
 
 describe('Create React App E2E Test', () => {
-  let tmpdir: string
   let cwd: string
 
-  it('should allow creation of a new NextJS project in a tmp dir', async () => {
-    if (process.env.FAB_E2E_NEXTJS_DIR) {
-      cwd = process.env.FAB_E2E_NEXTJS_DIR
-      if (!cwd.startsWith('/var/folders/' || !cwd.endsWith('/nextjs-test'))) {
-        // The value of FAB_E2E_NEXTJS_DIR doesn't match the above, exiting.
-        process.exit(1)
-      }
+  it('should create a new CRA project', async () => {
+    cwd = await getWorkingDir('nextjs-test', !process.env.FAB_E2E_SKIP_CREATE)
+    if (process.env.FAB_E2E_SKIP_CREATE) {
+      console.log({ cwd })
       await shell(`git reset --hard`, { cwd })
       await shell(`git clean -df`, { cwd })
     } else {
-      // Create the tmp dir (inside the workspace if on Github Actions)
-      const dir = await tmp.dir({ dir: process.env.GITHUB_WORKSPACE })
-      tmpdir = dir.path
-      expect(tmpdir).toMatch('tmp')
-
-      // Create a new NextJS project inside
-      await shell(`yarn create next-app nextjs-test`, { cwd: tmpdir })
-      cwd = `${tmpdir}/nextjs-test`
+      // Create a new CRA project inside
+      await shell(`yarn create next-app .`, { cwd })
+      // Skip git stuff on Github, it's only for rerunning locally
+      if (!process.env.GITHUB_WORKSPACE) {
+        await shell(`git init`, { cwd })
+        await shell(`git add .`, { cwd })
+        await shell(`git commit -m CREATED`, { cwd })
+      }
     }
     // Expect that {cwd} has a package.json
     const { stdout: files } = await cmd(`ls -l`, { cwd })
@@ -35,10 +28,9 @@ describe('Create React App E2E Test', () => {
   })
 
   it('should configure the NextJS project to produce FABs', async () => {
-    await shell(
-      `fab init -y ${process.env.PUBLIC_PACKAGES ? '' : '--skip-install --version=next'}`,
-      { cwd }
-    )
+    await shell(`fab init -y ${process.env.PUBLIC_PACKAGES ? '' : '--skip-install'}`, {
+      cwd,
+    })
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
     expect(files_after_fab_init).toMatch('next.config.js')
@@ -68,33 +60,25 @@ describe('Create React App E2E Test', () => {
     let port: number
 
     const cancelServer = () => {
-      console.log('CANCELLING')
-      console.log({ server_process: server_process?.constructor?.name })
+      // console.log('CANCELLING')
+      // console.log({ server_process: server_process?.constructor?.name })
       if (server_process) {
         try {
           server_process.cancel()
         } catch (e) {
-          console.log('CANCELLED')
+          // console.log('CANCELLED')
         }
         server_process = null
       }
-    }
-
-    const buildFab = async (global = false) => {
-      await shell(`rm -f fab.zip`, { cwd })
-      await shell(global ? `fab build` : `yarn fab:build`, { cwd })
-
-      const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
-      expect(files_after_fab_build).toMatch('fab.zip')
     }
 
     const createServer = async (port: number) => {
       cancelServer()
       // Test that global builds work too
       if (process.env.PUBLIC_PACKAGES) {
-        await buildFab(true)
+        await buildFab(cwd, true)
       }
-      await buildFab()
+      await buildFab(cwd)
 
       server_process = cmd(`yarn fab:serve --port=${port}`, { cwd })
       // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)

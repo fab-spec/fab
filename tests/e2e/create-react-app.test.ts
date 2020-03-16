@@ -9,7 +9,6 @@ import { buildFab, getPort, getWorkingDir } from './helpers'
 import path from 'path'
 
 describe('Create React App E2E Test', () => {
-  let tmpdir: string
   let cwd: string
 
   it('should create a new CRA project', async () => {
