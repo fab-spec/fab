@@ -1,8 +1,10 @@
 import fs from 'fs-extra'
 import { shell, cmd } from '../utils'
 import { ExecaChildProcess } from 'execa'
-import { buildFab, getPort, getWorkingDir } from './helpers'
+import { buildFab, getPorts, getWorkingDir, NEXTJS_PORTS } from './helpers'
 import path from 'path'
+
+const getPort = getPorts(NEXTJS_PORTS)
 
 describe('Create React App E2E Test', () => {
   let cwd: string

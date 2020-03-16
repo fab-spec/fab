@@ -1,6 +1,6 @@
 import { expectError, shell } from '../utils'
 import { getWorkingDir } from './helpers'
-import * as path from "path";
+import * as path from 'path'
 
 describe('dir of static assets', () => {
   let cwd: string
