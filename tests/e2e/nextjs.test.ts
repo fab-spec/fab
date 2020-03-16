@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import { shell, cmd } from '../utils'
 import { ExecaChildProcess } from 'execa'
 import { buildFab, getPort, getWorkingDir } from './helpers'
+import path from 'path'
 
 describe('Create React App E2E Test', () => {
   let cwd: string
@@ -106,6 +107,24 @@ describe('Create React App E2E Test', () => {
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
       expect(homepage_response).toContain(`window.FAB_SETTINGS`)
       expect(homepage_response).toContain(`"__fab_server":"@fab/server"`)
+    })
+
+    it('should return a correct cache headers on assets', async () => {
+      const build_id = await fs.readFile(path.join(cwd, '.next', 'BUILD_ID'), 'utf8')
+      expect(build_id).toBeDefined()
+      const index_js = `/_next/static/${build_id}/pages/index.js`
+
+      const main_js_headers = await request('-I', index_js, port)
+      expect(main_js_headers).toContain(`HTTP/1.1 200 OK`)
+      expect(main_js_headers).toMatch(/Cache-Control:.*immutable/i)
+      expect(main_js_headers).toMatch(/Content-Type:.*application\/javascript/i)
+      expect(main_js_headers).toContain(`ETag`)
+
+      const favicon_headers = await request('-I', `/favicon.ico`, port)
+      expect(favicon_headers).toContain(`HTTP/1.1 200 OK`)
+      expect(favicon_headers).toMatch(/Cache-Control:.*no-cache/i)
+      expect(favicon_headers).toMatch(/Content-Type:.*image\/vnd\.microsoft\.icon/i)
+      expect(favicon_headers).toContain(`ETag`)
     })
 
     it('should return a dynamic page', async () => {
