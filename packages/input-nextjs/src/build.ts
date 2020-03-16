@@ -35,6 +35,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   log(`I am Input NextJS! Reading files from ${next_dir}`)
   const pages_dir = path.join(next_dir, 'serverless', 'pages')
   const static_dir = path.join(next_dir, 'static')
+  const public_dir = path.resolve(next_dir, '../public')
   const pages_dir_hash = await md5dir(pages_dir)
   console.log({ pages_dir, pages_dir_hash })
 
@@ -125,6 +126,18 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
         await fs.readFile(path.resolve(static_dir, asset_file))
       )
       log(`  💛${asset_file}💛 read.`)
+    }
+  }
+
+  log(`Finding all public files`)
+  const public_files = await globby([`**/*`], { cwd: public_dir })
+  if (public_files.length > 0) {
+    for (const public_file of public_files) {
+      proto_fab.files.set(
+        `/${public_file}`,
+        await fs.readFile(path.resolve(public_dir, public_file))
+      )
+      log(`  💛${public_file}💛 read.`)
     }
   }
 }
