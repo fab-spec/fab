@@ -34,7 +34,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
 
   log(`I am Input NextJS! Reading files from ${next_dir}`)
   const pages_dir = path.join(next_dir, 'serverless', 'pages')
-  const static_dir = path.join(next_dir, 'serverless', 'static')
+  const static_dir = path.join(next_dir, 'static')
   const pages_dir_hash = await md5dir(pages_dir)
   console.log({ pages_dir, pages_dir_hash })
 
