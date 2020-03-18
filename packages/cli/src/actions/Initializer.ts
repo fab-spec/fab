@@ -213,6 +213,25 @@ export default class Initializer {
     const framework = await this.getFramework(package_json, yes, root_dir)
     if (!framework) return
 
+    const use_yarn = await fs.pathExists(path.join(root_dir, 'yarn.lock'))
+
+    if (yes) {
+      log.info(`Proceeding...`)
+    } else {
+      const confirmed = await confirmAndRespond(
+        `💚Ready to proceed.💚 This process will:
+        • Generate a 💛fab.config.json5💛 file for your project
+        • Add 💛build:fab💛 and related scripts to your 💛package.json💛
+        • Add 💛.fab💛 and 💛fab.zip💛 to your 💛.gitignore💛
+        • Install 💛@fab/cli💛 and related dependencies using 💛${
+          use_yarn ? 'yarn' : 'npm'
+        }💛
+
+        Good to go? [yN]`
+      )
+      if (!confirmed) return
+    }
+
     /* Next, generate/update the FAB config file */
     await this.updateConfig(root_dir, config_filename, framework, yes)
 
@@ -227,7 +246,7 @@ export default class Initializer {
 
     /* Finally, install the dependencies */
     if (!skip_install) {
-      await this.installDependencies(root_dir, version, framework)
+      await this.installDependencies(root_dir, version, framework, use_yarn)
     }
   }
 
@@ -260,7 +279,9 @@ export default class Initializer {
       return await this.setupStaticFramework(package_json, yes, root_dir)
     } else {
       const framework = Frameworks[project_type]
-      log.info(`Found a ${framework.name} project, proceeding...`)
+      log(
+        `Found a 💛${framework.name}💛 project. We know exactly how to configure this 👍\n`
+      )
       return framework
     }
   }
@@ -328,7 +349,7 @@ export default class Initializer {
         `Detected NextJS as a dependency but no .next directory found & npm run build doesn't contain 'next build'!`
       )
     }
-    if (semver.lt(nextjs_version, '9.0.0')) {
+    if (semver.lt(semver.coerce(nextjs_version)!, '9.0.0')) {
       throw new FabInitError(
         `Detected a NextJS project but using an older version (${nextjs_version}). FABs currently only support NextJS v9 or later.`
       )
@@ -342,7 +363,7 @@ export default class Initializer {
       package_json.devDependencies?.['react-scripts']
     if (!react_scripts_version) return false
 
-    if (semver.lt(react_scripts_version, '2.0.0')) {
+    if (semver.lt(semver.coerce(react_scripts_version)!, '2.0.0')) {
       throw new FabInitError(
         `Detected a Create React App project but using an older version of react-scripts (${react_scripts_version}). FABs support `
       )
@@ -354,12 +375,13 @@ export default class Initializer {
   private static async installDependencies(
     root_dir: string,
     version: string | undefined,
-    framework: FrameworkInfo
+    framework: FrameworkInfo,
+    use_yarn: boolean
   ) {
     const dependencies = [...DEFAULT_DEPS, ...Object.keys(framework.plugins)].map((dep) =>
       version ? `${dep}@${version}` : dep
     )
-    const use_yarn = await fs.pathExists(path.join(root_dir, 'yarn.lock'))
+
     log.info(
       `Installing required development dependencies:\n  ${dependencies.join(
         '\n  '
