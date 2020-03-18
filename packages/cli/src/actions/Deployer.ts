@@ -7,7 +7,7 @@ import { log, short_guid } from '../helpers'
 import JSON5Config from '../helpers/JSON5Config'
 import { FabConfig } from '@fab/core'
 import shell from 'shelljs'
-import decompress from 'decompress'
+import decompress from '@atomic-reactor/decompress'
 
 interface GlobalConfig {
   aws_key: string | undefined | null
