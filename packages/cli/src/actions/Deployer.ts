@@ -7,6 +7,7 @@ import { log, short_guid } from '../helpers'
 import JSON5Config from '../helpers/JSON5Config'
 import { FabConfig } from '@fab/core'
 import shell from 'shelljs'
+// @ts-ignore
 import decompress from '@atomic-reactor/decompress'
 
 interface GlobalConfig {
