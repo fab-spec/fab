@@ -166,7 +166,7 @@ const promptWithDefault = async (
   log(message)
   if (yes) {
     if (def) {
-      log(`💛  -y set, using 💛❤️${def}❤️\n`)
+      log(`  -y set, using 💛${def}💛\n`)
       return def
     }
     throw new FabInitError('-y specified but no default found!')
@@ -214,7 +214,7 @@ export default class Initializer {
     if (!framework) return
 
     /* Next, generate/update the FAB config file */
-    await this.updateConfig(root_dir, config_filename, framework)
+    await this.updateConfig(root_dir, config_filename, framework, yes)
 
     /* Then, update the package.json to add a build:fab script */
     await this.addBuildFabScript(package_json_path, package_json, framework)
@@ -370,18 +370,33 @@ export default class Initializer {
     } else {
       await execa('npm', ['i', '--save-dev', ...dependencies], { cwd: root_dir })
     }
-    log.info(`Done!`)
+    log(`
+      💚Done!💚
+
+      Now run 💛${
+        use_yarn ? 'yarn' : 'npm run'
+      } build:fab💛 to build your project and generate a FAB from it!
+    `)
   }
 
   private static async updateConfig(
     root_dir: string,
     config_filename: string,
-    framework: FrameworkInfo
+    framework: FrameworkInfo,
+    yes: boolean
   ) {
     const config_path = path.resolve(root_dir, config_filename)
     const config = await this.readExistingConfig(config_path)
     if (Object.keys(config.data.plugins).length > 0) {
-      log.warn(`Existing config has a "plugins" section. Overwriting since -y is set.`)
+      log.warn(`Existing config has a "plugins" section.`)
+      const confirmed =
+        (yes && log(`Overwriting since -y is set.`)) ||
+        (await confirmAndRespond(
+          `Would you like to overwrite it?`,
+          `Ok, overwriting...`,
+          `Ok, leaving as-is.`
+        ))
+      if (!confirmed) return
     }
     config.data.plugins = framework.plugins
     await config.write(config_filename)
