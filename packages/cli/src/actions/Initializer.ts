@@ -4,12 +4,11 @@ import path from 'path'
 import semver from 'semver'
 import execa from 'execa'
 
-import { BuildConfig, FabConfig } from '@fab/core'
+import { BuildConfig } from '@fab/core'
 
 import { FabInitError } from '../errors'
-import { log } from '../helpers'
+import { confirm, log, prompt } from '../helpers'
 import JSON5Config from '../helpers/JSON5Config'
-import chalk, { yellow } from 'chalk'
 
 enum KnownFrameworkTypes {
   CreateReactApp,
@@ -25,6 +24,31 @@ type FrameworkInfo = {
 
 const DEFAULT_DEPS = ['@fab/cli', '@fab/server']
 const GITIGNORE_LINES = ['/.fab', '/fab.zip']
+const GUESSED_OUTPUT_DIRS = ['build', 'dist', 'public']
+const OUTPUT_DIR_EXAMPLES =
+  GUESSED_OUTPUT_DIRS.slice(0, GUESSED_OUTPUT_DIRS.length - 2)
+    .map((dir) => `💛${dir}💛`)
+    .join(', ') + ` or 💛${GUESSED_OUTPUT_DIRS.slice(-1)}💛`
+
+function STATIC_SITE(build_cmd: string, found_output_dir: string) {
+  return {
+    name: 'Static Site',
+    scripts: {
+      'build:fab': `${build_cmd} && npm run fab:build`,
+      'fab:build': 'fab build',
+      'fab:serve': 'fab serve fab.zip',
+    },
+    plugins: {
+      '@fab/input-static': {
+        dir: found_output_dir,
+      },
+      '@fab/serve-html': {
+        fallback: '/index.html',
+      },
+      '@fab/rewire-assets': {},
+    },
+  }
+}
 
 const Frameworks: {
   [key in KnownFrameworkTypes]: FrameworkInfo
@@ -89,6 +113,7 @@ const Frameworks: {
     },
   },
 }
+const FRAMEWORK_NAMES = Object.values(Frameworks).map((f) => f.name)
 
 const BASE_CONFIG: string = `// For more information, see https://fab.dev/kb/configuration
 {
@@ -117,44 +142,98 @@ type PackageJson = {
   devDependencies?: StringMap
 }
 
+const confirmAndRespond = async (
+  message: string,
+  if_yes: string = `Ok, proceeding...\n`,
+  if_no: string = `Ok, exiting`
+) => {
+  const response = await confirm(message)
+  if (response) {
+    log(if_yes)
+  } else {
+    log(if_no)
+  }
+  return response
+}
+
+const promptWithDefault = async (
+  message: string,
+  examples: string,
+  def: any,
+  yes: boolean
+) => {
+  // console.log({message, examples, def, yes})
+  log(message)
+  if (yes) {
+    if (def) {
+      log(`  -y set, using 💛${def}💛\n`)
+      return def
+    }
+    throw new FabInitError('-y specified but no default found!')
+  }
+  return await (def ? prompt('> ', { default: def }) : prompt(examples))
+}
+
 export default class Initializer {
+  static description = `Auto-configure a repo for generating FABs`
   static async init(
     config_filename: string,
     yes: boolean,
     skip_install: boolean,
     version: string | undefined
   ) {
-    if (!yes)
-      throw new FabInitError(`Haven't figured out prompting the user yet, use -y!`)
+    log(`💎 💚FAB INIT: ${this.description}💚 💎\n`)
     /* First, figure out the nearest package.json */
     const package_json_path = await pkgUp()
     if (!package_json_path) {
       throw new FabInitError(`Cannot find a package.json in this or any parent directory`)
     }
     const root_dir = path.dirname(package_json_path)
-    if (root_dir !== process.cwd() && yes) {
-      throw new FabInitError(
-        `Note: fab init -y must be run from the root of your project (where your package.json lives) since it will automatically change files.`
-      )
+    if (root_dir !== process.cwd()) {
+      if (yes) {
+        throw new FabInitError(
+          `Note: fab init -y must be run from the root of your project (where your package.json lives) since it will automatically change files.`
+        )
+      } else {
+        log(
+          `❤️Warning:❤️ There's no package.json in this directory, the nearest is at 💚${path.relative(
+            process.cwd(),
+            package_json_path
+          )}💚`
+        )
+        const confirmed = await confirmAndRespond(
+          `💛Are you sure you want to configure a FAB here?💛`
+        )
+        if (!confirmed) return
+      }
     }
 
     /* Then, figure out what kind of project we are */
     const package_json = await this.getPackageJson(package_json_path)
-    const project_type = await this.determineProjectType(package_json)
+    const framework = await this.getFramework(package_json, yes, root_dir)
+    if (!framework) return
 
-    if (typeof project_type !== 'number') {
-      log.warn(`Could not find a known framework to auto-generate config!`)
-      log.warn(
-        `Visit https://fab.dev/kb/configuration for a guide to manually creating one.`
+    const use_yarn = await fs.pathExists(path.join(root_dir, 'yarn.lock'))
+
+    if (yes) {
+      log.info(`Proceeding...`)
+    } else {
+      const confirmed = await confirmAndRespond(
+        `💚Ready to proceed.💚 This process will:
+        • Generate a 💛fab.config.json5💛 file for your project
+        • Add 💛build:fab💛 and related scripts to your 💛package.json💛
+        • Add 💛.fab💛 and 💛fab.zip💛 to your 💛.gitignore💛
+        • Install 💛@fab/cli💛 and related dependencies using 💛${
+          use_yarn ? 'yarn' : 'npm'
+        }💛
+
+        Good to go? [yN]`
       )
-      return
+      if (!confirmed) return
     }
 
-    const framework = Frameworks[project_type]
-    log.info(`Found a ${framework.name} project, proceeding...`)
-
     /* Next, generate/update the FAB config file */
-    await this.updateConfig(root_dir, config_filename, framework)
+    await this.updateConfig(root_dir, config_filename, framework, yes)
 
     /* Then, update the package.json to add a build:fab script */
     await this.addBuildFabScript(package_json_path, package_json, framework)
@@ -167,8 +246,79 @@ export default class Initializer {
 
     /* Finally, install the dependencies */
     if (!skip_install) {
-      await this.installDependencies(root_dir, version, framework)
+      await this.installDependencies(root_dir, version, framework, use_yarn)
     }
+  }
+
+  private static async getFramework(
+    package_json: PackageJson,
+    yes: boolean,
+    root_dir: string
+  ) {
+    const project_type = await this.determineProjectType(package_json)
+
+    if (typeof project_type !== 'number') {
+      log(`❤️Warning: Could not find a known framework to auto-generate config.❤️
+        Currently supported frameworks for auto-detection are:
+        • 💛${FRAMEWORK_NAMES.join('\n• ')}💛
+
+        If your project uses one of these but wasn't detected, please raise an issue: https://github.com/fab-spec/fab/issues.
+
+        💚NOTE: if your site is statically-rendered (e.g. JAMstack) we can still set things up.💚
+        Check https://fab.dev/kb/static-sites for more info.
+
+        We'll need your:
+        • Build command (usually 💛npm run build💛)
+        • Output directory (usually ${OUTPUT_DIR_EXAMPLES})
+      `)
+
+      const attempt_static =
+        yes || (await confirmAndRespond(`Would you like to proceed?`))
+      if (!attempt_static) return
+
+      return await this.setupStaticFramework(package_json, yes, root_dir)
+    } else {
+      const framework = Frameworks[project_type]
+      log(
+        `Found a 💛${framework.name}💛 project. We know exactly how to configure this 👍\n`
+      )
+      return framework
+    }
+  }
+
+  private static async setupStaticFramework(
+    package_json: PackageJson,
+    yes: boolean,
+    root_dir: string
+  ): Promise<FrameworkInfo> {
+    const npm_build_exists: boolean | undefined = !!package_json.scripts?.build
+    const npm_run_build = `npm run build`
+    const build_cmd = await promptWithDefault(
+      `What command do you use to build your project?`,
+      `(usually something like "npm run xyz")`,
+      npm_build_exists && npm_run_build,
+      yes
+    )
+    // console.log({ build_cmd })
+
+    let found_output_dir
+    for (const dir of GUESSED_OUTPUT_DIRS) {
+      const joined_path = path.join(root_dir, dir)
+      if (await fs.pathExists(joined_path)) {
+        found_output_dir = dir
+        break
+      }
+    }
+
+    const output_dir = await promptWithDefault(
+      `Where is your project built into?`,
+      `(usually something like ${OUTPUT_DIR_EXAMPLES})`,
+      found_output_dir,
+      yes
+    )
+    // console.log({ output_dir })
+
+    return STATIC_SITE(build_cmd, output_dir)
   }
 
   private static async getPackageJson(package_json_path: string) {
@@ -199,7 +349,7 @@ export default class Initializer {
         `Detected NextJS as a dependency but no .next directory found & npm run build doesn't contain 'next build'!`
       )
     }
-    if (semver.lt(nextjs_version, '9.0.0')) {
+    if (semver.lt(semver.coerce(nextjs_version)!, '9.0.0')) {
       throw new FabInitError(
         `Detected a NextJS project but using an older version (${nextjs_version}). FABs currently only support NextJS v9 or later.`
       )
@@ -213,7 +363,7 @@ export default class Initializer {
       package_json.devDependencies?.['react-scripts']
     if (!react_scripts_version) return false
 
-    if (semver.lt(react_scripts_version, '2.0.0')) {
+    if (semver.lt(semver.coerce(react_scripts_version)!, '2.0.0')) {
       throw new FabInitError(
         `Detected a Create React App project but using an older version of react-scripts (${react_scripts_version}). FABs support `
       )
@@ -225,12 +375,13 @@ export default class Initializer {
   private static async installDependencies(
     root_dir: string,
     version: string | undefined,
-    framework: FrameworkInfo
+    framework: FrameworkInfo,
+    use_yarn: boolean
   ) {
     const dependencies = [...DEFAULT_DEPS, ...Object.keys(framework.plugins)].map((dep) =>
       version ? `${dep}@${version}` : dep
     )
-    const use_yarn = await fs.pathExists(path.join(root_dir, 'yarn.lock'))
+
     log.info(
       `Installing required development dependencies:\n  ${dependencies.join(
         '\n  '
@@ -241,18 +392,33 @@ export default class Initializer {
     } else {
       await execa('npm', ['i', '--save-dev', ...dependencies], { cwd: root_dir })
     }
-    log.info(`Done!`)
+    log(`
+      💚Done!💚
+
+      Now run 💛${
+        use_yarn ? 'yarn' : 'npm run'
+      } build:fab💛 to build your project and generate a FAB from it!
+    `)
   }
 
   private static async updateConfig(
     root_dir: string,
     config_filename: string,
-    framework: FrameworkInfo
+    framework: FrameworkInfo,
+    yes: boolean
   ) {
-    const config_path = path.join(root_dir, config_filename)
+    const config_path = path.resolve(root_dir, config_filename)
     const config = await this.readExistingConfig(config_path)
     if (Object.keys(config.data.plugins).length > 0) {
-      log.warn(`Existing config has a "plugins" section. Overwriting since -y is set.`)
+      log.warn(`Existing config has a "plugins" section.`)
+      const confirmed =
+        (yes && log(`Overwriting since -y is set.`)) ||
+        (await confirmAndRespond(
+          `Would you like to overwrite it?`,
+          `Ok, overwriting...`,
+          `Ok, leaving as-is.`
+        ))
+      if (!confirmed) return
     }
     config.data.plugins = framework.plugins
     await config.write(config_filename)

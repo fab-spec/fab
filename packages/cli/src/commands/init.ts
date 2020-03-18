@@ -3,7 +3,7 @@ import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
 import Initializer from '../actions/Initializer'
 
 export default class Init extends Command {
-  static description = 'Generate a FAB config on a new project'
+  static description = Initializer.description
 
   static examples = [`$ fab init`, `$ fab init --config=fab.config.json5`]
 
