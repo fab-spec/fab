@@ -236,7 +236,7 @@ export default class Initializer {
     await this.updateConfig(root_dir, config_filename, framework, yes)
 
     /* Then, update the package.json to add a build:fab script */
-    await this.addBuildFabScript(package_json_path, package_json, framework)
+    await this.addBuildFabScript(package_json_path, package_json, framework, yes)
 
     /* Update the .gitignore file (if it exists) to add .fab and fab.zip */
     await this.addGitIgnores(root_dir)
@@ -435,11 +435,16 @@ export default class Initializer {
   private static async addBuildFabScript(
     package_json_path: string,
     package_json: any,
-    framework: FrameworkInfo
+    framework: FrameworkInfo,
+    yes: boolean
   ) {
-    if (package_json.scripts?.build?.['build:fab']) {
-      log.info(`Already detected a build:fab command, skipping`)
-      return
+    if (!yes && package_json.scripts?.['build:fab']) {
+      log.info(`Already detected a build:fab command.`)
+      log(`We want to add/overwrite the following lines to your 💛package.json💛:
+        💛${JSON.stringify(framework.scripts, null, 2)}💛
+      `)
+      const ok = await confirmAndRespond(`Overwrite existing scripts?`)
+      if (!ok) return
     }
     await fs.writeFile(
       package_json_path,
