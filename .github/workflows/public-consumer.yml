@@ -28,7 +28,7 @@ jobs:
         cd tests
         yarn
         yarn global add @fab/cli
-        yarn test
+        PUBLIC_PACKAGES=true yarn test
       env:
         CI: true
         PUBLIC_PACKAGES: true
