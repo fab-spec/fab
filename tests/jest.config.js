@@ -4,7 +4,7 @@ module.exports = {
   globals: {
     'ts-jest': {
       tsConfig: './tsconfig.json',
-      diagnostics: !process.env.PUBLIC_PACKAGES,
+      diagnostics: false,
     },
   },
   setupFilesAfterEnv: ['./jest.setup.js'],
