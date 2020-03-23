@@ -35,10 +35,10 @@ describe('Create React App E2E Test', () => {
   })
 
   it('should configure the CRA project to produce FABs', async () => {
-    // CRA normally doesn't like running in a directory with a package.json higher up
-    // for some particular dependency but it's not failing any more?
-    // await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
-    // await shell(`cat .env`, { cwd })
+    // CRA doesn't like running in a directory with a package.json higher up
+    // with a different version of Webpack.
+    await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
+    await shell(`cat .env`, { cwd })
     await shell(`fab init -y ${process.env.PUBLIC_PACKAGES ? '' : '--skip-install'}`, {
       cwd,
     })
