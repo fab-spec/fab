@@ -21,7 +21,7 @@ $ npm install -g @fab/cli
 $ fab COMMAND
 running command...
 $ fab (-v|--version|version)
-@fab/cli/0.0.7-alpha.17 darwin-x64 node-v13.8.0
+@fab/cli/0.0.7-alpha.18 darwin-x64 node-v13.8.0
 $ fab --help [COMMAND]
 USAGE
   $ fab COMMAND
@@ -36,8 +36,10 @@ USAGE
 
 - [`fab build`](#fab-build)
 - [`fab deploy [FILE]`](#fab-deploy-file)
+- [`fab deploy-cf-workers [FILE]`](#fab-deploy-cf-workers-file)
 - [`fab help [COMMAND]`](#fab-help-command)
 - [`fab init`](#fab-init)
+- [`fab package [FILE]`](#fab-package-file)
 - [`fab serve [FILE]`](#fab-serve-file)
 
 ## `fab build`
@@ -57,15 +59,34 @@ EXAMPLES
   $ fab build --config=fab.config.json5
 ```
 
-_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.17/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.18/lib/commands/build.js)_
 
 ## `fab deploy [FILE]`
 
-Command line deployer for FABs
+Deploy a FAB to a hosting provider
 
 ```
 USAGE
   $ fab deploy [FILE]
+
+OPTIONS
+  -c, --config=config        [default: fab.config.json5] Path to config file
+  -h, --help                 show CLI help
+  --output-path=output-path  Where to save the packaged FAB (default ./fab/deploy/[target].zip)
+
+EXAMPLE
+  $ fab deploy fab.zip
+```
+
+_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.18/lib/commands/deploy.js)_
+
+## `fab deploy-cf-workers [FILE]`
+
+Command line deployer for FABs to CF Workers (deprecated)
+
+```
+USAGE
+  $ fab deploy-cf-workers [FILE]
 
 OPTIONS
   -c, --config=config                    [default: fab.config.json5] Path to local config file
@@ -79,10 +100,10 @@ OPTIONS
   --s3_asset_bucket=s3_asset_bucket      S3 Bucket name for asset upload
 
 EXAMPLE
-  $ fab-cf-workers deploy fab.zip
+  $ fab deploy-cf-workers fab.zip
 ```
 
-_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.17/lib/commands/deploy.js)_
+_See code: [lib/commands/deploy-cf-workers.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.18/lib/commands/deploy-cf-workers.js)_
 
 ## `fab help [COMMAND]`
 
@@ -121,7 +142,27 @@ EXAMPLES
   $ fab init --config=fab.config.json5
 ```
 
-_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.17/lib/commands/init.js)_
+_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.18/lib/commands/init.js)_
+
+## `fab package [FILE]`
+
+Package a FAB to be uploaded to a hosting provider manually
+
+```
+USAGE
+  $ fab package [FILE]
+
+OPTIONS
+  -c, --config=config        [default: fab.config.json5] Path to config file
+  -h, --help                 show CLI help
+  -t, --target=target        Hosting provider (currently one of 'aws-lambda-edge', 'cf-workers')
+  --output-path=output-path  Where to save the packaged FAB (default .fab/deploy/[target].zip)
+
+EXAMPLE
+  $ fab package --target=aws-lambda-edge fab.zip
+```
+
+_See code: [lib/commands/package.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.18/lib/commands/package.js)_
 
 ## `fab serve [FILE]`
 
@@ -154,6 +195,6 @@ EXAMPLES
   $ fab serve --env=staging fab.zip
 ```
 
-_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.17/lib/commands/serve.js)_
+_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.18/lib/commands/serve.js)_
 
 <!-- commandsstop -->
