@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@fab/core": "0.0.7-alpha.18",
+    "@types/nanoid": "^2.1.0",
     "@types/node": "^12.12.14",
     "fs-extra": "^8.1.0",
     "nanoid": "^2.1.11"

@@ -15,6 +15,7 @@ export const createPackage: FabPackager = async (
 
   const output_dir = path.dirname(package_path)
   const work_dir = path.join(output_dir, `aws-lambda-${nanoid()}`)
+  await fs.ensureDir(work_dir)
   // await fs.ensureDir(output_dir)
   // await unzip_fab(fab_file, work_dir)
   // await installNodeFetch(work_dir)
