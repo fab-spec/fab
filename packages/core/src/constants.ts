@@ -6,3 +6,12 @@ export const IMMUTABLE_HEADERS = { 'Cache-Control': 'immutable' }
 export const NON_IMMUTABLE_HEADERS = { 'Cache-Control': 'no-cache' }
 
 export const REGEXP_VALUE_PATTERN = /^\/.*\/([gimy]*)$/
+
+export const HOSTING_PROVIDERS: { [key: string]: { package_name: string } } = {
+  'cf-workers': {
+    package_name: '@fab/deployer-cf-workers',
+  },
+  'aws-lambda-edge': {
+    package_name: '@fab/deployer-aws-lambda',
+  },
+}
