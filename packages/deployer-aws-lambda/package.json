@@ -30,9 +30,11 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
+    "@atomic-reactor/decompress": "^4.2.3",
     "@fab/core": "0.0.7-alpha.18",
     "@types/nanoid": "^2.1.0",
     "@types/node": "^12.12.14",
+    "execa": "^4.0.0",
     "fs-extra": "^8.1.0",
     "nanoid": "^2.1.11"
   },
