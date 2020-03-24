@@ -19,6 +19,9 @@ export default class Deploy extends Command {
       char: 't',
       description: `Hosting provider (currently one of 'aws-lambda-edge', 'cf-workers')`,
     }),
+    'output-path': flags.string({
+      description: 'Where to save the packaged FAB (default .fab/deploy/[target].zip)',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -26,7 +29,7 @@ export default class Deploy extends Command {
   async run() {
     const { args, flags } = this.parse(Deploy)
     const { file } = args
-    const { target } = flags
+    const { target, 'output-path': output_path } = flags
 
     if (!file) {
       this.error(`You must provide a FAB file to package (e.g. fab.zip)`)
@@ -35,6 +38,6 @@ export default class Deploy extends Command {
       this.error(`You must provide a target.`)
     }
     const config = await JSON5Config.readFrom(flags.config!)
-    await Packager.package(config, file, target)
+    await Packager.package(file, target, output_path)
   }
 }

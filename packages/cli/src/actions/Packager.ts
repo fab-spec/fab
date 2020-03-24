@@ -1,8 +1,15 @@
-import { HOSTING_PROVIDERS } from '@fab/core'
-import JSON5Config from '../helpers/JSON5Config'
+import { HOSTING_PROVIDERS, FabPackager } from '@fab/core'
+import fs from 'fs-extra'
+import path from 'path'
+import { _log, loadModule } from '../helpers'
+const log = _log(`[💚FAB:Package💚] `)
 
 export default class Packager {
-  static async package(config: JSON5Config, file_path: string, target: string) {
+  static async package(
+    file_path: string,
+    target: string,
+    output_path: string = `.fab/deploy/${target}.zip`
+  ) {
     const provider = HOSTING_PROVIDERS[target]
     if (!provider) {
       throw new Error(
@@ -11,5 +18,17 @@ export default class Packager {
         ).join(', ')}`
       )
     }
+
+    const { package_name } = provider
+    log(`Loading packager code from ${package_name}`)
+    const packager = loadModule(package_name) as { createPackage: FabPackager }
+    log(`✅ Done.`)
+
+    const package_dir = path.dirname(output_path)
+    log(`Creating package directory 💛${package_dir}💛:`)
+    await fs.ensureDir(package_dir)
+    log(`✅ Done.`)
+
+    await packager.createPackage(file_path, output_path)
   }
 }

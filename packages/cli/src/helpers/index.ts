@@ -48,3 +48,12 @@ export const short_guid = () =>
 export const confirm = (message: string) => cli.confirm(format(message))
 export const prompt = (message: string, opts?: IPromptOptions) =>
   cli.prompt(format(message), opts)
+
+export const loadModule = (module_name: string) => {
+  try {
+    return require(module_name)
+  } catch (e) {
+    log.error(`ERROR: FAILED TO LOAD ${module_name}.`)
+    throw e
+  }
+}
