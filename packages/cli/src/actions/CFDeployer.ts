@@ -23,7 +23,7 @@ interface LocalConfig {
   s3_asset_bucket: string | undefined
 }
 
-export default class Deployer {
+export default class CFDeployer {
   prompted_keys: Set<keyof GlobalConfig> = new Set()
 
   async deploy(

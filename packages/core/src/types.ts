@@ -122,3 +122,6 @@ export type FabSpecExports = {
 }
 
 export type FetchApi = (url: string | Request, init?: RequestInit) => Promise<Response>
+
+export type FabDeployer = (fab_path: string, package_path: string) => Promise<string>
+export type FabPackager = (fab_path: string, package_path: string) => Promise<void>
