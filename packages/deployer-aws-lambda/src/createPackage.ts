@@ -23,7 +23,7 @@ export const createPackage: FabPackager = async (
   console.log({ work_dir })
   await fs.ensureDir(work_dir)
   console.log('GOT ME A DIR')
-  await decompress(fab_path, work_dir)
+  await decompress(fab_path, work_dir, { followSymlinks: true })
   console.log('DECOMPRESS YO')
   await fs.copy(path.join(__dirname, '../templates'), work_dir)
   console.log('COPY BOIII')
