@@ -20,9 +20,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Yarn install (for typescript definitions)
-      run: |
-        yarn
     - name: Globally install @fab/cli
       run: |
         yarn global add @fab/cli
@@ -31,7 +28,7 @@ jobs:
         cd tests
         yarn
         yarn add @fab/cli
-        yarn test
+        PUBLIC_PACKAGES=true yarn test
       env:
         CI: true
         PUBLIC_PACKAGES: true
