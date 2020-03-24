@@ -8,5 +8,5 @@ export const createPackage: FabPackager = async (
   fab_path: string,
   package_path: string
 ) => {
-  console.log('AWS LAMBDA PACKAGER!')
+  console.log('CF WORKERS PACKAGER!')
 }
