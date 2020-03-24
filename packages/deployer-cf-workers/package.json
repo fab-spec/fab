@@ -14,7 +14,8 @@
   "author": "Glen Maddern",
   "files": [
     "lib",
-    "esm"
+    "esm",
+    "/templates"
   ],
   "main": "lib/index.js",
   "module": "esm/index.js",

@@ -2,7 +2,7 @@ import { HOSTING_PROVIDERS, FabPackager } from '@fab/core'
 import fs from 'fs-extra'
 import path from 'path'
 import { _log, loadModule } from '../helpers'
-const log = _log(`[💚FAB:Package💚] `)
+const log = _log(`[🖤FAB:Package🖤] `)
 
 export default class Packager {
   static async package(

@@ -14,7 +14,8 @@
   "author": "Glen Maddern",
   "files": [
     "lib",
-    "esm"
+    "esm",
+    "/templates"
   ],
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -31,7 +32,8 @@
   "dependencies": {
     "@fab/core": "0.0.7-alpha.18",
     "@types/node": "^12.12.14",
-    "fs-extra": "^8.1.0"
+    "fs-extra": "^8.1.0",
+    "nanoid": "^2.1.11"
   },
   "publishConfig": {
     "access": "public"

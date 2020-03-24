@@ -1,12 +1,10 @@
-// language=JavaScript
-export default (envSettings: any) => `
-'use strict'
 const URL = require('url').URL
 const fetch = require('node-fetch')
 const fab = require('./server')
+const assetSettings = require('./asset_settings')
+const envSettings = require('./env_settings')
 
 const prodSettings = fab.getProdSettings ? fab.getProdSettings() : {}
-const envSettings = ${JSON.stringify(envSettings)}
 const settings = Object.assign({}, prodSettings, envSettings)
 
 //Need to set this to work around a bug in a dependency of the webpack http(s) shim
@@ -85,31 +83,70 @@ const transformResponseBody = async (response) => {
   }
 }
 
-exports.handler = async (event) => {
-  console.log(JSON.stringify(event, null, 2))
-  const cf_request = event.Records[0].cf.request
-  const host = cf_request.headers.host[0].value
-  const method = cf_request.method
-  const url = \`https://\${host}\${cf_request.uri}\`
-  const headers = transformHeadersToFetch(cf_request.headers)
-  const body = transformBodyToFetch(cf_request.body)
-  console.log({ url, method, headers, body })
-  const options =
-    body && method.toUpperCase() === 'GET' ? { method, headers } : { method, headers, body }
-  const fetch_request = new global.Request(url, options)
+const handleRequest = async (fab_request, cf_request) => {
+  if (fab_request.url.startsWith('http')) {
+    cf_request.headers = cf_request.headers || {}
+    fab_request.headers.forEach((value, key) => {
+      cf_request.headers[key] = { value }
+    })
+    const url = new URL(fab_request.url)
+    cf_request.origin = {
+      custom: {
+        domainName: url.hostname,
+        keepaliveTimeout: 5,
+        path: '',
+        port: url.port || url.protocol === 'https' ? 443 : 80,
+        protocol: url.protocol,
+        readTimeout: 30,
+        sslProtocols: ['TLSv1.1', 'TLSv1.2'],
+      },
+    }
+    cf_request.querystring = url.search
+    cf_request.uri = url.pathname
+    console.log({ cf_request })
+    return cf_request
+  } else if (fab_request.url.startsWith('/_assets')) {
+    cf_request.origin = assetSettings
+    cf_request.querystring = ''
+    cf_request.uri = fab_request.url
+    return cf_request
+  } else {
+    throw new Error('FABs do not support relative urls other than /_assets')
+  }
+}
 
-  const fetch_response = await fab.render(fetch_request, settings)
+const handleResponse = async (fetch_response) => {
   const { body: res_body, bodyEncoding } = await transformResponseBody(fetch_response)
-  const lambda_response = {
+  return {
     status: '' + fetch_response.status,
     statusDescription: fetch_request.statusText,
     body: res_body,
     bodyEncoding,
     headers: transformHeadersFromFetch(fetch_response.headers),
   }
-  console.log({ lambda_response })
-
-  return lambda_response
 }
 
-`
+exports.handler = async (event) => {
+  console.log(JSON.stringify(event, null, 2))
+  const cf_request = event.Records[0].cf.request
+  const host = cf_request.headers.host[0].value
+  const method = cf_request.method
+  const url = `https://${host}${cf_request.uri}`
+  const headers = transformHeadersToFetch(cf_request.headers)
+  const body = transformBodyToFetch(cf_request.body)
+  console.log({ url, method, headers, body })
+  const options =
+    body && method.toUpperCase() === 'GET'
+      ? { method, headers }
+      : { method, headers, body }
+  const fetch_request = new global.Request(url, options)
+
+  const fetch_result = await fab.render(fetch_request, settings)
+  if (fetch_result instanceof global.Request) {
+    return await handleRequest(fetch_result)
+  } else if (fetch_result instanceof global.Response) {
+    return await handleResponse(fetch_result)
+  } else {
+    throw new Error('Invalid response from FAB')
+  }
+}

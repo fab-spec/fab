@@ -6,12 +6,16 @@ import { IPromptOptions } from 'cli-ux/lib/prompt'
 
 function format(str: string) {
   return str
-    .replace(/💛([\s\S]*?)💛|❤️([\s\S]*?)❤️|💚([\s\S]*?)💚/gm, (susbstr, y, r, g) => {
-      if (y) return chalk.yellow(y)
-      if (r) return chalk.red(r)
-      if (g) return chalk.green(g)
-      return ''
-    })
+    .replace(
+      /💛([\s\S]*?)💛|❤️([\s\S]*?)❤️|💚([\s\S]*?)💚|🖤([\s\S]*?)🖤/gm,
+      (susbstr, y, r, g, b) => {
+        if (y) return chalk.yellow(y)
+        if (r) return chalk.red(r)
+        if (g) return chalk.green(g)
+        if (b) return chalk.grey(b)
+        return ''
+      }
+    )
     .split('\n')
     .map((line) => line.trim())
     .join('\n  ')
