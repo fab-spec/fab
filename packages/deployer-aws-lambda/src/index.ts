@@ -1,10 +1,10 @@
-import { FabDeployer } from '@fab/core'
+import { FabDeployer, FabPackager } from '@fab/core'
 
-export async function deploy(fab_path: string, package_path: string): FabDeployer {
+export const deploy: FabDeployer = async (fab_path: string, package_path: string) => {
   throw new Error('Not implemented! Use `fab package` and deploy manually.')
 }
 
-export async function createPackage(
+export const createPackage: FabPackager = async (
   fab_path: string,
   package_path: string
-): FabDeployer {}
+) => {}
