@@ -49,9 +49,9 @@ export const confirm = (message: string) => cli.confirm(format(message))
 export const prompt = (message: string, opts?: IPromptOptions) =>
   cli.prompt(format(message), opts)
 
-export const loadModule = (module_name: string) => {
+export const loadModule = (module_name: string, paths: string[]) => {
   try {
-    return require(module_name)
+    return require(require.resolve(module_name, { paths }))
   } catch (e) {
     log.error(`ERROR: FAILED TO LOAD ${module_name}.`)
     throw e
