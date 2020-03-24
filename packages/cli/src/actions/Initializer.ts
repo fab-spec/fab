@@ -468,7 +468,9 @@ export default class Initializer {
       const gitignore = await fs.readFile(gitignore_path, 'utf8')
       const ignore_lines = gitignore.split('\n').map((line) => line.trim())
       const lines_set = new Set(ignore_lines)
-      const lines_to_add = GITIGNORE_LINES.filter((line) => !lines_set.has(line))
+      const lines_to_add = GITIGNORE_LINES.filter(
+        (line) => !lines_set.has(line) && !lines_set.has(line.slice(1))
+      )
       if (lines_to_add.length > 0) {
         await fs.writeFile(
           gitignore_path,
