@@ -1,4 +1,4 @@
-import { HOSTING_PROVIDERS, FabPackager } from '@fab/core'
+import { HOSTING_PROVIDERS, FabPackagerExports } from '@fab/core'
 import fs from 'fs-extra'
 import path from 'path'
 import { _log, loadModule } from '../helpers'
@@ -21,9 +21,7 @@ export default class Packager {
 
     const { package_name } = provider
     log(`Loading packager code from ${package_name}`)
-    const packager = loadModule(package_name, [process.cwd()]) as {
-      createPackage: FabPackager
-    }
+    const packager = loadModule(package_name, [process.cwd()]) as FabPackagerExports
     log(`💚✔💚 Done.`)
 
     const package_dir = path.dirname(output_path)

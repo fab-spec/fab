@@ -1,6 +1,8 @@
-import { FabConfig, HOSTING_PROVIDERS, DeployConfig } from '@fab/core'
+import { FabDeployerExports, HOSTING_PROVIDERS, DeployConfig } from '@fab/core'
 import JSON5Config from '../helpers/JSON5Config'
 import { FabDeployError, InvalidConfigError } from '../errors'
+import { loadModule } from '../helpers'
+import { FabPackager } from '@fab/core/src'
 
 export default class Deployer {
   static async deploy(
@@ -25,6 +27,12 @@ export default class Deployer {
       assets_host
     )
     console.log({ server_provider, assets_provider })
+
+    const assets_deployer = loadModule(assets_provider, [
+      process.cwd(),
+    ]) as FabDeployerExports<any>
+    if (server_provider === assets_provider) {
+    }
   }
 
   private static getProviders(

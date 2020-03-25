@@ -127,7 +127,18 @@ export type FabDeployer<T> = (
   package_path: string,
   config: T
 ) => Promise<string>
+
+export type FabDeployerExports<T> = {
+  deployServer?: FabDeployer<T>
+  deployAssets?: FabDeployer<T>
+  deployBoth?: FabDeployer<T>
+}
+
 export type FabPackager = (fab_path: string, package_path: string) => Promise<void>
+
+export type FabPackagerExports = {
+  createPackage: FabPackager
+}
 
 export type AwsLambdaEdgeDeployConfig = {
   access_key_id: string
