@@ -248,6 +248,10 @@ export default class Initializer {
     if (!skip_install) {
       await this.installDependencies(root_dir, version, framework, use_yarn)
     }
+
+    await this.finalChecks(root_dir, package_json)
+
+    log(`💎 All good 💎`)
   }
 
   private static async getFramework(
@@ -382,10 +386,10 @@ export default class Initializer {
       version ? `${dep}@${version}` : dep
     )
 
-    log.info(
-      `Installing required development dependencies:\n  ${dependencies.join(
+    log(
+      `💚Installing required development dependencies💚:\n  ${dependencies.join(
         '\n  '
-      )}\nusing ${use_yarn ? 'yarn' : 'npm'}`
+      )}\nusing 💛${use_yarn ? 'yarn' : 'npm'}💛`
     )
     if (use_yarn) {
       await execa('yarn', ['add', '--dev', ...dependencies], { cwd: root_dir })
@@ -477,6 +481,30 @@ export default class Initializer {
           [...ignore_lines, ...lines_to_add].join('\n') + '\n'
         )
       }
+    }
+  }
+
+  /* Make sure the repo is OK */
+  private static async finalChecks(root_dir: string, package_json: PackageJson) {
+    const deprecated = ['@fab/static', '@fab/compile', '@fab/nextjs']
+    const deps = new Set([
+      ...Object.keys(package_json.dependencies || {}),
+      ...Object.keys(package_json.devDependencies || {}),
+    ])
+    const warn_about = deprecated.filter((dep) => deps.has(dep))
+    if (warn_about.length > 0) {
+      log(
+        `❤️WARNING:❤️ you have deprecated FAB dependencies in your package.json: 💛${warn_about.join(
+          ', '
+        )}💛`
+      )
+    }
+
+    const old_prod_settings_file = 'production-settings.json'
+    if (await fs.pathExists(path.join(root_dir, old_prod_settings_file))) {
+      log(
+        `❤️WARNING:❤️ you have a 💛${old_prod_settings_file}💛 file in this directory.\nSettings are now part of 💛fab.config.json5💛, read more at 🖤https://fab.dev/kb/settings🖤.`
+      )
     }
   }
 }
