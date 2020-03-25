@@ -1,6 +1,7 @@
 {
   "private": true,
   "name": "fab-lambda-deploy-package",
+  "main": "index.js",
   "dependencies": {
     "node-fetch": "2.3.0"
   }
