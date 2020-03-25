@@ -66,5 +66,6 @@ export const createPackage: FabPackager = async (
 
   // await zipAssets(output_dir, work_dir)
 
-  // await rimraf(work_dir, { glob: { cwd: output_dir } })
+  await fs.remove(work_dir)
+  console.log(`All done.`)
 }
