@@ -6,6 +6,8 @@ import nanoid from 'nanoid'
 // @ts-ignore
 import decompress from '@atomic-reactor/decompress'
 import execa from 'execa'
+const promisify = require('util').promisify
+const zip = promisify(require('deterministic-zip'))
 
 export const createPackage: FabPackager = async (
   fab_path: string,
@@ -15,6 +17,9 @@ export const createPackage: FabPackager = async (
   const asset_settings = {
     ...DEFAULT_ASSET_SETTINGS,
     // todo: parameterise asset settings?
+  }
+  const env_settings = {
+    // todo: should I read this from config or have it passed in maybe?
   }
 
   const output_dir = path.dirname(package_path)
@@ -30,12 +35,36 @@ export const createPackage: FabPackager = async (
   await execa('npm', ['install'], { cwd: work_dir })
   console.log('NPMMMMMED')
 
-  // await installNodeFetch(work_dir)
   // await fixServerPath(work_dir)
-  // await writeAssetSettings(work_dir, asset_settings)
-  // await writeEnvSettings(work_dir, env_settings)
+  await fs.writeFile(
+    path.join(work_dir, 'asset_settings.js'),
+    `
+    module.exports = ${JSON.stringify(asset_settings)};
+  `
+  )
+  console.log('WROTE ASSET SETTINGS')
+
+  await fs.writeFile(
+    path.join(work_dir, 'env_settings.js'),
+    `
+    module.exports = ${JSON.stringify(env_settings)};
+  `
+  )
+  console.log('WROTE ENV SETTINGS')
+
   // await copyIndex(work_dir)
-  // await zipLambda(output_dir, work_dir)
+  await zip(work_dir, package_path, {
+    includes: [
+      './index.js',
+      './asset_settings.js',
+      './env_settings.js',
+      './server.js',
+      './node_modules/**',
+    ],
+    cwd: work_dir,
+  })
+
   // await zipAssets(output_dir, work_dir)
+
   // await rimraf(work_dir, { glob: { cwd: output_dir } })
 }
