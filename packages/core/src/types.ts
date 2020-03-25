@@ -13,8 +13,7 @@ export type FabSettings = {
 }
 
 export type DeployConfig = {
-  cf_workers_name?: string
-  s3_asset_bucket?: string
+  [provider: string]: any
 }
 
 export interface FabConfig {
@@ -123,5 +122,17 @@ export type FabSpecExports = {
 
 export type FetchApi = (url: string | Request, init?: RequestInit) => Promise<Response>
 
-export type FabDeployer = (fab_path: string, package_path: string) => Promise<string>
+export type FabDeployer<T> = (
+  fab_path: string,
+  package_path: string,
+  config: T
+) => Promise<string>
 export type FabPackager = (fab_path: string, package_path: string) => Promise<void>
+
+export type AwsLambdaEdgeDeployConfig = {
+  access_key_id: string
+  secret_access_key: string
+  region: string
+  cf_distribution_id: string
+  lambda_arn: string
+}

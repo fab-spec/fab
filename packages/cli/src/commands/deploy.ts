@@ -18,6 +18,14 @@ export default class Deploy extends Command {
     'output-path': flags.string({
       description: 'Where to save the packaged FAB (default ./fab/deploy/[target].zip)',
     }),
+    'server-host': flags.string({
+      description:
+        'If you have multiple potential hosts for the server defined in your fab.config.json5, which one to deploy to.',
+    }),
+    'assets-host': flags.string({
+      description:
+        'If you have multiple potential hosts for the assets defined in your fab.config.json5, which one to deploy to.',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -30,6 +38,12 @@ export default class Deploy extends Command {
       this.error(`You must provide a FAB file to deploy (e.g. fab.zip)`)
     }
     const config = await JSON5Config.readFrom(flags.config!)
-    await Deployer.deploy(config, file, flags['output-path'])
+    await Deployer.deploy(
+      config,
+      file,
+      flags['output-path'],
+      flags['server-host'],
+      flags['assets-host']
+    )
   }
 }
