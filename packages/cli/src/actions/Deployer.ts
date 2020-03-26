@@ -1,8 +1,9 @@
 import { FabDeployerExports, HOSTING_PROVIDERS, DeployConfig } from '@fab/core'
 import JSON5Config from '../helpers/JSON5Config'
 import { FabDeployError, InvalidConfigError } from '../errors'
-import { loadModule } from '../helpers'
-import { FabPackager } from '@fab/core/src'
+import { _log, loadModule } from '../helpers'
+
+const log = _log('fab deploy')
 
 export default class Deployer {
   static async deploy(
@@ -14,12 +15,13 @@ export default class Deployer {
   ) {
     const { deploy } = config.data
 
-    if (!deploy)
+    if (!deploy) {
       throw new FabDeployError(
         `For the moment, you need to have your fab.config.json5 "deploy" section configured.
         See https://fab.dev/kb/deploying for more information.
         `
       )
+    }
 
     const { server_provider, assets_provider } = this.getProviders(
       deploy,

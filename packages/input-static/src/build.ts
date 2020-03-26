@@ -5,7 +5,7 @@ import globby from 'globby'
 import path from 'path'
 import { InvalidConfigError, relativeToConfig } from '@fab/cli'
 import { _log } from '@fab/cli'
-const log = _log(`💚[@fab/input-static]💚 `)
+const log = _log(`@fab/input-static`)
 
 export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
   args,

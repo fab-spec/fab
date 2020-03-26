@@ -23,7 +23,7 @@ function format(str: string) {
 
 export const _log = (prefix: string) => {
   const log = (str: string) => {
-    console.log(format(prefix + str))
+    console.log(format(prefix ? `[🖤${prefix}🖤] ${str}` : str))
     return true
   }
 

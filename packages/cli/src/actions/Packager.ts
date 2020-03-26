@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import { _log, loadModule } from '../helpers'
 import { FabPackageError } from '../errors'
-const log = _log(`[🖤FAB:Package🖤] `)
+const log = _log(`fab package`)
 
 export default class Packager {
   static async package(
