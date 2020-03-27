@@ -92,7 +92,10 @@ export default class Deployer {
     deploy: DeployConfig,
     server_host: string | undefined,
     assets_host: string | undefined
-  ) {
+  ): {
+    server_provider: string
+    assets_provider: string
+  } {
     const targets = Object.keys(deploy)
 
     const assets_only_hosts = []
@@ -150,10 +153,10 @@ export default class Deployer {
     hard_coded: string | undefined,
     specific_hosts: string[],
     versatile_hosts: string[]
-  ) {
+  ): string {
     if (hard_coded) {
       const provider = deploy[hard_coded]
-      if (provider) return provider
+      if (provider) return hard_coded
       throw new InvalidConfigError(
         `Your specified ${type} host '${hard_coded}' does not exist in your fab.config.json5 deploy config.`
       )
