@@ -13,7 +13,7 @@ export type FabSettings = {
 }
 
 export type DeployConfig = {
-  [provider: string]: any
+  [provider: string]: FabSettings
 }
 
 export interface FabConfig {
@@ -156,8 +156,8 @@ export type FabPackagerExports<T extends FabPackagerConfig> = {
 }
 
 export type AwsLambdaEdgeDeployConfig = {
-  access_key_id: string
-  secret_access_key: string
+  access_key: string
+  secret_key: string
   region: string
   cf_distribution_id: string
   lambda_arn: string

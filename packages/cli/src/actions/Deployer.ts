@@ -1,4 +1,10 @@
-import { FabDeployerExports, HOSTING_PROVIDERS, DeployConfig } from '@fab/core'
+import {
+  FabDeployerExports,
+  FabSettings,
+  ENV_VAR_SYNTAX,
+  HOSTING_PROVIDERS,
+  DeployConfig,
+} from '@fab/core'
 import JSON5Config from '../helpers/JSON5Config'
 import { FabDeployError, InvalidConfigError } from '../errors'
 import { _log, loadModule } from '../helpers'
@@ -66,7 +72,7 @@ export default class Deployer {
     const assets_url = await assets_deployer.deployAssets(
       file_path,
       package_dir,
-      deploy[assets_provider]
+      this.resolveEnvVars(deploy[assets_provider])
     )
 
     console.log({ assets_url })
@@ -75,7 +81,7 @@ export default class Deployer {
       file_path,
       package_dir,
       assets_url,
-      deploy[server_provider]
+      this.resolveEnvVars(deploy[server_provider])
     )
     console.log({ server_url })
 
@@ -205,5 +211,24 @@ export default class Deployer {
       `Your fab.config.json5 deploy config has no entries for hosts capable of hosting your ${type}.
       See https://fab.dev/kb/deploying for more information.`
     )
+  }
+
+  private static resolveEnvVars(config: FabSettings) {
+    const result: FabSettings = {}
+    for (const [k, v] of Object.entries(config)) {
+      if (v.match(ENV_VAR_SYNTAX)) {
+        const env_var = v.slice(1)
+        const value = process.env[env_var]
+        if (typeof value === 'undefined') {
+          throw new InvalidConfigError(
+            `Your deploy config references the environment variable ${env_var} but that's not defined.`
+          )
+        }
+        result[k] = value
+      } else {
+        result[k] = v
+      }
+    }
+    return result
   }
 }

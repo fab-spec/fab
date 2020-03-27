@@ -30,7 +30,8 @@
   },
   "dependencies": {
     "@fab/core": "0.0.7-alpha.19",
-    "@types/node": "^12.12.14"
+    "@types/node": "^12.12.14",
+    "aws-sdk": "^2.647.0"
   },
   "publishConfig": {
     "access": "public"
