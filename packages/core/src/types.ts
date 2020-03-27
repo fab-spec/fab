@@ -162,3 +162,8 @@ export type AwsLambdaEdgeDeployConfig = {
   cf_distribution_id: string
   lambda_arn: string
 }
+
+export type AwsS3DeployConfig = {
+  access_key_id: string
+  secret_access_key: string
+}
