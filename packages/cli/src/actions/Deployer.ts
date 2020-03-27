@@ -29,8 +29,6 @@ export default class Deployer {
       server_host,
       assets_host
     )
-    console.log({ server_provider, assets_provider })
-
     log(`Creating package directory 💛${package_dir}💛:`)
     await fs.ensureDir(package_dir)
     log(`💚✔💚 Done.`)
@@ -70,7 +68,16 @@ export default class Deployer {
       package_dir,
       deploy[assets_provider]
     )
-    // return await server_deployer
+
+    console.log({ assets_url })
+
+    const server_url = await server_deployer.deployServer(
+      file_path,
+      package_dir,
+      assets_url,
+      deploy[server_provider]
+    )
+    console.log({ server_url })
 
     return 'LOL'
   }

@@ -1,7 +1,5 @@
 import { AwsS3DeployConfig, FabDeployer } from '@fab/core'
 
-console.log('HEY HO')
-
 export const deployAssets: FabDeployer<AwsS3DeployConfig> = async (
   fab_path: string,
   working_dir: string,

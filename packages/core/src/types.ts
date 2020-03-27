@@ -131,7 +131,7 @@ export type FabDeployer<T> = (
 export type FabServerDeployer<T> = (
   fab_path: string,
   working_dir: string,
-  asset_url: string,
+  assets_url: string,
   config: T
 ) => Promise<string>
 
@@ -142,7 +142,7 @@ export type FabDeployerExports<T> = {
 }
 
 export type FabPackagerConfig = {
-  asset_url: string | undefined
+  assets_url: string | undefined
 }
 
 export type FabPackager<T extends FabPackagerConfig> = (

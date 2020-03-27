@@ -8,7 +8,7 @@ export default class Packager {
     file_path: string,
     target: string,
     output_path: string = `.fab/deploy/${target}.zip`,
-    asset_url: string | undefined
+    assets_url: string | undefined
   ) {
     const provider = HOSTING_PROVIDERS[target]
     if (!provider) {
@@ -25,6 +25,6 @@ export default class Packager {
     >
     log(`💚✔💚 Done.`)
 
-    await packager.createPackage(file_path, output_path, { asset_url })
+    await packager.createPackage(file_path, output_path, { assets_url })
   }
 }
