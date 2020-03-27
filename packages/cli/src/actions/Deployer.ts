@@ -2,6 +2,7 @@ import { FabDeployerExports, HOSTING_PROVIDERS, DeployConfig } from '@fab/core'
 import JSON5Config from '../helpers/JSON5Config'
 import { FabDeployError, InvalidConfigError } from '../errors'
 import { _log, loadModule } from '../helpers'
+import fs from 'fs-extra'
 
 const log = _log('fab deploy')
 
@@ -9,7 +10,7 @@ export default class Deployer {
   static async deploy(
     config: JSON5Config,
     file_path: string,
-    output_path: string | undefined,
+    package_dir: string,
     server_host: string | undefined,
     assets_host: string | undefined
   ) {
@@ -30,11 +31,48 @@ export default class Deployer {
     )
     console.log({ server_provider, assets_provider })
 
-    const assets_deployer = loadModule(assets_provider, [
+    log(`Creating package directory 💛${package_dir}💛:`)
+    await fs.ensureDir(package_dir)
+    log(`💚✔💚 Done.`)
+
+    const assets_package = HOSTING_PROVIDERS[assets_provider].package_name
+    const assets_deployer = loadModule(assets_package, [
       process.cwd(),
     ]) as FabDeployerExports<any>
     if (server_provider === assets_provider) {
+      if (typeof assets_deployer.deployBoth !== 'function') {
+        throw new FabDeployError(
+          `${assets_package} doesn't export a 'deployBoth' method!`
+        )
+      }
+      return assets_deployer.deployBoth(file_path, package_dir, deploy[assets_provider])
     }
+
+    if (typeof assets_deployer.deployAssets !== 'function') {
+      throw new FabDeployError(
+        `${assets_package} doesn't export a 'deployAssets' method!`
+      )
+    }
+
+    const server_package = HOSTING_PROVIDERS[server_provider].package_name
+    const server_deployer = loadModule(server_package, [
+      process.cwd(),
+    ]) as FabDeployerExports<any>
+
+    if (typeof server_deployer.deployServer !== 'function') {
+      throw new FabDeployError(
+        `${server_package} doesn't export a 'deployServer' method!`
+      )
+    }
+
+    const assets_url = await assets_deployer.deployAssets(
+      file_path,
+      package_dir,
+      deploy[assets_provider]
+    )
+    return await server_deployer
+
+    return 'LOL'
   }
 
   private static getProviders(

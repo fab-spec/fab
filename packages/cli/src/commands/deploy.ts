@@ -15,8 +15,8 @@ export default class Deploy extends Command {
       description: 'Path to config file',
       default: DEFAULT_CONFIG_FILENAME,
     }),
-    'output-path': flags.string({
-      description: 'Where to save the packaged FAB (default ./fab/deploy/[target].zip)',
+    'package-dir': flags.string({
+      description: 'Where to save the packaged FAB files (default .fab/deploy)',
     }),
     'server-host': flags.string({
       description:
@@ -41,7 +41,7 @@ export default class Deploy extends Command {
     await Deployer.deploy(
       config,
       file,
-      flags['output-path'],
+      flags['package-dir'] || '.fab/deploy',
       flags['server-host'],
       flags['assets-host']
     )

@@ -1,6 +1,4 @@
-import { HOSTING_PROVIDERS, FabPackagerExports } from '@fab/core'
-import fs from 'fs-extra'
-import path from 'path'
+import { HOSTING_PROVIDERS, FabPackagerExports, FabPackagerConfig } from '@fab/core'
 import { _log, loadModule } from '../helpers'
 import { FabPackageError } from '../errors'
 const log = _log(`fab package`)
@@ -9,7 +7,8 @@ export default class Packager {
   static async package(
     file_path: string,
     target: string,
-    output_path: string = `.fab/deploy/${target}.zip`
+    output_path: string = `.fab/deploy/${target}.zip`,
+    asset_url: string | undefined
   ) {
     const provider = HOSTING_PROVIDERS[target]
     if (!provider) {
@@ -21,14 +20,11 @@ export default class Packager {
 
     const { package_name } = provider
     log(`Loading packager code from ${package_name}`)
-    const packager = loadModule(package_name, [process.cwd()]) as FabPackagerExports
+    const packager = loadModule(package_name, [process.cwd()]) as FabPackagerExports<
+      FabPackagerConfig
+    >
     log(`💚✔💚 Done.`)
 
-    const package_dir = path.dirname(output_path)
-    log(`Creating package directory 💛${package_dir}💛:`)
-    await fs.ensureDir(package_dir)
-    log(`💚✔💚 Done.`)
-
-    await packager.createPackage(file_path, output_path)
+    await packager.createPackage(file_path, output_path, { asset_url })
   }
 }

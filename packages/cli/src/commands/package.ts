@@ -1,5 +1,4 @@
 import { Command, flags } from '@oclif/command'
-import JSON5Config from '../helpers/JSON5Config'
 import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
 import Packager from '../actions/Packager'
 
@@ -22,6 +21,10 @@ export default class Deploy extends Command {
     'output-path': flags.string({
       description: 'Where to save the packaged FAB (default .fab/deploy/[target].zip)',
     }),
+    'asset-url': flags.string({
+      description:
+        'A URL for where the assets can be accessed, for server deployers that need it',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -29,15 +32,12 @@ export default class Deploy extends Command {
   async run() {
     const { args, flags } = this.parse(Deploy)
     const { file } = args
-    const { target, 'output-path': output_path } = flags
-
     if (!file) {
       this.error(`You must provide a FAB file to package (e.g. fab.zip)`)
     }
-    if (!target) {
+    if (!flags.target) {
       this.error(`You must provide a target.`)
     }
-    const config = await JSON5Config.readFrom(flags.config!)
-    await Packager.package(file, target, output_path)
+    await Packager.package(file, flags.target, flags['output-path'], flags['asset-url'])
   }
 }

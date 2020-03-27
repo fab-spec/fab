@@ -124,20 +124,35 @@ export type FetchApi = (url: string | Request, init?: RequestInit) => Promise<Re
 
 export type FabDeployer<T> = (
   fab_path: string,
-  package_path: string,
+  working_dir: string,
+  config: T
+) => Promise<string>
+
+export type FabServerDeployer<T> = (
+  fab_path: string,
+  working_dir: string,
+  asset_url: string,
   config: T
 ) => Promise<string>
 
 export type FabDeployerExports<T> = {
-  deployServer?: FabDeployer<T>
+  deployServer?: FabServerDeployer<T>
   deployAssets?: FabDeployer<T>
   deployBoth?: FabDeployer<T>
 }
 
-export type FabPackager = (fab_path: string, package_path: string) => Promise<void>
+export type FabPackagerConfig = {
+  asset_url: string | undefined
+}
 
-export type FabPackagerExports = {
-  createPackage: FabPackager
+export type FabPackager<T extends FabPackagerConfig> = (
+  fab_path: string,
+  package_path: string,
+  config: T
+) => Promise<void>
+
+export type FabPackagerExports<T extends FabPackagerConfig> = {
+  createPackage: FabPackager<T>
 }
 
 export type AwsLambdaEdgeDeployConfig = {
