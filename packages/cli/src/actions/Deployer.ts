@@ -145,7 +145,31 @@ export default class Deployer {
         `Your specified ${type} host '${hard_coded}' does not exist in your fab.config.json5 deploy config.`
       )
     }
+    const chosen_provider = this.chooseProviderAutomatically(
+      specific_hosts,
+      type,
+      versatile_hosts
+    )
 
+    const rejected_providers = [...specific_hosts, versatile_hosts].filter(
+      (s) => s !== chosen_provider
+    )
+    log(`Deploying 💛${type}💛 with ${chosen_provider}.`)
+    if (rejected_providers.length > 0)
+      log.continue(
+        `Also found the following ${type}-compatible hosts configured:
+        🖤${rejected_providers.join('\n')}🖤`
+      )
+    log.continue(`Use the 💛--${type}-host💛 to override this.\n`)
+
+    return chosen_provider
+  }
+
+  private static chooseProviderAutomatically(
+    specific_hosts: string[],
+    type: string,
+    versatile_hosts: string[]
+  ) {
     if (specific_hosts.length === 1) {
       return specific_hosts[0]
     }

@@ -4,27 +4,34 @@ export * from './paths'
 import cli from 'cli-ux'
 import { IPromptOptions } from 'cli-ux/lib/prompt'
 
-function format(str: string) {
-  return str
-    .replace(
-      /💛([\s\S]*?)💛|❤️([\s\S]*?)❤️|💚([\s\S]*?)💚|🖤([\s\S]*?)🖤/gm,
-      (susbstr, y, r, g, b) => {
-        if (y) return chalk.yellow(y)
-        if (r) return chalk.red(r)
-        if (g) return chalk.green(g)
-        if (b) return chalk.grey(b)
-        return ''
-      }
-    )
-    .split('\n')
-    .map((line) => line.trim())
-    .join('\n  ')
+function format(str: string, indent = 0, first_line_indent = 0) {
+  return (
+    ' '.repeat(first_line_indent) +
+    str
+      .replace(
+        /💛([\s\S]*?)💛|❤️([\s\S]*?)❤️|💚([\s\S]*?)💚|🖤([\s\S]*?)🖤/gm,
+        (susbstr, y, r, g, b) => {
+          if (y) return chalk.yellow(y)
+          if (r) return chalk.red(r)
+          if (g) return chalk.green(g)
+          if (b) return chalk.grey(b)
+          return ''
+        }
+      )
+      .split('\n')
+      .map((line) => line.trim())
+      .join(`\n${' '.repeat(indent + 2)}`)
+  )
 }
 
 export const _log = (prefix: string) => {
+  const indent = prefix.length + 3
   const log = (str: string) => {
-    console.log(format(prefix ? `[🖤${prefix}🖤] ${str}` : str))
+    console.log(prefix ? format(`[🖤${prefix}🖤] ${str}`, indent) : format(str))
     return true
+  }
+  log.continue = (str: string) => {
+    console.log(format(str, indent, indent))
   }
 
   log.notify = (str: string) => {

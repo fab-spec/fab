@@ -166,4 +166,6 @@ export type AwsLambdaEdgeDeployConfig = {
 export type AwsS3DeployConfig = {
   access_key_id: string
   secret_access_key: string
+  bucket_name: string
+  public_url: string
 }
