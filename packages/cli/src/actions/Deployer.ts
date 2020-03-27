@@ -70,7 +70,7 @@ export default class Deployer {
       package_dir,
       deploy[assets_provider]
     )
-    return await server_deployer
+    // return await server_deployer
 
     return 'LOL'
   }

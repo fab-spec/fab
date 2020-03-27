@@ -1,4 +1,4 @@
-import { FabPackager } from '@fab/core/src'
+import { FabPackager } from '@fab/core'
 import { DEFAULT_ASSET_SETTINGS } from './constants'
 import fs from 'fs-extra'
 import path from 'path'
