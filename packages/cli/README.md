@@ -21,7 +21,7 @@ $ npm install -g @fab/cli
 $ fab COMMAND
 running command...
 $ fab (-v|--version|version)
-@fab/cli/0.0.7-alpha.19 darwin-x64 node-v13.8.0
+@fab/cli/0.0.7-alpha.20 darwin-x64 node-v13.8.0
 $ fab --help [COMMAND]
 USAGE
   $ fab COMMAND
@@ -59,7 +59,7 @@ EXAMPLES
   $ fab build --config=fab.config.json5
 ```
 
-_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.19/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.20/lib/commands/build.js)_
 
 ## `fab deploy [FILE]`
 
@@ -85,7 +85,7 @@ EXAMPLE
   $ fab deploy fab.zip
 ```
 
-_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.19/lib/commands/deploy.js)_
+_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.20/lib/commands/deploy.js)_
 
 ## `fab deploy-cf-workers [FILE]`
 
@@ -110,7 +110,7 @@ EXAMPLE
   $ fab deploy-cf-workers fab.zip
 ```
 
-_See code: [lib/commands/deploy-cf-workers.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.19/lib/commands/deploy-cf-workers.js)_
+_See code: [lib/commands/deploy-cf-workers.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.20/lib/commands/deploy-cf-workers.js)_
 
 ## `fab help [COMMAND]`
 
@@ -138,18 +138,19 @@ USAGE
   $ fab init
 
 OPTIONS
-  -c, --config=config  [default: fab.config.json5] Config filename
-  -h, --help           show CLI help
-  -y, --yes            Assume yes to all prompts (must be in the root directory of a project)
-  --skip-install       Do not attempt to npm install anything
-  --version=version    What NPM version or dist-tag to use for installing FAB packages
+  -c, --config=config         [default: fab.config.json5] Config filename
+  -h, --help                  show CLI help
+  -y, --yes                   Assume yes to all prompts (must be in the root directory of a project)
+  --skip-framework-detection  Don't try to auto-detect framework, set up manually.
+  --skip-install              Do not attempt to npm install anything
+  --version=version           What NPM version or dist-tag to use for installing FAB packages
 
 EXAMPLES
   $ fab init
   $ fab init --config=fab.config.json5
 ```
 
-_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.19/lib/commands/init.js)_
+_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.20/lib/commands/init.js)_
 
 ## `fab package [FILE]`
 
@@ -170,7 +171,7 @@ EXAMPLE
   $ fab package --target=aws-lambda-edge fab.zip
 ```
 
-_See code: [lib/commands/package.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.19/lib/commands/package.js)_
+_See code: [lib/commands/package.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.20/lib/commands/package.js)_
 
 ## `fab serve [FILE]`
 
@@ -203,6 +204,6 @@ EXAMPLES
   $ fab serve --env=staging fab.zip
 ```
 
-_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.19/lib/commands/serve.js)_
+_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.20/lib/commands/serve.js)_
 
 <!-- commandsstop -->

@@ -1,6 +1,6 @@
 {
   "name": "@fab/deployer-aws-lambda",
-  "version": "0.0.7-alpha.19",
+  "version": "0.0.7-alpha.20",
   "description": "Packages and deploys FABs to AWS Lambda@Edge",
   "keywords": [
     "fab"
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@atomic-reactor/decompress": "^4.2.3",
-    "@fab/core": "0.0.7-alpha.19",
+    "@fab/core": "0.0.7-alpha.20",
     "@types/nanoid": "^2.1.0",
     "@types/node": "^12.12.14",
     "deterministic-zip": "^1.1.0",
