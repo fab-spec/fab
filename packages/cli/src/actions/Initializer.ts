@@ -180,7 +180,8 @@ export default class Initializer {
     config_filename: string,
     yes: boolean,
     skip_install: boolean,
-    version: string | undefined
+    version: string | undefined,
+    skip_framework_detection: boolean
   ) {
     log(`💎 💚FAB INIT: ${this.description}💚 💎\n`)
     /* First, figure out the nearest package.json */
@@ -210,7 +211,12 @@ export default class Initializer {
 
     /* Then, figure out what kind of project we are */
     const package_json = await this.getPackageJson(package_json_path)
-    const framework = await this.getFramework(package_json, yes, root_dir)
+    const framework = await this.getFramework(
+      package_json,
+      yes,
+      root_dir,
+      skip_framework_detection
+    )
     if (!framework) return
 
     const use_yarn = await fs.pathExists(path.join(root_dir, 'yarn.lock'))
@@ -257,17 +263,25 @@ export default class Initializer {
   private static async getFramework(
     package_json: PackageJson,
     yes: boolean,
-    root_dir: string
+    root_dir: string,
+    skip_framework_detection: boolean
   ) {
-    const project_type = await this.determineProjectType(package_json)
+    const project_type = skip_framework_detection
+      ? null
+      : await this.determineProjectType(package_json)
 
     if (typeof project_type !== 'number') {
-      log(`❤️Warning: Could not find a known framework to auto-generate config.❤️
+      if (skip_framework_detection) {
+        log(`❤️Skipping framework detection.❤️`)
+      } else {
+        log(`❤️Warning: Could not find a known framework to auto-generate config.❤️
         Currently supported frameworks for auto-detection are:
         • 💛${FRAMEWORK_NAMES.join('\n• ')}💛
 
         If your project uses one of these but wasn't detected, please raise an issue: https://github.com/fab-spec/fab/issues.
-
+      `)
+      }
+      log.continue(`
         💚NOTE: if your site is statically-rendered (e.g. JAMstack) we can still set things up.💚
         Check https://fab.dev/kb/static-sites for more info.
 

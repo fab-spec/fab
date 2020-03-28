@@ -69,7 +69,7 @@ export async function rollupCompile(
       // // }),
       // // builtins(),
       commonjs(),
-      typescript(),
+      typescript({ tsconfig: false }),
       json(),
       // inject({
       //   Buffer: 'buffer',
