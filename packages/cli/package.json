@@ -35,7 +35,6 @@
   },
   "dependencies": {
     "@atomic-reactor/decompress": "^4.2.3",
-    "@cloudflare/wrangler": "^1.6.0",
     "@fab/core": "0.0.7-alpha.21",
     "@fab/server": "0.0.7-alpha.21",
     "@oclif/command": "^1",
