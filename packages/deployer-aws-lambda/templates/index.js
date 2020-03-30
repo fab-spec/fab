@@ -106,7 +106,7 @@ const handleRequest = async (fab_request, cf_request) => {
     console.log({ cf_request })
     return cf_request
   } else if (fab_request.url.startsWith('/_assets')) {
-    cf_request.origin = assetSettings
+    cf_request.origin = { custom: assetSettings }
     cf_request.querystring = ''
     cf_request.uri = '/geelen-minimal-fab' + fab_request.url
     cf_request.headers['host'] = [{ key: 'host', value: assetSettings.domainName }]
