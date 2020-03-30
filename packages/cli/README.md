@@ -36,7 +36,6 @@ USAGE
 
 - [`fab build`](#fab-build)
 - [`fab deploy [FILE]`](#fab-deploy-file)
-- [`fab deploy-cf-workers [FILE]`](#fab-deploy-cf-workers-file)
 - [`fab help [COMMAND]`](#fab-help-command)
 - [`fab init`](#fab-init)
 - [`fab package [FILE]`](#fab-package-file)
@@ -86,31 +85,6 @@ EXAMPLE
 ```
 
 _See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.20/lib/commands/deploy.js)_
-
-## `fab deploy-cf-workers [FILE]`
-
-Command line deployer for FABs to CF Workers (deprecated)
-
-```
-USAGE
-  $ fab deploy-cf-workers [FILE]
-
-OPTIONS
-  -c, --config=config                    [default: fab.config.json5] Path to local config file
-  -h, --help                             show CLI help
-  -n, --cf_workers_name=cf_workers_name  Name for project. Will deploy to https://{name}.{your_cf_username}.workers.dev
-  --aws_key=aws_key                      AWS Key for S3 upload (if not using ~/.fab/global.config.json5)
-  --aws_secret=aws_secret                AWS Secret Key for S3 upload (if not using ~/.fab/global.config.json5)
-  --cf_account_id=cf_account_id          Cloudflare Workers Account ID (if not using ~/.fab/global.config.json5)
-  --cf_api_key=cf_api_key                Cloudflare Workers API key (if not using ~/.fab/global.config.json5)
-  --cf_email=cf_email                    Cloudflare Workers Account Email (if not using ~/.fab/global.config.json5)
-  --s3_asset_bucket=s3_asset_bucket      S3 Bucket name for asset upload
-
-EXAMPLE
-  $ fab deploy-cf-workers fab.zip
-```
-
-_See code: [lib/commands/deploy-cf-workers.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.20/lib/commands/deploy-cf-workers.js)_
 
 ## `fab help [COMMAND]`
 

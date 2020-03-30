@@ -218,19 +218,25 @@ export default class Deployer {
 
   private static resolveEnvVars(config: FabSettings) {
     const result: FabSettings = {}
+    const missing_env_vars: string[] = []
     for (const [k, v] of Object.entries(config)) {
       if (v.match(ENV_VAR_SYNTAX)) {
         const env_var = v.slice(1)
         const value = process.env[env_var]
         if (typeof value === 'undefined') {
-          throw new InvalidConfigError(
-            `Your deploy config references the environment variable ${env_var} but that's not defined.`
-          )
+          missing_env_vars.push(env_var)
+        } else {
+          result[k] = value
         }
-        result[k] = value
       } else {
         result[k] = v
       }
+    }
+    if (missing_env_vars.length > 0) {
+      throw new InvalidConfigError(
+        `Your deploy config references environment variables that weren't found:
+        ${missing_env_vars.map((e) => `• 💛${e}💛`).join('\n')}`
+      )
     }
     return result
   }
