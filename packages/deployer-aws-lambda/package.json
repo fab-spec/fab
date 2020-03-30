@@ -37,7 +37,8 @@
     "deterministic-zip": "^1.1.0",
     "execa": "^4.0.0",
     "fs-extra": "^8.1.0",
-    "nanoid": "^2.1.11"
+    "nanoid": "^2.1.11",
+    "zip-lib": "^0.5.0"
   },
   "publishConfig": {
     "access": "public"

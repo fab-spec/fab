@@ -6,8 +6,7 @@ import nanoid from 'nanoid'
 // @ts-ignore
 import decompress from '@atomic-reactor/decompress'
 import execa from 'execa'
-const promisify = require('util').promisify
-const zip = promisify(require('deterministic-zip'))
+import { Zip } from 'zip-lib'
 
 export const createPackage: FabPackager<FabPackagerConfig> = async (
   fab_path: string,
@@ -53,19 +52,16 @@ export const createPackage: FabPackager<FabPackagerConfig> = async (
   console.log('WROTE ENV SETTINGS')
 
   // await copyIndex(work_dir)
-  await zip(work_dir, package_path, {
-    includes: [
-      './index.js',
-      './asset_settings.js',
-      './env_settings.js',
-      './server.js',
-      './node_modules/**',
-    ],
-    cwd: work_dir,
-  })
+  const packaged = new Zip()
+  packaged.addFile(path.join(work_dir, 'index.js'), 'index.js')
+  packaged.addFile(path.join(work_dir, 'asset_settings.js'), 'asset_settings.js')
+  packaged.addFile(path.join(work_dir, 'env_settings.js'), 'env_settings.js')
+  packaged.addFile(path.join(work_dir, 'server.js'), 'server.js')
+  packaged.addFolder(path.join(work_dir, 'node_modules'), 'node_modules')
+  await packaged.archive(package_path)
 
   // await zipAssets(output_dir, work_dir)
 
-  await fs.remove(work_dir)
+  // await fs.remove(work_dir)
   console.log(`All done.`)
 }
