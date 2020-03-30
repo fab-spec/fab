@@ -10,7 +10,8 @@ import { Zip } from 'zip-lib'
 
 export const createPackage: FabPackager<FabPackagerConfig> = async (
   fab_path: string,
-  package_path: string
+  package_path: string,
+  { assets_url }
 ) => {
   console.log('BOY I GON GIT')
   const asset_settings = {

@@ -106,7 +106,7 @@ const handleRequest = async (fab_request, cf_request) => {
     console.log({ cf_request })
     return cf_request
   } else if (fab_request.url.startsWith('/_assets')) {
-    cf_request.origin = assetSettings
+    //cf_request.origin = assetSettings
     cf_request.querystring = ''
     cf_request.uri = fab_request.url
     return cf_request
@@ -143,7 +143,7 @@ exports.handler = async (event) => {
 
   const fetch_result = await fab.render(fetch_request, settings)
   if (fetch_result instanceof global.Request) {
-    return await handleRequest(fetch_result)
+    return await handleRequest(fetch_result, cf_request)
   } else if (fetch_result instanceof global.Response) {
     return await handleResponse(fetch_result)
   } else {
