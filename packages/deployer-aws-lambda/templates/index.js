@@ -119,7 +119,7 @@ const handleResponse = async (fetch_response) => {
   const { body: res_body, bodyEncoding } = await transformResponseBody(fetch_response)
   return {
     status: '' + fetch_response.status,
-    statusDescription: fetch_request.statusText,
+    statusDescription: fetch_response.statusText,
     body: res_body,
     bodyEncoding,
     headers: transformHeadersFromFetch(fetch_response.headers),
