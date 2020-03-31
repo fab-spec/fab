@@ -1,4 +1,5 @@
 import { ProtoFab } from './models/ProtoFab'
+import { ConfigTypes } from './constants'
 
 export interface PluginArgs {
   [arg_name: string]: any
@@ -9,12 +10,15 @@ export interface BuildConfig {
 }
 
 export type FabSettings = {
-  [var_name: string]: string
+  [var_name: string]: string | boolean
 }
 
 export type DeployConfig = {
-  [provider: string]: FabSettings
+  'cf-workers'?: ConfigTypes.CFWorkers
+  'aws-lambda-edge'?: ConfigTypes.AwsLambda
+  'aws-s3'?: ConfigTypes.AwsS3
 }
+export type DeployProviders = keyof DeployConfig
 
 export interface FabConfig {
   plugins: BuildConfig
@@ -128,44 +132,27 @@ export type FabDeployer<T> = (
   config: T
 ) => Promise<string>
 
-export type FabServerDeployer<T> = (
+export type FabServerDeployer<T extends ConfigTypes.Union> = (
   fab_path: string,
   working_dir: string,
-  assets_url: string,
-  config: T
+  config: T,
+  assets_url: string
 ) => Promise<string>
 
-export type FabDeployerExports<T> = {
+export type FabDeployerExports<T extends ConfigTypes.Union> = {
   deployServer?: FabServerDeployer<T>
   deployAssets?: FabDeployer<T>
   deployBoth?: FabDeployer<T>
 }
 
-export type FabPackagerConfig = {
-  assets_url: string | undefined
-}
-
-export type FabPackager<T extends FabPackagerConfig> = (
+export type FabPackager<T extends ConfigTypes.Union> = (
   fab_path: string,
   package_path: string,
-  config: T
+  config: T,
+  assets_url: string,
+  env_overrides: FabSettings
 ) => Promise<void>
 
-export type FabPackagerExports<T extends FabPackagerConfig> = {
+export type FabPackagerExports<T extends ConfigTypes.Union> = {
   createPackage: FabPackager<T>
-}
-
-export type AwsLambdaEdgeDeployConfig = {
-  access_key: string
-  secret_key: string
-  region: string
-  cf_distribution_id: string
-  lambda_arn: string
-}
-
-export type AwsS3DeployConfig = {
-  access_key_id: string
-  secret_access_key: string
-  bucket_name: string
-  public_url: string
 }

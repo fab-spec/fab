@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command'
 import JSON5Config from '../helpers/JSON5Config'
-import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
+import { DEFAULT_CONFIG_FILENAME, DeployProviders, HOSTING_PROVIDERS } from '@fab/core'
 import Deployer from '../actions/Deployer'
 
 export default class Deploy extends Command {
@@ -18,11 +18,13 @@ export default class Deploy extends Command {
     'package-dir': flags.string({
       description: 'Where to save the packaged FAB files (default .fab/deploy)',
     }),
-    'server-host': flags.string({
+    'server-host': flags.enum<DeployProviders>({
+      options: Object.keys(HOSTING_PROVIDERS),
       description:
         'If you have multiple potential hosts for the server defined in your fab.config.json5, which one to deploy to.',
     }),
-    'assets-host': flags.string({
+    'assets-host': flags.enum<DeployProviders>({
+      options: Object.keys(HOSTING_PROVIDERS),
       description:
         'If you have multiple potential hosts for the assets defined in your fab.config.json5, which one to deploy to.',
     }),

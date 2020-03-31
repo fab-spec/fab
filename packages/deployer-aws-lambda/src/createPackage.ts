@@ -1,4 +1,4 @@
-import { FabPackager, FabPackagerConfig } from '@fab/core'
+import { FabPackager, ConfigTypes } from '@fab/core'
 import { DEFAULT_ASSET_SETTINGS } from './constants'
 import fs from 'fs-extra'
 import path from 'path'
@@ -8,10 +8,11 @@ import decompress from '@atomic-reactor/decompress'
 import execa from 'execa'
 import { Zip } from 'zip-lib'
 
-export const createPackage: FabPackager<FabPackagerConfig> = async (
+export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   fab_path: string,
   package_path: string,
-  { assets_url }
+  config: ConfigTypes.AwsLambda,
+  assets_url: string
 ) => {
   console.log('BOY I GON GIT')
   const asset_settings = {

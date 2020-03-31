@@ -4,6 +4,7 @@ import {
   ENV_VAR_SYNTAX,
   HOSTING_PROVIDERS,
   DeployConfig,
+  DeployProviders,
 } from '@fab/core'
 import JSON5Config from '../helpers/JSON5Config'
 import { FabDeployError, InvalidConfigError } from '../errors'
@@ -17,8 +18,8 @@ export default class Deployer {
     config: JSON5Config,
     file_path: string,
     package_dir: string,
-    server_host: string | undefined,
-    assets_host: string | undefined
+    server_host: DeployProviders | undefined,
+    assets_host: DeployProviders | undefined
   ) {
     const { deploy } = config.data
 
@@ -72,7 +73,7 @@ export default class Deployer {
     const assets_url = await assets_deployer.deployAssets(
       file_path,
       package_dir,
-      this.resolveEnvVars(deploy[assets_provider])
+      this.resolveEnvVars(deploy[assets_provider]!)
     )
 
     console.log({ assets_url })
@@ -80,8 +81,8 @@ export default class Deployer {
     const server_url = await server_deployer.deployServer(
       file_path,
       package_dir,
-      assets_url,
-      this.resolveEnvVars(deploy[server_provider])
+      this.resolveEnvVars(deploy[server_provider]!),
+      assets_url
     )
     console.log({ server_url })
 
@@ -90,17 +91,17 @@ export default class Deployer {
 
   private static getProviders(
     deploy: DeployConfig,
-    server_host: string | undefined,
-    assets_host: string | undefined
+    server_host: DeployProviders | undefined,
+    assets_host: DeployProviders | undefined
   ): {
-    server_provider: string
-    assets_provider: string
+    server_provider: DeployProviders
+    assets_provider: DeployProviders
   } {
-    const targets = Object.keys(deploy)
+    const targets = Object.keys(deploy) as DeployProviders[]
 
-    const assets_only_hosts = []
-    const server_only_hosts = []
-    const versatile_hosts = []
+    const assets_only_hosts: DeployProviders[] = []
+    const server_only_hosts: DeployProviders[] = []
+    const versatile_hosts: DeployProviders[] = []
 
     for (const target of targets) {
       const provider = HOSTING_PROVIDERS[target]
@@ -135,14 +136,14 @@ export default class Deployer {
       server_host,
       server_only_hosts,
       versatile_hosts
-    )
+    ) as DeployProviders
     const assets_provider = this.resolveProvider(
       deploy,
       'assets',
       assets_host,
       assets_only_hosts,
       versatile_hosts
-    )
+    ) as DeployProviders
 
     return { server_provider, assets_provider }
   }
@@ -150,9 +151,9 @@ export default class Deployer {
   private static resolveProvider(
     deploy: DeployConfig,
     type: string,
-    hard_coded: string | undefined,
-    specific_hosts: string[],
-    versatile_hosts: string[]
+    hard_coded: DeployProviders | undefined,
+    specific_hosts: DeployProviders[],
+    versatile_hosts: DeployProviders[]
   ): string {
     if (hard_coded) {
       const provider = deploy[hard_coded]
@@ -220,7 +221,7 @@ export default class Deployer {
     const result: FabSettings = {}
     const missing_env_vars: string[] = []
     for (const [k, v] of Object.entries(config)) {
-      if (v.match(ENV_VAR_SYNTAX)) {
+      if (typeof v === 'string' && v.match(ENV_VAR_SYNTAX)) {
         const env_var = v.slice(1)
         const value = process.env[env_var]
         if (typeof value === 'undefined') {
