@@ -32,6 +32,10 @@ export default class Deploy extends Command {
       description:
         'Override production settings with a different environment defined in your FAB config file.',
     }),
+    'assets-already-deployed-at': flags.string({
+      description:
+        'Skip asset deploys and only deploy the server component pointing at this URL for assets',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -50,7 +54,8 @@ export default class Deploy extends Command {
       flags['package-dir'] || '.fab/deploy',
       flags['server-host'],
       flags['assets-host'],
-      flags.env
+      flags.env,
+      flags['assets-already-deployed-at']
     )
   }
 }

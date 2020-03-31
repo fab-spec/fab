@@ -1,10 +1,10 @@
 import {
-  FabDeployerExports,
-  FabSettings,
-  ENV_VAR_SYNTAX,
-  HOSTING_PROVIDERS,
   DeployConfig,
   DeployProviders,
+  ENV_VAR_SYNTAX,
+  FabDeployerExports,
+  FabSettings,
+  HOSTING_PROVIDERS,
 } from '@fab/core'
 import JSON5Config from '../helpers/JSON5Config'
 import { FabDeployError, InvalidConfigError } from '../errors'
@@ -20,7 +20,8 @@ export default class Deployer {
     package_dir: string,
     server_host: DeployProviders | undefined,
     assets_host: DeployProviders | undefined,
-    env: string | undefined
+    env: string | undefined,
+    assets_already_deployed_at: string | undefined
   ) {
     const { deploy } = config.data
 
@@ -37,74 +38,130 @@ export default class Deployer {
     const { server_provider, assets_provider } = this.getProviders(
       deploy,
       server_host,
-      assets_host
+      assets_host,
+      !!assets_already_deployed_at
     )
     log(`Creating package directory 💛${package_dir}💛:`)
     await fs.ensureDir(package_dir)
     log(`💚✔💚 Done.`)
 
-    const assets_package = HOSTING_PROVIDERS[assets_provider].package_name
-    const assets_deployer = loadModule(assets_package, [
-      process.cwd(),
-    ]) as FabDeployerExports<any>
+    if (assets_provider) {
+      return await this.deployAssetsAndServer(
+        file_path,
+        package_dir,
+        deploy,
+        env_overrides,
+        assets_provider,
+        server_provider
+      )
+    } else {
+      log(
+        `💚NOTE:💚 skipping assets deploy, using 💛${assets_already_deployed_at}💛 for assets URL.`
+      )
+
+      const server_deployer = this.loadPackage<FabDeployerExports<any>>(
+        server_provider,
+        'deployServer'
+      )
+
+      return await this.deployServer(
+        server_deployer,
+        file_path,
+        package_dir,
+        this.resolveEnvVars(deploy[server_provider]!),
+        env_overrides,
+        assets_already_deployed_at!
+      )
+    }
+  }
+
+  private static async deployAssetsAndServer(
+    file_path: string,
+    package_dir: string,
+    deploy: DeployConfig,
+    env_overrides: FabSettings,
+    assets_provider: DeployProviders,
+    server_provider: DeployProviders
+  ) {
     if (server_provider === assets_provider) {
-      if (typeof assets_deployer.deployBoth !== 'function') {
-        throw new FabDeployError(
-          `${assets_package} doesn't export a 'deployBoth' method!`
-        )
-      }
-      return assets_deployer.deployBoth(
+      const deployer = this.loadPackage<FabDeployerExports<any>>(
+        assets_provider,
+        'deployBoth'
+      )
+
+      return deployer.deployBoth!(
         file_path,
         package_dir,
         deploy[assets_provider],
-        {}
+        env_overrides
       )
     }
 
-    if (typeof assets_deployer.deployAssets !== 'function') {
-      throw new FabDeployError(
-        `${assets_package} doesn't export a 'deployAssets' method!`
-      )
-    }
+    const assets_deployer = this.loadPackage<FabDeployerExports<any>>(
+      assets_provider,
+      'deployAssets'
+    )
 
-    const server_package = HOSTING_PROVIDERS[server_provider].package_name
-    const server_deployer = loadModule(server_package, [
-      process.cwd(),
-    ]) as FabDeployerExports<any>
+    const server_deployer = this.loadPackage<FabDeployerExports<any>>(
+      server_provider,
+      'deployServer'
+    )
 
-    if (typeof server_deployer.deployServer !== 'function') {
-      throw new FabDeployError(
-        `${server_package} doesn't export a 'deployServer' method!`
-      )
-    }
-
-    const assets_url = await assets_deployer.deployAssets(
+    const assets_url = await assets_deployer.deployAssets!(
       file_path,
       package_dir,
       this.resolveEnvVars(deploy[assets_provider]!)
     )
 
     console.log({ assets_url })
-
-    const server_url = await server_deployer.deployServer(
+    return await this.deployServer(
+      server_deployer,
       file_path,
       package_dir,
       this.resolveEnvVars(deploy[server_provider]!),
       env_overrides,
       assets_url
     )
-    console.log({ server_url })
+  }
 
-    return 'LOL'
+  private static loadPackage<T>(provider: string, fn: string): T {
+    const pkg = HOSTING_PROVIDERS[provider].package_name
+    const loaded = loadModule(pkg, [process.cwd()])
+
+    if (typeof loaded[fn] !== 'function') {
+      throw new FabDeployError(`${pkg} doesn't export a '${fn}' method!`)
+    }
+
+    return loaded as T
+  }
+
+  private static async deployServer(
+    server_deployer: FabDeployerExports<any>,
+    file_path: string,
+    package_dir: string,
+    config: FabSettings,
+    env_overrides: FabSettings,
+    assets_url: string
+  ) {
+    const server_url = await server_deployer.deployServer!(
+      file_path,
+      package_dir,
+      config,
+      env_overrides,
+      assets_url
+    )
+    console.log({ server_url })
+    return server_url
   }
 
   private static getProviders(
     deploy: DeployConfig,
     server_host: DeployProviders | undefined,
-    assets_host: DeployProviders | undefined
+    assets_host: DeployProviders | undefined,
+    skip_assets: boolean
   ): {
     server_provider: DeployProviders
-    assets_provider: DeployProviders
+    assets_provider?: DeployProviders
   } {
     const targets = Object.keys(deploy) as DeployProviders[]
 
@@ -146,6 +203,9 @@ export default class Deployer {
       server_only_hosts,
       versatile_hosts
     ) as DeployProviders
+
+    if (skip_assets) return { server_provider }
+
     const assets_provider = this.resolveProvider(
       deploy,
       'assets',
@@ -177,7 +237,7 @@ export default class Deployer {
       versatile_hosts
     )
 
-    const rejected_providers = [...specific_hosts, versatile_hosts].filter(
+    const rejected_providers = [...specific_hosts, ...versatile_hosts].filter(
       (s) => s !== chosen_provider
     )
     log(`Deploying 💛${type}💛 with ${chosen_provider}.`)
