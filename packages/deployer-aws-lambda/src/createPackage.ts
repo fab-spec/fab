@@ -7,6 +7,9 @@ import nanoid from 'nanoid'
 import decompress from '@atomic-reactor/decompress'
 import execa from 'execa'
 import { Zip } from 'zip-lib'
+import { _log } from '@fab/cli'
+
+const log = _log(`@fab/deployer-aws-lambda`)
 
 export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   fab_path: string,
@@ -15,23 +18,21 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   env_overrides: FabSettings,
   assets_url: string
 ) => {
-  console.log('BOY I GON GIT')
+  log.time(`Compiling package to: 💛${fab_path}💛:`)
   const asset_settings = {
     ...DEFAULT_ASSET_SETTINGS,
     // todo: parameterise asset settings?
   }
   const output_dir = path.dirname(package_path)
-  console.log({ output_dir })
   const work_dir = path.join(output_dir, `aws-lambda-${nanoid()}`)
-  console.log({ work_dir })
   await fs.ensureDir(work_dir)
-  console.log('GOT ME A DIR')
+  log.continue(`💚✔💚 Generated working dir in 💛${work_dir}💛`)
   await decompress(fab_path, work_dir, { followSymlinks: true })
-  console.log('DECOMPRESS YO')
+  log.continue(`💚✔💚 Unpacked FAB`)
   await fs.copy(path.join(__dirname, '../templates'), work_dir)
-  console.log('COPY BOIII')
+  log.continue(`💚✔💚 Copied AWS Lambda shim`)
   await execa('npm', ['install'], { cwd: work_dir })
-  console.log('NPMMMMMED')
+  log.continue(`💚✔💚 Installed dependencies`)
 
   // await fixServerPath(work_dir)
   await fs.writeFile(
@@ -40,7 +41,6 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
       module.exports = ${JSON.stringify(asset_settings)};
     `
   )
-  console.log('WROTE ASSET SETTINGS')
 
   await fs.writeFile(
     path.join(work_dir, 'env_settings.js'),
@@ -48,7 +48,6 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
       module.exports = ${JSON.stringify(env_overrides)};
     `
   )
-  console.log('WROTE ENV SETTINGS')
 
   // await copyIndex(work_dir)
   const packaged = new Zip()
@@ -58,9 +57,6 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   packaged.addFile(path.join(work_dir, 'server.js'), 'server.js')
   packaged.addFolder(path.join(work_dir, 'node_modules'), 'node_modules')
   await packaged.archive(package_path)
-
-  // await zipAssets(output_dir, work_dir)
-
-  // await fs.remove(work_dir)
-  console.log(`All done.`)
+  log.continue(`💚✔💚 Generated lambda zip file`)
+  log.time((d) => `Created package in ${d}.`)
 }
