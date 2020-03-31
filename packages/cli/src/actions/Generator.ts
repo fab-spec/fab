@@ -5,7 +5,11 @@ import util from 'util'
 // @ts-ignore
 import _zip from 'deterministic-zip'
 import { BuildFailedError } from '../errors'
+import { _log } from '../helpers'
+import pretty from 'pretty-bytes'
+
 const zip = util.promisify(_zip)
+const log = _log(`Generator`)
 
 export class Generator {
   static async generate(proto_fab: ProtoFab) {
@@ -18,16 +22,17 @@ You might need to add @fab/rewire-assets to your 'build' config. See https://fab
 `)
     }
 
-    console.log(`Writing all files to .fab/build`)
+    log.time(`Writing all files to .fab/build`)
     await fs.emptyDir('.fab/build')
     for (const [filename, contents] of proto_fab.files.entries()) {
       const path = `.fab/build${filename}`
-      console.log({ path, length: contents.length })
+      log.continue(`🖤  ${filename} (${pretty(contents.length)})🖤`)
       await fs.ensureFile(path)
       await fs.writeFile(path, contents)
     }
+    log.time((d) => `Done in ${d}.`)
 
-    console.log(`Zipping it up into a FAB`)
+    log.time(`Zipping it up into a FAB:`)
     const zipfile = path.resolve('fab.zip')
     const build_dir = path.resolve('.fab/build')
     const options = {
@@ -36,9 +41,11 @@ You might need to add @fab/rewire-assets to your 'build' config. See https://fab
     }
     await zip(build_dir, zipfile, options)
     const stats2 = await fs.stat(zipfile)
-    console.log(
-      `    ${path.relative(process.cwd(), zipfile)} (${Math.round(stats2.size / 1024) +
-        'KB'})`
+    log.time(
+      (d) =>
+        `Created 💛${path.relative(process.cwd(), zipfile)}💛 🖤(${pretty(
+          stats2.size
+        )})🖤 in ${d}`
     )
   }
 }

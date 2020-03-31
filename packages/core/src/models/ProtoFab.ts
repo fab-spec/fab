@@ -29,7 +29,6 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
     // todo: an empty directory is... valid?
     const files_in_wrong_place = []
     for (const filename of this.files.keys()) {
-      console.log(filename)
       if (filenameOutsideFabLocations(filename)) {
         files_in_wrong_place.push(filename)
       }

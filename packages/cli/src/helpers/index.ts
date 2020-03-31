@@ -24,14 +24,22 @@ function format(str: string, indent = 0, first_line_indent = 0) {
   )
 }
 
+type StrFn = (d: string) => string
 export const _log = (prefix: string) => {
   const indent = prefix.length + 3
   const log = (str: string) => {
     console.log(prefix ? format(`[🖤${prefix}🖤] ${str}`, indent) : format(str))
     return true
   }
+  log._last_time = 0
   log.continue = (str: string) => {
     console.log(format(str, indent, indent))
+  }
+  log.time = (fn: string | StrFn): void => {
+    if (typeof fn === 'string') return log.time(() => fn)
+    const now = +new Date()
+    log(fn(`💛${((now - log._last_time) / 1000).toFixed(2)} seconds💛`))
+    log._last_time = now
   }
 
   log.notify = (str: string) => {

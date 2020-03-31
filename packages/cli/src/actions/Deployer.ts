@@ -11,7 +11,7 @@ import { FabDeployError, InvalidConfigError } from '../errors'
 import { _log, loadModule } from '../helpers'
 import fs from 'fs-extra'
 
-const log = _log('fab deploy')
+const log = _log('Deployer')
 
 export default class Deployer {
   static async deploy(
@@ -23,6 +23,7 @@ export default class Deployer {
     env: string | undefined,
     assets_already_deployed_at: string | undefined
   ) {
+    log.continue(`\n💎 💚fab deployer💚 💎\n`)
     const { deploy } = config.data
 
     if (!deploy) {
@@ -43,7 +44,7 @@ export default class Deployer {
     )
     log(`Creating package directory 💛${package_dir}💛:`)
     await fs.ensureDir(package_dir)
-    log(`💚✔💚 Done.`)
+    log.continue(`💚✔💚 Done.`)
 
     if (assets_provider) {
       return await this.deployAssetsAndServer(

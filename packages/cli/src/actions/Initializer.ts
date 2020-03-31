@@ -183,7 +183,7 @@ export default class Initializer {
     version: string | undefined,
     skip_framework_detection: boolean
   ) {
-    log(`💎 💚FAB INIT: ${this.description}💚 💎\n`)
+    log.continue(`\n💎 💚fab init: ${this.description}💚 💎\n`)
     /* First, figure out the nearest package.json */
     const package_json_path = await pkgUp()
     if (!package_json_path) {

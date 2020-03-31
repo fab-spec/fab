@@ -7,7 +7,7 @@ import {
 } from '@fab/core'
 import { _log, loadModule } from '../helpers'
 import { FabPackageError } from '../errors'
-const log = _log(`fab package`)
+const log = _log(`Packager`)
 
 export default class Packager {
   static async package(
@@ -18,6 +18,7 @@ export default class Packager {
     assets_url: string,
     env: string | undefined
   ) {
+    log.continue(`\n💎 💚fab package💚 💎\n`)
     const provider = HOSTING_PROVIDERS[target]
     if (!provider) {
       throw new FabPackageError(
