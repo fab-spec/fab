@@ -28,6 +28,10 @@ export default class Deploy extends Command {
       description:
         'If you have multiple potential hosts for the assets defined in your fab.config.json5, which one to deploy to.',
     }),
+    env: flags.string({
+      description:
+        'Override production settings with a different environment defined in your FAB config file.',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -45,7 +49,8 @@ export default class Deploy extends Command {
       file,
       flags['package-dir'] || '.fab/deploy',
       flags['server-host'],
-      flags['assets-host']
+      flags['assets-host'],
+      flags.env
     )
   }
 }

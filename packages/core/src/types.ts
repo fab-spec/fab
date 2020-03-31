@@ -126,22 +126,30 @@ export type FabSpecExports = {
 
 export type FetchApi = (url: string | Request, init?: RequestInit) => Promise<Response>
 
-export type FabDeployer<T> = (
+export type FabServerDeployer<T extends ConfigTypes.Union> = (
+  fab_path: string,
+  working_dir: string,
+  config: T,
+  env_overrides: FabSettings,
+  assets_url: string
+) => Promise<string>
+
+export type FabAssetsDeployer<T extends ConfigTypes.Union> = (
   fab_path: string,
   working_dir: string,
   config: T
 ) => Promise<string>
 
-export type FabServerDeployer<T extends ConfigTypes.Union> = (
+export type FabDeployer<T extends ConfigTypes.Union> = (
   fab_path: string,
   working_dir: string,
   config: T,
-  assets_url: string
+  env_overrides: FabSettings
 ) => Promise<string>
 
 export type FabDeployerExports<T extends ConfigTypes.Union> = {
   deployServer?: FabServerDeployer<T>
-  deployAssets?: FabDeployer<T>
+  deployAssets?: FabAssetsDeployer<T>
   deployBoth?: FabDeployer<T>
 }
 
@@ -149,8 +157,8 @@ export type FabPackager<T extends ConfigTypes.Union> = (
   fab_path: string,
   package_path: string,
   config: T,
-  assets_url: string,
-  env_overrides: FabSettings
+  env_overrides: FabSettings,
+  assets_url: string
 ) => Promise<void>
 
 export type FabPackagerExports<T extends ConfigTypes.Union> = {

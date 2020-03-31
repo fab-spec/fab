@@ -19,7 +19,8 @@ export default class Deployer {
     file_path: string,
     package_dir: string,
     server_host: DeployProviders | undefined,
-    assets_host: DeployProviders | undefined
+    assets_host: DeployProviders | undefined,
+    env: string | undefined
   ) {
     const { deploy } = config.data
 
@@ -30,6 +31,8 @@ export default class Deployer {
         `
       )
     }
+    if (env) throw new Error('Not implemented ENV support yet')
+    const env_overrides = {}
 
     const { server_provider, assets_provider } = this.getProviders(
       deploy,
@@ -50,7 +53,12 @@ export default class Deployer {
           `${assets_package} doesn't export a 'deployBoth' method!`
         )
       }
-      return assets_deployer.deployBoth(file_path, package_dir, deploy[assets_provider])
+      return assets_deployer.deployBoth(
+        file_path,
+        package_dir,
+        deploy[assets_provider],
+        {}
+      )
     }
 
     if (typeof assets_deployer.deployAssets !== 'function') {
@@ -82,6 +90,7 @@ export default class Deployer {
       file_path,
       package_dir,
       this.resolveEnvVars(deploy[server_provider]!),
+      env_overrides,
       assets_url
     )
     console.log({ server_url })

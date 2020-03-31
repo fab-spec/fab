@@ -1,4 +1,4 @@
-import { FabPackager, ConfigTypes } from '@fab/core'
+import { ConfigTypes, FabPackager, FabSettings } from '@fab/core'
 import { DEFAULT_ASSET_SETTINGS } from './constants'
 import fs from 'fs-extra'
 import path from 'path'
@@ -12,6 +12,7 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   fab_path: string,
   package_path: string,
   config: ConfigTypes.AwsLambda,
+  env_overrides: FabSettings,
   assets_url: string
 ) => {
   console.log('BOY I GON GIT')
@@ -19,10 +20,6 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
     ...DEFAULT_ASSET_SETTINGS,
     // todo: parameterise asset settings?
   }
-  const env_settings = {
-    // todo: should I read this from config or have it passed in maybe?
-  }
-
   const output_dir = path.dirname(package_path)
   console.log({ output_dir })
   const work_dir = path.join(output_dir, `aws-lambda-${nanoid()}`)
@@ -40,16 +37,16 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   await fs.writeFile(
     path.join(work_dir, 'asset_settings.js'),
     `
-    module.exports = ${JSON.stringify(asset_settings)};
-  `
+      module.exports = ${JSON.stringify(asset_settings)};
+    `
   )
   console.log('WROTE ASSET SETTINGS')
 
   await fs.writeFile(
     path.join(work_dir, 'env_settings.js'),
     `
-    module.exports = ${JSON.stringify(env_settings)};
-  `
+      module.exports = ${JSON.stringify(env_overrides)};
+    `
   )
   console.log('WROTE ENV SETTINGS')
 

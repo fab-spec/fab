@@ -34,8 +34,15 @@ export default class Packager {
     log(`💚✔💚 Done.`)
 
     if (env) throw new Error('Not implemented ENV support yet')
+    const env_overrides = {}
 
     const deploy_config = config.deploy![target] as ConfigTypes.Union
-    await packager.createPackage(file_path, output_path, deploy_config, assets_url, {})
+    await packager.createPackage(
+      file_path,
+      output_path,
+      deploy_config,
+      env_overrides,
+      assets_url
+    )
   }
 }

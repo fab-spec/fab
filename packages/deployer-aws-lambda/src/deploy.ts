@@ -1,4 +1,4 @@
-import { ConfigTypes, FabServerDeployer } from '@fab/core'
+import { ConfigTypes, FabServerDeployer, FabSettings } from '@fab/core'
 import { createPackage } from './createPackage'
 import path from 'path'
 import fs from 'fs-extra'
@@ -75,12 +75,13 @@ const updateCloudFront = async (
 export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
   fab_path: string,
   working_dir: string,
-  assets_url: string,
-  config: ConfigTypes.AwsLambda
+  config: ConfigTypes.AwsLambda,
+  env_overrides: FabSettings,
+  assets_url: string
 ) => {
   // TODO, hash the FAB, figure out if we actually need to do this
   const package_path = path.join(working_dir, 'aws-lambda.zip')
-  await createPackage(fab_path, package_path, config, assets_url)
+  await createPackage(fab_path, package_path, config, env_overrides, assets_url)
 
   const { access_key, secret_key, region, cf_distribution_id, lambda_arn } = config
 
