@@ -2,5 +2,5 @@
   "packages": ["packages/*"],
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "version": "0.0.7-alpha.23"
+  "version": "0.0.7-alpha.24"
 }
