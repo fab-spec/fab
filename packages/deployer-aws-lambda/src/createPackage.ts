@@ -1,5 +1,4 @@
-import { ConfigTypes, FabPackager, FabSettings } from '@fab/core'
-import { DEFAULT_ASSET_SETTINGS } from './constants'
+import { ConfigTypes, FabPackager, FabSettings, stripTrailingSlash } from '@fab/core'
 import fs from 'fs-extra'
 import path from 'path'
 import nanoid from 'nanoid'
@@ -17,10 +16,6 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   assets_url: string
 ) => {
   log.time(`Compiling package to: 💛${fab_path}💛:`)
-  const asset_settings = {
-    ...DEFAULT_ASSET_SETTINGS,
-    // todo: parameterise asset settings?
-  }
   const output_dir = path.dirname(package_path)
   const work_dir = path.join(output_dir, `aws-lambda-${nanoid()}`)
   await fs.ensureDir(work_dir)
@@ -32,26 +27,24 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   await execa('npm', ['install'], { cwd: work_dir })
   log(`💚✔💚 Installed dependencies`)
 
-  // await fixServerPath(work_dir)
-  await fs.writeFile(
-    path.join(work_dir, 'asset_settings.js'),
-    `
-      module.exports = ${JSON.stringify(asset_settings)};
-    `
-  )
+  const parsed = new URL(assets_url)
+  const packaged_config = {
+    env_overrides,
+    assets_url: stripTrailingSlash(assets_url),
+    assets_domain: parsed.hostname,
+    assets_path_prefix: stripTrailingSlash(parsed.pathname),
+  }
 
   await fs.writeFile(
-    path.join(work_dir, 'env_settings.js'),
-    `
-      module.exports = ${JSON.stringify(env_overrides)};
-    `
+    path.join(work_dir, 'packaged_config.js'),
+    `module.exports = ${JSON.stringify(packaged_config)};`
   )
+  log(`💚✔💚 Generated PACKAGED_CONFIG file`)
 
   // await copyIndex(work_dir)
   const packaged = new Zip()
   packaged.addFile(path.join(work_dir, 'index.js'), 'index.js')
-  packaged.addFile(path.join(work_dir, 'asset_settings.js'), 'asset_settings.js')
-  packaged.addFile(path.join(work_dir, 'env_settings.js'), 'env_settings.js')
+  packaged.addFile(path.join(work_dir, 'packaged_config.js'), 'packaged_config.js')
   packaged.addFile(path.join(work_dir, 'server.js'), 'server.js')
   packaged.addFolder(path.join(work_dir, 'node_modules'), 'node_modules')
   await packaged.archive(package_path)

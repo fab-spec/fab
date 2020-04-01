@@ -1,19 +1,31 @@
 const URL = require('url').URL
-const fetch = require('node-fetch')
+const node_fetch = require('node-fetch')
 const fab = require('./server')
-const assetSettings = require('./asset_settings')
-const envSettings = require('./env_settings')
+const PACKAGED_CONFIG = require('./packaged_config')
 
 const prodSettings = fab.getProdSettings ? fab.getProdSettings() : {}
-const settings = Object.assign({}, prodSettings, envSettings)
+const settings = Object.assign({}, prodSettings, PACKAGED_CONFIG.env_overrides)
 
 //Need to set this to work around a bug in a dependency of the webpack http(s) shim
 global.location = { protocol: 'https:' }
 
-global.fetch = fetch
-global.Request = fetch.Request
-global.Response = fetch.Response
-global.Headers = fetch.Headers
+const enhanced_fetch = (url, init) => {
+  const request_url = typeof url === 'string' ? url : url.url
+  console.log({ request_url })
+  if (request_url.startsWith('/')) {
+    if (!request_url.startsWith('/_assets/')) {
+      throw new Error('Fetching relative URLs for non-assets is not permitted.')
+    }
+    return node_fetch(`${PACKAGED_CONFIG.assets_url}${request_url}`, init)
+  }
+
+  return node_fetch(url, init)
+}
+
+global.fetch = enhanced_fetch
+global.Request = node_fetch.Request
+global.Response = node_fetch.Response
+global.Headers = node_fetch.Headers
 global.URL = URL
 
 const transformHeadersToFetch = (headers) => {
@@ -106,10 +118,20 @@ const handleRequest = async (fab_request, cf_request) => {
     console.log({ cf_request })
     return cf_request
   } else if (fab_request.url.startsWith('/_assets')) {
-    cf_request.origin = { custom: assetSettings }
+    cf_request.origin = {
+      custom: {
+        domainName: PACKAGED_CONFIG.assets_domain,
+        keepaliveTimeout: 5,
+        path: '',
+        port: 443,
+        protocol: 'https',
+        readTimeout: 30,
+        sslProtocols: ['TLSv1.1', 'TLSv1.2'],
+      },
+    }
     cf_request.querystring = ''
-    cf_request.uri = '/geelen-minimal-fab' + fab_request.url
-    cf_request.headers['host'] = [{ key: 'host', value: assetSettings.domainName }]
+    cf_request.uri = PACKAGED_CONFIG.assets_path_prefix + fab_request.url
+    cf_request.headers['host'] = [{ key: 'host', value: PACKAGED_CONFIG.assets_domain }]
     console.log({ cf_request })
     return cf_request
   } else {
