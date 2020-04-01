@@ -1,5 +1,5 @@
 const URL = require('url').URL
-const node_fetch = require('node-fetch')
+const node_fetch = require('./vendor/node-fetch.2.3.0')
 const fab = require('./server')
 const PACKAGED_CONFIG = require('./packaged_config')
 

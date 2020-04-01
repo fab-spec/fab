@@ -24,8 +24,6 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   log(`💚✔💚 Unpacked FAB`)
   await fs.copy(path.join(__dirname, '../templates'), work_dir)
   log(`💚✔💚 Copied AWS Lambda shim`)
-  await execa('npm', ['install'], { cwd: work_dir })
-  log(`💚✔💚 Installed dependencies`)
 
   const parsed = new URL(assets_url)
   const packaged_config = {
@@ -46,7 +44,7 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   packaged.addFile(path.join(work_dir, 'index.js'), 'index.js')
   packaged.addFile(path.join(work_dir, 'packaged_config.js'), 'packaged_config.js')
   packaged.addFile(path.join(work_dir, 'server.js'), 'server.js')
-  packaged.addFolder(path.join(work_dir, 'node_modules'), 'node_modules')
+  packaged.addFolder(path.join(work_dir, 'vendor'), 'vendor')
   await packaged.archive(package_path)
   log(`💚✔💚 Generated lambda zip file`)
   log.time((d) => `Created package in ${d}.`)
