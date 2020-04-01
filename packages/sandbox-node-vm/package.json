@@ -1,6 +1,6 @@
 {
   "name": "@fab/sandbox-node-vm",
-  "version": "0.0.7-alpha.22",
+  "version": "0.0.7-alpha.23",
   "description": "FAB runtime sandbox using Node's 'vm'",
   "keywords": [
     "fab"
@@ -28,7 +28,7 @@
     "prepack": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.22",
+    "@fab/core": "0.0.7-alpha.23",
     "cross-fetch": "^3.0.4"
   },
   "publishConfig": {
