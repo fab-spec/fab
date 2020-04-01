@@ -20,21 +20,36 @@ function format(str: string, indent = 0, first_line_indent = 0) {
       )
       .split('\n')
       .map((line) => line.trim())
-      .join(`\n${' '.repeat(indent + 2)}`)
+      .join(`\n${' '.repeat(indent)}`)
   )
 }
 
+const WIDTH = 17
 type StrFn = (d: string) => string
-export const _log = (prefix: string) => {
+export const _log = (full_prefix: string) => {
+  let needs_shortening = full_prefix.length > WIDTH
+  const prefix = needs_shortening
+    ? `🖤[…${full_prefix.slice(1 - WIDTH)}]🖤`
+    : `🖤${`${' '.repeat(WIDTH)}[${full_prefix}]`.slice(-2 - WIDTH)}🖤`
+
   const indent = prefix.length + 3
   const log = (str: string) => {
-    console.log(prefix ? format(`[🖤${prefix}🖤] ${str}`, indent) : format(str))
+    if (!full_prefix) {
+      console.log(format(str))
+    } else {
+      if (needs_shortening) {
+        console.log(format(`🖤[${full_prefix}]🖤 ${str}`, indent))
+        needs_shortening = false
+      } else {
+        console.log(format(`${prefix} ${str}`, indent))
+      }
+    }
     return true
   }
   log._last_time = 0
-  log.continue = (str: string) => {
+  log.continue = log /*(str: string) => {
     console.log(format(str, indent, indent))
-  }
+  }*/
   log.time = (fn: string | StrFn): void => {
     if (typeof fn === 'string') return log.time(() => fn)
     const now = +new Date()

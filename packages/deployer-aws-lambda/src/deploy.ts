@@ -1,10 +1,9 @@
 import { ConfigTypes, FabServerDeployer, FabSettings } from '@fab/core'
 import { createPackage } from './createPackage'
 import path from 'path'
-import { _log, FabDeployError } from '@fab/cli'
-import { update_lambda, updateCloudFront } from './aws'
-
-const log = _log(`@fab/deployer-aws-lambda`)
+import { FabDeployError } from '@fab/cli'
+import { updateCloudFront, updateLambda } from './aws'
+import { log } from './utils'
 
 export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
   fab_path: string,
@@ -15,12 +14,10 @@ export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
 ) => {
   // TODO, hash the FAB, figure out if we actually need to do this
   const package_path = path.join(working_dir, 'aws-lambda.zip')
-  log(`Deploying to AWS Lambda@Edge`)
+  log(`Starting deploy...`)
   await createPackage(fab_path, package_path, config, env_overrides, assets_url)
 
   const { access_key, secret_key, region, cf_distribution_id, lambda_arn } = config
-
-  console.log({ config })
 
   const anyMissing = [
     access_key,
@@ -33,15 +30,20 @@ export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
   if (anyMissing) {
     throw new FabDeployError(`Missing config!`)
   }
+  log(`Deploying to AWS Lambda@Edge with config:
+    ${Object.entries(config)
+      .map(([k, v]) => `🖤${k}: ${k.match(/secret/) ? '•'.repeat(v.length) : v}🖤`)
+      .join('\n')}
+  `)
 
-  const version = await update_lambda(
+  const version = await updateLambda(
     package_path,
     access_key,
     secret_key,
     lambda_arn,
     region
   )
-  await updateCloudFront(
+  return await updateCloudFront(
     access_key,
     secret_key,
     lambda_arn,
@@ -49,6 +51,4 @@ export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
     region,
     version!
   )
-
-  return `https://${package_path}`
 }

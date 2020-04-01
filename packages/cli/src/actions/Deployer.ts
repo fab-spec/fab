@@ -23,7 +23,7 @@ export default class Deployer {
     env: string | undefined,
     assets_already_deployed_at: string | undefined
   ) {
-    log.continue(`\n💎 💚fab deployer💚 💎\n`)
+    log.continue(`💎 💚fab deployer💚 💎\n`)
     const { deploy } = config.data
 
     if (!deploy) {
@@ -144,15 +144,13 @@ export default class Deployer {
     env_overrides: FabSettings,
     assets_url: string
   ) {
-    const server_url = await server_deployer.deployServer!(
+    return await server_deployer.deployServer!(
       file_path,
       package_dir,
       config,
       env_overrides,
       assets_url
     )
-    console.log({ server_url })
-    return server_url
   }
 
   private static getProviders(

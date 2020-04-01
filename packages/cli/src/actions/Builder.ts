@@ -34,7 +34,7 @@ type Plugins = {
 
 export default class Builder {
   static async build(config_path: string, config: FabConfig) {
-    log.continue(`\n💎 💚fab build💚 💎\n`)
+    log.continue(`💎 💚fab build💚 💎\n`)
     log(`Reading plugins from config.`)
     const { build_plugins, runtime_plugins } = await this.getPlugins(config_path, config)
 

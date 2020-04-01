@@ -7,9 +7,7 @@ import nanoid from 'nanoid'
 import decompress from '@atomic-reactor/decompress'
 import execa from 'execa'
 import { Zip } from 'zip-lib'
-import { _log } from '@fab/cli'
-
-const log = _log(`@fab/deployer-aws-lambda`)
+import { log } from './utils'
 
 export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   fab_path: string,
