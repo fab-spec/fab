@@ -47,7 +47,7 @@ export default class Deployer {
     log(`💚✔💚 Done.`)
 
     if (assets_provider) {
-      return await this.deployAssetsAndServer(
+      const deployed_url = await this.deployAssetsAndServer(
         file_path,
         package_dir,
         deploy,
@@ -55,6 +55,8 @@ export default class Deployer {
         assets_provider,
         server_provider
       )
+      log(`💚SUCCESS💚: Deployed (server-only) to 💛${deployed_url}💛`)
+      return deployed_url
     } else {
       log(
         `💚NOTE:💚 skipping assets deploy, using 💛${assets_already_deployed_at}💛 for assets URL.`
@@ -65,7 +67,7 @@ export default class Deployer {
         'deployServer'
       )
 
-      return await this.deployServer(
+      const deployed_url = await this.deployServer(
         server_deployer,
         file_path,
         package_dir,
@@ -73,6 +75,8 @@ export default class Deployer {
         env_overrides,
         assets_already_deployed_at!
       )
+      log(`💚SUCCESS💚: Deployed to 💛${deployed_url}💛`)
+      return deployed_url
     }
   }
 
@@ -114,7 +118,8 @@ export default class Deployer {
       this.resolveEnvVars(deploy[assets_provider]!)
     )
 
-    console.log({ assets_url })
+    log(`Assets deployed at 💛${assets_url}💛`)
+
     return await this.deployServer(
       server_deployer,
       file_path,
