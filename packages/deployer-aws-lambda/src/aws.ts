@@ -11,7 +11,7 @@ export const updateLambda = async (
 ) => {
   log(`Updating Lambda`)
   const package_contents = await fs.readFile(package_path)
-  log.continue(`💚✔💚 Read lambda package. Uploading...`)
+  log(`💚✔💚 Read lambda package. Uploading...`)
   const lambda = new aws.Lambda({
     accessKeyId,
     secretAccessKey,
@@ -24,7 +24,7 @@ export const updateLambda = async (
   }
   const response = await lambda.updateFunctionCode(params).promise()
 
-  log.continue(
+  log(
     `💚✔💚 Updated lambda 💛${response.FunctionName}💛 🖤(version ${response.Version})🖤`
   )
   return response.Version
@@ -47,7 +47,7 @@ export const updateCloudFront = async (
   const config = await cloudfront
     .getDistributionConfig({ Id: cf_distribution_id })
     .promise()
-  log.continue(
+  log(
     `💚✔💚 Done.${
       config.DistributionConfig?.Comment
         ? ` Found distribution comment: '💛${config.DistributionConfig.Comment}💛'`
@@ -76,7 +76,7 @@ export const updateCloudFront = async (
     Id: cf_distribution_id,
     IfMatch: config.ETag,
   }
-  log.continue(`Updating distribution to 💛${LambdaFunctionARN}💛`)
+  log(`Updating distribution to 💛${LambdaFunctionARN}💛`)
 
   // console.log({ params })
   const update_response = await cloudfront.updateDistribution(params).promise()
@@ -84,10 +84,10 @@ export const updateCloudFront = async (
     update_response.Distribution?.DomainName,
     ...(config.DistributionConfig?.Aliases?.Items || []),
   ]
-  log.continue(`💚✔💚 Done. Updated the following domain names:
+  log(`💚✔💚 Done. Updated the following domain names:
     ${domains.map((d) => `💛  ${d}💛`).join('\n')}
   `)
-  log.continue(`Got response status: 💛${update_response.Distribution?.Status}💛
+  log(`Got response status: 💛${update_response.Distribution?.Status}💛
     🖤(CloudFront typically takes a few minutes to update)🖤
   `)
   return `https://${domains[domains.length - 1]}`

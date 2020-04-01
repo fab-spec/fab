@@ -183,7 +183,7 @@ export default class Initializer {
     version: string | undefined,
     skip_framework_detection: boolean
   ) {
-    log.continue(`💎 💚fab init: ${this.description}💚 💎\n`)
+    log(`💎 💚fab init: ${this.description}💚 💎\n`)
     /* First, figure out the nearest package.json */
     const package_json_path = await pkgUp()
     if (!package_json_path) {
@@ -281,7 +281,7 @@ export default class Initializer {
         If your project uses one of these but wasn't detected, please raise an issue: https://github.com/fab-spec/fab/issues.
       `)
       }
-      log.continue(`
+      log(`
         💚NOTE: if your site is statically-rendered (e.g. JAMstack) we can still set things up.💚
         Check https://fab.dev/kb/static-sites for more info.
 

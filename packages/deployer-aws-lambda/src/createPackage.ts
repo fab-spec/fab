@@ -24,13 +24,13 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   const output_dir = path.dirname(package_path)
   const work_dir = path.join(output_dir, `aws-lambda-${nanoid()}`)
   await fs.ensureDir(work_dir)
-  log.continue(`💚✔💚 Generated working dir in 💛${work_dir}💛`)
+  log(`💚✔💚 Generated working dir in 💛${work_dir}💛`)
   await decompress(fab_path, work_dir, { followSymlinks: true })
-  log.continue(`💚✔💚 Unpacked FAB`)
+  log(`💚✔💚 Unpacked FAB`)
   await fs.copy(path.join(__dirname, '../templates'), work_dir)
-  log.continue(`💚✔💚 Copied AWS Lambda shim`)
+  log(`💚✔💚 Copied AWS Lambda shim`)
   await execa('npm', ['install'], { cwd: work_dir })
-  log.continue(`💚✔💚 Installed dependencies`)
+  log(`💚✔💚 Installed dependencies`)
 
   // await fixServerPath(work_dir)
   await fs.writeFile(
@@ -55,6 +55,6 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   packaged.addFile(path.join(work_dir, 'server.js'), 'server.js')
   packaged.addFolder(path.join(work_dir, 'node_modules'), 'node_modules')
   await packaged.archive(package_path)
-  log.continue(`💚✔💚 Generated lambda zip file`)
+  log(`💚✔💚 Generated lambda zip file`)
   log.time((d) => `Created package in ${d}.`)
 }

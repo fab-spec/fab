@@ -23,7 +23,7 @@ export default class Deployer {
     env: string | undefined,
     assets_already_deployed_at: string | undefined
   ) {
-    log.continue(`💎 💚fab deployer💚 💎\n`)
+    log(`💎 💚fab deployer💚 💎\n`)
     const { deploy } = config.data
 
     if (!deploy) {
@@ -44,7 +44,7 @@ export default class Deployer {
     )
     log(`Creating package directory 💛${package_dir}💛:`)
     await fs.ensureDir(package_dir)
-    log.continue(`💚✔💚 Done.`)
+    log(`💚✔💚 Done.`)
 
     if (assets_provider) {
       return await this.deployAssetsAndServer(
@@ -241,11 +241,11 @@ export default class Deployer {
     )
     log(`Deploying 💛${type}💛 with ${chosen_provider}.`)
     if (rejected_providers.length > 0)
-      log.continue(
+      log(
         `Also found the following ${type}-compatible hosts configured:
         🖤${rejected_providers.join('\n')}🖤`
       )
-    log.continue(`Use the 💛--${type}-host💛 to override this.\n`)
+    log(`Use the 💛--${type}-host💛 to override this.\n`)
 
     return chosen_provider
   }

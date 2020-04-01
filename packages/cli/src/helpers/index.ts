@@ -32,7 +32,7 @@ export const _log = (full_prefix: string) => {
     ? `🖤[…${full_prefix.slice(1 - WIDTH)}]🖤`
     : `🖤${`${' '.repeat(WIDTH)}[${full_prefix}]`.slice(-2 - WIDTH)}🖤`
 
-  const indent = prefix.length + 3
+  const indent = WIDTH + 5
   const log = (str: string) => {
     if (!full_prefix) {
       console.log(format(str))
@@ -47,9 +47,9 @@ export const _log = (full_prefix: string) => {
     return true
   }
   log._last_time = 0
-  log.continue = log /*(str: string) => {
+  log.continue = (str: string) => {
     console.log(format(str, indent, indent))
-  }*/
+  }
   log.time = (fn: string | StrFn): void => {
     if (typeof fn === 'string') return log.time(() => fn)
     const now = +new Date()

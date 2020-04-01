@@ -18,7 +18,7 @@ export default class Packager {
     assets_url: string,
     env: string | undefined
   ) {
-    log.continue(`💎 💚fab package💚 💎\n`)
+    log(`💎 💚fab package💚 💎\n`)
     const provider = HOSTING_PROVIDERS[target]
     if (!provider) {
       throw new FabPackageError(
