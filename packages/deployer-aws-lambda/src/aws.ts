@@ -54,11 +54,20 @@ export const updateCloudFront = async (
         : ''
     }`
   )
+
+  // Todo: replace DistributionConfig.Origins and DistributionConfig!.CacheBehaviors
+  // with static/dynamic config we in
   // console.log(config.DistributionConfig)
+  // console.log(config.DistributionConfig!.Origins)
+  // console.log(config.DistributionConfig!.Origins.Items[0])
+  // console.log(config.DistributionConfig!.Origins.Items[1])
+  // console.log(config.DistributionConfig!.CacheBehaviors)
+  // console.log(config.DistributionConfig!.DefaultCacheBehavior)
   // @ts-ignore
   // console.log(config.DefaultCacheBehavior.LambdaFunctionAssociations)
   const LambdaFunctionARN = `${lambda_arn}:${version}`
-  const lambda_config = {
+  // @ts-ignore
+  config.DefaultCacheBehavior.LambdaFunctionAssociations = {
     Quantity: 1,
     Items: [
       {
@@ -67,8 +76,6 @@ export const updateCloudFront = async (
       },
     ],
   }
-  // @ts-ignore
-  config.DefaultCacheBehavior.LambdaFunctionAssociations = lambda_config
   // @ts-ignore
   // console.log(config.DefaultCacheBehavior.LambdaFunctionAssociations)
   const params = {
@@ -84,11 +91,44 @@ export const updateCloudFront = async (
     update_response.Distribution?.DomainName,
     ...(config.DistributionConfig?.Aliases?.Items || []),
   ]
-  log(`💚✔💚 Done. Updated the following domain names:
+  log(`💚✔💚 Done.`)
+  log(`Got response status: 💛${update_response.Distribution?.Status}💛
+    🖤(CloudFront can take a few minutes to update)🖤`)
+  // todo: make this a config option
+  const routes_for_invalidation = ['/']
+  const num_invalidations = routes_for_invalidation.length
+  log(
+    `Invalidating ${num_invalidations} route${
+      num_invalidations === 1 ? '' : 's'
+    }: ${(num_invalidations > 4
+      ? routes_for_invalidation.slice(0, 4).concat('...')
+      : routes_for_invalidation
+    )
+      .map((r) => `💛${r}💛`)
+      .join(', ')}`
+  )
+
+  try {
+    await cloudfront
+      .createInvalidation({
+        DistributionId: cf_distribution_id,
+        InvalidationBatch: {
+          CallerReference: '' + new Date(),
+          Paths: {
+            Quantity: 1,
+            Items: ['/'],
+          },
+        },
+      })
+      .promise()
+
+    log(`💚✔💚 Done.`)
+  } catch (e) {
+    log(`❌ Invalidation failed. Could be a permissions issue?`)
+  }
+  log(`Updated the following domain names:
     ${domains.map((d) => `💛  ${d}💛`).join('\n')}
   `)
-  log(`Got response status: 💛${update_response.Distribution?.Status}💛
-    🖤(CloudFront typically takes a few minutes to update)🖤
-  `)
+
   return `https://${domains[domains.length - 1]}`
 }

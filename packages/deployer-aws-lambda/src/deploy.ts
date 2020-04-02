@@ -33,8 +33,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
   log(`Deploying to AWS Lambda@Edge with config:
     ${Object.entries(config)
       .map(([k, v]) => `🖤${k}: ${k.match(/secret/) ? '•'.repeat(v.length) : v}🖤`)
-      .join('\n')}
-  `)
+      .join('\n')}`)
 
   const version = await updateLambda(
     package_path,
