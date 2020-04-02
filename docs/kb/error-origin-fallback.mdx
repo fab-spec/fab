@@ -1,0 +1,19 @@
+---
+name: 'error.fab.dev'
+route: '/kb/error-origin-fallback'
+menu: Knowledge Base
+---
+
+Potentially, your hosting infrastructure needs an upstream origin, despite you intending never to use it:
+
+![image](https://user-images.githubusercontent.com/23264/78261535-3f8a6500-74f7-11ea-9bca-0829db426c9e.png)
+
+![image](https://user-images.githubusercontent.com/23264/78261892-bc1d4380-74f7-11ea-8eb2-0d7e59d253a2.png)
+
+That's why we've set up [https://error.fab.dev](https://error.fab.dev) to use in these situations:
+
+![image](https://user-images.githubusercontent.com/23264/78263092-69448b80-74f9-11ea-8918-c8a54e97af2c.png)
+
+A properly-deployed FAB _guarantees to respond to all requests_, so the above page should never be reached. If it is, you know that the problem lies in routing the requests to the FAB in front of the origin.
+
+For more discussion around this issue, see https://github.com/fab-spec/fab/issues/103
