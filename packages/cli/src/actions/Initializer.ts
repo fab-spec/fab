@@ -180,9 +180,10 @@ export default class Initializer {
     config_filename: string,
     yes: boolean,
     skip_install: boolean,
-    version: string | undefined
+    version: string | undefined,
+    skip_framework_detection: boolean
   ) {
-    log(`💎 💚FAB INIT: ${this.description}💚 💎\n`)
+    log(`💎 💚fab init: ${this.description}💚 💎\n`)
     /* First, figure out the nearest package.json */
     const package_json_path = await pkgUp()
     if (!package_json_path) {
@@ -210,7 +211,12 @@ export default class Initializer {
 
     /* Then, figure out what kind of project we are */
     const package_json = await this.getPackageJson(package_json_path)
-    const framework = await this.getFramework(package_json, yes, root_dir)
+    const framework = await this.getFramework(
+      package_json,
+      yes,
+      root_dir,
+      skip_framework_detection
+    )
     if (!framework) return
 
     const use_yarn = await fs.pathExists(path.join(root_dir, 'yarn.lock'))
@@ -248,22 +254,34 @@ export default class Initializer {
     if (!skip_install) {
       await this.installDependencies(root_dir, version, framework, use_yarn)
     }
+
+    await this.finalChecks(root_dir, package_json)
+
+    log(`💎 All good 💎`)
   }
 
   private static async getFramework(
     package_json: PackageJson,
     yes: boolean,
-    root_dir: string
+    root_dir: string,
+    skip_framework_detection: boolean
   ) {
-    const project_type = await this.determineProjectType(package_json)
+    const project_type = skip_framework_detection
+      ? null
+      : await this.determineProjectType(package_json)
 
     if (typeof project_type !== 'number') {
-      log(`❤️Warning: Could not find a known framework to auto-generate config.❤️
+      if (skip_framework_detection) {
+        log(`❤️Skipping framework detection.❤️`)
+      } else {
+        log(`❤️Warning: Could not find a known framework to auto-generate config.❤️
         Currently supported frameworks for auto-detection are:
         • 💛${FRAMEWORK_NAMES.join('\n• ')}💛
 
         If your project uses one of these but wasn't detected, please raise an issue: https://github.com/fab-spec/fab/issues.
-
+      `)
+      }
+      log(`
         💚NOTE: if your site is statically-rendered (e.g. JAMstack) we can still set things up.💚
         Check https://fab.dev/kb/static-sites for more info.
 
@@ -382,10 +400,10 @@ export default class Initializer {
       version ? `${dep}@${version}` : dep
     )
 
-    log.info(
-      `Installing required development dependencies:\n  ${dependencies.join(
+    log(
+      `💚Installing required development dependencies💚:\n  ${dependencies.join(
         '\n  '
-      )}\nusing ${use_yarn ? 'yarn' : 'npm'}`
+      )}\nusing 💛${use_yarn ? 'yarn' : 'npm'}💛`
     )
     if (use_yarn) {
       await execa('yarn', ['add', '--dev', ...dependencies], { cwd: root_dir })
@@ -468,13 +486,39 @@ export default class Initializer {
       const gitignore = await fs.readFile(gitignore_path, 'utf8')
       const ignore_lines = gitignore.split('\n').map((line) => line.trim())
       const lines_set = new Set(ignore_lines)
-      const lines_to_add = GITIGNORE_LINES.filter((line) => !lines_set.has(line))
+      const lines_to_add = GITIGNORE_LINES.filter(
+        (line) => !lines_set.has(line) && !lines_set.has(line.slice(1))
+      )
       if (lines_to_add.length > 0) {
         await fs.writeFile(
           gitignore_path,
           [...ignore_lines, ...lines_to_add].join('\n') + '\n'
         )
       }
+    }
+  }
+
+  /* Make sure the repo is OK */
+  private static async finalChecks(root_dir: string, package_json: PackageJson) {
+    const deprecated = ['@fab/static', '@fab/compile', '@fab/nextjs']
+    const deps = new Set([
+      ...Object.keys(package_json.dependencies || {}),
+      ...Object.keys(package_json.devDependencies || {}),
+    ])
+    const warn_about = deprecated.filter((dep) => deps.has(dep))
+    if (warn_about.length > 0) {
+      log(
+        `❤️WARNING:❤️ you have deprecated FAB dependencies in your package.json: 💛${warn_about.join(
+          ', '
+        )}💛`
+      )
+    }
+
+    const old_prod_settings_file = 'production-settings.json'
+    if (await fs.pathExists(path.join(root_dir, old_prod_settings_file))) {
+      log(
+        `❤️WARNING:❤️ you have a 💛${old_prod_settings_file}💛 file in this directory.\nSettings are now part of 💛fab.config.json5💛, read more at 🖤https://fab.dev/kb/settings🖤.`
+      )
     }
   }
 }

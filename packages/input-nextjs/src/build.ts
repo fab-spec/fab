@@ -8,7 +8,7 @@ import fs from 'fs-extra'
 import generateRenderer from './generateRenderer'
 import webpack from 'webpack'
 
-const log = _log(`[💚@fab/input-nextjs💚] `)
+const log = _log(`@fab/input-nextjs`)
 
 // @ts-ignore
 import md5dir from 'md5-dir/promise'

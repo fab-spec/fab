@@ -25,12 +25,21 @@ export default class Init extends Command {
     version: flags.string({
       description: 'What NPM version or dist-tag to use for installing FAB packages',
     }),
+    'skip-framework-detection': flags.boolean({
+      description: "Don't try to auto-detect framework, set up manually.",
+    }),
   }
 
   static args = []
 
   async run() {
     const { args, flags } = this.parse(Init)
-    await Initializer.init(flags.config, flags.yes, flags['skip-install'], flags.version)
+    await Initializer.init(
+      flags.config,
+      flags.yes,
+      flags['skip-install'],
+      flags.version,
+      flags['skip-framework-detection']
+    )
   }
 }

@@ -21,7 +21,7 @@ $ npm install -g @fab/cli
 $ fab COMMAND
 running command...
 $ fab (-v|--version|version)
-@fab/cli/0.0.7-alpha.17 darwin-x64 node-v13.8.0
+@fab/cli/0.0.7-alpha.24 darwin-x64 node-v13.8.0
 $ fab --help [COMMAND]
 USAGE
   $ fab COMMAND
@@ -38,6 +38,7 @@ USAGE
 - [`fab deploy [FILE]`](#fab-deploy-file)
 - [`fab help [COMMAND]`](#fab-help-command)
 - [`fab init`](#fab-init)
+- [`fab package [FILE]`](#fab-package-file)
 - [`fab serve [FILE]`](#fab-serve-file)
 
 ## `fab build`
@@ -57,32 +58,39 @@ EXAMPLES
   $ fab build --config=fab.config.json5
 ```
 
-_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.17/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.24/lib/commands/build.js)_
 
 ## `fab deploy [FILE]`
 
-Command line deployer for FABs
+Deploy a FAB to a hosting provider
 
 ```
 USAGE
   $ fab deploy [FILE]
 
 OPTIONS
-  -c, --config=config                    [default: fab.config.json5] Path to local config file
-  -h, --help                             show CLI help
-  -n, --cf_workers_name=cf_workers_name  Name for project. Will deploy to https://{name}.{your_cf_username}.workers.dev
-  --aws_key=aws_key                      AWS Key for S3 upload (if not using ~/.fab/global.config.json5)
-  --aws_secret=aws_secret                AWS Secret Key for S3 upload (if not using ~/.fab/global.config.json5)
-  --cf_account_id=cf_account_id          Cloudflare Workers Account ID (if not using ~/.fab/global.config.json5)
-  --cf_api_key=cf_api_key                Cloudflare Workers API key (if not using ~/.fab/global.config.json5)
-  --cf_email=cf_email                    Cloudflare Workers Account Email (if not using ~/.fab/global.config.json5)
-  --s3_asset_bucket=s3_asset_bucket      S3 Bucket name for asset upload
+  -c, --config=config                                      [default: fab.config.json5] Path to config file
+  -h, --help                                               show CLI help
+
+  --assets-already-deployed-at=assets-already-deployed-at  Skip asset deploys and only deploy the server component
+                                                           pointing at this URL for assets
+
+  --assets-host=(cf-workers|aws-lambda-edge|aws-s3)        If you have multiple potential hosts for the assets defined
+                                                           in your fab.config.json5, which one to deploy to.
+
+  --env=env                                                Override production settings with a different environment
+                                                           defined in your FAB config file.
+
+  --package-dir=package-dir                                Where to save the packaged FAB files (default .fab/deploy)
+
+  --server-host=(cf-workers|aws-lambda-edge|aws-s3)        If you have multiple potential hosts for the server defined
+                                                           in your fab.config.json5, which one to deploy to.
 
 EXAMPLE
-  $ fab-cf-workers deploy fab.zip
+  $ fab deploy fab.zip
 ```
 
-_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.17/lib/commands/deploy.js)_
+_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.24/lib/commands/deploy.js)_
 
 ## `fab help [COMMAND]`
 
@@ -110,18 +118,46 @@ USAGE
   $ fab init
 
 OPTIONS
-  -c, --config=config  [default: fab.config.json5] Config filename
-  -h, --help           show CLI help
-  -y, --yes            Assume yes to all prompts (must be in the root directory of a project)
-  --skip-install       Do not attempt to npm install anything
-  --version=version    What NPM version or dist-tag to use for installing FAB packages
+  -c, --config=config         [default: fab.config.json5] Config filename
+  -h, --help                  show CLI help
+  -y, --yes                   Assume yes to all prompts (must be in the root directory of a project)
+  --skip-framework-detection  Don't try to auto-detect framework, set up manually.
+  --skip-install              Do not attempt to npm install anything
+  --version=version           What NPM version or dist-tag to use for installing FAB packages
 
 EXAMPLES
   $ fab init
   $ fab init --config=fab.config.json5
 ```
 
-_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.17/lib/commands/init.js)_
+_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.24/lib/commands/init.js)_
+
+## `fab package [FILE]`
+
+Package a FAB to be uploaded to a hosting provider manually
+
+```
+USAGE
+  $ fab package [FILE]
+
+OPTIONS
+  -c, --config=config                               [default: fab.config.json5] Path to config file
+  -h, --help                                        show CLI help
+  -t, --target=(cf-workers|aws-lambda-edge|aws-s3)  Hosting provider (currently one of 'aws-lambda-edge', 'cf-workers')
+
+  --asset-url=asset-url                             A URL for where the assets can be accessed, for server deployers
+                                                    that need it
+
+  --env=env                                         Override production settings with a different environment defined in
+                                                    your FAB config file.
+
+  --output-path=output-path                         Where to save the packaged FAB (default .fab/deploy/[target].zip)
+
+EXAMPLE
+  $ fab package --target=aws-lambda-edge fab.zip
+```
+
+_See code: [lib/commands/package.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.24/lib/commands/package.js)_
 
 ## `fab serve [FILE]`
 
@@ -154,6 +190,6 @@ EXAMPLES
   $ fab serve --env=staging fab.zip
 ```
 
-_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.17/lib/commands/serve.js)_
+_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.0.7-alpha.24/lib/commands/serve.js)_
 
 <!-- commandsstop -->

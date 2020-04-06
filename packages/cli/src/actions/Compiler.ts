@@ -1,11 +1,13 @@
 import { ProtoFab, FabConfig } from '@fab/core'
-import { log } from '../helpers'
+import { _log } from '../helpers'
 import { BuildFailedError } from '../errors'
 import { rollupCompile } from '../helpers/rollup'
 
+const log = _log(`Compiler`)
+
 export class Compiler {
   static async compile(config: FabConfig, proto_fab: ProtoFab, render_plugins: string[]) {
-    console.log("It's compilin' time!")
+    log.time(() => `Compiling your 💛server.js💛:`)
 
     const warnings: string[] = []
     const {
@@ -45,6 +47,7 @@ export class Compiler {
     }
 
     proto_fab.files.set('/server.js', Buffer.from(output.code))
+    log.time((d) => `Done in ${d}.`)
   }
 }
 

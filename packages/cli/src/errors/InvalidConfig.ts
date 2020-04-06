@@ -5,6 +5,6 @@ export class InvalidConfigError extends Error {
     super(`Config file contains errors!`)
 
     if (e) console.log(e)
-    log.error(`ERROR: Problem with config file.\n\n${explanation}\n`)
+    log(`❤️ERROR: Problem with config file.❤️\n\n${explanation}\n`)
   }
 }

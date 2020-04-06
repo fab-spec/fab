@@ -1,42 +1,40 @@
 import { Command, flags } from '@oclif/command'
-import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
+import JSON5Config from '../helpers/JSON5Config'
+import { DEFAULT_CONFIG_FILENAME, DeployProviders, HOSTING_PROVIDERS } from '@fab/core'
 import Deployer from '../actions/Deployer'
 
 export default class Deploy extends Command {
-  static description = 'Command line deployer for FABs'
+  static description = 'Deploy a FAB to a hosting provider'
 
-  static examples = [`$ fab-cf-workers deploy fab.zip`]
+  static examples = [`$ fab deploy fab.zip`]
 
   static flags = {
     help: flags.help({ char: 'h' }),
-    cf_workers_name: flags.string({
-      char: 'n',
-      description:
-        'Name for project. Will deploy to https://{name}.{your_cf_username}.workers.dev',
-    }),
-    s3_asset_bucket: flags.string({ description: 'S3 Bucket name for asset upload' }),
-    aws_key: flags.string({
-      description: 'AWS Key for S3 upload (if not using ~/.fab/global.config.json5)',
-    }),
-    aws_secret: flags.string({
-      description:
-        'AWS Secret Key for S3 upload (if not using ~/.fab/global.config.json5)',
-    }),
-    cf_api_key: flags.string({
-      description: 'Cloudflare Workers API key (if not using ~/.fab/global.config.json5)',
-    }),
-    cf_account_id: flags.string({
-      description:
-        'Cloudflare Workers Account ID (if not using ~/.fab/global.config.json5)',
-    }),
-    cf_email: flags.string({
-      description:
-        'Cloudflare Workers Account Email (if not using ~/.fab/global.config.json5)',
-    }),
     config: flags.string({
       char: 'c',
-      description: 'Path to local config file',
+      description: 'Path to config file',
       default: DEFAULT_CONFIG_FILENAME,
+    }),
+    'package-dir': flags.string({
+      description: 'Where to save the packaged FAB files (default .fab/deploy)',
+    }),
+    'server-host': flags.enum<DeployProviders>({
+      options: Object.keys(HOSTING_PROVIDERS),
+      description:
+        'If you have multiple potential hosts for the server defined in your fab.config.json5, which one to deploy to.',
+    }),
+    'assets-host': flags.enum<DeployProviders>({
+      options: Object.keys(HOSTING_PROVIDERS),
+      description:
+        'If you have multiple potential hosts for the assets defined in your fab.config.json5, which one to deploy to.',
+    }),
+    env: flags.string({
+      description:
+        'Override production settings with a different environment defined in your FAB config file.',
+    }),
+    'assets-already-deployed-at': flags.string({
+      description:
+        'Skip asset deploys and only deploy the server component pointing at this URL for assets',
     }),
   }
 
@@ -47,9 +45,17 @@ export default class Deploy extends Command {
     const { file } = args
 
     if (!file) {
-      this.error(`You must provide a FAB file to run (e.g. fab.zip)`)
+      this.error(`You must provide a FAB file to deploy (e.g. fab.zip)`)
     }
-
-    await new Deployer().deploy(file, flags.config!, flags)
+    const config = await JSON5Config.readFrom(flags.config!)
+    await Deployer.deploy(
+      config,
+      file,
+      flags['package-dir'] || '.fab/deploy',
+      flags['server-host'],
+      flags['assets-host'],
+      flags.env,
+      flags['assets-already-deployed-at']
+    )
   }
 }

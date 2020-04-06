@@ -5,7 +5,7 @@ import mustache from 'mustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { addInjectionPoint } from './injections/env'
 import { _log, InvalidConfigError } from '@fab/cli'
-const log = _log('💚[@fab/serve-html]💚 ')
+const log = _log('@fab/serve-html')
 
 export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMetadata>) {
   const {

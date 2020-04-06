@@ -43,7 +43,7 @@ export async function rollupCompile(
     // vm: require.resolve('vm-browserify'),
     'node-fetch': empty,
   }
-  console.log(entries)
+  // console.log(entries)
 
   const bundle = await rollup({
     input,
@@ -69,7 +69,7 @@ export async function rollupCompile(
       // // }),
       // // builtins(),
       commonjs(),
-      typescript(),
+      typescript({ tsconfig: false }),
       json(),
       // inject({
       //   Buffer: 'buffer',

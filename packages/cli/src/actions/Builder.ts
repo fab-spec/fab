@@ -1,8 +1,10 @@
 import { FabBuildStep, FabConfig, PluginArgs, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
-import { log, isRelative, relativeToConfig } from '../helpers'
+import { isRelative, relativeToConfig, _log } from '../helpers'
 import { BuildFailedError, InvalidConfigError } from '../errors'
+
+const log = _log('Builder')
 
 const safeResolve = (path: string, config_path: string) => {
   try {
@@ -32,14 +34,19 @@ type Plugins = {
 
 export default class Builder {
   static async build(config_path: string, config: FabConfig) {
+    log(`💎 💚fab build💚 💎\n`)
+    log(`Reading plugins from config.`)
     const { build_plugins, runtime_plugins } = await this.getPlugins(config_path, config)
+
+    log.time(`Proceeding with build phase.`)
 
     const proto_fab = new ProtoFab()
     for (const { plugin_name, builder, plugin_args } of build_plugins) {
-      console.log(`Building ${plugin_name}:`)
+      log(`Building 💛${plugin_name}💛:`)
       await builder(plugin_args, proto_fab, config_path)
     }
-    console.log([runtime_plugins])
+
+    log.time((d) => `Build plugins completed in ${d}.`)
 
     await Compiler.compile(config, proto_fab, runtime_plugins)
     await Generator.generate(proto_fab)
@@ -58,7 +65,7 @@ export default class Builder {
       const path_slash_build = safeResolve(relative_slash_build, config_path)
       const path_slash_require = safeResolve(relative_slash_require, config_path)
 
-      console.log({ is_relative, plugin_path, relative_path, path_slash_require })
+      // console.log({ is_relative, plugin_path, relative_path, path_slash_require })
 
       let runtime_plugin, build_plugin
 
@@ -141,6 +148,13 @@ export default class Builder {
       if (runtime_plugin) runtime_plugins.push(runtime_plugin)
       if (build_plugin) build_plugins.push(build_plugin)
     }
+
+    log(`Found the following 💛build-time💛 plugins:
+    🖤${build_plugins.map((b) => b.plugin_name).join('\n')}🖤
+    `)
+    log(`and the following 💛runtime💛 plugins:
+    🖤${runtime_plugins.join('\n')}🖤
+    `)
 
     return { build_plugins, runtime_plugins }
   }

@@ -1,237 +1,317 @@
-import path from 'path'
-import { homedir } from 'os'
-import fs from 'fs-extra'
-import cli from 'cli-ux'
-import jju from 'jju'
-import { log, short_guid } from '../helpers'
+import {
+  DeployConfig,
+  DeployProviders,
+  ENV_VAR_SYNTAX,
+  FabDeployerExports,
+  FabSettings,
+  HOSTING_PROVIDERS,
+} from '@fab/core'
 import JSON5Config from '../helpers/JSON5Config'
-import { FabConfig } from '@fab/core'
-import shell from 'shelljs'
-// @ts-ignore
-import decompress from '@atomic-reactor/decompress'
+import { FabDeployError, InvalidConfigError } from '../errors'
+import { _log, loadModule } from '../helpers'
+import fs from 'fs-extra'
 
-interface GlobalConfig {
-  aws_key: string | undefined | null
-  aws_secret: string | undefined | null
-  cf_api_key: string | undefined | null
-  cf_account_id: string | undefined | null
-  cf_email: string | undefined | null
-}
-
-interface LocalConfig {
-  cf_workers_name: string | undefined
-  s3_asset_bucket: string | undefined
-}
+const log = _log('Deployer')
 
 export default class Deployer {
-  prompted_keys: Set<keyof GlobalConfig> = new Set()
-
-  async deploy(
-    file: string,
-    config_file_path: string,
-    flags: GlobalConfig & LocalConfig
-  ) {
-    const config = await JSON5Config.readFrom(config_file_path)
-
-    const global_config_path = path.join(homedir(), '.fab', 'global.config.json5')
-    const global_config = await this.getGlobalConfig(global_config_path, flags)
-    if (this.prompted_keys.size) {
-      await this.writeGlobalConfig(global_config_path, global_config)
-    }
-
-    const { aws_key, aws_secret, cf_api_key, cf_account_id, cf_email } = global_config
-
-    const { cf_workers_name, s3_asset_bucket } = await this.getLocalConfig(
-      config.data,
-      flags
-    )
-    await this.writeLocalConfig(
-      config,
-      { cf_workers_name, s3_asset_bucket },
-      config_file_path
-    )
-
-    log.info(
-      `Deploying project as '${cf_workers_name}'.${
-        !flags.cf_workers_name ? ' Use --cf_workers_name to override.' : ''
-      }`
-    )
-
-    shell.config.fatal = true
-    log.info(`Extracting ${file} to .fab/deploy`)
-    shell.exec('rm -rf .fab/deploy')
-    await decompress(file, '.fab/deploy')
-    shell.exec('mkdir -p .fab/deploy/s3')
-    shell.exec('mkdir -p .fab/deploy/cf')
-    shell.exec('mv .fab/deploy/_assets .fab/deploy/s3')
-    shell.exec(
-      `cp ${path.resolve(__dirname, '../../templates/deploy/wrangler/*')} .fab/deploy/cf`
-    )
-    await fs.writeFile(
-      '.fab/deploy/cf/wrangler.toml',
-      `name = "${cf_workers_name}"
-type = "webpack"
-zone_id = ""
-private = false
-account_id = "${cf_account_id}"
-workers_dev = true
-route = ""
-`
-    )
-    await fs.writeFile(
-      '.fab/deploy/cf/s3-bucket-name.js',
-      `module.exports = "${s3_asset_bucket}"`
-    )
-    // Super quick and dirty hack to get around the rollup IIFE thing
-    shell.exec(`echo "module.exports =" > .fab/deploy/cf/server.js`)
-    shell.exec(`cat .fab/deploy/server.js >> .fab/deploy/cf/server.js`)
-
-    log.info(`Creating bucket and uploading _assets to S3`)
-
-    const bin_path = shell.exec(`npm bin`, { silent: true }).trim()
-
-    shell.exec(
-      `${bin_path}/theros create --bucket ${s3_asset_bucket} --key  ${aws_key} --secret ${aws_secret}`
-    )
-    shell.exec(
-      `cd .fab/deploy/s3 && ${bin_path}/theros deploy --bucket ${s3_asset_bucket} --key  ${aws_key} --secret ${aws_secret}`
-    )
-
-    log.notify(`Deploying server to Cloudflare Workers using 🤠 Wrangler`)
-
-    shell.exec(
-      `cd .fab/deploy/cf && CF_API_KEY="${cf_api_key}" CF_EMAIL="${cf_email}" ${bin_path}/wrangler publish`
-    )
-  }
-
-  private async getGlobalConfig(
-    config_path: string,
-    flags: GlobalConfig
-  ): Promise<GlobalConfig> {
-    const { aws_key, aws_secret, cf_api_key, cf_account_id, cf_email } = flags
-    if (aws_key && aws_secret && cf_api_key && cf_account_id && cf_email) {
-      return { aws_key, aws_secret, cf_api_key, cf_account_id, cf_email }
-    }
-
-    // Only save updated values for keys that we prompted for, not flags
-    this.prompted_keys.clear()
-    if (!(await fs.pathExists(config_path))) {
-      log.info(`No ~/.fab/global.config.json5 found. Please provide the following:`)
-      return await this.promptConfig(flags)
-    } else {
-      log.info(`Reading from ~/.fab/global.config.json5.`)
-      return await this.readConfig(config_path, flags)
-    }
-  }
-
-  private async getLocalConfig(
-    config: FabConfig,
-    flags: LocalConfig
-  ): Promise<LocalConfig> {
-    const {
-      cf_workers_name = await cli.prompt(
-        'Enter project name (will deploy to https://{project_name}.{user_name}.workers.dev'
-      ),
-      s3_asset_bucket = `fab-assets-${short_guid()}-${cf_workers_name}`,
-    } = {
-      ...config.deploy,
-      ...flags,
-    } as LocalConfig
-    return {
-      cf_workers_name,
-      s3_asset_bucket,
-    }
-  }
-
-  private async prompt(key: keyof GlobalConfig, prompt: string): Promise<string> {
-    this.prompted_keys.add(key)
-    const result = await cli.prompt(prompt)
-    if (!result) throw new Error('You must provide a response.')
-    return result
-  }
-
-  private async promptConfig(flags: GlobalConfig): Promise<GlobalConfig> {
-    const {
-      aws_key = await this.prompt(
-        'aws_key',
-        'Enter AWS key (more info: https://fab.dev/kb/s3-config)'
-      ),
-      aws_secret = await this.prompt(
-        'aws_secret',
-        'Enter AWS Secret (more info: https://fab.dev/kb/s3-config)'
-      ),
-      cf_account_id = await this.prompt(
-        'cf_account_id',
-        'Enter Cloudflare Account ID (more info: https://fab.dev/kb/cf-config)'
-      ),
-      cf_email = await this.prompt(
-        'cf_email',
-        'Enter Cloudflare Email (more info: https://fab.dev/kb/cf-config)'
-      ),
-      cf_api_key = await this.prompt(
-        'cf_api_key',
-        'Enter Cloudflare API key (more info: https://fab.dev/kb/cf-config)'
-      ),
-    } = flags
-
-    return { aws_key, aws_secret, cf_api_key, cf_account_id, cf_email }
-  }
-
-  private async readConfig(
-    config_path: string,
-    flags: GlobalConfig
-  ): Promise<GlobalConfig> {
-    const file_config = await this.getGlobalConfigContents(config_path)
-
-    return this.promptConfig({
-      ...(file_config.deploy.s3 || {}),
-      ...(file_config.deploy.cloudflare || {}),
-      ...flags,
-    })
-  }
-
-  private async getGlobalConfigContents(config_path: string) {
-    return jju.parse(await fs.readFile(config_path, 'utf8')) || {}
-  }
-
-  private async writeGlobalConfig(
-    config_path: string,
-    config: GlobalConfig
-  ): Promise<void> {
-    const config_exists = await fs.pathExists(config_path)
-    const existing_config = config_exists
-      ? await this.getGlobalConfigContents(config_path)
-      : { deploy: {} }
-    existing_config.deploy = {
-      s3: {},
-      cloudflare: {},
-      ...existing_config.deploy,
-    }
-
-    this.prompted_keys.forEach((key) => {
-      if (key.startsWith('aws')) {
-        existing_config.deploy.s3[key] = config[key]
-      } else if (key.startsWith('cf')) {
-        existing_config.deploy.cloudflare[key] = config[key]
-      } else {
-        log.error(`Unexpected config key ${key}`)
-      }
-    })
-
-    await fs.ensureFile(config_path)
-    await fs.writeFile(config_path, jju.stringify(existing_config, null, 2))
-  }
-
-  private async writeLocalConfig(
+  static async deploy(
     config: JSON5Config,
-    deploy_config: LocalConfig,
-    file_path: string
-  ): Promise<void> {
-    config.data.deploy = {
-      ...config.data.deploy,
-      ...deploy_config,
+    file_path: string,
+    package_dir: string,
+    server_host: DeployProviders | undefined,
+    assets_host: DeployProviders | undefined,
+    env: string | undefined,
+    assets_already_deployed_at: string | undefined
+  ) {
+    log(`💎 💚fab deployer💚 💎\n`)
+    const { deploy } = config.data
+
+    if (!deploy) {
+      throw new FabDeployError(
+        `For the moment, you need to have your fab.config.json5 "deploy" section configured.
+        See https://fab.dev/kb/deploying for more information.
+        `
+      )
+    }
+    if (env) throw new Error('Not implemented ENV support yet')
+    const env_overrides = {}
+
+    const { server_provider, assets_provider } = this.getProviders(
+      deploy,
+      server_host,
+      assets_host,
+      !!assets_already_deployed_at
+    )
+    log(`Creating package directory 💛${package_dir}💛:`)
+    await fs.ensureDir(package_dir)
+    log(`💚✔💚 Done.`)
+
+    if (assets_provider) {
+      const deployed_url = await this.deployAssetsAndServer(
+        file_path,
+        package_dir,
+        deploy,
+        env_overrides,
+        assets_provider,
+        server_provider
+      )
+      log(`💚SUCCESS💚: Deployed (server-only) to 💛${deployed_url}💛`)
+      return deployed_url
+    } else {
+      log(
+        `💚NOTE:💚 skipping assets deploy, using 💛${assets_already_deployed_at}💛 for assets URL.`
+      )
+
+      const server_deployer = this.loadPackage<FabDeployerExports<any>>(
+        server_provider,
+        'deployServer'
+      )
+
+      const deployed_url = await this.deployServer(
+        server_deployer,
+        file_path,
+        package_dir,
+        this.resolveEnvVars(deploy[server_provider]!),
+        env_overrides,
+        assets_already_deployed_at!
+      )
+      log(`💚SUCCESS💚: Deployed to 💛${deployed_url}💛`)
+      return deployed_url
+    }
+  }
+
+  private static async deployAssetsAndServer(
+    file_path: string,
+    package_dir: string,
+    deploy: DeployConfig,
+    env_overrides: FabSettings,
+    assets_provider: DeployProviders,
+    server_provider: DeployProviders
+  ) {
+    if (server_provider === assets_provider) {
+      const deployer = this.loadPackage<FabDeployerExports<any>>(
+        assets_provider,
+        'deployBoth'
+      )
+
+      return deployer.deployBoth!(
+        file_path,
+        package_dir,
+        deploy[assets_provider],
+        env_overrides
+      )
     }
 
-    await config.write(file_path)
+    const assets_deployer = this.loadPackage<FabDeployerExports<any>>(
+      assets_provider,
+      'deployAssets'
+    )
+
+    const server_deployer = this.loadPackage<FabDeployerExports<any>>(
+      server_provider,
+      'deployServer'
+    )
+
+    const assets_url = await assets_deployer.deployAssets!(
+      file_path,
+      package_dir,
+      this.resolveEnvVars(deploy[assets_provider]!)
+    )
+
+    log(`Assets deployed at 💛${assets_url}💛`)
+
+    return await this.deployServer(
+      server_deployer,
+      file_path,
+      package_dir,
+      this.resolveEnvVars(deploy[server_provider]!),
+      env_overrides,
+      assets_url
+    )
+  }
+
+  private static loadPackage<T>(provider: string, fn: string): T {
+    const pkg = HOSTING_PROVIDERS[provider].package_name
+    const loaded = loadModule(pkg, [process.cwd()])
+
+    if (typeof loaded[fn] !== 'function') {
+      throw new FabDeployError(`${pkg} doesn't export a '${fn}' method!`)
+    }
+
+    return loaded as T
+  }
+
+  private static async deployServer(
+    server_deployer: FabDeployerExports<any>,
+    file_path: string,
+    package_dir: string,
+    config: FabSettings,
+    env_overrides: FabSettings,
+    assets_url: string
+  ) {
+    return await server_deployer.deployServer!(
+      file_path,
+      package_dir,
+      config,
+      env_overrides,
+      assets_url
+    )
+  }
+
+  private static getProviders(
+    deploy: DeployConfig,
+    server_host: DeployProviders | undefined,
+    assets_host: DeployProviders | undefined,
+    skip_assets: boolean
+  ): {
+    server_provider: DeployProviders
+    assets_provider?: DeployProviders
+  } {
+    const targets = Object.keys(deploy) as DeployProviders[]
+
+    const assets_only_hosts: DeployProviders[] = []
+    const server_only_hosts: DeployProviders[] = []
+    const versatile_hosts: DeployProviders[] = []
+
+    for (const target of targets) {
+      const provider = HOSTING_PROVIDERS[target]
+
+      if (!provider) {
+        throw new FabDeployError(
+          `Deploy target '${target}' in your fab.config.json5 not supported.
+          Needs to be one of ${Object.keys(HOSTING_PROVIDERS).join(', ')}`
+        )
+      }
+
+      if (provider.capabilities.server) {
+        if (provider.capabilities.assets) {
+          versatile_hosts.push(target)
+        } else {
+          server_only_hosts.push(target)
+        }
+      } else {
+        if (provider.capabilities.assets) {
+          assets_only_hosts.push(target)
+        } else {
+          throw new FabDeployError(
+            `Deploy target '${target}' doesn't host the server or the assets, what is it for?`
+          )
+        }
+      }
+    }
+
+    const server_provider = this.resolveProvider(
+      deploy,
+      'server',
+      server_host,
+      server_only_hosts,
+      versatile_hosts
+    ) as DeployProviders
+
+    if (skip_assets) return { server_provider }
+
+    const assets_provider = this.resolveProvider(
+      deploy,
+      'assets',
+      assets_host,
+      assets_only_hosts,
+      versatile_hosts
+    ) as DeployProviders
+
+    return { server_provider, assets_provider }
+  }
+
+  private static resolveProvider(
+    deploy: DeployConfig,
+    type: string,
+    hard_coded: DeployProviders | undefined,
+    specific_hosts: DeployProviders[],
+    versatile_hosts: DeployProviders[]
+  ): string {
+    if (hard_coded) {
+      const provider = deploy[hard_coded]
+      if (provider) return hard_coded
+      throw new InvalidConfigError(
+        `Your specified ${type} host '${hard_coded}' does not exist in your fab.config.json5 deploy config.`
+      )
+    }
+    const chosen_provider = this.chooseProviderAutomatically(
+      specific_hosts,
+      type,
+      versatile_hosts
+    )
+
+    const rejected_providers = [...specific_hosts, ...versatile_hosts].filter(
+      (s) => s !== chosen_provider
+    )
+    log(`Deploying 💛${type}💛 with ${chosen_provider}.`)
+    if (rejected_providers.length > 0)
+      log(
+        `Also found the following ${type}-compatible hosts configured:
+        🖤${rejected_providers.join('\n')}🖤`
+      )
+    log(`Use the 💛--${type}-host💛 to override this.\n`)
+
+    return chosen_provider
+  }
+
+  private static chooseProviderAutomatically(
+    specific_hosts: string[],
+    type: string,
+    versatile_hosts: string[]
+  ) {
+    if (specific_hosts.length === 1) {
+      return specific_hosts[0]
+    }
+    if (specific_hosts.length > 1) {
+      throw new InvalidConfigError(
+        `Your fab.config.json5 deploy config has multiple ${type}-only hosts: ${specific_hosts.join(
+          ', '
+        )}
+        Choose one with the --${type}-host argument`
+      )
+    }
+
+    if (versatile_hosts.length === 1) {
+      return versatile_hosts[0]
+    }
+    if (versatile_hosts.length > 1) {
+      throw new InvalidConfigError(
+        `Your fab.config.json5 deploy config has multiple hosts capable of both server & asset hosting: ${specific_hosts.join(
+          ', '
+        )}
+        Specify which one to use with the --server-host & --assets-host arguments`
+      )
+    }
+
+    throw new InvalidConfigError(
+      `Your fab.config.json5 deploy config has no entries for hosts capable of hosting your ${type}.
+      See https://fab.dev/kb/deploying for more information.`
+    )
+  }
+
+  private static resolveEnvVars(config: FabSettings) {
+    const result: FabSettings = {}
+    const missing_env_vars: string[] = []
+    for (const [k, v] of Object.entries(config)) {
+      if (typeof v === 'string' && v.match(ENV_VAR_SYNTAX)) {
+        const env_var = v.slice(1)
+        const value = process.env[env_var]
+        if (typeof value === 'undefined') {
+          missing_env_vars.push(env_var)
+        } else {
+          result[k] = value
+        }
+      } else {
+        result[k] = v
+      }
+    }
+    if (missing_env_vars.length > 0) {
+      throw new InvalidConfigError(
+        `Your deploy config references environment variables that weren't found:
+        ${missing_env_vars.map((e) => `• 💛${e}💛`).join('\n')}`
+      )
+    }
+    return result
   }
 }
