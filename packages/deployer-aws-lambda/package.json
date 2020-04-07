@@ -1,6 +1,6 @@
 {
   "name": "@fab/deployer-aws-lambda",
-  "version": "0.0.7-alpha.25",
+  "version": "0.0.7-alpha.26",
   "description": "Packages and deploys FABs to AWS Lambda@Edge",
   "keywords": [
     "fab"
@@ -30,7 +30,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.25",
+    "@fab/core": "0.0.7-alpha.26",
     "@types/nanoid": "^2.1.0",
     "@types/node": "^12.12.14",
     "deterministic-zip": "^1.1.0",
