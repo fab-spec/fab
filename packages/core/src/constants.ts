@@ -12,7 +12,7 @@ const CF_WORKERS_CONFIG = {
   account_id: '',
   zone_id: '',
   route: '',
-  api_key: '',
+  api_token: '',
   workers_dev: false,
   script_name: '',
 }

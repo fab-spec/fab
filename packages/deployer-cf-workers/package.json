@@ -32,6 +32,7 @@
   "dependencies": {
     "@fab/core": "0.0.7-alpha.24",
     "@types/node": "^12.12.14",
+    "cross-fetch": "^3.0.4",
     "fs-extra": "^9.0.0",
     "nanoid": "^2.1.11",
     "zip-lib": "^0.5.0"

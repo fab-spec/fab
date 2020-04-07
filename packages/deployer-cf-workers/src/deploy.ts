@@ -2,12 +2,14 @@ import {
   FabDeployer,
   FabAssetsDeployer,
   FabServerDeployer,
-  FabPackager,
   ConfigTypes,
   FabSettings,
 } from '@fab/core'
-import { log } from './utils'
-import { FabPackageError, InvalidConfigError } from '@fab/cli'
+import { getCloudflareApi, log } from './utils'
+import { FabDeployError, InvalidConfigError } from '@fab/cli'
+import { createPackage } from './createPackage'
+import path from 'path'
+import fs from 'fs-extra'
 
 const notImplemented = () => {
   throw new Error(`Not implemented!
@@ -30,27 +32,29 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
 
 export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
-  package_path: string,
+  working_dir: string,
   config: ConfigTypes.CFWorkers,
   env_overrides: FabSettings,
   assets_url: string
 ) => {
-  log('Deploying dat server')
+  const package_path = path.join(working_dir, 'cf-workers.js')
+
+  log(`Starting deploy...`)
 
   if (!assets_url) {
-    throw new FabPackageError(
+    throw new FabDeployError(
       `Cloudflare Workers requires an assets_url, while KV is still not supported.`
     )
   }
 
-  const { account_id, zone_id, route, api_key, workers_dev, script_name } = config
+  const { account_id, zone_id, route, api_token, workers_dev, script_name } = config
 
   if (!workers_dev) {
-    throw new FabPackageError(`Only workers.dev deploys implemented as yet`)
+    throw new FabDeployError(`Only workers.dev deploys implemented as yet`)
   } else {
     const required_keys: Array<keyof ConfigTypes.CFWorkers> = [
       'account_id',
-      'api_key',
+      'api_token',
       'script_name',
     ]
     const missing_config = required_keys.filter((k) => !config[k])
@@ -63,6 +67,24 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
     if (ignored_config.length > 0) {
       log(`💚NOTE:💚 ignoring the following config deploys with 💛workers_dev: true💛 don't need them:
       ${ignored_config.map((k) => `💛• ${k}: ${config[k]}💛`).join('\n')}`)
+    }
+
+    log(`💚✔💚 Config valid, checking API token...`)
+    const api = await getCloudflareApi(api_token)
+
+    log(`💚✔💚 API token valid, packaging...`)
+    await createPackage(fab_path, package_path, config, env_overrides, assets_url)
+
+    log.time(`Uploading script...`)
+    const response = await api.put(
+      `/accounts/${account_id}/workers/scripts/${script_name}`,
+      {
+        body: await fs.readFile(package_path, 'utf8'),
+      }
+    )
+    if (!response.success) {
+      throw new FabDeployError(`Error uploading the script, got response:
+      ❤️${JSON.stringify(response)}❤️`)
     }
   }
 
