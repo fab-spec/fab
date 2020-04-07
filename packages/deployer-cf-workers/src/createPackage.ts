@@ -31,7 +31,7 @@ export const createPackage: FabPackager<ConfigTypes.CFWorkers> = async (
   const fab_server_src = await fs.readFile(path.join(work_dir, 'server.js'), 'utf8')
   const injections = templateInjections(fab_server_src, assets_url)
   const template = await fs.readFile(
-    path.resolve(__dirname, '../templates/index.js'),
+    path.join(__dirname, '../templates/index.js'),
     'utf8'
   )
 
