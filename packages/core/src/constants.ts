@@ -14,6 +14,7 @@ const CF_WORKERS_CONFIG = {
   route: '',
   api_key: '',
   workers_dev: false,
+  script_name: '',
 }
 const AWS_LAMBDA_CONFIG = {
   access_key: '',
@@ -40,6 +41,7 @@ type HostingProvider = {
   package_name: string
   capabilities: { server: boolean; assets: boolean }
   config: ConfigTypes.Union
+  extension: string
 }
 
 export const HOSTING_PROVIDERS: {
@@ -52,6 +54,7 @@ export const HOSTING_PROVIDERS: {
       assets: true,
     },
     config: CF_WORKERS_CONFIG,
+    extension: 'js',
   },
   'aws-lambda-edge': {
     package_name: '@fab/deployer-aws-lambda',
@@ -60,6 +63,7 @@ export const HOSTING_PROVIDERS: {
       assets: false,
     },
     config: AWS_LAMBDA_CONFIG,
+    extension: 'zip',
   },
   'aws-s3': {
     package_name: '@fab/deployer-aws-s3',
@@ -68,5 +72,6 @@ export const HOSTING_PROVIDERS: {
       assets: true,
     },
     config: AWS_S3_CONFIG,
+    extension: 'zip',
   },
 }

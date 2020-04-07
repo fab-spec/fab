@@ -12,7 +12,7 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   env_overrides: FabSettings,
   assets_url: string
 ) => {
-  log.time(`Compiling package to: 💛${fab_path}💛:`)
+  log.time(`Compiling package to: 💛${package_path}💛:`)
   const output_dir = path.dirname(package_path)
   const work_dir = path.join(output_dir, `aws-lambda-${nanoid()}`)
   await fs.ensureDir(work_dir)
