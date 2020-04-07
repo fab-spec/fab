@@ -23,6 +23,7 @@ export const getCloudflareApi = async (api_token: string) => {
   }
   const get = go('get', 'application/json')
   const put = go('put', 'application/javascript')
+  const post = go('post', 'application/json')
 
   const verify = await get(`/user/tokens/verify`)
   if (!verify.success || verify.result.status !== 'active') {
@@ -31,5 +32,5 @@ export const getCloudflareApi = async (api_token: string) => {
     ❤️${JSON.stringify(verify)}❤️`)
   }
 
-  return { get, put }
+  return { get, put, post }
 }

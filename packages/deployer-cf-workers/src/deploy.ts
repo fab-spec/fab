@@ -1,8 +1,8 @@
 import {
-  FabDeployer,
-  FabAssetsDeployer,
-  FabServerDeployer,
   ConfigTypes,
+  FabAssetsDeployer,
+  FabDeployer,
+  FabServerDeployer,
   FabSettings,
 } from '@fab/core'
 import { getCloudflareApi, log } from './utils'
@@ -76,17 +76,38 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
     await createPackage(fab_path, package_path, config, env_overrides, assets_url)
 
     log.time(`Uploading script...`)
-    const response = await api.put(
+    const upload_response = await api.put(
       `/accounts/${account_id}/workers/scripts/${script_name}`,
       {
         body: await fs.readFile(package_path, 'utf8'),
       }
     )
-    if (!response.success) {
+    if (!upload_response.success) {
       throw new FabDeployError(`Error uploading the script, got response:
-      ❤️${JSON.stringify(response)}❤️`)
+      ❤️${JSON.stringify(upload_response)}❤️`)
     }
-  }
+    log(`💚✔💚 Uploaded, publishing...`)
 
-  return 'lol'
+    const subdomain_response = await api.get(`/accounts/${account_id}/workers/subdomain`)
+    if (!subdomain_response.success) {
+      throw new FabDeployError(`Error getting your workers.dev subdomain:
+      ❤️${JSON.stringify(subdomain_response)}❤️`)
+    }
+    const { subdomain } = subdomain_response.result
+
+    const publish_response = await api.post(
+      `/accounts/${account_id}/workers/scripts/${script_name}/subdomain`,
+      {
+        body: JSON.stringify({ enabled: true }),
+      }
+    )
+    if (!publish_response.success) {
+      throw new FabDeployError(`Error publishing the script on a workers.dev subdomain, got response:
+      ❤️${JSON.stringify(publish_response)}❤️`)
+    }
+    log(`💚✔💚 Done.`)
+    log.time((d) => `Deployed in ${d}.`)
+
+    return `https://${script_name}.${subdomain}.workers.dev`
+  }
 }
