@@ -24,7 +24,7 @@ export default class Deploy extends Command {
     'output-path': flags.string({
       description: 'Where to save the packaged FAB (default .fab/deploy/[target].zip)',
     }),
-    'asset-url': flags.string({
+    'assets-url': flags.string({
       description:
         'A URL for where the assets can be accessed, for server deployers that need it',
     }),
@@ -51,7 +51,7 @@ export default class Deploy extends Command {
       config.data,
       flags.target,
       flags['output-path'],
-      flags['asset-url']!,
+      flags['assets-url']!,
       flags.env
     )
   }

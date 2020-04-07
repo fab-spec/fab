@@ -6,12 +6,14 @@ import {
   ConfigTypes,
   FabSettings,
 } from '@fab/core'
+import { FabPackageError } from '@fab/cli'
 
 import { log } from './utils'
 import path from 'path'
 import nanoid from 'nanoid'
 import fs from 'fs-extra'
 import { extract } from 'zip-lib'
+import templateInjections from './templateInjections'
 
 export const createPackage: FabPackager<ConfigTypes.CFWorkers> = async (
   fab_path: string,
@@ -20,6 +22,11 @@ export const createPackage: FabPackager<ConfigTypes.CFWorkers> = async (
   env_overrides: FabSettings,
   assets_url: string
 ) => {
+  if (!assets_url)
+    throw new FabPackageError(
+      `Cloudflare Workers requires an assets_url. Use the --assets-url flag.`
+    )
+
   log.time(`Compiling package to: 💛${fab_path}💛:`)
   const output_dir = path.dirname(package_path)
   const work_dir = path.join(output_dir, `cf-workers-${nanoid()}`)
@@ -27,4 +34,21 @@ export const createPackage: FabPackager<ConfigTypes.CFWorkers> = async (
   log(`💚✔💚 Generated working dir in 💛${work_dir}💛`)
   await extract(fab_path, work_dir)
   log(`💚✔💚 Unpacked FAB!`)
+
+  const fab_server_src = await fs.readFile(path.join(work_dir, 'server.js'), 'utf8')
+  const injections = templateInjections(fab_server_src, assets_url)
+  const template = await fs.readFile(
+    path.resolve(__dirname, '../templates/index.js'),
+    'utf8'
+  )
+
+  await fs.writeFile(
+    path.join(work_dir, 'worker.js'),
+    `
+    ${injections};
+    ${template};
+  `
+  )
+
+  log(`💚✔💚 Generated worker!`)
 }
