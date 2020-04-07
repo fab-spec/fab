@@ -3,6 +3,7 @@ import { Command, flags } from '@oclif/command'
 import Packager from '../actions/Packager'
 import JSON5Config from '../helpers/JSON5Config'
 
+const hosts = Object.keys(HOSTING_PROVIDERS)
 export default class Deploy extends Command {
   static description = 'Package a FAB to be uploaded to a hosting provider manually'
 
@@ -16,14 +17,14 @@ export default class Deploy extends Command {
       default: DEFAULT_CONFIG_FILENAME,
     }),
     target: flags.enum<DeployProviders>({
-      options: Object.keys(HOSTING_PROVIDERS),
+      options: hosts,
       char: 't',
-      description: `Hosting provider (currently one of 'aws-lambda-edge', 'cf-workers')`,
+      description: `Hosting provider (must be one of: ${hosts.join(', ')})`,
     }),
     'output-path': flags.string({
       description: 'Where to save the packaged FAB (default .fab/deploy/[target].zip)',
     }),
-    'asset-url': flags.string({
+    'assets-url': flags.string({
       description:
         'A URL for where the assets can be accessed, for server deployers that need it',
     }),
@@ -42,7 +43,7 @@ export default class Deploy extends Command {
       this.error(`You must provide a FAB file to package (e.g. fab.zip)`)
     }
     if (!flags.target) {
-      this.error(`You must provide a target.`)
+      this.error(`You must provide a target. Available options: ${hosts.join(', ')}`)
     }
     const config = await JSON5Config.readFrom(flags.config!)
     await Packager.package(
@@ -50,7 +51,7 @@ export default class Deploy extends Command {
       config.data,
       flags.target,
       flags['output-path'],
-      flags['asset-url']!,
+      flags['assets-url']!,
       flags.env
     )
   }

@@ -2,10 +2,7 @@ import { ConfigTypes, FabPackager, FabSettings, stripTrailingSlash } from '@fab/
 import fs from 'fs-extra'
 import path from 'path'
 import nanoid from 'nanoid'
-// @ts-ignore
-import decompress from '@atomic-reactor/decompress'
-import execa from 'execa'
-import { Zip } from 'zip-lib'
+import { Zip, extract } from 'zip-lib'
 import { log } from './utils'
 
 export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
@@ -15,12 +12,12 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   env_overrides: FabSettings,
   assets_url: string
 ) => {
-  log.time(`Compiling package to: 💛${fab_path}💛:`)
+  log.time(`Compiling package to: 💛${package_path}💛:`)
   const output_dir = path.dirname(package_path)
   const work_dir = path.join(output_dir, `aws-lambda-${nanoid()}`)
   await fs.ensureDir(work_dir)
   log(`💚✔💚 Generated working dir in 💛${work_dir}💛`)
-  await decompress(fab_path, work_dir, { followSymlinks: true })
+  await extract(fab_path, work_dir)
   log(`💚✔💚 Unpacked FAB`)
   await fs.copy(path.join(__dirname, '../templates'), work_dir)
   log(`💚✔💚 Copied AWS Lambda shim`)

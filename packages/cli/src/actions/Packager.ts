@@ -14,7 +14,7 @@ export default class Packager {
     file_path: string,
     config: FabConfig,
     target: DeployProviders,
-    output_path: string = `.fab/deploy/${target}.zip`,
+    output_path: string | undefined,
     assets_url: string,
     env: string | undefined
   ) {
@@ -26,6 +26,7 @@ export default class Packager {
         Needs to be one of ${Object.keys(HOSTING_PROVIDERS).join(', ')}`
       )
     }
+    if (!output_path) output_path = `.fab/deploy/${target}.${provider.extension}`
 
     const { package_name } = provider
     log(`Loading packager code from ${package_name}`)
