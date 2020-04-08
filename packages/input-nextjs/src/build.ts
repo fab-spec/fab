@@ -108,6 +108,9 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
             '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
           },
         },
+        node: {
+          global: false,
+        },
       },
       (err, stats) => {
         if (err || stats.hasErrors()) {
