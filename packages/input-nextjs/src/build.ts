@@ -20,7 +20,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   args,
   proto_fab,
   config_path,
-  skip_cache
+  skip_cache = false
 ) => {
   // const { dir } = args
   if (proto_fab.files!.size > 0) {

@@ -48,7 +48,7 @@ export type FabBuildStep<
   args: T,
   proto_fab: ProtoFab<U>,
   config_path: string,
-  skip_cache: boolean
+  skip_cache?: boolean
 ) => Promise<void>
 
 /*
