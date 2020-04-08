@@ -65,9 +65,14 @@ export const mergeWebpacks = (files: FabFilesObject) => {
 
     const webpack_modules = webpack_content.properties
     extracted_info[path] = { entry_point, webpack_modules }
+    console.log(path)
+    console.log(entry_point)
+    console.log(webpack_modules.map((module: any) => module.key.value))
 
     if (!first_ast) first_ast = { ast, ret_exp, webpack_content }
   }
+
+  console.log({ extracted_info })
 
   const { ast, ret_exp, webpack_content } = first_ast
   //
@@ -94,12 +99,18 @@ export const mergeWebpacks = (files: FabFilesObject) => {
     const { webpack_modules } = extracted_info[path]
 
     webpack_modules.forEach((module) => {
-      if (seen_keys.has(module.key.value)) return
+      const key = module.key.value
+      console.log(key, seen_keys.has(key))
+      if (seen_keys.has(key)) return
 
-      seen_keys.add(module.key.value)
+      seen_keys.add(key)
       webpack_content.properties.push(module)
     })
   })
+
+  console.log(...seen_keys)
+  console.log(webpack_content.properties.length)
+  console.log(webpack_content.properties.map((module: any) => module.key.value))
 
   return generate(ast)
 }
