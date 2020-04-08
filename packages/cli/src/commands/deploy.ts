@@ -36,6 +36,10 @@ export default class Deploy extends Command {
       description:
         'Skip asset deploys and only deploy the server component pointing at this URL for assets',
     }),
+    'assets-only': flags.boolean({
+      description:
+        'Skip server deploy, just upload assets',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -55,6 +59,7 @@ export default class Deploy extends Command {
       flags['server-host'],
       flags['assets-host'],
       flags.env,
+      flags['assets-only'],
       flags['assets-already-deployed-at']
     )
   }

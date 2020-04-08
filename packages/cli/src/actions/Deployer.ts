@@ -21,6 +21,7 @@ export default class Deployer {
     server_host: DeployProviders | undefined,
     assets_host: DeployProviders | undefined,
     env: string | undefined,
+    assets_only: boolean,
     assets_already_deployed_at: string | undefined
   ) {
     log(`💎 💚fab deployer💚 💎\n`)
@@ -53,7 +54,8 @@ export default class Deployer {
         deploy,
         env_overrides,
         assets_provider,
-        server_provider
+        server_provider,
+        assets_only
       )
       log(`💚SUCCESS💚: Deployed (server-only) to 💛${deployed_url}💛`)
       return deployed_url
@@ -86,7 +88,8 @@ export default class Deployer {
     deploy: DeployConfig,
     env_overrides: FabSettings,
     assets_provider: DeployProviders,
-    server_provider: DeployProviders
+    server_provider: DeployProviders,
+    assets_only: boolean
   ) {
     if (server_provider === assets_provider) {
       const deployer = this.loadPackage<FabDeployerExports<any>>(
@@ -119,6 +122,8 @@ export default class Deployer {
     )
 
     log(`Assets deployed at 💛${assets_url}💛`)
+
+    if (assets_only) return assets_url
 
     return await this.deployServer(
       server_deployer,

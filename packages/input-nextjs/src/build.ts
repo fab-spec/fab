@@ -19,7 +19,8 @@ const WEBPACKED = `webpacked-nextjs-renderers`
 export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   args,
   proto_fab,
-  config_path
+  config_path,
+  skip_cache
 ) => {
   // const { dir } = args
   if (proto_fab.files!.size > 0) {
@@ -59,7 +60,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     `${RENDERER}.${pages_dir_hash.slice(0, 7)}.js`
   )
 
-  const render_code_src = await getRenderCode(render_code_file, pages_dir, cache_dir)
+  const render_code_src = await getRenderCode(render_code_file, pages_dir, cache_dir, skip_cache)
   // todo: hash render_code
 
   // TEMPORARY: webpack this file to inject all the required shims
@@ -145,9 +146,10 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
 async function getRenderCode(
   renderer_cache: string,
   pages_dir: string,
-  cache_dir: string
+  cache_dir: string,
+  skip_cache: boolean
 ) {
-  if (await fs.pathExists(renderer_cache)) {
+  if (!skip_cache && await fs.pathExists(renderer_cache)) {
     log(
       `Reusing NextJS renderer cache 💛${path.relative(process.cwd(), renderer_cache)}💛`
     )
