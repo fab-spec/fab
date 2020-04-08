@@ -37,8 +37,7 @@ export default class Deploy extends Command {
         'Skip asset deploys and only deploy the server component pointing at this URL for assets',
     }),
     'assets-only': flags.boolean({
-      description:
-        'Skip server deploy, just upload assets',
+      description: 'Skip server deploy, just upload assets',
     }),
   }
 

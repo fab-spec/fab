@@ -60,7 +60,12 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     `${RENDERER}.${pages_dir_hash.slice(0, 7)}.js`
   )
 
-  const render_code_src = await getRenderCode(render_code_file, pages_dir, cache_dir, skip_cache)
+  const render_code_src = await getRenderCode(
+    render_code_file,
+    pages_dir,
+    cache_dir,
+    skip_cache
+  )
   // todo: hash render_code
 
   // TEMPORARY: webpack this file to inject all the required shims
@@ -149,7 +154,7 @@ async function getRenderCode(
   cache_dir: string,
   skip_cache: boolean
 ) {
-  if (!skip_cache && await fs.pathExists(renderer_cache)) {
+  if (!skip_cache && (await fs.pathExists(renderer_cache))) {
     log(
       `Reusing NextJS renderer cache 💛${path.relative(process.cwd(), renderer_cache)}💛`
     )

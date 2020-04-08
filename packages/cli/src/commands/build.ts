@@ -17,7 +17,7 @@ export default class Build extends Command {
     }),
     'skip-cache': flags.boolean({
       description: 'Skip any caching of intermediate build artifacts',
-    })
+    }),
   }
 
   static args = []
