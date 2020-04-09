@@ -130,6 +130,12 @@ const BASE_CONFIG: string = `// For more information, see https://fab.dev/kb/con
       // API_URL: 'https://api.example.com/graphql'
     },
   },
+  deploy: {
+    // For manual (command-line) deploys, add configuration here.
+    // • See https://fab.dev/kb/deploying for more info.
+    // For automatic deploys (triggered by git push), we recommend using Linc:
+    // • See https://linc.sh/docs/automatic-deploys for setup instructions.
+  }
 }
 `
 
