@@ -23,12 +23,28 @@ jobs:
     - name: Globally install @fab/cli
       run: |
         yarn global add @fab/cli
-    - name: Run e2e tests
+    - name: Setup e2e tests
       run: |
+        yarn link-all
         cd tests
         yarn
-        yarn add @fab/cli
-        PUBLIC_PACKAGES=true yarn test
       env:
         CI: true
-        PUBLIC_PACKAGES: true
+    - name: "E2E: paths-exist"
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test paths-exist
+      env:
+        CI: true
+    - name: "E2E: create-react-app"
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test create-react-app
+      env:
+        CI: true
+    - name: "E2E: nextjs"
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test nextjs
+      env:
+        CI: true

@@ -37,11 +37,34 @@ jobs:
         yarn test
       env:
         CI: true
-    - name: Run e2e tests
+    - name: Setup e2e tests
       run: |
         yarn link-all
         cd tests
         yarn
-        yarn test
+      env:
+        CI: true
+    - name: "E2E: paths-exist"
+      run: |
+        cd tests
+        yarn test paths-exist
+      env:
+        CI: true
+    - name: "E2E: cli-errors"
+      run: |
+        cd tests
+        yarn test cli-errors
+      env:
+        CI: true
+    - name: "E2E: create-react-app"
+      run: |
+        cd tests
+        yarn test create-react-app
+      env:
+        CI: true
+    - name: "E2E: nextjs"
+      run: |
+        cd tests
+        yarn test nextjs
       env:
         CI: true
