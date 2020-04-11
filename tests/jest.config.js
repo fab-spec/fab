@@ -7,6 +7,7 @@ module.exports = {
       diagnostics: !process.env.PUBLIC_PACKAGES,
     },
   },
+  setupFiles: ['dotenv/config'],
   setupFilesAfterEnv: ['./jest.setup.js'],
   testPathIgnorePatterns: ['/workspace/'],
 }
