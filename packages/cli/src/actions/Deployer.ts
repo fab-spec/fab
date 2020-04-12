@@ -57,7 +57,7 @@ export default class Deployer {
         server_provider,
         assets_only
       )
-      log(`💚SUCCESS💚: Deployed (server-only) to 💛${deployed_url}💛`)
+      log(`💚SUCCESS💚: Deployed to 💛${deployed_url}💛`)
       return deployed_url
     } else {
       log(

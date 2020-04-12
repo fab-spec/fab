@@ -28,7 +28,6 @@ const AWS_S3_CONFIG = {
   secret_key: '',
   region: '',
   bucket_name: '',
-  public_url: '',
 }
 
 export namespace ConfigTypes {

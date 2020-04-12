@@ -35,6 +35,7 @@
     "fs-extra": "^9.0.0",
     "globby": "^11.0.0",
     "nanoid": "^3.0.2",
+    "pretty-bytes": "^5.3.0",
     "zip-lib": "^0.5.0"
   },
   "publishConfig": {
