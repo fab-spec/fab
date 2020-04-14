@@ -299,10 +299,16 @@ export default class Deployer {
     const result: FabSettings = {}
     const missing_env_vars: string[] = []
     for (const [k, v] of Object.entries(config)) {
-      if (typeof v === 'string' && v.match(ENV_VAR_SYNTAX)) {
-        const env_var = v.slice(1)
+      const match = typeof v === 'string' && v.match(ENV_VAR_SYNTAX)
+      if (match) {
+        const [_, env_var] = match
+        if (!env_var) {
+          log(
+            `❤️WARNING:❤️ config value 💛${v}💛 looks like an environment variable but doesn't match pattern 💛${ENV_VAR_SYNTAX}💛`
+          )
+        }
         const value = process.env[env_var]
-        if (typeof value === 'undefined') {
+        if (typeof value === 'undefined' || value === '') {
           missing_env_vars.push(env_var)
         } else {
           result[k] = value
