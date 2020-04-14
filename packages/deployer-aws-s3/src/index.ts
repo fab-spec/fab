@@ -7,6 +7,7 @@ import { extract } from 'zip-lib'
 import { _log } from '@fab/cli'
 import globby from 'globby'
 import pretty from 'pretty-bytes'
+import { createBucket, makeBucketWebsite, putObject } from './aws'
 
 const log = _log('@fab/deployer-aws-s3')
 
@@ -42,26 +43,11 @@ const doUpload = async (
     secretAccessKey: secret_key,
   })
   const s3 = new aws.S3()
-  await s3
-    .createBucket({
-      Bucket: bucket_name,
-    })
-    .promise()
+
+  await createBucket(s3, bucket_name)
   log(`💚✔💚 Created bucket 💛${bucket_name}💛 in region 💛${region}💛.`)
 
-  await s3
-    .putBucketWebsite({
-      Bucket: bucket_name,
-      WebsiteConfiguration: {
-        ErrorDocument: {
-          Key: 'error.html',
-        },
-        IndexDocument: {
-          Suffix: 'index.html',
-        },
-      },
-    })
-    .promise()
+  await makeBucketWebsite(s3, bucket_name)
   log(`💚✔💚 Configured S3 website at 💛${assets_host}💛.`)
 
   log(`Uploading files...`)
@@ -69,15 +55,7 @@ const doUpload = async (
   const uploads = files.map(async (file) => {
     const content_type = getContentType(file)
     const body_stream = fs.createReadStream(path.join(extracted_dir, file))
-    await s3
-      .putObject({
-        Bucket: bucket_name,
-        Key: file,
-        Body: body_stream,
-        ACL: 'public-read',
-        ContentType: content_type,
-      })
-      .promise()
+    await putObject(s3, bucket_name, file, body_stream, content_type)
     log.continue(`🖤  ${file} (${pretty(body_stream.bytesRead)})🖤`)
   })
 
