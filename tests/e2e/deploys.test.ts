@@ -17,10 +17,10 @@ describe('Deploy tests', () => {
       fab_filename: `fab.create-react-app.zip`,
       cf_workers: {
         required_env_vars: ['CF_WORKERS_API_TOKEN', 'AWS_S3_SECRET_KEY'],
-        s3_access_key: 'AKIA6OAMI6OEOB53VV57',
+        s3_access_key: 'AKIAWIORJFSCPZGQ4K6U',
         s3_bucket: 'fab-ci-assets-create-react-app-cf-workers',
         script_name: 'fab-ci-create-react-app',
-        account_id: 'cd3d2f25fb7dfdd4e8be7f187b2cbad1',
+        cf_account_id: 'cd3d2f25fb7dfdd4e8be7f187b2cbad1',
       },
       aws_lambda_edge: {
         required_env_vars: ['AWS_CRA_SECRET', 'AWS_S3_SECRET_KEY'],
@@ -64,7 +64,7 @@ describe('Deploy tests', () => {
         required_env_vars,
         s3_bucket,
         script_name,
-        account_id,
+        cf_account_id,
         s3_access_key,
       } = project.cf_workers
       const fab_path = path.resolve(cwd, fab_filename)
@@ -87,7 +87,7 @@ describe('Deploy tests', () => {
           plugins: {},
           deploy: {
             'cf-workers': {
-              account_id: '${account_id}',
+              account_id: '${cf_account_id}',
               api_token: '@${required_env_vars[0]}',
               script_name: '${script_name}',
               workers_dev: true
@@ -101,7 +101,10 @@ describe('Deploy tests', () => {
           }
         }`
       )
-      await shell(`fab deploy ${fab_path} --config=${config_filename}`, { cwd })
+      await shell(
+        `fab deploy ${path.relative(cwd, fab_path)} --config=${config_filename}`,
+        { cwd }
+      )
     })
   }
 })

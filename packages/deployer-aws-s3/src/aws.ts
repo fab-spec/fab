@@ -2,15 +2,12 @@ import aws from 'aws-sdk'
 import { ReadStream } from 'fs'
 
 export function authenticate(region: string, access_key: string, secret_key: string) {
-  console.log('AUTHING')
   aws.config.update({
     region,
     accessKeyId: access_key,
     secretAccessKey: secret_key,
   })
-  const s3 = new aws.S3()
-  console.log('OK')
-  return s3
+  return new aws.S3()
 }
 
 export async function createBucket(s3: aws.S3, bucket_name: string) {

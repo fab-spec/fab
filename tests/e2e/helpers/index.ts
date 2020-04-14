@@ -19,10 +19,8 @@ export const buildFab = async (cwd: string, global = false) => {
 }
 
 const workspace_dir = path.resolve(__dirname, '../workspace')
-console.log({ workspace_dir })
 export const getWorkingDir = async (dirname: string, clean: boolean) => {
   const cwd = path.join(workspace_dir, dirname)
-  console.log({ working_dir: cwd })
 
   if (clean && (await fs.pathExists(cwd))) {
     await fs.remove(cwd)
