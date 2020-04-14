@@ -22,5 +22,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["packages"],
-  "exclude": ["packages/*/cjs", "packages/*/esm", "packages/*/dist", "packages/*/test"]
+  "exclude": ["packages/*/cjs", "packages/*/esm", "packages/*/dist"]
 }

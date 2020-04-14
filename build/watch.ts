@@ -12,7 +12,7 @@ const package_dir = path.resolve(__dirname, '../packages')
 const seen_once: Set<string> = new Set()
 
 chokidar
-  .watch(path.resolve(__dirname, '{esm,lib}/**/*.{js,map}'))
+  .watch(path.resolve(__dirname, '{esm,lib}/*/src/**/*.{js,map}'))
   .on('all', (event, source) => {
     const match = source.match(/fab\/build\/(esm|lib)\/([\w-]+)/)
     if (match) {
