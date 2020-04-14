@@ -76,3 +76,5 @@ jobs:
         CI: true
         CF_WORKERS_API_TOKEN: ${{ secrets.CF_WORKERS_API_TOKEN }}
         AWS_S3_SECRET_KEY: ${{ secrets.AWS_S3_SECRET_KEY }}
+        AWS_CRA_SECRET: ${{ secrets.AWS_CRA_SECRET }}
+        AWS_NEXTJS_SECRET: ${{ secrets.AWS_NEXTJS_SECRET }}
