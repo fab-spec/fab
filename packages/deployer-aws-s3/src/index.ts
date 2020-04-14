@@ -1,15 +1,12 @@
 import { ConfigTypes, FabAssetsDeployer, getContentType } from '@fab/core'
-import aws from 'aws-sdk'
 import { nanoid } from 'nanoid'
 import path from 'path'
 import fs from 'fs-extra'
 import { extract } from 'zip-lib'
-import { _log } from '@fab/cli'
 import globby from 'globby'
 import pretty from 'pretty-bytes'
-import { createBucket, makeBucketWebsite, putObject } from './aws'
-
-const log = _log('@fab/deployer-aws-s3')
+import { authenticate, createBucket, makeBucketWebsite, putObject } from './aws'
+import { log } from './utils'
 
 export const deployAssets: FabAssetsDeployer<ConfigTypes.AwsS3> = async (
   fab_path: string,
@@ -37,13 +34,7 @@ const doUpload = async (
 ) => {
   const assets_host = `https://${bucket_name}.s3.${region}.amazonaws.com`
 
-  aws.config.update({
-    region,
-    accessKeyId: access_key,
-    secretAccessKey: secret_key,
-  })
-  const s3 = new aws.S3()
-
+  const s3 = authenticate(region, access_key, secret_key)
   await createBucket(s3, bucket_name)
   log(`💚✔💚 Created bucket 💛${bucket_name}💛 in region 💛${region}💛.`)
 
