@@ -6,7 +6,7 @@ export const IMMUTABLE_HEADERS = { 'Cache-Control': 'immutable' }
 export const NON_IMMUTABLE_HEADERS = { 'Cache-Control': 'no-cache' }
 
 export const REGEXP_VALUE_PATTERN = /^\/.*\/([gimy]*)$/
-export const ENV_VAR_SYNTAX = /^@[A-Z_]+$/
+export const ENV_VAR_SYNTAX = /^@([A-Z0-9_]+$)?/
 
 const CF_WORKERS_CONFIG = {
   account_id: '',
@@ -18,16 +18,16 @@ const CF_WORKERS_CONFIG = {
 }
 const AWS_LAMBDA_CONFIG = {
   access_key: '',
-  cf_distribution_id: '',
-  lambda_arn: '',
   secret_key: '',
   region: '',
+  cf_distribution_id: '',
+  lambda_arn: '',
 }
 const AWS_S3_CONFIG = {
-  aws_key: '',
-  aws_secret: '',
+  access_key: '',
+  secret_key: '',
+  region: '',
   bucket_name: '',
-  public_url: '',
 }
 
 export namespace ConfigTypes {

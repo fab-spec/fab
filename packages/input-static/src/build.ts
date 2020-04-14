@@ -10,7 +10,8 @@ const log = _log(`@fab/input-static`)
 export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
   args,
   proto_fab,
-  config_path
+  config_path,
+  skip_cache = false
 ) => {
   const { dir } = args
 

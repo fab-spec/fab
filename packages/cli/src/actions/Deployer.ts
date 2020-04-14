@@ -21,6 +21,7 @@ export default class Deployer {
     server_host: DeployProviders | undefined,
     assets_host: DeployProviders | undefined,
     env: string | undefined,
+    assets_only: boolean,
     assets_already_deployed_at: string | undefined
   ) {
     log(`💎 💚fab deployer💚 💎\n`)
@@ -53,9 +54,10 @@ export default class Deployer {
         deploy,
         env_overrides,
         assets_provider,
-        server_provider
+        server_provider,
+        assets_only
       )
-      log(`💚SUCCESS💚: Deployed (server-only) to 💛${deployed_url}💛`)
+      log(`💚SUCCESS💚: Deployed to 💛${deployed_url}💛`)
       return deployed_url
     } else {
       log(
@@ -86,7 +88,8 @@ export default class Deployer {
     deploy: DeployConfig,
     env_overrides: FabSettings,
     assets_provider: DeployProviders,
-    server_provider: DeployProviders
+    server_provider: DeployProviders,
+    assets_only: boolean
   ) {
     if (server_provider === assets_provider) {
       const deployer = this.loadPackage<FabDeployerExports<any>>(
@@ -119,6 +122,8 @@ export default class Deployer {
     )
 
     log(`Assets deployed at 💛${assets_url}💛`)
+
+    if (assets_only) return assets_url
 
     return await this.deployServer(
       server_deployer,
@@ -250,7 +255,7 @@ export default class Deployer {
         `Also found the following ${type}-compatible hosts configured:
         🖤${rejected_providers.join('\n')}🖤`
       )
-    log(`Use the 💛--${type}-host💛 to override this.\n`)
+    log(`Use the 💛--${type}-host💛 argument to override this.\n`)
 
     return chosen_provider
   }
@@ -294,10 +299,16 @@ export default class Deployer {
     const result: FabSettings = {}
     const missing_env_vars: string[] = []
     for (const [k, v] of Object.entries(config)) {
-      if (typeof v === 'string' && v.match(ENV_VAR_SYNTAX)) {
-        const env_var = v.slice(1)
+      const match = typeof v === 'string' && v.match(ENV_VAR_SYNTAX)
+      if (match) {
+        const [_, env_var] = match
+        if (!env_var) {
+          log(
+            `❤️WARNING:❤️ config value 💛${v}💛 looks like an environment variable but doesn't match pattern 💛${ENV_VAR_SYNTAX}💛`
+          )
+        }
         const value = process.env[env_var]
-        if (typeof value === 'undefined') {
+        if (typeof value === 'undefined' || value === '') {
           missing_env_vars.push(env_var)
         } else {
           result[k] = value

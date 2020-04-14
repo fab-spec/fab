@@ -33,7 +33,7 @@ type Plugins = {
 }
 
 export default class Builder {
-  static async build(config_path: string, config: FabConfig) {
+  static async build(config_path: string, config: FabConfig, skip_cache: boolean) {
     log(`💎 💚fab build💚 💎\n`)
     log(`Reading plugins from config.`)
     const { build_plugins, runtime_plugins } = await this.getPlugins(config_path, config)
@@ -43,7 +43,7 @@ export default class Builder {
     const proto_fab = new ProtoFab()
     for (const { plugin_name, builder, plugin_args } of build_plugins) {
       log(`Building 💛${plugin_name}💛:`)
-      await builder(plugin_args, proto_fab, config_path)
+      await builder(plugin_args, proto_fab, config_path, skip_cache)
     }
 
     log.time((d) => `Build plugins completed in ${d}.`)

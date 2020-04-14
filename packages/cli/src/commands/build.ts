@@ -15,6 +15,9 @@ export default class Build extends Command {
       description: 'Path to config file',
       default: DEFAULT_CONFIG_FILENAME,
     }),
+    'skip-cache': flags.boolean({
+      description: 'Skip any caching of intermediate build artifacts',
+    }),
   }
 
   static args = []
@@ -22,6 +25,6 @@ export default class Build extends Command {
   async run() {
     const { args, flags } = this.parse(Build)
     const config = await JSON5Config.readFrom(flags.config!)
-    await Builder.build(flags.config, config.data)
+    await Builder.build(flags.config, config.data, flags['skip-cache'])
   }
 }

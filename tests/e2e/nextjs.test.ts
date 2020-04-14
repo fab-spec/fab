@@ -11,6 +11,7 @@ describe('Create React App E2E Test', () => {
 
   it('should create a new CRA project', async () => {
     cwd = await getWorkingDir('nextjs-test', !process.env.FAB_E2E_SKIP_CREATE)
+    const { stdout: current_sha } = await cmd(`git rev-parse --short HEAD`, { cwd })
     if (process.env.FAB_E2E_SKIP_CREATE) {
       console.log({ cwd })
       await shell(`git reset --hard`, { cwd })
@@ -28,6 +29,11 @@ describe('Create React App E2E Test', () => {
     // Expect that {cwd} has a package.json
     const { stdout: files } = await cmd(`ls -l`, { cwd })
     expect(files).toMatch('package.json')
+    // Add the FAB project's current commit SHA to index.js for debugging
+    await shell(
+      `echo "\\nconsole.log('[FAB CI] NextJS (${current_sha})')" >> pages/index.js`,
+      { cwd, shell: true }
+    )
   })
 
   it('should configure the NextJS project to produce FABs', async () => {

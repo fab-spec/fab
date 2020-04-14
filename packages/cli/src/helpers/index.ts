@@ -69,6 +69,9 @@ export const _log = (full_prefix: string) => {
   log.warn = (str: string) => {
     log(chalk.red(str))
   }
+  log.note = (str: string) => {
+    log(`💚NOTE:💚 ${str}`)
+  }
   return log
 }
 

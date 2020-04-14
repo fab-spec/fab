@@ -44,7 +44,12 @@ export interface PluginMetadata {
 export type FabBuildStep<
   T extends PluginArgs = PluginArgs,
   U extends PluginMetadata = PluginMetadata
-> = (args: T, proto_fab: ProtoFab<U>, config_path: string) => Promise<void>
+> = (
+  args: T,
+  proto_fab: ProtoFab<U>,
+  config_path: string,
+  skip_cache?: boolean
+) => Promise<void>
 
 /*
  * A FabPluginRuntime is a setup function that returns a FabRequestResponder.

@@ -31,7 +31,12 @@
   "dependencies": {
     "@fab/core": "0.0.7-alpha.27",
     "@types/node": "^12.12.14",
-    "aws-sdk": "^2.647.0"
+    "aws-sdk": "^2.655.0",
+    "fs-extra": "^9.0.0",
+    "globby": "^11.0.0",
+    "nanoid": "^3.0.2",
+    "pretty-bytes": "^5.3.0",
+    "zip-lib": "^0.5.0"
   },
   "publishConfig": {
     "access": "public"
