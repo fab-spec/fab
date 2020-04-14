@@ -6,7 +6,7 @@ export const IMMUTABLE_HEADERS = { 'Cache-Control': 'immutable' }
 export const NON_IMMUTABLE_HEADERS = { 'Cache-Control': 'no-cache' }
 
 export const REGEXP_VALUE_PATTERN = /^\/.*\/([gimy]*)$/
-export const ENV_VAR_SYNTAX = /^@[A-Z_]+$/
+export const ENV_VAR_SYNTAX = /^@[A-Z0-9_]+$?/
 
 const CF_WORKERS_CONFIG = {
   account_id: '',
