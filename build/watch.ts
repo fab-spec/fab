@@ -5,8 +5,11 @@
 import chokidar from 'chokidar'
 import path from 'path'
 import fs from 'fs-extra'
+import chalk from 'chalk'
 
 const package_dir = path.resolve(__dirname, '../packages')
+
+const seen_once: Set<string> = new Set()
 
 chokidar
   .watch(path.resolve(__dirname, '{esm,lib}/**/*.{js,map}'))
@@ -14,16 +17,18 @@ chokidar
     const match = source.match(/fab\/build\/(esm|lib)\/([\w-]+)/)
     if (match) {
       const [_, target, pkg] = match
-      // console.log(source)
       const from = path.join(__dirname, target, pkg, 'src')
-      // console.log(from)
       const built_path = path.relative(from, source)
-      // console.log({ built_path })
-      const target_path = path.join(package_dir, pkg, target, built_path)
-      // console.log({ target_path })
+      const target_file = path.join(pkg, target, built_path)
+      const target_path = path.join(package_dir, target_file)
       fs.ensureFile(target_path).then(() =>
         fs.copyFile(source, target_path).then(() => {
-          console.log(`✅ ${target_path}`)
+          if (target_path.match(/\/lib\/|\.map$/)) return
+          if (!seen_once.has(target_path)) {
+            seen_once.add(target_path)
+          } else {
+            console.log(`  ${chalk.green('✔')} ${chalk.gray(target_file)}`)
+          }
         })
       )
     } else {
