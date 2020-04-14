@@ -255,7 +255,7 @@ export default class Deployer {
         `Also found the following ${type}-compatible hosts configured:
         🖤${rejected_providers.join('\n')}🖤`
       )
-    log(`Use the 💛--${type}-host💛 to override this.\n`)
+    log(`Use the 💛--${type}-host💛 argument to override this.\n`)
 
     return chosen_provider
   }
