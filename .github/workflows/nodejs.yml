@@ -44,25 +44,31 @@ jobs:
         yarn
       env:
         CI: true
-    - name: "E2E: paths-exist"
+    - name: "E2E: Paths correctly set up"
       run: |
         cd tests
         yarn test paths-exist
       env:
         CI: true
-    - name: "E2E: cli-errors"
+    - name: "E2E: CLI reports errors correctly"
       run: |
         cd tests
         yarn test cli-errors
       env:
         CI: true
-    - name: "E2E: create-react-app"
+    - name: "E2E: Create React App"
       run: |
         cd tests
         yarn test create-react-app
       env:
         CI: true
-    - name: "E2E: nextjs"
+    - name: "E2E: NextJS"
+      run: |
+        cd tests
+        yarn test nextjs
+      env:
+        CI: true
+    - name: "E2E: Deploying to CF Workers, AWS Lambda & S3"
       run: |
         cd tests
         yarn test nextjs
