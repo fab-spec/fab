@@ -1,5 +1,11 @@
 import { ServeHtmlArgs, ServeHtmlMetadata, ServerHtml } from './types'
-import { FabPluginRuntime, matchPath, FabResponderArgs, FabSettings } from '@fab/core'
+import {
+  FabPluginRuntime,
+  matchPath,
+  FabResponderArgs,
+  FabSettings,
+  NO_RESPONSE_STATUS_CODE,
+} from '@fab/core'
 import mustache from 'mustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
@@ -20,6 +26,7 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
 
   const { htmls, resolved_fallback } = metadata.serve_html
   const writer = new mustache.Writer()
+  const error_page = matchPath(htmls, '/404')
 
   function render(html: ServerHtml, settings: FabSettings) {
     const replacements: { [token: string]: string } = {
@@ -40,7 +47,7 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
     )
 
     return new Response(rendered, {
-      status: 200,
+      status: html === error_page ? 404 : 200,
       statusText: 'OK',
       headers: {
         'Content-Type': 'text/html',
@@ -48,7 +55,7 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
     })
   }
 
-  return async function({ url, settings }: FabResponderArgs) {
+  return async function responder({ url, settings }: FabResponderArgs) {
     const { pathname } = url
 
     const html = matchPath(htmls, pathname)
@@ -56,15 +63,23 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
       return render(html, settings)
     }
 
-    if (resolved_fallback) {
+    if (resolved_fallback)
       return {
         async interceptResponse(response: Response) {
-          return response.status === 404
+          return response.status === NO_RESPONSE_STATUS_CODE
             ? render(htmls[resolved_fallback], settings)
             : response
         },
       }
-    }
+
+    if (error_page)
+      return {
+        async interceptResponse(response: Response) {
+          return response.status === NO_RESPONSE_STATUS_CODE
+            ? render(error_page, settings)
+            : response
+        },
+      }
 
     return undefined
   }

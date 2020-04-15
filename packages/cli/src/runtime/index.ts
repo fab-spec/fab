@@ -6,8 +6,9 @@ import {
   FabPluginRuntime,
   FabMetadata,
   FabSpecMetadata,
+  NO_RESPONSE_STATUS_CODE,
 } from '@fab/core'
-import { render as render_404 } from './404'
+import { render as final_responder } from './final_responder'
 
 /*
  * Here, we import "files" that are going to be injected by the Rollup build.
@@ -21,14 +22,24 @@ import { fab_metadata } from 'fab-metadata'
 import { production_settings } from 'production-settings'
 import { Directive, ResponseInterceptor } from '@fab/core'
 
-const pipeline = [...(runtimes as FabPluginRuntime[]), render_404].map((runtime) =>
+const pipeline = [...(runtimes as FabPluginRuntime[]), final_responder].map((runtime) =>
   runtime({}, (fab_metadata as FabMetadata).plugin_metadata)
 )
 
 export const render: FabSpecRender = async (request: Request, settings: FabSettings) => {
   const url = new URL(request.url)
 
-  const response_interceptors: ResponseInterceptor[] = []
+  // If no middleware catches the 444 No Response, render a very generic 404 page
+  const final_interceptor = async (response: Response) =>
+    response.status === NO_RESPONSE_STATUS_CODE
+      ? new Response(`No resource found at ${url.pathname}\n`, {
+          status: 404,
+          statusText: 'Not Found',
+          headers: {},
+        })
+      : response
+
+  const response_interceptors: ResponseInterceptor[] = [final_interceptor]
   const context: { [key: string]: any } = {}
 
   let chained_request = request

@@ -27,7 +27,11 @@ chokidar
           if (!seen_once.has(target_path)) {
             seen_once.add(target_path)
           } else {
-            console.log(`  ${chalk.green('✔')} ${chalk.gray(target_file)}`)
+            console.log(
+              `  ${chalk.green('✔')} ${chalk.gray(
+                target_file.replace(/\/esm\//, '/src/')
+              )}`
+            )
           }
         })
       )

@@ -1,7 +1,7 @@
 // @ts-ignore
 import __generated from 'generated-nextjs-renderers.js'
 import { pathToRegexp } from 'path-to-regexp'
-import { FabRequestResponder } from '@fab/core'
+import { FabRequestResponder, NO_RESPONSE_STATUS_CODE } from '@fab/core'
 
 const { renderers, MockExpressResponse } = __generated
 
@@ -85,7 +85,7 @@ export function runtime() {
 
     return {
       async interceptResponse(response: Response) {
-        return response.status === 404
+        return response.status === NO_RESPONSE_STATUS_CODE
           ? await invokeRenderer(errorRenderer as Renderer, request, pathname, protocol)
           : response
       },
