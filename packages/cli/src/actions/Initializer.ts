@@ -506,7 +506,7 @@ export default class Initializer {
 
   /* Make sure the repo is OK */
   private static async finalChecks(root_dir: string, package_json: PackageJson) {
-    const deprecated = ['@fab/static', '@fab/compile', '@fab/nextjs']
+    const deprecated = ['@fab/static', '@fab/compile', '@fab/nextjs', '@fab/serve']
     const deps = new Set([
       ...Object.keys(package_json.dependencies || {}),
       ...Object.keys(package_json.devDependencies || {}),
