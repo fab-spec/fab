@@ -25,7 +25,7 @@
     "build": "yarn build:cjs",
     "build:cjs": "tsc --module commonjs --outDir lib",
     "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
-    "clean": "rm -rf lib",
+    "clean": "rm -rf esm lib package-lock.json",
     "coverage": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "oclif:generate": "oclif-dev manifest && oclif-dev readme",
     "prepack": "npm run clean && npm run build && npm run oclif:generate",
