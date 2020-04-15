@@ -18,7 +18,7 @@ describe('Create React App E2E Test', () => {
       await shell(`git clean -df`, { cwd })
     } else {
       // Create a new CRA project inside
-      await shell(`yarn create next-app .`, { cwd })
+      await shell(`yarn create next-app . -e`, { cwd })
       // Skip git stuff on Github, it's only for rerunning locally
       if (!process.env.GITHUB_WORKSPACE) {
         await shell(`git init`, { cwd })
