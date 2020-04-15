@@ -1,4 +1,10 @@
-import { PluginArgs, PluginMetadata, FabPluginRuntime, ResponseInterceptor , NO_RESPONSE_STATUS_CODE} from '@fab/core'
+import {
+  PluginArgs,
+  PluginMetadata,
+  FabPluginRuntime,
+  ResponseInterceptor,
+  NO_RESPONSE_STATUS_CODE,
+} from '@fab/core'
 
 export const render: FabPluginRuntime<PluginArgs, PluginMetadata> = (
   args: PluginArgs,
