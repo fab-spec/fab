@@ -8,6 +8,7 @@ const EXAMPLES = {
   HTML: '< some contents >',
   CSS: 'body { font-family: Comic Sans MS; font-size: 48px; }',
 }
+const css_hash = hasha(EXAMPLES.CSS, { algorithm: 'md5' }).slice(0, 9)
 
 describe('Build time', () => {
   it('should be a function', () => {
@@ -59,7 +60,6 @@ describe('Build time', () => {
       '/index.html': EXAMPLES.HTML,
       '/main.css': EXAMPLES.CSS,
     }
-    const css_hash = hasha(EXAMPLES.CSS, { algorithm: 'md5' }).slice(0, 9)
     const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
     await build(
       {
@@ -116,6 +116,39 @@ describe('Build time', () => {
       '/main.e5f6a7b8.css': {
         asset_path: `/_assets/main.e5f6a7b8.css`,
         immutable: true,
+      },
+    })
+  })
+
+  it('should handle files without any extension', async () => {
+    const files = {
+      '/_index': EXAMPLES.HTML,
+      '/_main': EXAMPLES.CSS,
+    }
+    const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
+    await build(
+      {
+        'inline-threshold': EXAMPLES.CSS.length - 1,
+        'treat-as-immutable': /\.[0-9A-F]{8,}\./i,
+      },
+      proto_fab
+    )
+
+    expect(proto_fab._getEntries()).to.deep.equal([
+      [`/_assets/_main_${css_hash}`, EXAMPLES.CSS],
+    ])
+    expect(proto_fab.metadata.rewire_assets.inlined_assets).to.deep.equal({
+      '/_index': {
+        contents: EXAMPLES.HTML,
+        content_type: 'text/html; charset=utf-8',
+        immutable: false,
+      },
+    })
+
+    expect(proto_fab.metadata.rewire_assets.renamed_assets).to.deep.equal({
+      '/_main': {
+        asset_path: `/_assets/_main_${css_hash}`,
+        immutable: false,
       },
     })
   })
