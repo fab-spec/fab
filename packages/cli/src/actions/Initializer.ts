@@ -24,9 +24,9 @@ type FrameworkInfo = {
 
 const DEFAULT_DEPS = ['@fab/cli', '@fab/server']
 const GITIGNORE_LINES = ['/.fab', '/fab.zip']
-const GUESSED_OUTPUT_DIRS = ['build', 'dist', 'public']
+const GUESSED_OUTPUT_DIRS = ['build', 'dist', 'public', 'out']
 const OUTPUT_DIR_EXAMPLES =
-  GUESSED_OUTPUT_DIRS.slice(0, GUESSED_OUTPUT_DIRS.length - 2)
+  GUESSED_OUTPUT_DIRS.slice(0, GUESSED_OUTPUT_DIRS.length - 1)
     .map((dir) => `💛${dir}💛`)
     .join(', ') + ` or 💛${GUESSED_OUTPUT_DIRS.slice(-1)}💛`
 
@@ -336,7 +336,7 @@ export default class Initializer {
 
     const output_dir = await promptWithDefault(
       `Where is your project built into?`,
-      `(usually something like ${OUTPUT_DIR_EXAMPLES})`,
+      `(e.g. ${OUTPUT_DIR_EXAMPLES})`,
       found_output_dir,
       yes
     )
@@ -506,7 +506,7 @@ export default class Initializer {
 
   /* Make sure the repo is OK */
   private static async finalChecks(root_dir: string, package_json: PackageJson) {
-    const deprecated = ['@fab/static', '@fab/compile', '@fab/nextjs']
+    const deprecated = ['@fab/static', '@fab/compile', '@fab/nextjs', '@fab/serve']
     const deps = new Set([
       ...Object.keys(package_json.dependencies || {}),
       ...Object.keys(package_json.devDependencies || {}),
