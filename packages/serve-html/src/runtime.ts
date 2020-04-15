@@ -1,14 +1,14 @@
-import { ServeHtmlArgs, ServeHtmlMetadata, ServerHtml } from './types'
+import { ServeHtmlArgs, ServeHtmlMetadata } from './types'
 import {
   FabPluginRuntime,
-  matchPath,
   FabResponderArgs,
   FabSettings,
+  matchPath,
   NO_RESPONSE_STATUS_CODE,
 } from '@fab/core'
-import mustache from 'mustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
+import { ITokens } from 'micromustache'
 
 // Todo: this should be part of the context.
 // Maybe it should be optional though, with this as the fallback.
@@ -25,10 +25,9 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
   const { injections = DEFAULT_INJECTIONS } = args
 
   const { htmls, resolved_fallback } = metadata.serve_html
-  const writer = new mustache.Writer()
   const error_page = matchPath(htmls, '/404')
 
-  function render(html: ServerHtml, settings: FabSettings) {
+  function render(html: ITokens, settings: FabSettings) {
     const replacements: { [token: string]: string } = {
       OPEN_TRIPLE: '{{{',
       OPEN_DOUBLE: '{{',
@@ -38,13 +37,7 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
       Object.assign(replacements, generateReplacements(injections.env, settings))
     }
 
-    const rendered = writer.renderTokens(
-      // @ts-ignore
-      html,
-      new mustache.Context(replacements),
-      null,
-      null
-    )
+    const rendered = stringify(html, replacements)
 
     return new Response(rendered, {
       status: html === error_page ? 404 : 200,
@@ -83,4 +76,17 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
 
     return undefined
   }
+}
+
+function stringify(tokens: ITokens, values: { [key: string]: string }): string {
+  const { strings, varNames } = tokens
+  let ret = ''
+  const { length } = varNames
+  for (let i = 0; i < length; i++) {
+    ret += strings[i]
+    ret += values[varNames[i]]
+  }
+
+  ret += strings[length]
+  return ret
 }

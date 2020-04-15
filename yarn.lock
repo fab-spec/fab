@@ -1275,11 +1275,6 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.7.tgz#315d570ccb56c53452ff8638738df60726d5b6ea"
   integrity sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
 
-"@types/mustache@^0.8.32":
-  version "0.8.32"
-  resolved "https://registry.yarnpkg.com/@types/mustache/-/mustache-0.8.32.tgz#7db3b81f2bf450bd38805f596d20eca97c4ed595"
-  integrity sha512-RTVWV485OOf4+nO2+feurk0chzHkSjkjALiejpHltyuMf/13fGymbbNNFrSKdSSUg1TIwzszXdWsVirxgqYiFA==
-
 "@types/nanoid@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@types/nanoid/-/nanoid-2.1.0.tgz#41edfda78986e9127d0dc14de982de766f994020"
@@ -6084,6 +6079,11 @@ micromatch@^4.0.2:
     braces "^3.0.1"
     picomatch "^2.0.5"
 
+micromustache@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/micromustache/-/micromustache-7.1.0.tgz#53eebe9a4fe0ac9b9990535e090f797e2934d5e1"
+  integrity sha512-DXUYQI8qPsfOx3AkiGzyOx0cn7NgCqFYsV0Asa/ZQUna2Er4mwpAdA9iANA92WYvUowHf+jBsVvIZxiRe1z1Ig==
+
 miller-rabin@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/miller-rabin/-/miller-rabin-4.0.1.tgz#f080351c865b0dc562a8462966daa53543c78a4d"
@@ -6348,11 +6348,6 @@ multimatch@^3.0.0:
     array-union "^1.0.2"
     arrify "^1.0.1"
     minimatch "^3.0.4"
-
-mustache@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/mustache/-/mustache-3.2.0.tgz#1c68e0bf77817a92e8a9216e35c53bbb342345f6"
-  integrity sha512-n5de2nQ1g2iz3PO9cmq/ZZx3W7glqjf0kavThtqfuNlZRllgU2a2Q0jWoQy3BloT5A6no7sjCTHBVn1rEKjx1Q==
 
 mute-stream@0.0.7:
   version "0.0.7"

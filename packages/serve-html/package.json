@@ -32,10 +32,9 @@
   "dependencies": {
     "@fab/core": "0.0.7-alpha.29",
     "@types/cheerio": "^0.22.15",
-    "@types/mustache": "^0.8.32",
     "@types/node": "^12.12.14",
     "cheerio": "^1.0.0-rc.3",
-    "mustache": "^3.2.0"
+    "micromustache": "^7.1.0"
   },
   "publishConfig": {
     "access": "public"
