@@ -25,9 +25,9 @@ jobs:
         yarn global add @fab/cli
     - name: Setup e2e tests
       run: |
-        yarn link-all
         cd tests
         yarn
+        yarn add @fab/cli
       env:
         CI: true
     - name: "E2E: paths-exist"
