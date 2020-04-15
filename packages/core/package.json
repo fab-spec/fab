@@ -1,6 +1,6 @@
 {
   "name": "@fab/core",
-  "version": "0.0.7-alpha.27",
+  "version": "0.0.7-alpha.28",
   "private": false,
   "description": "Common code for all FAB projects",
   "homepage": "https://github.com/fab-spec/fab",
@@ -21,7 +21,7 @@
     "build:cjs": "tsc --module commonjs --outDir lib",
     "build:esm": "tsc --module esnext --outDir esm",
     "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
-    "clean": "rm -rf esm lib",
+    "clean": "rm -rf esm lib package-lock.json",
     "prepack": "npm run clean && npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },

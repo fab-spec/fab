@@ -1,6 +1,6 @@
 {
   "name": "@fab/server",
-  "version": "0.0.7-alpha.27",
+  "version": "0.0.7-alpha.28",
   "description": "NodeJS FAB Server",
   "keywords": [
     "fab"
@@ -24,13 +24,13 @@
     "build:cjs": "tsc --module commonjs --outDir lib",
     "build:esm": "tsc --module esnext --outDir esm",
     "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
-    "clean": "rm -rf esm lib",
+    "clean": "rm -rf esm lib package-lock.json",
     "prepack": "npm run clean && npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.27",
-    "@fab/sandbox-node-vm": "0.0.7-alpha.27",
+    "@fab/core": "0.0.7-alpha.28",
+    "@fab/sandbox-node-vm": "0.0.7-alpha.28",
     "@fly/v8env": "^0.54.0",
     "@types/concat-stream": "^1.6.0",
     "@types/express": "^4.17.2",

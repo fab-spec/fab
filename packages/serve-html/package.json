@@ -1,6 +1,6 @@
 {
   "name": "@fab/serve-html",
-  "version": "0.0.7-alpha.27",
+  "version": "0.0.7-alpha.28",
   "description": "Module to render static HTML files with FAB injections",
   "keywords": [
     "fab"
@@ -25,12 +25,12 @@
     "build:cjs": "tsc --module commonjs --outDir lib",
     "build:esm": "tsc --module esnext --outDir esm",
     "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
-    "clean": "rm -rf esm lib",
+    "clean": "rm -rf esm lib package-lock.json",
     "prepack": "npm run clean && npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.27",
+    "@fab/core": "0.0.7-alpha.28",
     "@types/cheerio": "^0.22.15",
     "@types/mustache": "^0.8.32",
     "@types/node": "^12.12.14",

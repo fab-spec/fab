@@ -1,6 +1,6 @@
 {
   "name": "@fab/deployer-aws-lambda",
-  "version": "0.0.7-alpha.27",
+  "version": "0.0.7-alpha.28",
   "description": "Packages and deploys FABs to AWS Lambda@Edge",
   "keywords": [
     "fab"
@@ -25,12 +25,12 @@
     "build:cjs": "tsc --module commonjs --outDir lib",
     "build:esm": "tsc --module esnext --outDir esm",
     "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
-    "clean": "rm -rf esm lib",
+    "clean": "rm -rf esm lib package-lock.json",
     "prepack": "npm run clean && npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.27",
+    "@fab/core": "0.0.7-alpha.28",
     "@types/nanoid": "^2.1.0",
     "@types/node": "^12.12.14",
     "deterministic-zip": "^1.1.0",

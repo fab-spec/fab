@@ -1,6 +1,6 @@
 {
   "name": "@fab/sandbox-node-vm",
-  "version": "0.0.7-alpha.27",
+  "version": "0.0.7-alpha.28",
   "description": "FAB runtime sandbox using Node's 'vm'",
   "keywords": [
     "fab"
@@ -24,11 +24,11 @@
     "build:cjs": "tsc --module commonjs --outDir lib",
     "build:esm": "tsc --module esnext --outDir esm",
     "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
-    "clean": "rm -rf esm lib",
+    "clean": "rm -rf esm lib package-lock.json",
     "prepack": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.27",
+    "@fab/core": "0.0.7-alpha.28",
     "cross-fetch": "^3.0.4"
   },
   "publishConfig": {

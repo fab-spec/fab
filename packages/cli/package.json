@@ -1,6 +1,6 @@
 {
   "name": "@fab/cli",
-  "version": "0.0.7-alpha.27",
+  "version": "0.0.7-alpha.28",
   "description": "The CLI entry-point for the FAB ecosystem",
   "keywords": [
     "oclif"
@@ -25,7 +25,7 @@
     "build": "yarn build:cjs",
     "build:cjs": "tsc --module commonjs --outDir lib",
     "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
-    "clean": "rm -rf lib",
+    "clean": "rm -rf esm lib package-lock.json",
     "coverage": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "oclif:generate": "oclif-dev manifest && oclif-dev readme",
     "prepack": "npm run clean && npm run build && npm run oclif:generate",
@@ -34,8 +34,8 @@
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.27",
-    "@fab/server": "0.0.7-alpha.27",
+    "@fab/core": "0.0.7-alpha.28",
+    "@fab/server": "0.0.7-alpha.28",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
