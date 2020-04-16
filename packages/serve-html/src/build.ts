@@ -1,7 +1,7 @@
 import { ProtoFab } from '@fab/core'
 import { ServeHtmlArgs, ServeHtmlMetadata, ServerHtmls } from './types'
 import cheerio from 'cheerio'
-import mustache from 'mustache'
+import { tokenize } from 'micromustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { addInjectionPoint } from './injections/env'
 import { _log, InvalidConfigError } from '@fab/cli'
@@ -26,7 +26,7 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
         contents
           .toString('utf8')
           .replace(/{{{|{{/g, (match) =>
-            match.length === 3 ? `{{{ OPEN_TRIPLE }}}` : `{{{ OPEN_DOUBLE }}}`
+            match.length === 3 ? `{{ OPEN_TRIPLE }}` : `{{ OPEN_DOUBLE }}`
           )
       )
 
@@ -36,7 +36,12 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
       // $('script').attr('nonce', '{{ FAB_NONCE }}')
 
       const template = $.html()
-      htmls[filename] = mustache.parse(template)
+      htmls[filename] = tokenize(template)
+      // console.log(filename)
+      // console.log(htmls[filename].strings.map(str => str.slice(0, 100)))
+      // console.log(htmls[filename].varNames)
+      log(`💚  ✔💚 🖤${filename}🖤`)
+      // await new Promise((res) => setTimeout(res, 200))
     }
   }
 

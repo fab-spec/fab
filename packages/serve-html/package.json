@@ -1,6 +1,6 @@
 {
   "name": "@fab/serve-html",
-  "version": "0.0.7-alpha.28",
+  "version": "0.0.7-alpha.30",
   "description": "Module to render static HTML files with FAB injections",
   "keywords": [
     "fab"
@@ -30,12 +30,11 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.28",
+    "@fab/core": "0.0.7-alpha.30",
     "@types/cheerio": "^0.22.15",
-    "@types/mustache": "^0.8.32",
     "@types/node": "^12.12.14",
     "cheerio": "^1.0.0-rc.3",
-    "mustache": "^3.2.0"
+    "micromustache": "^7.1.0"
   },
   "publishConfig": {
     "access": "public"

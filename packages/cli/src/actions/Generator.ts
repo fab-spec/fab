@@ -17,9 +17,9 @@ export class Generator {
     const invalid_reason = proto_fab.errorsPreventingCompilation()
     if (invalid_reason) {
       throw new BuildFailedError(`FAB is not ready for compilation.
-${invalid_reason}
-You might need to add @fab/rewire-assets to your 'build' config. See https://fab.dev/packages/rewire-assets for more information about what this module is and why it's needed.
-`)
+        ${invalid_reason}
+        You might need to add @fab/rewire-assets to your 'build' config. See https://fab.dev/packages/rewire-assets for more information about what this module is and why it's needed.
+      `)
     }
 
     log.time(`Writing all files to .fab/build`)

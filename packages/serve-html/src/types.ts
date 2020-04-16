@@ -1,4 +1,5 @@
 import { PluginArgs, PluginMetadata } from '@fab/core'
+import { ITokens } from 'micromustache'
 
 export type EnvInjectionConfig = {
   name?: string
@@ -17,9 +18,8 @@ export interface ServeHtmlArgs extends PluginArgs {
   fallback?: string | boolean
 }
 
-export type ServerHtml = Array<Array<[string, string, number, number]>>
 export type ServerHtmls = {
-  [path: string]: ServerHtml
+  [path: string]: ITokens
 }
 export interface ServeHtmlMetadata extends PluginMetadata {
   serve_html: {

@@ -35,11 +35,13 @@ describe('Build time', () => {
     await build({}, proto_fab)
     const htmls = proto_fab.metadata.serve_html.htmls
     expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
-    expect(htmls['/index.html'].map((tokens) => tokens[1])).to.deep.equal([
-      '<html><head>',
-      'FAB_ENV_INJECTION',
-      '<title>HTML Test</title></head><body>here</body></html>',
-    ])
+    expect(htmls['/index.html']).to.deep.equal({
+      strings: [
+        '<html><head>',
+        '<title>HTML Test</title></head><body>here</body></html>',
+      ],
+      varNames: ['FAB_ENV_INJECTION'],
+    })
   })
 
   it(`should not make room for FAB_SETTINGS if 'env' isn't passed`, async () => {
@@ -56,9 +58,11 @@ describe('Build time', () => {
     )
     const htmls = proto_fab.metadata.serve_html.htmls
     expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
-    expect(htmls['/index.html'].map((tokens) => tokens[1])).to.deep.equal([
-      '<html><head><title>HTML Test</title></head><body>here</body></html>',
-    ])
+
+    expect(htmls['/index.html']).to.deep.equal({
+      strings: ['<html><head><title>HTML Test</title></head><body>here</body></html>'],
+      varNames: [],
+    })
   })
 
   it(`should explode if you try to use an injection it doesn't know about`, async () => {

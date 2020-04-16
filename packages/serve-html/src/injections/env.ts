@@ -3,7 +3,7 @@ import { DEFAULT_INJECTIONS } from '../constants'
 import { EnvInjectionConfig } from '../types'
 
 export function addInjectionPoint($: CheerioStatic) {
-  $('head').prepend('{{{ FAB_ENV_INJECTION }}}')
+  $('head').prepend('{{ FAB_ENV_INJECTION }}')
 }
 
 export function generateReplacements(config: EnvInjectionConfig, settings: FabSettings) {

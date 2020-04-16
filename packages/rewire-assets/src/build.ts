@@ -59,12 +59,11 @@ export async function build(
   const renamed_assets: RenamedAssets = {}
   for (const filename of to_rename) {
     const contents = proto_fab.files.get(filename)!
-    const hash = hasha(contents, { algorithm: 'md5' }).slice(0, 9)
     const immutable = !!immutable_regexp.exec(filename)
-    const extname = path.extname(filename)
-    const asset_path = `/_assets${
-      immutable ? filename : filename.slice(0, -1 * extname.length) + '.' + hash + extname
-    }`
+    const fingerprinted_name = immutable
+      ? filename
+      : getFingerprintedName(contents, filename)
+    const asset_path = `/_assets${fingerprinted_name}`
 
     renamed_assets[filename] = {
       asset_path,
@@ -77,4 +76,12 @@ export async function build(
   }
 
   proto_fab.metadata.rewire_assets = { inlined_assets, renamed_assets }
+}
+
+const getFingerprintedName = (contents: Buffer, filename: string) => {
+  const hash = hasha(contents, { algorithm: 'md5' }).slice(0, 9)
+  const extname = path.extname(filename)
+  return extname
+    ? `${filename.slice(0, -1 * extname.length)}.${hash}${extname}`
+    : `${filename}_${hash}`
 }
