@@ -7,6 +7,7 @@ import { BuildConfig } from '@fab/core'
 export enum KnownFrameworkTypes {
   CreateReactApp,
   Next9,
+  Gatsby,
 }
 
 export type FrameworkInfo = {
@@ -63,6 +64,23 @@ export const Frameworks: {
       '@fab/rewire-assets': {},
     },
   },
+  [KnownFrameworkTypes.Gatsby]: {
+    name: 'Gatbsy JS',
+    scripts: {
+      'build:fab': 'npm run build && npm run fab:build',
+      'fab:build': 'fab build',
+      'fab:serve': 'fab serve fab.zip',
+    },
+    plugins: {
+      '@fab/input-static': {
+        dir: 'public',
+      },
+      '@fab/serve-html': {
+        fallback: false,
+      },
+      '@fab/rewire-assets': {},
+    },
+  },
   [KnownFrameworkTypes.Next9]: {
     name: 'NextJS v9+',
     scripts: {
@@ -106,7 +124,9 @@ export const Frameworks: {
     },
   },
 }
+
 export const FRAMEWORK_NAMES = Object.values(Frameworks).map((f) => f.name)
+
 export const BASE_CONFIG: string = `// For more information, see https://fab.dev/kb/configuration
 {
   plugins: {

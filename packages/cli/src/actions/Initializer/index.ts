@@ -231,6 +231,8 @@ export default class Initializer {
       return KnownFrameworkTypes.Next9
     } else if (await this.isCreateReactApp(package_json)) {
       return KnownFrameworkTypes.CreateReactApp
+    } else if (await this.isGatsby(package_json)) {
+      return KnownFrameworkTypes.Gatsby
     }
     return null
   }
@@ -267,6 +269,14 @@ export default class Initializer {
     }
 
     return true
+  }
+
+  static async isGatsby(package_json: PackageJson) {
+    const gatsby_dep =
+      package_json.dependencies?.['gatsby'] || package_json.devDependencies?.['gatsby']
+    if (!gatsby_dep) return false
+
+    return package_json.scripts?.build?.match(/gatsby build/)
   }
 
   private static async installDependencies(
