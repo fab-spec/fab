@@ -11,7 +11,7 @@
     "build:watch:esm": "yarn tsc --module esnext --outDir build/esm --watch --preserveWatchOutput --pretty | grep .",
     "build:watch:cjs": "yarn tsc --module commonjs --outDir build/lib --watch --preserveWatchOutput > /dev/null",
     "build:watch": "run-p build:watch:*",
-    "clean": "lerna run clean --parallel",
+    "clean": "rm -rf build/{esm,lib} && lerna run clean --parallel",
     "link-all": "lerna exec -- yarn link",
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
     "test": "lerna run test --stream --parallel",
