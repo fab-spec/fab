@@ -35,7 +35,7 @@ const copyExampleReadmeToDocs = (source) => {
   const title = contentWithoutFrontMatter
     .split('\n')[0]
     .trim()
-    .replace(/^#+/, '')
+    .replace(/^#+|with FABs$/g, '')
     .trim()
   const newContent = `---
 name: '${title}'

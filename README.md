@@ -20,10 +20,10 @@ A bit like a Docker container, but specifically for frontend, they **unify stati
 Because FABs include [server-side JavaScript] capabilities but deploy as easily as [uploading a ZIP file], you can start to add server-side logic without the complexity of managing servers. Making it easy to do things like:
 
 - Deploy a [server-rendered NextJS app to Cloudflare workers](https://fab.dev/examples/nextjs-on-cloudflare-workers)
-- Add server-side logic to a Create React App project, without ejecting
+- [Add redirect rules to a Create React App project](https://), without ejecting
+- Use Gatsby to generate a logged-in vs logged-out homepage and [switch which one is served] depending on a cookie
 - Guard your application against unauthenticated users
 - Deploy every commit to a unique URL to share progress with colleagues
-- Use Gatsby to generate a logged-in vs logged-out homepage and switch which one is served depending on cookie
 
 ## The FAB format
 
