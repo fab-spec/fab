@@ -7,7 +7,7 @@
 
 Frontend Application Bundles (💎 FABs) are a **bundle format for frontend applications**.
 
-A bit like a Docker container, but specifically for frontend, they **unify static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in a single format, allowing you to separate _what you're building_ from _where you're planning to host it_.
+A bit like a Docker container, but specifically for frontend, they **unify server-side JavaScript with static sites & single page applications (SPAs)** in a single format, allowing you to separate _what you're building_ from _where you're planning to host it_.
 
 <img width="100%" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/63136503-b5e46080-c015-11e9-9f69-c974e11d9528.png"/>
 
@@ -20,16 +20,34 @@ A bit like a Docker container, but specifically for frontend, they **unify stati
 Because FABs include [server-side JavaScript] capabilities but deploy as easily as [uploading a ZIP file], you can start to add server-side logic without the complexity of managing servers. Making it easy to do things like:
 
 - Deploy a [server-rendered NextJS app to Cloudflare workers](https://fab.dev/examples/nextjs-on-cloudflare-workers)
-- [Add redirect rules to a Create React App project](https://), without ejecting
-- Use Gatsby to generate a logged-in vs logged-out homepage and [switch which one is served] depending on a cookie
-- Guard your application against unauthenticated users
-- Deploy every commit to a unique URL to share progress with colleagues
+- [Add redirect rules to a Create React App project](https://fab.dev/examples/add-redirect-rules-to-create-react-app), without ejecting
+- Use Gatsby to generate a logged-in vs logged-out homepage and [switch which one is served](https://fab.dev/examples/switch-gatsby-landing-page) depending on a cookie
+- [Guard your application](https://fab.dev/examples/preflight-check-authentication) against unauthenticated users
+- Deploy every commit to a unique URL to [share progress with colleagues](https://fab.dev/examples/share-progress-with-colleagues)
+- ...and more
+
+> 👉 Head to [fab.dev/examples](https://fab.dev/examples) for the full list of suggested use-cases, or [join our Discord channel](https://discord.gg/Qvj3pJY) to suggest your own.
+
+## What frameworks & projects are supported?
+
+At the moment, the FAB project is focussing on supporting the following projects, to try to give the best possible experience for the most users.
+
+  _ Client-side rendered React (e.g. Create React App & friends)
+  _ Server-side, client-side & static pre-rendered NextJS
+  _ VueJS, AngularJS, Svelte etc that compile to static assets
+  _ Anything else that's fully static (i.e. any app that can be hosted on Netlify or S3) \* Custom server-side rendered applications, with some conversion.
+  
+That said, any server-side application that runs in (or compiles to) JavaScript, plus any amount of client-side code, should be theoretically able to be supported. If your application is not covered by the above list, it's worth reading the [FAB project goals] and then [getting involved] to make sure your needs will be supported in future.
 
 ## The FAB format
 
-<p align="right">
-👉 <em>Read more about the <a href="https://fab.dev/kb/fab-structure">FAB Structure</a></em>.
-</p>
+A FAB is a special ZIP file with two components, a single server-side JavaScript file, and a folder full of assets.
+
+[ Diagram here ]
+
+From a fully static site, single-page app, to a fully server-rendered JS site, the FAB tooling compiles your application down to these two primitives.
+
+> 👉 Read more about the FAB structure at [fab.dev/kb/fab-structure](https://fab.dev/kb/fab-structure).
 
 ### What is a Frontend Application?
 
