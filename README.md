@@ -9,13 +9,23 @@ Frontend Application Bundles (💎 FABs) are a **bundle format for frontend appl
 
 A bit like a Docker container, but specifically for frontend, they **unify static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in a single format, allowing you to separate _what you're building_ from _where you're planning to host it_.
 
-## Get started
+<img width="100%" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/63136503-b5e46080-c015-11e9-9f69-c974e11d9528.png"/>
 
-Head to [https://fab.dev/guides/getting-started](fab.dev/guides/getting-started) to start building your own FABs, or read on for more information about the project.
+> **Get started**
+>
+> 👉 Head to [fab.dev/guides/getting-started](https://fab.dev/guides/getting-started) to start building your own FABs, or read on for more information about the project.
+
+## What can I can use FABs for?
+
+Because FABs include [server-side JavaScript] capabilities but deploy as easily as [uploading a ZIP file], you can start to add server-side logic without the complexity of managing servers. Making it easy to do things like:
+
+- Deploy a [server-rendered NextJS app to Cloudflare workers](https://fab.dev/examples/nextjs-on-cloudflare-workers)
+- Add server-side logic to a Create React App project, without ejecting
+- Guard your application against unauthenticated users
+- Deploy every commit to a unique URL to share progress with colleagues
+- Use Gatsby to generate a logged-in vs logged-out homepage and switch which one is served depending on cookie
 
 ## The FAB format
-
-<img width="100%" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/63136503-b5e46080-c015-11e9-9f69-c974e11d9528.png"/>
 
 <p align="right">
 👉 <em>Read more about the <a href="https://fab.dev/kb/fab-structure">FAB Structure</a></em>.
