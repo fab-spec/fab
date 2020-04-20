@@ -5,23 +5,21 @@
 [![Join discussion on Discord](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
 [![Financial Contributors on Open Collective](https://opencollective.com/fab/all/badge.svg?label=financial+contributors)](https://opencollective.com/fab)
 
-Frontend Application Bundles (💎 FABs) are a **bundle format for frontend applications**. A bit like a Docker container, but specifically for frontend, they **unify static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in a single format, allowing you to separate _what you're building_ from _where you're planning to host it_.
+Frontend Application Bundles (💎 FABs) are a **bundle format for frontend applications**.
+
+A bit like a Docker container, but specifically for frontend, they **unify static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in a single format, allowing you to separate _what you're building_ from _where you're planning to host it_.
 
 ## Get started
 
-To try building a FAB from your own project, Head to [https://fab.dev/guides/getting-started](https://fab.dev/guides/getting-started).
+Head to [https://fab.dev/guides/getting-started](fab.dev/guides/getting-started) to start building your own FABs, or read on for more information about the project.
 
-Jump to our
-
-## Overview
+## The FAB format
 
 <img width="100%" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/63136503-b5e46080-c015-11e9-9f69-c974e11d9528.png"/>
 
 <p align="right">
 👉 <em>Read more about the <a href="https://fab.dev/kb/fab-structure">FAB Structure</a></em>.
 </p>
-
-## The FAB format
 
 ### What is a Frontend Application?
 
