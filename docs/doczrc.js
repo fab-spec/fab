@@ -9,7 +9,11 @@ export default {
     'Home',
     {
       name: 'Guides',
-      menu: ['Getting Started'],
+      menu: ['Getting Started', 'Deploying', 'Giving Feedback', 'Deploying'],
+    },
+    {
+      name: 'Examples',
+      menu: ['NextJS on Cloudflare Workers'],
     },
     {
       name: 'Knowledge Base',
