@@ -6,7 +6,7 @@ on:
       - next
 
 jobs:
-  build:
+  public_package_build:
 
     runs-on: ubuntu-latest
 
