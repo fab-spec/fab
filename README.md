@@ -1,16 +1,17 @@
-<h3 align="center"><br/><img width="461" alt="fab logo wide" src="https://user-images.githubusercontent.com/23264/53997145-306ba300-418f-11e9-91d0-b44e6df85d4c.png"/></h3>
+<h3 align="center"><a href="https://github.com/fab-spec/fab"><img width="461" alt="Frontend Application Bundles" src={require('../assets/FAB Stencil Logo Wide.png')}/></a></h3>
 
-[![Financial Contributors on Open Collective](https://opencollective.com/fab/all/badge.svg?label=financial+contributors)](https://opencollective.com/fab) [![Join discussion on Discord](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
+[![npm](https://img.shields.io/npm/v/@fab/cli)](https://www.npmjs.com/package/@fab/cli)
+[![GitHub Workflow Status](https://github.com/fab-spec/fab/workflows/FAB%20CI/badge.svg)](https://github.com/fab-spec/fab/actions)
+[![Join discussion on Discord](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
+[![Financial Contributors on Open Collective](https://opencollective.com/fab/all/badge.svg?label=financial+contributors)](https://opencollective.com/fab)
 
-**NOTE: these docs are for the `next` branch, which is in public pre-release, and active development.** For the docs related to FAB v0, (e.g. standalone tools like `@fab/static` & `@fab/compile`) which are now in maintenance mode, see [fab-docs--production--v0.branch.linc-preview.sh](https://fab-docs--production--v0.branch.linc-preview.sh/).
+Frontend Application Bundles (💎 FABs) are a **bundle format for frontend applications**. A bit like a Docker container, but specifically for frontend, they **unify static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in a single format, allowing you to separate _what you're building_ from _where you're planning to host it_.
 
-# FAB Specification
+## Get started
 
-💎 FABs are a **compile target for frontend applications**.
+To try building a FAB from your own project, Head to [https://fab.dev/guides/getting-started](https://fab.dev/guides/getting-started).
 
-They unify **static sites, single page applications (SPAs) as well as server-rendered JavaScript UIs** in one bundle format, allowing instant deployment to a wide range of hosting platforms. Its goal is to do for frontend applications what Docker has done for infrastructure—a standard for interoperable tooling.
-
-https://github.com/fab-spec/fab
+Jump to our
 
 ## Overview
 
@@ -19,10 +20,6 @@ https://github.com/fab-spec/fab
 <p align="right">
 👉 <em>Read more about the <a href="https://fab.dev/kb/fab-structure">FAB Structure</a></em>.
 </p>
-
-## Getting started
-
-Want to try building a FAB from your project? Head to [https://fab.dev/guides/getting-started](https://fab.dev/guides/getting-started).
 
 ## The FAB format
 
@@ -75,3 +72,9 @@ Support this project with your organization. Your logo will show up here with a 
 <a href="https://opencollective.com/fab/organization/7/website"><img src="https://opencollective.com/fab/organization/7/avatar.svg"/></a>
 <a href="https://opencollective.com/fab/organization/8/website"><img src="https://opencollective.com/fab/organization/8/avatar.svg"/></a>
 <a href="https://opencollective.com/fab/organization/9/website"><img src="https://opencollective.com/fab/organization/9/avatar.svg"/></a>
+
+## FAB version 0.x docs
+
+Prior to the
+
+**NOTE: these docs are for the `next` branch, which is in public pre-release, and active development.** For the docs related to FAB v0, (e.g. standalone tools like `@fab/static` & `@fab/compile`) which are now in maintenance mode, see [fab-docs--production--v0.branch.linc-preview.sh](https://fab-docs--production--v0.branch.linc-preview.sh/).
