@@ -24,7 +24,7 @@ Because FABs include [server-side JavaScript](https://fab.dev/kb/fab-structure) 
 - Deploy every commit to a unique URL to [share progress with colleagues](https://fab.dev/examples/share-progress-with-colleagues).
 - ...and more
 
-> 👉 Head to [fab.dev/examples](https://fab.dev/examples) for the full list of suggested use-cases, or [join our Discord channel](https://discord.gg/Qvj3pJY) to suggest your own.
+> 👉 Head to [the examples directory](https://github.com/fab-spec/fab/tree/next/examples) on GitHub for the full list of suggested use-cases, or [join our Discord channel](https://discord.gg/Qvj3pJY) to suggest your own.
 
 ## What frameworks & projects are supported?
 
@@ -36,25 +36,36 @@ At the moment, the FAB project is focussing on supporting the following projects
 - Anything else that's fully static (i.e. any app that can be hosted on Netlify or S3)
 - Custom server-side rendered applications, with [some conversion](https://fab.dev/guides/converting-custom-ssr).
 
-That said, any server-side application that runs in (or compiles to) JavaScript, plus any amount of client-side code, should be theoretically able to be supported. If your application is not covered by the above list, it's worth reading the [FAB project goals] and then [getting involved] to make sure your needs will be supported in future.
+> 👉 If your app matches any of the above, `fab init` should be all you need to run to get started!
+>
+> See [fab.dev/guides/getting-started](https://fab.dev/guides/getting-started) for more info.
+
+Technically, _any_ server-side application that runs in (or compiles to) JavaScript, plus any amount of client-side code, should be able to be supported. If your application is not covered by the above list, it's worth reading the [FAB project goals](https://fab.dev/kb/project-goals) and then [getting involved](https://fab.dev/guides/giving-feedback) to make sure your needs will be supported in future.
 
 ## The FAB format
 
 A FAB is a special ZIP file with two components, a single server-side JavaScript file, and a folder full of assets.
 
-[ Diagram here ]
+<p align="center">
+  <img
+    width="350px"
+    max-width="100%"
+    alt="FAB Structure"
+    src="https://user-images.githubusercontent.com/23264/64143562-f9333180-ce53-11e9-9058-4d1d961a1d35.png"
+  />
+</p>
 
 From a fully static site, single-page app, to a fully server-rendered JS site, the FAB tooling compiles your application down to these two primitives.
 
 > 👉 Read more about the FAB structure at [fab.dev/kb/fab-structure](https://fab.dev/kb/fab-structure).
 
-### What is a Frontend Application?
+## What is a Frontend Application?
 
 The term _**Frontend Application**_ encompasses a wide range of modern web projects, from purely static sites with no client-side JS, to entirely client-rendered apps hitting an API, or those with a significant server-side-rendering component. But they are defined in opposition to a more traditional "backend" application, which may emit HTML across the wire as well, but usually has a persistent server, with direct connections to databases and a local filesystem.
 
 This is synonymous with some of the more common web app development methodologies in the React/Angular/Vue/Ember ecosystems—a self-contained single-page-app, potentially pre-rendered or server-rendered, talking to a separate backend app or collection of services via HTTP.
 
-### Why a new bundle format?
+## Why a new bundle format?
 
 The _**Frontend Application Bundle**_ is designed to fill a gap between existing options for frontend application deployment and hosting environments. Usually, you have a choice between a static site host, which prevents you from having any active server-side components, or a more traditional web app host designed for hosting backends.
 
@@ -64,15 +75,11 @@ As such, static site hosting has grown in popularity among the frontend applicat
 
 _**Frontend Application Bundles**_ are the container format that work equally well for fully-static through to full server-rendered frontend apps, making your choice of _technology_ independent from your choice of _hosting_.
 
----
-
-@glenmaddern.
-
 ## Contributors
 
 ### Code Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+This project exists thanks to all the people who contribute. [[Contribute](https://fab.dev/guides/contributing)].
 <a href="https://github.com/fab-spec/fab/graphs/contributors"><img src="https://opencollective.com/fab/contributors.svg?width=890&button=false" /></a>
 
 ### Financial Contributors
@@ -100,6 +107,4 @@ Support this project with your organization. Your logo will show up here with a 
 
 ## FAB version 0.x docs
 
-Prior to the
-
-**NOTE: these docs are for the `next` branch, which is in public pre-release, and active development.** For the docs related to FAB v0, (e.g. standalone tools like `@fab/static` & `@fab/compile`) which are now in maintenance mode, see [fab-docs--production--v0.branch.linc-preview.sh](https://fab-docs--production--v0.branch.linc-preview.sh/).
+Prior to the v1 release, FABs were in a v0 experimental phase, with a different design, and many different packages. For the docs related to FAB v0, (e.g. standalone tools like `@fab/static` & `@fab/compile`) which are now in maintenance mode, see [fab-docs--production--v0.branch.linc-preview.sh](https://fab-docs--production--v0.branch.linc-preview.sh/).

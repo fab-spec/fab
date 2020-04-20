@@ -26,7 +26,7 @@ export const Layout = ({ children }) => {
             onClick={() => setOpen(false)}
           />
           <Container
-            sx={{ ...styles.content, width: '80%' }}
+            sx={{ ...styles.content, width: '80%', '& h2': { marginTop: '4rem' } }}
             data-testid="main-container"
           >
             {children}
