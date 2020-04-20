@@ -1,4 +1,4 @@
-<h3 align="center"><a href="https://github.com/fab-spec/fab"><img width="461" alt="Frontend Application Bundles" src={require('../assets/FAB Stencil Logo Wide.png')}/></a></h3>
+<h3 align="center"><a href="https://github.com/fab-spec/fab"><img width="461" alt="FAB Stencil Logo Wide" src="https://user-images.githubusercontent.com/23264/79783164-24618700-8338-11ea-9c64-39738f29003a.png"/></a></h3>
 
 [![npm](https://img.shields.io/npm/v/@fab/cli)](https://www.npmjs.com/package/@fab/cli)
 [![GitHub Workflow Status](https://github.com/fab-spec/fab/workflows/FAB%20CI/badge.svg)](https://github.com/fab-spec/fab/actions)
@@ -11,19 +11,17 @@ A bit like a Docker container, but specifically for frontend, they **unify serve
 
 <img width="100%" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/63136503-b5e46080-c015-11e9-9f69-c974e11d9528.png"/>
 
-> **Get started**
->
-> 👉 Head to [fab.dev/guides/getting-started](https://fab.dev/guides/getting-started) to start building your own FABs, or read on for more information about the project.
+> 👉 **Want to get started?** Head to [fab.dev/guides/getting-started](https://fab.dev/guides/getting-started) to start building your own FABs, or read on for more information about the project.
 
 ## What can I can use FABs for?
 
-Because FABs include [server-side JavaScript] capabilities but deploy as easily as [uploading a ZIP file], you can start to add server-side logic without the complexity of managing servers. Making it easy to do things like:
+Because FABs include [server-side JavaScript](https://fab.dev/kb/fab-structure) capabilities but deploy as easily as [uploading a ZIP file](https://fab.dev/guides/deploying), you can start to add server-side logic without the complexity of managing servers. Making it easy to do things like:
 
-- Deploy a [server-rendered NextJS app to Cloudflare workers](https://fab.dev/examples/nextjs-on-cloudflare-workers)
-- [Add redirect rules to a Create React App project](https://fab.dev/examples/add-redirect-rules-to-create-react-app), without ejecting
-- Use Gatsby to generate a logged-in vs logged-out homepage and [switch which one is served](https://fab.dev/examples/switch-gatsby-landing-page) depending on a cookie
-- [Guard your application](https://fab.dev/examples/preflight-check-authentication) against unauthenticated users
-- Deploy every commit to a unique URL to [share progress with colleagues](https://fab.dev/examples/share-progress-with-colleagues)
+- Deploy a [server-rendered NextJS app to Cloudflare workers](https://fab.dev/examples/nextjs-on-cloudflare-workers).
+- [Add redirect rules](https://fab.dev/examples/add-redirect-rules-to-create-react-app) to a Create React App project, without ejecting.
+- Use Gatsby to generate a logged-in vs logged-out homepage and [switch which one is served](https://fab.dev/examples/switch-gatsby-landing-page) depending on a cookie.
+- [Guard your application](https://fab.dev/examples/preflight-check-authentication) against unauthenticated users.
+- Deploy every commit to a unique URL to [share progress with colleagues](https://fab.dev/examples/share-progress-with-colleagues).
 - ...and more
 
 > 👉 Head to [fab.dev/examples](https://fab.dev/examples) for the full list of suggested use-cases, or [join our Discord channel](https://discord.gg/Qvj3pJY) to suggest your own.
@@ -32,11 +30,12 @@ Because FABs include [server-side JavaScript] capabilities but deploy as easily 
 
 At the moment, the FAB project is focussing on supporting the following projects, to try to give the best possible experience for the most users.
 
-  _ Client-side rendered React (e.g. Create React App & friends)
-  _ Server-side, client-side & static pre-rendered NextJS
-  _ VueJS, AngularJS, Svelte etc that compile to static assets
-  _ Anything else that's fully static (i.e. any app that can be hosted on Netlify or S3) \* Custom server-side rendered applications, with some conversion.
-  
+- Client-side rendered React (e.g. Create React App & friends)
+- Server-side, client-side & static pre-rendered NextJS
+- VueJS, AngularJS, Svelte etc that compile to static assets
+- Anything else that's fully static (i.e. any app that can be hosted on Netlify or S3)
+- Custom server-side rendered applications, with [some conversion](https://fab.dev/guides/converting-custom-ssr).
+
 That said, any server-side application that runs in (or compiles to) JavaScript, plus any amount of client-side code, should be theoretically able to be supported. If your application is not covered by the above list, it's worth reading the [FAB project goals] and then [getting involved] to make sure your needs will be supported in future.
 
 ## The FAB format
