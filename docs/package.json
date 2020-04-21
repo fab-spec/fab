@@ -10,7 +10,7 @@
     "docz:serve": "docz build && docz serve",
     "fab:build": "fab build",
     "fab:serve": "fab serve fab.zip",
-    "fab:deploy": "dotenv -- fab deploy fab.zip --assets-already-deployed-at='https://static-assets.linc.sh/fab-docs'"
+    "fab:deploy": "dotenv -- fab deploy fab.zip"
   },
   "devDependencies": {
     "@fab/cli": "^0.0.7-alpha.30",
