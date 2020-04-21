@@ -1,6 +1,10 @@
-<h3 align="center"><a href="https://github.com/fab-spec/fab"><img width="461" alt="FAB Stencil Logo Wide" src="https://user-images.githubusercontent.com/23264/79783164-24618700-8338-11ea-9c64-39738f29003a.png"/></a></h3>
+<h3 align="center"><img width="461" alt="FAB Stencil Logo Wide" src="https://user-images.githubusercontent.com/23264/79783164-24618700-8338-11ea-9c64-39738f29003a.png"/>
+</h3>
+
+<h5 align="center"><small><a href="https://fab.dev">https://fab.dev </a> • <a href="https://github.com/fab-spec/fab">https://github.com/fab-spec/fab </a></small></h5>
 
 [![npm](https://img.shields.io/npm/v/@fab/cli)](https://www.npmjs.com/package/@fab/cli)
+[![GitHub last commit](https://img.shields.io/github/last-commit/fab-spec/fab)](https://github.com/fab-spec/fab)
 [![GitHub Workflow Status](https://github.com/fab-spec/fab/workflows/FAB%20CI/badge.svg)](https://github.com/fab-spec/fab/actions)
 [![Join discussion on Discord](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
 [![Financial Contributors on Open Collective](https://opencollective.com/fab/all/badge.svg?label=financial+contributors)](https://opencollective.com/fab)
@@ -30,19 +34,19 @@ Because FABs include [server-side JavaScript](https://fab.dev/kb/fab-structure) 
 
 At the moment, the FAB project is focussing on supporting the following projects, to try to give the best possible experience for the most users.
 
+> 👉 If your app is in the following list, `fab init` should be all you need to run to get started!
+>
+> See [fab.dev/guides/getting-started](https://fab.dev/guides/getting-started) for more info.
+
 - Client-side rendered React (e.g. Create React App & friends)
 - Server-side, client-side & static pre-rendered NextJS
 - VueJS, AngularJS, Svelte etc that compile to static assets
 - Anything else that's fully static (i.e. any app that can be hosted on Netlify or S3)
 - Custom server-side rendered applications, with [some conversion](https://fab.dev/guides/converting-custom-ssr).
 
-> 👉 If your app matches any of the above, `fab init` should be all you need to run to get started!
->
-> See [fab.dev/guides/getting-started](https://fab.dev/guides/getting-started) for more info.
+However, _any_ server-side application that runs in (or compiles to) JavaScript, plus any amount of client-side code, should be able to be supported. If your application is not covered by the above list, it's worth reading the [FAB project goals](https://fab.dev/kb/project-goals) and then [getting involved](https://fab.dev/guides/giving-feedback) to make sure your needs will be supported in future.
 
-Technically, _any_ server-side application that runs in (or compiles to) JavaScript, plus any amount of client-side code, should be able to be supported. If your application is not covered by the above list, it's worth reading the [FAB project goals](https://fab.dev/kb/project-goals) and then [getting involved](https://fab.dev/guides/giving-feedback) to make sure your needs will be supported in future.
-
-## The FAB format
+## How does it work?
 
 A FAB is a special ZIP file with two components, a single server-side JavaScript file, and a folder full of assets.
 
