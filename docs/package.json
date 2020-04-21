@@ -9,7 +9,8 @@
     "docz:dev": "concurrently \"docz dev --port=2999\" \"node scripts/watch.js\"",
     "docz:serve": "docz build && docz serve",
     "fab:build": "fab build",
-    "fab:serve": "fab serve fab.zip"
+    "fab:serve": "fab serve fab.zip",
+    "fab:deploy": "dotenv -- fab deploy fab.zip"
   },
   "devDependencies": {
     "@fab/cli": "^0.0.7-alpha.30",

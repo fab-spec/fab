@@ -1,6 +1,6 @@
 {
   "name": "@fab/deployer-cf-workers",
-  "version": "0.0.7-alpha.30",
+  "version": "0.0.7-alpha.31",
   "description": "Packages and deploys FABs to AWS Lambda@Edge",
   "keywords": [
     "fab"
@@ -30,7 +30,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.30",
+    "@fab/core": "0.0.7-alpha.31",
     "@types/node": "^12.12.14",
     "cross-fetch": "^3.0.4",
     "fs-extra": "^9.0.0",

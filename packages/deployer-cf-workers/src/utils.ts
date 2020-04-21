@@ -5,7 +5,16 @@ export const log = _log(`@fab/deployer-cf-workers`)
 
 const CF_API_URL = `https://api.cloudflare.com/client/v4`
 
-export const getCloudflareApi = async (api_token: string) => {
+export type CloudflareApiCall = (url: string, init?: RequestInit) => Promise<any>
+
+export type CloudflareApi = {
+  post: CloudflareApiCall
+  get: CloudflareApiCall
+  putJS: CloudflareApiCall
+  putJSON: CloudflareApiCall
+}
+
+export const getCloudflareApi = async (api_token: string): Promise<CloudflareApi> => {
   const go = (method: string, content_type: string) => async (
     url: string,
     init: RequestInit = {}
@@ -22,7 +31,8 @@ export const getCloudflareApi = async (api_token: string) => {
     return await response.json()
   }
   const get = go('get', 'application/json')
-  const put = go('put', 'application/javascript')
+  const putJS = go('put', 'application/javascript')
+  const putJSON = go('put', 'application/json')
   const post = go('post', 'application/json')
 
   const verify = await get(`/user/tokens/verify`)
@@ -32,5 +42,5 @@ export const getCloudflareApi = async (api_token: string) => {
     ❤️${JSON.stringify(verify)}❤️`)
   }
 
-  return { get, put, post }
+  return { get, putJS, putJSON, post }
 }
