@@ -46,6 +46,28 @@ At the moment, the FAB project is focussing on supporting the following projects
 
 However, _any_ server-side application that runs in (or compiles to) JavaScript, plus any amount of client-side code, should be able to be supported. If your application is not covered by the above list, it's worth reading the [FAB project goals](https://fab.dev/kb/project-goals) and then [getting involved](https://fab.dev/guides/giving-feedback) to make sure your needs will be supported in future.
 
+## Where can I host them?
+
+Currently, we have first-class support for releasing FABs to:
+
+- Cloudflare Workers, using `@fab/deployer-cf-workers`
+  - Free or \$5+/month
+  - 200 cities worldwide
+  - Extremely high-performance
+- AWS Lambda@Edge, using `@fab/deployer-aws-lambda`
+  - 84 cities worldwide
+  - Some [limitations]
+  - Good performance
+  - Ideal for companies already running infrastructure on AWS
+- Anywhere that can run NodeJS, using `@fab/server`, e.g.
+  - Docker
+  - Heroku
+  - Now.sh v1
+
+> 👉 Releases can be triggered manually using `fab deploy` on the command line or automatically using [Linc](https://linc.sh), a preconfigured CI/CD pipeline from the team behind FABs, with a generous free tier.
+>
+> See [fab.dev/guides/deploying](https://fab.dev/guides/deploying) for more info.
+
 ## How does it work?
 
 A FAB is a special ZIP file with two components, a single server-side JavaScript file, and a folder full of assets.
