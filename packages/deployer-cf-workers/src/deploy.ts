@@ -30,39 +30,6 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   config: ConfigTypes.CFWorkers
 ) => notImplemented()
 
-async function getApi(api_token: string) {
-  log(`💚✔💚 Config valid, checking API token...`)
-  const api = await getCloudflareApi(api_token)
-  return api
-}
-
-async function packageAndUpload(
-  fab_path: string,
-  package_path: string,
-  config: ConfigTypes.CFWorkers,
-  env_overrides: FabSettings,
-  assets_url: string,
-  api: CloudflareApi,
-  account_id: string,
-  script_name: string
-) {
-  log(`💚✔💚 API token valid, packaging...`)
-  await createPackage(fab_path, package_path, config, env_overrides, assets_url)
-
-  log.time(`Uploading script...`)
-  const upload_response = await api.putJS(
-    `/accounts/${account_id}/workers/scripts/${script_name}`,
-    {
-      body: await fs.readFile(package_path, 'utf8'),
-    }
-  )
-  if (!upload_response.success) {
-    throw new FabDeployError(`Error uploading the script, got response:
-    ❤️${JSON.stringify(upload_response)}❤️`)
-  }
-  log(`💚✔💚 Uploaded, publishing...`)
-}
-
 export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
   working_dir: string,
@@ -126,12 +93,15 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
         }
       }
     } else {
-      const create_route_reponse = await api.post(`/zones/${zone_id}/workers/routes`, {
+      log(
+        `No existing route found for 💛${route}💛, creating one to point to script 💛${script_name}💛`
+      )
+      const create_route_response = await api.post(`/zones/${zone_id}/workers/routes`, {
         body: JSON.stringify({ pattern: route, script: script_name }),
       })
-      if (!create_route_reponse.success) {
+      if (!create_route_response.success) {
         throw new FabDeployError(`Error publishing to route 💛${route}💛 on zone 💛${zone_id}💛:
-      ❤️${JSON.stringify(create_route_reponse)}❤️`)
+      ❤️${JSON.stringify(create_route_response)}❤️`)
       }
     }
     log(`💚✔💚 Done.`)
@@ -209,4 +179,37 @@ function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
     throw new InvalidConfigError(`Missing required keys for @fab/deploy-cf-workers (with 💛workers_dev: false💛):
     ${missing_config.map((k) => `💛• ${k}💛`).join('\n')}`)
   }
+}
+
+async function getApi(api_token: string) {
+  log(`💚✔💚 Config valid, checking API token...`)
+  const api = await getCloudflareApi(api_token)
+  return api
+}
+
+async function packageAndUpload(
+  fab_path: string,
+  package_path: string,
+  config: ConfigTypes.CFWorkers,
+  env_overrides: FabSettings,
+  assets_url: string,
+  api: CloudflareApi,
+  account_id: string,
+  script_name: string
+) {
+  log(`💚✔💚 API token valid, packaging...`)
+  await createPackage(fab_path, package_path, config, env_overrides, assets_url)
+
+  log.time(`Uploading script...`)
+  const upload_response = await api.putJS(
+    `/accounts/${account_id}/workers/scripts/${script_name}`,
+    {
+      body: await fs.readFile(package_path, 'utf8'),
+    }
+  )
+  if (!upload_response.success) {
+    throw new FabDeployError(`Error uploading the script, got response:
+    ❤️${JSON.stringify(upload_response)}❤️`)
+  }
+  log(`💚✔💚 Uploaded, publishing...`)
 }

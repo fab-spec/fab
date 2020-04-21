@@ -1,12 +1,24 @@
 /** @jsx jsx */
 import { useRef, useState } from 'react'
 import { jsx, Layout as BaseLayout, Main, Container } from 'theme-ui'
-import { Global } from '@emotion/core'
+import { Global, css } from '@emotion/core'
 
-import global from 'gatsby-theme-docz/src/theme/global'
 import { Header } from 'gatsby-theme-docz/src/components/Header'
 import { Sidebar } from 'gatsby-theme-docz/src/components/Sidebar'
 import * as styles from 'gatsby-theme-docz/src/components/Layout/styles'
+
+const global = css`
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  '.icon-link': {
+    display: none;
+  }
+  '.with-overlay': {
+    overflow: hidden;
+  }
+`
 
 export const Layout = ({ children }) => {
   const [open, setOpen] = useState(false)
