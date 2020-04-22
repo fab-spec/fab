@@ -40,6 +40,7 @@
     "md5-dir": "^0.2.0",
     "memfs": "^3.0.4",
     "mock-express-response": "^0.2.2",
+    "path-to-regexp": "^6.1.0",
     "prettier": "^1.19.1",
     "webpack": "^4.41.5"
   },
