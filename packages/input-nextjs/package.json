@@ -1,6 +1,6 @@
 {
   "name": "@fab/input-nextjs",
-  "version": "0.0.7-alpha.31",
+  "version": "0.0.7-alpha.32",
   "description": "Module to kick off a FAB build from a NextJS project",
   "keywords": [
     "fab"
@@ -30,7 +30,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.31",
+    "@fab/core": "0.0.7-alpha.32",
     "@types/node": "^12.12.14",
     "@types/path-to-regexp": "^1.7.0",
     "acorn": "^7.1.0",
@@ -40,6 +40,7 @@
     "md5-dir": "^0.2.0",
     "memfs": "^3.0.4",
     "mock-express-response": "^0.2.2",
+    "path-to-regexp": "^6.1.0",
     "prettier": "^1.19.1",
     "webpack": "^4.41.5"
   },
