@@ -4,12 +4,6 @@ import { FabInitError } from '../../errors'
 import { log } from '../../helpers'
 import { BuildConfig } from '@fab/core'
 
-export enum KnownFrameworkTypes {
-  CreateReactApp,
-  Next9,
-  Gatsby,
-}
-
 export type FrameworkInfo = {
   name: string
   plugins: BuildConfig
@@ -24,30 +18,8 @@ export const OUTPUT_DIR_EXAMPLES =
     .map((dir) => `💛${dir}💛`)
     .join(', ') + ` or 💛${GUESSED_OUTPUT_DIRS.slice(-1)}💛`
 
-export function STATIC_SITE(build_cmd: string, found_output_dir: string) {
-  return {
-    name: 'Static Site',
-    scripts: {
-      'build:fab': `${build_cmd} && npm run fab:build`,
-      'fab:build': 'fab build',
-      'fab:serve': 'fab serve fab.zip',
-    },
-    plugins: {
-      '@fab/input-static': {
-        dir: found_output_dir,
-      },
-      '@fab/serve-html': {
-        fallback: '/index.html',
-      },
-      '@fab/rewire-assets': {},
-    },
-  }
-}
-
-export const Frameworks: {
-  [key in KnownFrameworkTypes]: FrameworkInfo
-} = {
-  [KnownFrameworkTypes.CreateReactApp]: {
+export const Frameworks = {
+  CreateReactApp: (): FrameworkInfo => ({
     name: 'Create React App',
     scripts: {
       'build:fab': 'npm run build && npm run fab:build',
@@ -63,8 +35,8 @@ export const Frameworks: {
       },
       '@fab/rewire-assets': {},
     },
-  },
-  [KnownFrameworkTypes.Gatsby]: {
+  }),
+  Gatsby: (): FrameworkInfo => ({
     name: 'Gatbsy JS',
     scripts: {
       'build:fab': 'npm run build && npm run fab:build',
@@ -80,12 +52,16 @@ export const Frameworks: {
       },
       '@fab/rewire-assets': {},
     },
-  },
-  [KnownFrameworkTypes.Next9]: {
+  }),
+  Next9: ({
+    export_build,
+    build_cmd,
+  }: {
+    export_build: boolean
+    build_cmd: string
+  }): FrameworkInfo => ({
     name: 'NextJS v9+',
     scripts: {
-      // Potentially, we should clear the .next dir before building, to make sure
-      // this FAB isn't publishing anything from a previous build.
       'build:fab': 'npm run build && npm run fab:build',
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',
@@ -122,8 +98,28 @@ export const Frameworks: {
         await fs.writeFile(config_path, `module.exports = {\n  target: 'serverless'\n}\n`)
       }
     },
-  },
+  }),
 }
+export const GenericStatic = (
+  build_cmd: string,
+  found_output_dir: string
+): FrameworkInfo => ({
+  name: 'Static Site',
+  scripts: {
+    'build:fab': `${build_cmd} && npm run fab:build`,
+    'fab:build': 'fab build',
+    'fab:serve': 'fab serve fab.zip',
+  },
+  plugins: {
+    '@fab/input-static': {
+      dir: found_output_dir,
+    },
+    '@fab/serve-html': {
+      fallback: '/index.html',
+    },
+    '@fab/rewire-assets': {},
+  },
+})
 
 export const FRAMEWORK_NAMES = Object.values(Frameworks).map((f) => f.name)
 
