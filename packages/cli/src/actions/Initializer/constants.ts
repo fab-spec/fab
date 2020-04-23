@@ -60,35 +60,48 @@ export const Frameworks = {
     export_build: boolean
     build_cmd: string
   }): FrameworkInfo => ({
-    name: 'NextJS v9+',
+    name: `NextJS v9+ (${export_build ? 'static' : 'dynamic'})`,
     scripts: {
-      'build:fab': 'npm run build && npm run fab:build',
+      'build:fab': `${build_cmd} && npm run fab:build`,
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',
     },
     plugins: {
-      '@fab/input-nextjs': {
-        dir: '.next',
-      },
-      '@fab/serve-html': {
-        fallback: false,
-      },
+      ...(export_build
+        ? {
+            '@fab/input-static': {
+              dir: 'out',
+            },
+            '@fab/serve-html': {
+              fallback: '/index.html',
+            },
+          }
+        : {
+            '@fab/input-nextjs': {
+              dir: '.next',
+            },
+            '@fab/serve-html': {
+              fallback: false,
+            },
+          }),
       '@fab/rewire-assets': {},
     },
     async customConfig(root_dir: string) {
+      if (export_build) return
       const config_path = path.join(root_dir, 'next.config.js')
       if (await fs.pathExists(config_path)) {
         const next_config = require(config_path)
         if (next_config.target !== 'serverless') {
-          throw new FabInitError(
-            `Your NextJS project needs to be configured for a serverless build.
+          log(
+            `❤️WARNING: Your NextJS project is not currently configured for a serverless build.❤️
             ${
               next_config.target
                 ? `Add 💛target: 'serverless'💛 to your 💛next.config.js💛 file.`
                 : `Currently your app is configured to build in 💛${next_config.target ||
                     'server'}💛 mode.
                 Update this in your 💛next.config.js💛 by setting 💛target: 'serverless'💛`
-            }`
+            }
+            Continuing setup, but ❤️fab build will fail❤️ until this is changed.`
           )
         } else {
           log(`Your app is already configured for a severless build. Proceeding.`)
@@ -121,7 +134,7 @@ export const GenericStatic = (
   },
 })
 
-export const FRAMEWORK_NAMES = Object.values(Frameworks).map((f) => f.name)
+export const FRAMEWORK_NAMES = Object.keys(Frameworks)
 
 export const BASE_CONFIG: string = `// For more information, see https://fab.dev/kb/configuration
 {
