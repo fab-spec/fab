@@ -13,12 +13,11 @@ import {
   FRAMEWORK_NAMES,
   FrameworkInfo,
   Frameworks,
+  GenericStatic,
   GITIGNORE_LINES,
   GUESSED_OUTPUT_DIRS,
-  KnownFrameworkTypes,
   OUTPUT_DIR_EXAMPLES,
   PackageJson,
-  STATIC_SITE,
 } from './constants'
 
 const confirmAndRespond = async (
@@ -55,6 +54,8 @@ const promptWithDefault = async (
 
 export default class Initializer {
   static description = `Auto-configure a repo for generating FABs`
+  static yes: boolean
+
   static async init(
     config_filename: string,
     yes: boolean,
@@ -62,6 +63,7 @@ export default class Initializer {
     version: string | undefined,
     skip_framework_detection: boolean
   ) {
+    this.yes = yes
     log(`💎 💚fab init: ${this.description}💚 💎\n`)
     /* First, figure out the nearest package.json */
     const package_json_path = await pkgUp()
@@ -70,7 +72,7 @@ export default class Initializer {
     }
     const root_dir = path.dirname(package_json_path)
     if (root_dir !== process.cwd()) {
-      if (yes) {
+      if (this.yes) {
         throw new FabInitError(
           `Note: fab init -y must be run from the root of your project (where your package.json lives) since it will automatically change files.`
         )
@@ -92,7 +94,6 @@ export default class Initializer {
     const package_json = await this.getPackageJson(package_json_path)
     const framework = await this.getFramework(
       package_json,
-      yes,
       root_dir,
       skip_framework_detection
     )
@@ -100,7 +101,7 @@ export default class Initializer {
 
     const use_yarn = await fs.pathExists(path.join(root_dir, 'yarn.lock'))
 
-    if (yes) {
+    if (this.yes) {
       log.info(`Proceeding...`)
     } else {
       const confirmed = await confirmAndRespond(
@@ -118,10 +119,10 @@ export default class Initializer {
     }
 
     /* Next, generate/update the FAB config file */
-    await this.updateConfig(root_dir, config_filename, framework, yes)
+    await this.updateConfig(root_dir, config_filename, framework)
 
     /* Then, update the package.json to add a build:fab script */
-    await this.addBuildFabScript(package_json_path, package_json, framework, yes)
+    await this.addBuildFabScript(package_json_path, package_json, framework)
 
     /* Update the .gitignore file (if it exists) to add .fab and fab.zip */
     await this.addGitIgnores(root_dir)
@@ -141,15 +142,19 @@ export default class Initializer {
 
   private static async getFramework(
     package_json: PackageJson,
-    yes: boolean,
     root_dir: string,
     skip_framework_detection: boolean
   ) {
-    const project_type = skip_framework_detection
+    const framework = skip_framework_detection
       ? null
       : await this.determineProjectType(package_json)
 
-    if (typeof project_type !== 'number') {
+    if (framework) {
+      log(
+        `Found a 💛${framework.name}💛 project. We know exactly how to configure this 👍\n`
+      )
+      return framework
+    } else {
       if (skip_framework_detection) {
         log(`❤️Skipping framework detection.❤️`)
       } else {
@@ -170,22 +175,15 @@ export default class Initializer {
       `)
 
       const attempt_static =
-        yes || (await confirmAndRespond(`Would you like to proceed?`))
+        this.yes || (await confirmAndRespond(`Would you like to proceed?`))
       if (!attempt_static) return
 
-      return await this.setupStaticFramework(package_json, yes, root_dir)
-    } else {
-      const framework = Frameworks[project_type]
-      log(
-        `Found a 💛${framework.name}💛 project. We know exactly how to configure this 👍\n`
-      )
-      return framework
+      return await this.setupStaticFramework(package_json, root_dir)
     }
   }
 
   private static async setupStaticFramework(
     package_json: PackageJson,
-    yes: boolean,
     root_dir: string
   ): Promise<FrameworkInfo> {
     const npm_build_exists: boolean | undefined = !!package_json.scripts?.build
@@ -194,7 +192,7 @@ export default class Initializer {
       `What command do you use to build your project?`,
       `(usually something like "npm run xyz")`,
       npm_build_exists && npm_run_build,
-      yes
+      this.yes
     )
     // console.log({ build_cmd })
 
@@ -211,11 +209,10 @@ export default class Initializer {
       `Where is your project built into?`,
       `(e.g. ${OUTPUT_DIR_EXAMPLES})`,
       found_output_dir,
-      yes
+      this.yes
     )
-    // console.log({ output_dir })
 
-    return STATIC_SITE(build_cmd, output_dir)
+    return GenericStatic(build_cmd, output_dir)
   }
 
   private static async getPackageJson(package_json_path: string) {
@@ -227,33 +224,61 @@ export default class Initializer {
   }
 
   static async determineProjectType(package_json: PackageJson) {
-    if (await this.isNext9(package_json)) {
-      return KnownFrameworkTypes.Next9
-    } else if (await this.isCreateReactApp(package_json)) {
-      return KnownFrameworkTypes.CreateReactApp
-    } else if (await this.isGatsby(package_json)) {
-      return KnownFrameworkTypes.Gatsby
-    }
-    return null
+    return (
+      (await this.isNext9(package_json)) ||
+      (await this.isCreateReactApp(package_json)) ||
+      (await this.isGatsby(package_json)) ||
+      null
+    )
   }
 
   static async isNext9(package_json: PackageJson) {
     const nextjs_version =
       package_json.dependencies?.['next'] || package_json.devDependencies?.['next']
     if (!nextjs_version) return false
+    const next_build = package_json.scripts?.build?.match(/next build/)
+    const next_build_export = package_json.scripts?.build?.match(/next export/)
+    const next_export = package_json.scripts?.export?.match(/next export/)
     const activeNextProject =
-      (await fs.pathExists('.next')) || package_json.scripts?.build?.match(/next build/)
+      (await fs.pathExists('.next')) || next_build || next_build_export || next_export
     if (!activeNextProject) {
       throw new FabInitError(
         `Detected NextJS as a dependency but no .next directory found & npm run build doesn't contain 'next build'!`
       )
     }
-    if (semver.lt(semver.coerce(nextjs_version)!, '9.0.0')) {
+    if (
+      semver.valid(nextjs_version) &&
+      semver.lt(semver.coerce(nextjs_version)!, '9.0.0')
+    ) {
       throw new FabInitError(
         `Detected a NextJS project but using an older version (${nextjs_version}). FABs currently only support NextJS v9 or later.`
       )
     }
-    return true
+    if (next_build_export) {
+      return Frameworks.Next9({ export_build: true, build_cmd: 'npm run build' })
+    } else if (next_export) {
+      if (!next_build) {
+        return Frameworks.Next9({ export_build: true, build_cmd: 'npm run export' })
+      }
+      log(`You have both 💛next build💛 and 💛next export💛 in your npm scripts.
+        What command do you use to build your project?
+        • for dynamic (serverless) sites, this is 💛npm run build💛,
+        • or for static sites this is 💛npm run export💛
+      `)
+      const build_cmd = await promptWithDefault(
+        `Your build command`,
+        ``,
+        'npm run export',
+        this.yes
+      )
+      const export_build =
+        this.yes || build_cmd === 'npm run export'
+          ? true
+          : await confirmAndRespond(`Is this a static (i.e. 💛next export💛) site?`)
+      return Frameworks.Next9({ export_build, build_cmd })
+    } else {
+      return Frameworks.Next9({ export_build: false, build_cmd: 'npm run build' })
+    }
   }
 
   static async isCreateReactApp(package_json: PackageJson) {
@@ -262,13 +287,16 @@ export default class Initializer {
       package_json.devDependencies?.['react-scripts']
     if (!react_scripts_version) return false
 
-    if (semver.lt(semver.coerce(react_scripts_version)!, '2.0.0')) {
+    if (
+      semver.valid(react_scripts_version) &&
+      semver.lt(semver.coerce(react_scripts_version)!, '2.0.0')
+    ) {
       throw new FabInitError(
-        `Detected a Create React App project but using an older version of react-scripts (${react_scripts_version}). FABs support `
+        `Detected a Create React App project but using an older version of react-scripts (${react_scripts_version}). FABs only support v2+.`
       )
     }
 
-    return true
+    return Frameworks.CreateReactApp()
   }
 
   static async isGatsby(package_json: PackageJson) {
@@ -276,7 +304,12 @@ export default class Initializer {
       package_json.dependencies?.['gatsby'] || package_json.devDependencies?.['gatsby']
     if (!gatsby_dep) return false
 
-    return package_json.scripts?.build?.match(/gatsby build/)
+    if (!package_json.scripts?.build?.match(/gatsby build/)) {
+      throw new FabInitError(
+        `Detected Gatsby as a dependency but npm run build doesn't contain 'gatsby build'`
+      )
+    }
+    return Frameworks.Gatsby()
   }
 
   private static async installDependencies(
@@ -289,11 +322,9 @@ export default class Initializer {
       version ? `${dep}@${version}` : dep
     )
 
-    log(
-      `💚Installing required development dependencies💚:\n  ${dependencies.join(
-        '\n  '
-      )}\nusing 💛${use_yarn ? 'yarn' : 'npm'}💛`
-    )
+    log(`💚Installing required development dependencies💚:
+      ${dependencies.join('\n  ')}
+      using 💛${use_yarn ? 'yarn' : 'npm'}💛`)
     if (use_yarn) {
       await execa('yarn', ['add', '--dev', ...dependencies], { cwd: root_dir })
     } else {
@@ -311,15 +342,14 @@ export default class Initializer {
   private static async updateConfig(
     root_dir: string,
     config_filename: string,
-    framework: FrameworkInfo,
-    yes: boolean
+    framework: FrameworkInfo
   ) {
     const config_path = path.resolve(root_dir, config_filename)
     const config = await this.readExistingConfig(config_path)
     if (Object.keys(config.data.plugins).length > 0) {
       log.warn(`Existing config has a "plugins" section.`)
       const confirmed =
-        (yes && log(`Overwriting since -y is set.`)) ||
+        (this.yes && log(`Overwriting since -y is set.`)) ||
         (await confirmAndRespond(
           `Would you like to overwrite it?`,
           `Ok, overwriting...`,
@@ -342,10 +372,9 @@ export default class Initializer {
   private static async addBuildFabScript(
     package_json_path: string,
     package_json: any,
-    framework: FrameworkInfo,
-    yes: boolean
+    framework: FrameworkInfo
   ) {
-    if (!yes && package_json.scripts?.['build:fab']) {
+    if (!this.yes && package_json.scripts?.['build:fab']) {
       log.info(`Already detected a build:fab command.`)
       log(`We want to add/overwrite the following lines to your 💛package.json💛:
         💛${JSON.stringify(framework.scripts, null, 2)}💛
