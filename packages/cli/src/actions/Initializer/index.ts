@@ -227,33 +227,36 @@ export default class Initializer {
   }
 
   static async determineProjectType(package_json: PackageJson) {
-    if (await this.isNext9(package_json)) {
-      return KnownFrameworkTypes.Next9
-    } else if (await this.isCreateReactApp(package_json)) {
-      return KnownFrameworkTypes.CreateReactApp
-    } else if (await this.isGatsby(package_json)) {
-      return KnownFrameworkTypes.Gatsby
-    }
-    return null
+    return (
+      (await this.isNext9(package_json)) ||
+      (await this.isCreateReactApp(package_json)) ||
+      (await this.isGatsby(package_json)) ||
+      null
+    )
   }
 
   static async isNext9(package_json: PackageJson) {
     const nextjs_version =
       package_json.dependencies?.['next'] || package_json.devDependencies?.['next']
     if (!nextjs_version) return false
-    const activeNextProject =
-      (await fs.pathExists('.next')) || package_json.scripts?.build?.match(/next build/)
+    const next_build = package_json.scripts?.build?.match(/next build/)
+    const next_build_export = package_json.scripts?.build?.match(/next export/)
+    const next_export = package_json.scripts?.export?.match(/next export/)
+    const activeNextProject = (await fs.pathExists('.next')) || next_build
     if (!activeNextProject) {
       throw new FabInitError(
         `Detected NextJS as a dependency but no .next directory found & npm run build doesn't contain 'next build'!`
       )
     }
-    if (semver.lt(semver.coerce(nextjs_version)!, '9.0.0')) {
+    if (
+      semver.valid(nextjs_version) &&
+      semver.lt(semver.coerce(nextjs_version)!, '9.0.0')
+    ) {
       throw new FabInitError(
         `Detected a NextJS project but using an older version (${nextjs_version}). FABs currently only support NextJS v9 or later.`
       )
     }
-    return true
+    return KnownFrameworkTypes.Next9
   }
 
   static async isCreateReactApp(package_json: PackageJson) {
@@ -262,7 +265,10 @@ export default class Initializer {
       package_json.devDependencies?.['react-scripts']
     if (!react_scripts_version) return false
 
-    if (semver.lt(semver.coerce(react_scripts_version)!, '2.0.0')) {
+    if (
+      semver.valid(react_scripts_version) &&
+      semver.lt(semver.coerce(react_scripts_version)!, '2.0.0')
+    ) {
       throw new FabInitError(
         `Detected a Create React App project but using an older version of react-scripts (${react_scripts_version}). FABs support `
       )
