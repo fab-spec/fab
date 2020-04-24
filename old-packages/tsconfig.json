@@ -1,9 +1,0 @@
-{
-  "files": [],
-  "references": [
-    { "path": "fab-cli" },
-    { "path": "fab-core" },
-    { "path": "input-static" },
-    { "path": "rewire-assets" }
-  ]
-}
