@@ -1,5 +1,10 @@
 export const DEFAULT_DEPS = ['@fab/cli', '@fab/server']
-export const DEPRECATED_PACKAGES = ['@fab/static', '@fab/compile', '@fab/nextjs', '@fab/serve'];
+export const DEPRECATED_PACKAGES = [
+  '@fab/static',
+  '@fab/compile',
+  '@fab/nextjs',
+  '@fab/serve',
+]
 
 export const GITIGNORE_LINES = ['/.fab', '/fab.zip']
 export const GUESSED_OUTPUT_DIRS = ['build', 'dist', 'public', 'out']

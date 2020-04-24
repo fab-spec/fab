@@ -9,13 +9,14 @@ import { confirm, log, prompt } from '../../helpers'
 import JSON5Config from '../../helpers/JSON5Config'
 import {
   BASE_CONFIG,
-  DEFAULT_DEPS, DEPRECATED_PACKAGES,
+  DEFAULT_DEPS,
+  DEPRECATED_PACKAGES,
   GITIGNORE_LINES,
   GUESSED_OUTPUT_DIRS,
   OUTPUT_DIR_EXAMPLES,
   PackageJson,
 } from './constants'
-import {FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic} from "./frameworks";
+import { FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic } from './frameworks'
 
 const confirmAndRespond = async (
   message: string,
