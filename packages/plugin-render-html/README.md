@@ -1,4 +1,4 @@
-# @fab/serve-html
+# @fab/plugin-render-html
 
 A plugin for serving static HTML files with FAB_SETTINGS injected
 
@@ -14,7 +14,7 @@ In the FAB ecosystem, however, we want the ability for a compiled FAB to be link
 {
   plugins: {
     // ...
-    '@fab/serve-html': {
+    '@fab/plugin-render-html': {
       // Can be left blank. See below for config options
     },
     // ...
@@ -24,7 +24,7 @@ In the FAB ecosystem, however, we want the ability for a compiled FAB to be link
 
 ## How it works
 
-`@fab/serve-html` works by compiling your HTML files into a template (atm we use Mustache but not for any particular reason, it just works), which means that the static HTML files can be dynamically enriched on the server.
+`@fab/plugin-render-html` works by compiling your HTML files into a template (atm we use Mustache but not for any particular reason, it just works), which means that the static HTML files can be dynamically enriched on the server.
 
 Most commonly, this will inject the following `<script>` tag into any HTML response as it's being streamed to the client:
 

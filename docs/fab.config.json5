@@ -4,10 +4,10 @@
     '@fab/input-static': {
       dir: '.docz/dist',
     },
-    '@fab/serve-html': {
+    '@fab/plugin-render-html': {
       fallback: '/index.html',
     },
-    '@fab/rewire-assets': {},
+    '@fab/plugin-rewire-assets': {},
     // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins
   },
   settings: {

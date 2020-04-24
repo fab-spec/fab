@@ -7,7 +7,6 @@ import {
 } from '../types'
 import { filenameOutsideFabLocations, getContentType } from '../helpers'
 import jsonKeysSort from 'json-keys-sort'
-import { RewireAssetsMetadata } from '@fab/rewire-assets/src/types'
 
 export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   files: FabFiles

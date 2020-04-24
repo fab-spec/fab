@@ -1,4 +1,4 @@
-# @fab/rewire-assets
+# @fab/plugin-rewire-assets
 
 A plugin for moving any files not handled by another plugin to the `_assets` folder. Usually the last in the sequence.
 
@@ -20,7 +20,7 @@ This module acts as a catch-all, with different behaviour based on the type of f
 {
   plugins: {
     // ... all existing plugins should go here, rewire-assets should be last
-    '@fab/rewire-assets': {
+    '@fab/plugin-rewire-assets': {
       // Can be left blank. See below for config options
     },
   },

@@ -39,7 +39,7 @@ describe('dir of static assets', () => {
       expect(stderr).toContain(`Config file contains errors!`)
     })
 
-    it(`should tell you you've forgotten @fab/rewire-assets`, async () => {
+    it(`should tell you you've forgotten @fab/plugin-rewire-assets`, async () => {
       const {
         stderr,
         stdout,
@@ -48,7 +48,7 @@ describe('dir of static assets', () => {
       expect(stdout).toContain(
         `Build config leaves files outside of _assets dir: /index.html`
       )
-      expect(stdout).toContain(`You might need to add @fab/rewire-assets`)
+      expect(stdout).toContain(`You might need to add @fab/plugin-rewire-assets`)
       expect(stdout).toContain(`See https://fab.dev/packages/rewire-assets`)
       expect(stderr).toContain(`Build failed!`)
     })

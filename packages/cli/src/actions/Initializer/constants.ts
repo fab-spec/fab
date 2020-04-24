@@ -30,10 +30,10 @@ export const Frameworks = {
       '@fab/input-static': {
         dir: 'build',
       },
-      '@fab/serve-html': {
+      '@fab/plugin-render-html': {
         fallback: '/index.html',
       },
-      '@fab/rewire-assets': {},
+      '@fab/plugin-rewire-assets': {},
     },
   }),
   Gatsby: (): FrameworkInfo => ({
@@ -47,10 +47,10 @@ export const Frameworks = {
       '@fab/input-static': {
         dir: 'public',
       },
-      '@fab/serve-html': {
+      '@fab/plugin-render-html': {
         fallback: false,
       },
-      '@fab/rewire-assets': {},
+      '@fab/plugin-rewire-assets': {},
     },
   }),
   Next9: ({
@@ -72,7 +72,7 @@ export const Frameworks = {
             '@fab/input-static': {
               dir: 'out',
             },
-            '@fab/serve-html': {
+            '@fab/plugin-render-html': {
               fallback: '/index.html',
             },
           }
@@ -80,11 +80,11 @@ export const Frameworks = {
             '@fab/input-nextjs': {
               dir: '.next',
             },
-            '@fab/serve-html': {
+            '@fab/plugin-render-html': {
               fallback: false,
             },
           }),
-      '@fab/rewire-assets': {},
+      '@fab/plugin-rewire-assets': {},
     },
     async customConfig(root_dir: string) {
       if (export_build) return
@@ -127,10 +127,10 @@ export const GenericStatic = (
     '@fab/input-static': {
       dir: found_output_dir,
     },
-    '@fab/serve-html': {
+    '@fab/plugin-render-html': {
       fallback: '/index.html',
     },
-    '@fab/rewire-assets': {},
+    '@fab/plugin-rewire-assets': {},
   },
 })
 
