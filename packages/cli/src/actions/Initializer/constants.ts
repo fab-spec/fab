@@ -4,6 +4,8 @@ export const DEPRECATED_PACKAGES = [
   '@fab/compile',
   '@fab/nextjs',
   '@fab/serve',
+  '@fab/serve-html',
+  '@fab/rewire-assets',
 ]
 
 export const GITIGNORE_LINES = ['/.fab', '/fab.zip']
