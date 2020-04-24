@@ -9,16 +9,13 @@ import { confirm, log, prompt } from '../../helpers'
 import JSON5Config from '../../helpers/JSON5Config'
 import {
   BASE_CONFIG,
-  DEFAULT_DEPS,
-  FRAMEWORK_NAMES,
-  FrameworkInfo,
-  Frameworks,
-  GenericStatic,
+  DEFAULT_DEPS, DEPRECATED_PACKAGES,
   GITIGNORE_LINES,
   GUESSED_OUTPUT_DIRS,
   OUTPUT_DIR_EXAMPLES,
   PackageJson,
 } from './constants'
+import {FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic} from "./frameworks";
 
 const confirmAndRespond = async (
   message: string,
@@ -418,7 +415,7 @@ export default class Initializer {
 
   /* Make sure the repo is OK */
   private static async finalChecks(root_dir: string, package_json: PackageJson) {
-    const deprecated = ['@fab/static', '@fab/compile', '@fab/nextjs', '@fab/serve']
+    const deprecated = DEPRECATED_PACKAGES
     const deps = new Set([
       ...Object.keys(package_json.dependencies || {}),
       ...Object.keys(package_json.devDependencies || {}),
