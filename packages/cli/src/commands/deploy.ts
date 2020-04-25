@@ -1,7 +1,5 @@
 import { Command, flags } from '@oclif/command'
-import JSON5Config from '../helpers/JSON5Config'
 import { DEFAULT_CONFIG_FILENAME, DeployProviders, HOSTING_PROVIDERS } from '@fab/core'
-import Deployer from '../actions/Deployer'
 
 export default class Deploy extends Command {
   static description = 'Deploy a FAB to a hosting provider'

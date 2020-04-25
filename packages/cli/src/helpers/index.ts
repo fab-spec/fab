@@ -1,5 +1,4 @@
 import chalk from 'chalk'
-import { Guid } from 'guid-typescript'
 export * from './paths'
 import cli from 'cli-ux'
 import { IPromptOptions } from 'cli-ux/lib/prompt'
@@ -76,11 +75,6 @@ export const _log = (full_prefix: string) => {
 }
 
 export const log = _log('')
-
-export const short_guid = () =>
-  Guid.create()
-    .toString()
-    .split('-')[0]
 
 export const confirm = (message: string) => cli.confirm(format(message))
 export const prompt = (message: string, opts?: IPromptOptions) =>
