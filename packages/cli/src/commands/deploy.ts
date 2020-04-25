@@ -1,5 +1,11 @@
 import { Command, flags } from '@oclif/command'
-import { DEFAULT_CONFIG_FILENAME, DeployProviders, HOSTING_PROVIDERS } from '@fab/core'
+import {
+  DEFAULT_CONFIG_FILENAME,
+  DeployProviders,
+  FabActionsExports,
+  HOSTING_PROVIDERS,
+} from '@fab/core'
+import { JSON5Config } from '../'
 
 export default class Deploy extends Command {
   static description = 'Deploy a FAB to a hosting provider'
@@ -49,6 +55,7 @@ export default class Deploy extends Command {
       this.error(`You must provide a FAB file to deploy (e.g. fab.zip)`)
     }
     const config = await JSON5Config.readFrom(flags.config!)
+    const { Deployer } = require('@fab/actions') as FabActionsExports
     await Deployer.deploy(
       config,
       file,

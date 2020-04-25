@@ -4,8 +4,7 @@ import path from 'path'
 import util from 'util'
 // @ts-ignore
 import _zip from 'deterministic-zip'
-import { BuildFailedError } from '../errors'
-import { _log } from '../helpers'
+import { _log, BuildFailedError } from '@fab/cli'
 import pretty from 'pretty-bytes'
 
 const zip = util.promisify(_zip)

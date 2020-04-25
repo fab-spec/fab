@@ -1,23 +1,24 @@
 import {
-  HOSTING_PROVIDERS,
-  FabPackagerExports,
   ConfigTypes,
-  FabConfig,
   DeployProviders,
+  FabConfig,
+  FabPackagerExports,
+  HOSTING_PROVIDERS,
+  PackageFn,
 } from '@fab/core'
-import { _log, loadModule } from '../helpers'
-import { FabPackageError } from '../errors'
+import { _log, FabPackageError, loadModule } from '@fab/cli'
+
 const log = _log(`Packager`)
 
 export default class Packager {
-  static async package(
+  static package: PackageFn = async (
     file_path: string,
     config: FabConfig,
     target: DeployProviders,
     output_path: string | undefined,
     assets_url: string,
     env: string | undefined
-  ) {
+  ) => {
     log(`💎 💚fab package💚 💎\n`)
     const provider = HOSTING_PROVIDERS[target]
     if (!provider) {

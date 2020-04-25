@@ -1,5 +1,6 @@
 import { Command, flags } from '@oclif/command'
 import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
+import { JSON5Config } from '../'
 
 export default class Build extends Command {
   static description = 'Generate a FAB given the config (usually in fab.config.json5)'

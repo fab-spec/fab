@@ -1,3 +1,4 @@
+import fs from 'fs-extra'
 import {
   DeployConfig,
   DeployProviders,
@@ -6,15 +7,18 @@ import {
   FabSettings,
   HOSTING_PROVIDERS,
 } from '@fab/core'
-import JSON5Config from '../helpers/JSON5Config'
-import { FabDeployError, InvalidConfigError } from '../errors'
-import { _log, loadModule } from '../helpers'
-import fs from 'fs-extra'
+import {
+  JSON5Config,
+  _log,
+  FabDeployError,
+  InvalidConfigError,
+  loadModule,
+} from '@fab/cli'
 
 const log = _log('Deployer')
 
 export default class Deployer {
-  static async deploy(
+  static deploy: DeployFn = async (
     config: JSON5Config,
     file_path: string,
     package_dir: string,
@@ -23,7 +27,7 @@ export default class Deployer {
     env: string | undefined,
     assets_only: boolean,
     assets_already_deployed_at: string | undefined
-  ) {
+  ) => {
     log(`💎 💚fab deployer💚 💎\n`)
     const { deploy } = config.data
 

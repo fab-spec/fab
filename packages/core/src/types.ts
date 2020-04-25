@@ -98,6 +98,10 @@ export type FabMetadata = {
   plugin_metadata: PluginMetadata
 }
 
+export type ServerConstructor = (filename: string, args: ServerArgs) => ServerType
+export interface ServerType {
+  serve(runtimeType: SandboxType): Promise<void>
+}
 export type ServerArgs = {
   port: string
   cert: string | undefined
@@ -168,4 +172,38 @@ export type FabPackager<T extends ConfigTypes.Union> = (
 
 export type FabPackagerExports<T extends ConfigTypes.Union> = {
   createPackage: FabPackager<T>
+}
+
+export interface JSON5ConfigI {
+  data: FabConfig
+  write(file_path: string): Promise<void>
+}
+
+export type PackageFn = (
+  file_path: string,
+  config: FabConfig,
+  target: DeployProviders,
+  output_path: string | undefined,
+  assets_url: string,
+  env: string | undefined
+) => Promise<void>
+
+type DeployFn = (
+  config: JSON5ConfigI,
+  file_path: string,
+  package_dir: string,
+  server_host: DeployProviders | undefined,
+  assets_host: DeployProviders | undefined,
+  env: string | undefined,
+  assets_only: boolean,
+  assets_already_deployed_at: string | undefined
+) => Promise<string>
+
+export type FabActionsExports = {
+  Packager: {
+    package: PackageFn
+  }
+  Deployer: {
+    deploy: DeployFn
+  }
 }

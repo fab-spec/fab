@@ -4,9 +4,7 @@ import path from 'path'
 import semver from 'semver'
 import execa from 'execa'
 
-import { FabInitError } from '../../errors'
-import { confirm, log, prompt } from '../../helpers'
-import JSON5Config from '../../helpers/JSON5Config'
+import { confirm, FabInitError, JSON5Config, log, prompt } from '../'
 import {
   BASE_CONFIG,
   DEFAULT_DEPS,

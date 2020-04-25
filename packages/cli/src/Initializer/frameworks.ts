@@ -1,7 +1,7 @@
 import { BuildConfig } from '@fab/core'
 import path from 'path'
 import fs from 'fs-extra'
-import { log } from '../../helpers'
+import { log } from '../'
 
 export type FrameworkInfo = {
   name: string

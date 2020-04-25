@@ -1,7 +1,6 @@
-import { ProtoFab, FabConfig } from '@fab/core'
-import { _log } from '../helpers'
-import { BuildFailedError } from '../errors'
-import { rollupCompile } from '../helpers/rollup'
+import { FabConfig, ProtoFab } from '@fab/core'
+import { _log, BuildFailedError } from '@fab/cli'
+import { rollupCompile } from './rollup'
 
 const log = _log(`Compiler`)
 

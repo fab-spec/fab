@@ -1,8 +1,13 @@
 import { FabBuildStep, FabConfig, PluginArgs, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
-import { isRelative, relativeToConfig, _log } from '../helpers'
-import { BuildFailedError, InvalidConfigError } from '../errors'
+import {
+  _log,
+  BuildFailedError,
+  InvalidConfigError,
+  isRelative,
+  relativeToConfig,
+} from '@fab/cli'
 
 const log = _log('Builder')
 
