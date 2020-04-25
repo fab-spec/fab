@@ -1,4 +1,4 @@
-import { FabBuildStep, FabConfig, PluginArgs, ProtoFab } from '@fab/core'
+import { BuildFn, FabBuildStep, FabConfig, PluginArgs, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import {

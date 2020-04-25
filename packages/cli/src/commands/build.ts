@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command'
-import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
+import { DEFAULT_CONFIG_FILENAME, FabActionsExports } from '@fab/core'
 import { JSON5Config } from '../'
 
 export default class Build extends Command {
@@ -24,6 +24,7 @@ export default class Build extends Command {
   async run() {
     const { args, flags } = this.parse(Build)
     const config = await JSON5Config.readFrom(flags.config!)
+    const { Builder } = require('@fab/actions') as FabActionsExports
     await Builder.build(flags.config, config.data, flags['skip-cache'])
   }
 }

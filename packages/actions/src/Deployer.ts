@@ -5,6 +5,7 @@ import {
   ENV_VAR_SYNTAX,
   FabDeployerExports,
   FabSettings,
+  DeployFn,
   HOSTING_PROVIDERS,
 } from '@fab/core'
 import {
@@ -18,7 +19,7 @@ import {
 const log = _log('Deployer')
 
 export default class Deployer {
-  static deploy: DeployFn = async (
+  static async deploy(
     config: JSON5Config,
     file_path: string,
     package_dir: string,
@@ -27,7 +28,7 @@ export default class Deployer {
     env: string | undefined,
     assets_only: boolean,
     assets_already_deployed_at: string | undefined
-  ) => {
+  ) {
     log(`💎 💚fab deployer💚 💎\n`)
     const { deploy } = config.data
 

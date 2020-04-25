@@ -176,6 +176,7 @@ export type FabPackagerExports<T extends ConfigTypes.Union> = {
 
 export interface JSON5ConfigI {
   data: FabConfig
+  str_contents: string
   write(file_path: string): Promise<void>
 }
 
@@ -188,7 +189,7 @@ export type PackageFn = (
   env: string | undefined
 ) => Promise<void>
 
-type DeployFn = (
+export type DeployFn = (
   config: JSON5ConfigI,
   file_path: string,
   package_dir: string,
@@ -199,11 +200,20 @@ type DeployFn = (
   assets_already_deployed_at: string | undefined
 ) => Promise<string>
 
+export type BuildFn = (
+  config_path: string,
+  config: FabConfig,
+  skip_cache: boolean
+) => Promise<void>
+
 export type FabActionsExports = {
   Packager: {
     package: PackageFn
   }
   Deployer: {
     deploy: DeployFn
+  }
+  Builder: {
+    build: BuildFn
   }
 }
