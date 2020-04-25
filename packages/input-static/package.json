@@ -3,7 +3,9 @@
   "version": "0.0.7-alpha.33",
   "description": "Module to handle a directory of HTML & assets",
   "keywords": [
-    "fab"
+    "fab",
+    "fab-input",
+    "plugin"
   ],
   "homepage": "https://github.com/fab-spec/fab#readme",
   "bugs": {

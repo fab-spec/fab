@@ -3,7 +3,10 @@
   "version": "0.0.7-alpha.33",
   "description": "Uploads FAB assets to AWS S3",
   "keywords": [
-    "fab"
+    "aws",
+    "deploy",
+    "fab",
+    "s3"
   ],
   "homepage": "https://github.com/fab-spec/fab#readme",
   "bugs": {
