@@ -24,7 +24,7 @@ export default class Build extends Command {
   async run() {
     const { args, flags } = this.parse(Build)
     const config = await JSON5Config.readFrom(flags.config!)
-    const { Builder } = require('@fab/actions') as FabActionsExports
+    const { Builder } = require('@fab/actions').default as FabActionsExports
     await Builder.build(flags.config, config.data, flags['skip-cache'])
   }
 }

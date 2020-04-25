@@ -55,7 +55,7 @@ export default class Deploy extends Command {
       this.error(`You must provide a FAB file to deploy (e.g. fab.zip)`)
     }
     const config = await JSON5Config.readFrom(flags.config!)
-    const { Deployer } = require('@fab/actions') as FabActionsExports
+    const { Deployer } = require('@fab/actions').default as FabActionsExports
     await Deployer.deploy(
       config,
       file,
