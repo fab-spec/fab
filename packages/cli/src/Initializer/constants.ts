@@ -1,4 +1,4 @@
-export const DEFAULT_DEPS = ['@fab/cli', '@fab/server']
+export const DEFAULT_DEPS = ['@fab/cli', '@fab/server', '@fab/actions']
 export const DEPRECATED_PACKAGES = [
   '@fab/static',
   '@fab/compile',
