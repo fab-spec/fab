@@ -1,0 +1,28 @@
+{
+  "name": "fab-spec-tests",
+  "private": true,
+  "devDependencies": {
+    "execa": "^3.3.0",
+    "fs-extra": "^8.1.0",
+    "jest": "^24.9.0",
+    "tmp-promise": "^2.0.2",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.7.2"
+  },
+  "scripts": {
+    "test": "jest --detectOpenHandles --forceExit --maxWorkers=10"
+  },
+  "dependencies": {
+    "@types/jest": "^24.0.23",
+    "dotenv": "^8.2.0",
+    "globby": "^11.0.0",
+    "jju": "^1.4.0",
+    "md5-file": "^4.0.0",
+    "tslib": "^1.11.1"
+  },
+  "resolutions": {
+    "kind-of": ">=6.0.3",
+    "minimist": ">=0.2.1",
+    "acorn": ">=6.4.1"
+  }
+}

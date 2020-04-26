@@ -1,0 +1,47 @@
+name: FAB CI
+
+on:
+  push:
+    branches:
+      - next
+      - its-time
+
+jobs:
+  public_package_build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Setup e2e tests
+      run: |
+        cd tests
+        yarn
+      env:
+        CI: true
+    - name: "E2E: paths-exist"
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test paths-exist
+      env:
+        CI: true
+    - name: "E2E: create-react-app"
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test create-react-app
+      env:
+        CI: true
+    - name: "E2E: nextjs"
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test nextjs
+      env:
+        CI: true

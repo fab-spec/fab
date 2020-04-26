@@ -1,4 +1,14 @@
 node_modules
 yarn-error.log
+package-lock.json
+
 .docz
 .fab
+
+.nyc_output
+oclif.manifest.json
+tsconfig.tsbuildinfo
+lerna-debug.log
+
+/build/lib
+/build/esm

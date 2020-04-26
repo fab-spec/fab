@@ -1,37 +1,63 @@
 export default {
+  typescript: false,
   title: 'FAB — Frontend Application Bundles',
   description: 'Homepage for the FAB project & specification',
-  src: '../',
-  files: '{README.md,docs/**/*.mdx,packages/*/README.md}',
+  files: ['./{readmes,kb,guides}/*.{md|mdx}'],
+  themesDir: './',
+  public: 'public/',
+  menu: [
+    'Home',
+    {
+      name: 'Guides',
+      menu: ['Getting Started', 'Deploying', 'Giving Feedback', 'Deploying'],
+    },
+    {
+      name: 'Examples',
+      menu: ['NextJS on Cloudflare Workers'],
+    },
+    {
+      name: 'Knowledge Base',
+      menu: ['Configuration', 'Plugins', 'Settings'],
+    },
+  ],
   themeConfig: {
+    colors: { sidebar: { bg: '#EEF1F5' } },
     styles: {
       body: {
         fontVariantLigatures: 'common-ligatures',
-        background: '#fefefe'
+        background: 'green', //'#fefefe',
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";',
       },
-      h1: {
-        fontFamily: 'Source Sans Pro',
-        fontSize: [50, 55, 60],
-      },
-      h2: {
-        fontFamily: 'Source Sans Pro',
-      },
-      h3: {
-        fontWeight: 'bold'
-      },
+      // h1: {
+      //   fontSize: [40, 45, 50],
+      //   marginTop: '3rem',
+      //   marginBottom: '2rem',
+      //   letterSpacing: '-0.02em',
+      // },
+      // h2: {
+      //   fontWeight: 'bold',
+      // },
+      // h3: {
+      //   fontWeight: 'bold',
+      // },
       code: {
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
       },
+      p: {
+        fontSize: [16, 18, 18],
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";',
+      },
+    },
+    space: [0, 4, 8, 16, 32, 48, 64, 80, 100],
+    fonts: {
+      monospace: 'Operator Mono SSm, Inconsolata',
+      body:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";',
     },
     linesToScrollEditor: 999999,
     showPlaygroundEditor: false,
     codeSandbox: false,
-    logo: {
-      src: 'https://user-images.githubusercontent.com/23264/53997173-49745400-418f-11e9-87d0-60a9da6449e6.png',
-      width: '100%'
-    }
   },
-  htmlContext: {
-    favicon: '/public/favicon-32x32.png',
-  }
 }

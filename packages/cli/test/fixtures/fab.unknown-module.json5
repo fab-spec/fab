@@ -1,0 +1,7 @@
+{
+  plugins: {
+    '@fab/no-existo': {
+      other: 'ag',
+    },
+  },
+}

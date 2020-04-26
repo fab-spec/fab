@@ -1,0 +1,47 @@
+{
+  "name": "@fab/deployer-aws-s3",
+  "version": "0.1.2",
+  "description": "Uploads FAB assets to AWS S3",
+  "keywords": [
+    "aws",
+    "deploy",
+    "fab",
+    "s3"
+  ],
+  "homepage": "https://github.com/fab-spec/fab#readme",
+  "bugs": {
+    "url": "https://github.com/fab-spec/fab/issues"
+  },
+  "repository": "fab-spec/fab",
+  "license": "MIT",
+  "author": "Glen Maddern",
+  "files": [
+    "lib",
+    "esm"
+  ],
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
+  "scripts": {
+    "build": "yarn build:cjs && yarn build:esm",
+    "build:cjs": "tsc --module commonjs --outDir lib",
+    "build:esm": "tsc --module esnext --outDir esm",
+    "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
+    "clean": "rm -rf esm lib package-lock.json",
+    "prepack": "npm run clean && npm run build",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@fab/core": "0.1.2",
+    "@types/node": "^12.12.14",
+    "aws-sdk": "^2.655.0",
+    "fs-extra": "^9.0.0",
+    "globby": "^11.0.0",
+    "nanoid": "^3.0.2",
+    "pretty-bytes": "^5.3.0",
+    "zip-lib": "^0.5.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

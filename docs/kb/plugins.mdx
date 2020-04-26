@@ -1,0 +1,178 @@
+---
+name: 'Plugins'
+route: '/kb/plugins'
+menu: Knowledge Base
+---
+
+# Plugins
+
+What makes FAB plugins different to other JS web tooling is that plugins are can be invoked during _both_ compile time & at runtime. What this means is that a plugin can read/manipulate a FAB as it's being constructed, and _also_ inject the server-side code needed. This is best demonstrated with a simple example:
+
+```js
+// server/old-blog-url-format.js
+
+export const build = async (args, proto_fab) => {
+  // Attach an object to proto_fab.metadata, which is serialised
+  // and passed to your runtime as the second argument
+  proto_fab.metadata.blog_rewrites = {}
+
+  for (const filename of proto_fab.files.keys()) {
+    // Look for anything looking like /blog/123-new-post-format
+    const new_blog_format = filename.match(/^\/blog\/(\d+)/)
+    if (new_blog_format) {
+      const blog_id = new_blog_format[1]
+      // Make a record that this `blog_id` now lives at `filename`
+      proto_fab.metadata.blog_rewrites[blog_id] = filename
+    }
+  }
+}
+
+export const runtime = (args, metadata) => {
+  // Runtime functions are synchronous in order to perform any
+  // setup needed.
+  const { blog_rewrites } = metadata
+
+  // They return an async function that can intervene on any request
+  return async ({ request, settings, url }) => {
+    // Only respond on request for the old URL pattern /articles/123
+    const old_blog_format = url.pathname.match(/^\/articles\/(\d+)/)
+    if (!old_blog_format) return
+
+    // Same as before, pull the `blog_id` off the URL
+    const blog_id = old_blog_format[1]
+    const new_blog_url = blog_rewrites[blog_id]
+    if (!new_blog_url) {
+      // If that `blog_id` doesn't exist, return a 404
+      return new Response(null, { status: 404 })
+    } else {
+      // Otherwise return a 301 Moved Permanently
+      return new Response(null, {
+        status: 301,
+        headers: {
+          Location: new_blog_url,
+        },
+      })
+    }
+  }
+}
+```
+
+## Build-time vs Run-time
+
+Though you _can_ use a single file to export both a `build` and `runtime` export, for anything more sophisticated you're going to want to have separate files. This is because the two commands run at different times, in quite different environments. `build` is called by the CLI, so has access to the full NodeJS ecosystem of tools, and direct access to the filesystem. `runtime`, on the other hand, is **compiled into the FAB itself**. This means it, and its dependencies, _need to be compatible with the [FAB Runtime Environment](/kb/fab-runtime-environment)_, which is pure JS, no NodeJS at all.
+
+## Plugin resolution
+
+We handle (read: hide from the user) this complexity by allowing a single plugin entry to represent both, while keeping the files separate. For example, for a plugin config like:
+
+```json5
+{
+  plugins: {
+    '@fab/some-plugin': {
+      /* ... */
+    },
+  },
+}
+```
+
+We first look to resolve `@fab/some-plugin/runtime` and `@fab/some-plugin/build`, which are then required and integrated at the relevant stage (and assumed to only export their respective functions). If _neither_ of those files exist, we require `@fab/some-plugin` and look for `build` and `runtime` in its exports.
+
+Note: most `@fab/xxx` plugins do not have a `main` entry in their `package.json` file, meaning they cannot be required without adding `/build` or `/runtime`. It's a bit weird, but it's the best I could come up with!
+
+Also note: this works the same with relative path plugins, like `./src/fab-server`:
+
+```json5
+{
+  plugins: {
+    './src/fab-server': {
+      /* ... */
+    },
+  },
+}
+```
+
+This will "just work" if `src/fab-server` is a directory with `build.js` and/or `runtime.js` inside it, or if it is a file `src/fab-server.js` that exports `build` or `runtime` functions.
+
+You can also be more explicit if you like:
+
+```json5
+{
+  plugins: {
+    './src/fab-server/build': {
+      /* ... */
+    },
+    './src/fab-server/runtime': {
+      /* ... */
+    },
+  },
+}
+```
+
+## Typescript support
+
+The FAB project is 100% Typescript, so we support defining your plugins in Typescript as well. In the above examples, anywhere `.js` is referenced, a `.ts` file should work as well.
+
+Note: we don't [currently](https://github.com/fab-spec/fab/issues/65) do any typechecking during build, that's up to you. Usually IDE integration is enough to guide you for simple plugins, anything more complex probably needs its own toolchain anyway.
+
+Relevant types can be imported from `@fab/core`:
+
+```ts
+import {
+  ProtoFab,
+  PluginArgs,
+  PluginMetadataContent,
+  FabBuildStep,
+  FabPluginRuntime,
+  PluginMetadata,
+  FabSettings,
+} from '@fab/core'
+
+interface MyPluginArgs extends PluginArgs {
+  'any-args'?: number
+  'you-want'?: RegExp
+  'from-config'?: string
+}
+
+interface MyPluginMetadata extends PluginMetadata {
+  my_plugin_name: {
+    my_metadata_object: {
+      // Define what you want to pass from build to runtime
+    }
+  }
+}
+
+export const build: FabBuildStep = async (
+  args: MyPluginArgs,
+  proto_fab: ProtoFab<MyPluginMetadata>
+) => {
+  // Make changes to proto_fab
+}
+
+export const runtime: FabPluginRuntime = (
+  args: MyPluginArgs,
+  metadata: MyPluginMetadata
+) => {
+  const { my_metadata_object } = metadata.my_plugin_name
+
+  return async ({
+    request,
+    settings,
+    url,
+  }: {
+    request: Request
+    settings: FabSettings
+    url: URL
+  }) => {
+    // Return undefined to skip plugin, a Response to respond,
+    // or a Directive for more advanced behaviour
+  }
+}
+```
+
+## Restrictions
+
+At the moment, the plugin loading system isn't as sophisticated as we'd like it to be. These issues track our progress towards each of them. If there's anything else you're interested in proposing [raise an issue](https://github.com/fab-spec/fab/issues/new).
+
+- [Plugins that use ES Modules or Typescript syntax can't be used for the `build` step](https://github.com/fab-spec/fab/issues/66)
+- [Typescript plugins aren't typechecked](https://github.com/fab-spec/fab/issues/65)
+- [Runtime plugins aren't checked for validity before being passed to the Compiler](https://github.com/fab-spec/fab/issues/67)

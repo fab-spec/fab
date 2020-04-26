@@ -1,0 +1,82 @@
+{
+  "name": "@fab/cli",
+  "version": "0.1.2",
+  "description": "The CLI entry-point for the FAB ecosystem",
+  "keywords": [
+    "fab",
+    "oclif"
+  ],
+  "homepage": "https://github.com/fab-spec/fab",
+  "bugs": "https://github.com/fab-spec/fab/issues",
+  "repository": "fab-spec/fab",
+  "license": "MIT",
+  "author": "Glen Maddern @geelen",
+  "files": [
+    "/bin",
+    "/lib",
+    "/templates",
+    "/oclif.manifest.json"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "bin": {
+    "fab": "./bin/run"
+  },
+  "scripts": {
+    "build": "yarn build:cjs",
+    "build:cjs": "tsc --module commonjs --outDir lib",
+    "build:watch": "yarn build:cjs --watch --preserveWatchOutput",
+    "clean": "rm -rf esm lib package-lock.json",
+    "coverage": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "oclif:generate": "oclif-dev manifest && oclif-dev readme",
+    "prepack": "npm run clean && npm run build && npm run oclif:generate",
+    "postpack": "rm -f oclif.manifest.json",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "dependencies": {
+    "@fab/core": "0.1.2",
+    "@fab/server": "0.1.2",
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^2",
+    "@types/fs-extra": "^8.0.1",
+    "@types/jju": "^1.4.1",
+    "@types/node": "^10",
+    "@types/prettier": "^1.19.0",
+    "@types/semver": "^6.2.0",
+    "chalk": "^3.0.0",
+    "cli-ux": "^5.4.5",
+    "execa": "^4.0.0",
+    "fs-extra": "^8.1.0",
+    "jju": "^1.4.0",
+    "json-keys-sort": "^2.0.0",
+    "pkg-up": "^3.1.0",
+    "prettier": "^1.19.1",
+    "pretty-bytes": "^5.3.0",
+    "regex-parser": "^2.2.10",
+    "semver": "^7.1.1",
+    "shelljs": "^0.8.3",
+    "typescript": "^3.7.5"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@types/capture-console": "^1.0.0",
+    "capture-console": "^1.0.1",
+    "tmp-promise": "^2.0.2"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "98ce34423f906c0a9f66f2f87643e64b841e359a",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "fab",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  }
+}

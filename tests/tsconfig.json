@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "importHelpers": true,
+    "module": "commonjs",
+    "strict": true,
+    "target": "es2017",
+    "composite": true,
+    "types": ["node", "jest"],
+    "esModuleInterop": true
+  },
+  "include": ["**/*"]
+}

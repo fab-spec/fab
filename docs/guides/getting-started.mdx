@@ -1,0 +1,68 @@
+---
+name: 'Getting Started'
+route: '/guides/getting-started'
+menu: Guides
+---
+
+# Getting Started with FABs
+
+> **Note:** FAB v1 is in _public pre-release_. Things will change, but [any feedback](/guides/feedback) you can give is greatly appreciated.
+
+FABs are a [special zip file](/kb/fab-structure) that contains a complete snapshot of your application: all your server-side code, all your client-side assets, and it can be deployed [anywhere that runs JS](/guides/deploying).
+
+## Installing
+
+```
+yarn global add @fab/cli
+npm install -g @fab/cli
+```
+
+> **Note:** in the future, you will not need to do this, instead you can use `npx fab` and `yarn dlx fab` to do everything without global installation. But [not yet](https://github.com/fab-spec/fab/issues/71).
+
+## `fab init`
+
+You can configure a repository to build a FAB by running `fab init` in the repo:
+
+```sh
+fab init
+```
+
+The following frameworks are supported:
+
+* Create React App
+* NextJS 9+
+
+Anything else will be treated as a "static" build i.e. a project with no server-side component. It'll look for a command like `npm run build` to generate a directory like `build`, `dist` or `public`, which should cover everything from Angular to Vue to Gatsby. But as always, [leave an issue](https://github.com/fab-spec/fab/issues) if something you think _should_ happen _doesn't_ happen.
+
+## `fab build`
+
+`fab init` will add `build:fab` and `fab:build` scripts to your `package.json`, but both of them call `fab build` under the hood.
+
+```sh
+# runs npm run build, then builds the FAB
+yarn build:fab
+npm run build:fab
+
+# alias for fab build, below
+yarn fab:build
+npm run fab:build
+
+# generates a FAB according to your fab.config.json5
+fab build
+```
+
+If it works, you should get a `fab.zip` file output.
+
+## `fab serve`
+
+```sh
+fab serve fab.zip
+fab serve fab.zip --port=3001
+```
+
+Runs your FAB in a local NodeJS Express server.
+
+## `fab deploy`
+
+Will prompt you for your Cloudflare workers & Amazon S3 info and deploy your FAB!
+

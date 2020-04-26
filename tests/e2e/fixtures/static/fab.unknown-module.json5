@@ -1,0 +1,10 @@
+{
+  plugins: {
+    '@fab/input-static': {
+      dir: 'src',
+    },
+    '@fab/no-existo': {
+      other: 'ag',
+    },
+  },
+}

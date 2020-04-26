@@ -1,0 +1,8 @@
+{
+  plugins: {
+    '@fab/render-html': {},
+    '@fab/rewrite-assets': {
+      treat_as_immutable: ['/static/*'],
+    },
+  },
+}
