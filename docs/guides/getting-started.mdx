@@ -10,21 +10,12 @@ menu: Guides
 
 FABs are a [special zip file](/kb/fab-structure) that contains a complete snapshot of your application: all your server-side code, all your client-side assets, and it can be deployed [anywhere that runs JS](/guides/deploying).
 
-## Installing
-
-```
-yarn global add @fab/cli
-npm install -g @fab/cli
-```
-
-> **Note:** in the future, you will not need to do this, instead you can use `npx fab` and `yarn dlx fab` to do everything without global installation. But [not yet](https://github.com/fab-spec/fab/issues/71).
-
 ## `fab init`
 
-You can configure a repository to build a FAB by running `fab init` in the repo:
+You can configure a repository to build a FAB by running `npx fab init` in the repo:
 
 ```sh
-fab init
+npx fab init
 ```
 
 The following frameworks are supported:
