@@ -1,8 +1,12 @@
 {
   "name": "@fab/core",
-  "version": "0.0.7-alpha.33",
+  "version": "0.1.2",
   "private": false,
   "description": "Common code for all FAB projects",
+  "keywords": [
+    "fab",
+    "types"
+  ],
   "homepage": "https://github.com/fab-spec/fab",
   "repository": "fab-spec/fab",
   "license": "MIT",
@@ -10,7 +14,6 @@
   "files": [
     "lib",
     "esm",
-    "src",
     "runtime.js"
   ],
   "main": "lib/index.js",

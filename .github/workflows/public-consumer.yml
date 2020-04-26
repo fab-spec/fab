@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - next
+      - its-time
 
 jobs:
   public_package_build:
@@ -20,14 +21,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Globally install @fab/cli
-      run: |
-        yarn global add @fab/cli
     - name: Setup e2e tests
       run: |
         cd tests
         yarn
-        yarn add @fab/cli
       env:
         CI: true
     - name: "E2E: paths-exist"

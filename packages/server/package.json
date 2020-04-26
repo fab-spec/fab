@@ -1,9 +1,10 @@
 {
   "name": "@fab/server",
-  "version": "0.0.7-alpha.33",
+  "version": "0.1.2",
   "description": "NodeJS FAB Server",
   "keywords": [
-    "fab"
+    "fab",
+    "server"
   ],
   "homepage": "https://github.com/fab-spec/fab#readme",
   "bugs": {
@@ -29,8 +30,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.33",
-    "@fab/sandbox-node-vm": "0.0.7-alpha.33",
+    "@fab/core": "0.1.2",
+    "@fab/sandbox-node-vm": "0.1.2",
     "@fly/v8env": "^0.54.0",
     "@types/concat-stream": "^1.6.0",
     "@types/express": "^4.17.2",

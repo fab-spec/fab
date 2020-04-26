@@ -1,6 +1,14 @@
 import fs from 'fs-extra'
 
-import { FetchApi, getContentType, SandboxType, ServerArgs } from '@fab/core'
+import {
+  FetchApi,
+  getContentType,
+  SandboxType,
+  ServerArgs,
+  ServerType,
+  FabServerExports,
+  ServerConstructor,
+} from '@fab/core'
 import { InvalidConfigError, JSON5Config } from '@fab/cli'
 import { readFilesFromZip } from './utils'
 import v8_sandbox from './sandboxes/v8-isolate'
@@ -17,8 +25,8 @@ function isRequest(fetch_res: Request | Response): fetch_res is Request {
   )
 }
 
-export default class Server {
-  private filename: string
+class Server implements ServerType {
+  filename: string
   private port: number
   private config: string
   private env: string | undefined
@@ -165,3 +173,9 @@ export default class Server {
     return overrides
   }
 }
+
+const createServer: ServerConstructor = (filename: string, args: ServerArgs) =>
+  new Server(filename, args)
+
+const serverExports: FabServerExports = { createServer }
+export default serverExports

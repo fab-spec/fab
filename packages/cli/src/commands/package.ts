@@ -1,7 +1,11 @@
-import { DEFAULT_CONFIG_FILENAME, HOSTING_PROVIDERS, DeployProviders } from '@fab/core'
+import {
+  DEFAULT_CONFIG_FILENAME,
+  DeployProviders,
+  FabActionsExports,
+  HOSTING_PROVIDERS,
+} from '@fab/core'
 import { Command, flags } from '@oclif/command'
-import Packager from '../actions/Packager'
-import JSON5Config from '../helpers/JSON5Config'
+import { JSON5Config } from '../'
 
 const hosts = Object.keys(HOSTING_PROVIDERS)
 export default class Deploy extends Command {
@@ -46,6 +50,7 @@ export default class Deploy extends Command {
       this.error(`You must provide a target. Available options: ${hosts.join(', ')}`)
     }
     const config = await JSON5Config.readFrom(flags.config!)
+    const { Packager } = require('@fab/actions').default as FabActionsExports
     await Packager.package(
       file,
       config.data,

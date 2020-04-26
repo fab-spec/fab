@@ -1,11 +1,11 @@
 import fs from 'fs-extra'
-import { FabConfig, a_sume, s_sume, REGEXP_VALUE_PATTERN } from '@fab/core'
+import { a_sume, FabConfig, REGEXP_VALUE_PATTERN, s_sume, JSON5ConfigI } from '@fab/core'
 import jju from 'jju'
 import regexParser from 'regex-parser'
-import { MissingConfig, InvalidConfigError } from '../errors'
+import { InvalidConfigError, MissingConfig } from '../errors'
 import prettier from 'prettier'
 
-export default class JSON5Config {
+export default class JSON5Config implements JSON5ConfigI {
   str_contents: string
   data: FabConfig
 

@@ -1,9 +1,12 @@
 {
   "name": "@fab/deployer-aws-lambda",
-  "version": "0.0.7-alpha.33",
+  "version": "0.1.2",
   "description": "Packages and deploys FABs to AWS Lambda@Edge",
   "keywords": [
-    "fab"
+    "aws",
+    "deploy",
+    "fab",
+    "lambda"
   ],
   "homepage": "https://github.com/fab-spec/fab#readme",
   "bugs": {
@@ -30,7 +33,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.33",
+    "@fab/core": "0.1.2",
     "@types/nanoid": "^2.1.0",
     "@types/node": "^12.12.14",
     "deterministic-zip": "^1.1.0",

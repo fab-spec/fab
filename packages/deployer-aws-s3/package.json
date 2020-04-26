@@ -1,9 +1,12 @@
 {
   "name": "@fab/deployer-aws-s3",
-  "version": "0.0.7-alpha.33",
+  "version": "0.1.2",
   "description": "Uploads FAB assets to AWS S3",
   "keywords": [
-    "fab"
+    "aws",
+    "deploy",
+    "fab",
+    "s3"
   ],
   "homepage": "https://github.com/fab-spec/fab#readme",
   "bugs": {
@@ -29,7 +32,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.33",
+    "@fab/core": "0.1.2",
     "@types/node": "^12.12.14",
     "aws-sdk": "^2.655.0",
     "fs-extra": "^9.0.0",

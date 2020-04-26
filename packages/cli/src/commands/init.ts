@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command'
 import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
-import Initializer from '../actions/Initializer'
+import Initializer from '../Initializer'
 
 export default class Init extends Command {
   static description = Initializer.description

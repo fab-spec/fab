@@ -1,12 +1,12 @@
 import fs from 'fs-extra'
 import { cmd, shell } from '../utils'
 import { ExecaChildProcess } from 'execa'
-import { JSON5Config } from '@fab/cli'
 import globby from 'globby'
 // @ts-ignore
 import md5file from 'md5-file/promise'
 import { buildFab, CRA_PORTS, getPorts, getWorkingDir } from './helpers'
 import path from 'path'
+import jju from 'jju'
 
 const getPort = getPorts(CRA_PORTS)
 
@@ -48,9 +48,12 @@ describe('Create React App E2E Test', () => {
     // with a different version of Webpack.
     await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
     await shell(`cat .env`, { cwd })
-    await shell(`fab init -y ${process.env.PUBLIC_PACKAGES ? '' : '--skip-install'}`, {
-      cwd,
-    })
+    await shell(
+      process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
+      {
+        cwd,
+      }
+    )
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
 
@@ -161,10 +164,9 @@ describe('Create React App E2E Test', () => {
         }
         `
       )
-
-      const config = await JSON5Config.readFrom(`${cwd}/fab.config.json5`)
-      config.data.plugins['./fab-plugins/hello-world'] = {}
-      await config.write(`${cwd}/fab.config.json5`)
+      const config = jju.parse(await fs.readFile(`${cwd}/fab.config.json5`, 'utf8'))
+      config.plugins['./fab-plugins/hello-world'] = {}
+      await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
 
       await buildFab(cwd)
       const port = getPort()
@@ -187,10 +189,10 @@ describe('Create React App E2E Test', () => {
       const first_fab_md5 = await md5file(`${cwd}/fab.zip`)
       console.log({ first_fab_md5 })
 
-      const config = await JSON5Config.readFrom(`${cwd}/fab.config.json5`)
-      config.data.settings!.production.E2E_TEST = 'extremely working!'
-      config.data.settings!.production.OTHER_SETTING = 'production value'
-      await config.write(`${cwd}/fab.config.json5`)
+      const config = jju.parse(await fs.readFile(`${cwd}/fab.config.json5`, 'utf8'))
+      config.settings.production.E2E_TEST = 'extremely working!'
+      config.settings.production.OTHER_SETTING = 'production value'
+      await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
 
       await buildFab(cwd)
       const second_fab_md5 = await md5file(`${cwd}/fab.zip`)
@@ -206,8 +208,8 @@ describe('Create React App E2E Test', () => {
       expect(homepage_response).toContain(`"E2E_TEST":"extremely working!"`)
       expect(homepage_response).toContain(`"OTHER_SETTING":"production value"`)
 
-      config.data.settings!.staging = { E2E_TEST: 'totes overridden!' }
-      await config.write(`${cwd}/fab.config.json5`)
+      config.settings!.staging = { E2E_TEST: 'totes overridden!' }
+      await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
       await buildFab(cwd)
       const third_fab_md5 = await md5file(`${cwd}/fab.zip`)
       console.log({ third_fab_md5 })

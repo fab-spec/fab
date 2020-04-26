@@ -40,9 +40,12 @@ describe('Create React App E2E Test', () => {
   })
 
   it('should configure the NextJS project to produce FABs', async () => {
-    await shell(`fab init -y ${process.env.PUBLIC_PACKAGES ? '' : '--skip-install'}`, {
-      cwd,
-    })
+    await shell(
+      process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
+      {
+        cwd,
+      }
+    )
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
     expect(files_after_fab_init).toMatch('next.config.js')

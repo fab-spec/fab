@@ -12,7 +12,7 @@ export const getPorts = (first_port: number) => {
 
 export const buildFab = async (cwd: string, global = false) => {
   await shell(`rm -f fab.zip`, { cwd })
-  await shell(global ? `fab build` : `yarn fab:build`, { cwd })
+  await shell(global ? `npx fab build` : `yarn fab:build`, { cwd })
 
   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
   expect(files_after_fab_build).toMatch('fab.zip')
