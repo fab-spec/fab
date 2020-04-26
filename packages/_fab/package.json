@@ -4,11 +4,14 @@
   "description": "An alias for @fab/cli",
   "main": "index.js",
   "scripts": {
-    "prepack": "cp ../cli/README.md ."
+    "prepack": "echo PREAMBLE.md > README.md && echo ../cli/README.md >> README.md"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fab-spec/fab.git"
+  },
+  "bin": {
+    "fab": "./index"
   },
   "keywords": [
     "fab"
