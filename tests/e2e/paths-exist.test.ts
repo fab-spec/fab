@@ -10,7 +10,8 @@ if (!process.env.PUBLIC_PACKAGES) {
   })
 } else {
   it('should NOT have our packages installed (since we are using npx)', async () => {
-    const { stdout } = await execa.command(`which fab`)
+    const { stdout } = await execa.command(`which fab || echo 'not found!'`)
     expect(stdout).not.toMatch(/\/fab/)
+    expect(stdout).toMatch(/not found!/)
   })
 }
