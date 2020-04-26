@@ -1,6 +1,6 @@
 {
   "name": "@fab/plugin-rewire-assets",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Module to handle files outside _assets",
   "keywords": [
     "assets",
@@ -32,7 +32,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.1.1",
+    "@fab/core": "0.1.2",
     "@types/istextorbinary": "^2.3.0",
     "@types/mime-types": "^2.1.0",
     "@types/node": "^12.12.14",
