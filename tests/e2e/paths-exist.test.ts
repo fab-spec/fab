@@ -1,4 +1,5 @@
 import execa from 'execa'
+import { expectError } from '../utils'
 
 if (!process.env.PUBLIC_PACKAGES) {
   it('should have our packages installed', async () => {
@@ -10,8 +11,6 @@ if (!process.env.PUBLIC_PACKAGES) {
   })
 } else {
   it('should NOT have our packages installed (since we are using npx)', async () => {
-    const { stdout } = await execa.command(`which fab || echo 'not found!'`)
-    expect(stdout).not.toMatch(/\/fab/)
-    expect(stdout).toMatch(/not found!/)
+    await expectError(`which fab`)
   })
 }
