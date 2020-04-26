@@ -12,7 +12,7 @@ const package_dir = path.resolve(__dirname, '../packages')
 const seen_once: Set<string> = new Set()
 
 chokidar
-  .watch(path.resolve(__dirname, '{esm,lib}/*/src/**/*.{js,map}'))
+  .watch(path.resolve(__dirname, '{esm,lib}/*/src/**/*.{d.ts,js,map}'))
   .on('all', (event, source) => {
     const match = source.match(/fab\/build\/(esm|lib)\/([\w-]+)/)
     if (match) {
@@ -23,7 +23,7 @@ chokidar
       const target_path = path.join(package_dir, target_file)
       fs.ensureFile(target_path).then(() =>
         fs.copyFile(source, target_path).then(() => {
-          if (target_path.match(/\/lib\/|\.map$/)) return
+          if (target_path.match(/\/lib\/|\.map|\.d\.ts$/)) return
           if (!seen_once.has(target_path)) {
             seen_once.add(target_path)
           } else {
