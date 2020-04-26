@@ -48,9 +48,12 @@ describe('Create React App E2E Test', () => {
     // with a different version of Webpack.
     await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
     await shell(`cat .env`, { cwd })
-    await shell(`fab init -y ${process.env.PUBLIC_PACKAGES ? '' : '--skip-install'}`, {
-      cwd,
-    })
+    await shell(
+      process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
+      {
+        cwd,
+      }
+    )
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
 
