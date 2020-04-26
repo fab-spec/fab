@@ -1,0 +1,25 @@
+{
+  "name": "fab",
+  "version": "0.1.0",
+  "description": "An alias for @fab/cli",
+  "main": "index.js",
+  "scripts": {
+    "prepack": "cp ../cli/README.md ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fab-spec/fab.git"
+  },
+  "keywords": [
+    "fab"
+  ],
+  "author": "Glen Maddern",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fab-spec/fab/issues"
+  },
+  "homepage": "https://github.com/fab-spec/fab#readme",
+  "dependencies": {
+    "@fab/cli": "*"
+  }
+}
