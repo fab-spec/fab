@@ -13,6 +13,7 @@
     "fab:deploy": "dotenv -- fab deploy fab.zip"
   },
   "devDependencies": {
+    "@fab/actions": "^0.1.1",
     "@fab/cli": "^0.1.1",
     "@fab/input-static": "^0.1.1",
     "@fab/plugin-render-html": "^0.1.1",
