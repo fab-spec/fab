@@ -6,6 +6,7 @@ import {
   SandboxType,
   ServerArgs,
   ServerType,
+  FabServerExports,
   ServerConstructor,
 } from '@fab/core'
 import { InvalidConfigError, JSON5Config } from '@fab/cli'
@@ -176,4 +177,5 @@ class Server implements ServerType {
 const createServer: ServerConstructor = (filename: string, args: ServerArgs) =>
   new Server(filename, args)
 
-export default createServer
+const serverExports: FabServerExports = { createServer }
+export default serverExports

@@ -217,3 +217,7 @@ export type FabActionsExports = {
     build: BuildFn
   }
 }
+
+export type FabServerExports = {
+  createServer: ServerConstructor
+}
