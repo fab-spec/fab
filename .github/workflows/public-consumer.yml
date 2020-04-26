@@ -25,7 +25,6 @@ jobs:
       run: |
         cd tests
         yarn
-        yarn add @fab/cli
       env:
         CI: true
     - name: "E2E: paths-exist"
