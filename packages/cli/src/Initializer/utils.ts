@@ -11,7 +11,7 @@ export const mergeScriptsAfterBuild = (
   console.log({ script_names })
   script_names.forEach((script_name, i) => {
     console.log(script_name)
-    console.log(isBuildScript(script_names[i - 1]))
+    if (i !== 0) console.log(isBuildScript(script_names[i - 1]))
     console.log(isBuildScript(script_name))
     if (i !== 0 && isBuildScript(script_names[i - 1]) && !isBuildScript(script_name)) {
       Object.assign(merged_scripts, framework_scripts)
