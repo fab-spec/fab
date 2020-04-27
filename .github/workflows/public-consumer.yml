@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - next
-      - its-time
+      - master
 
 jobs:
   public_package_build:
