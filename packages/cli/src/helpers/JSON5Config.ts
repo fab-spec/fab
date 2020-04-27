@@ -53,11 +53,6 @@ export default class JSON5Config implements JSON5ConfigI {
   }
 
   async write(file_path: string) {
-    await fs.writeFile(
-      file_path,
-      prettier.format(jju.update(this.str_contents, this.data), {
-        parser: 'json5',
-      })
-    )
+    await fs.writeFile(file_path, jju.update(this.str_contents, this.data))
   }
 }
