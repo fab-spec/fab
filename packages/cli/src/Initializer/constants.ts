@@ -38,7 +38,7 @@ export const BASE_CONFIG: string = `// For more information, see https://fab.dev
   }
 }
 `
-type StringMap = {
+export type StringMap = {
   [key: string]: string
 }
 export type PackageJson = {
