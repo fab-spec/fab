@@ -56,7 +56,6 @@ describe('Create React App E2E Test', () => {
     )
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
-    await shell(`cat fab.config.json5`, { cwd })
 
     const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
     package_json.scripts = {
