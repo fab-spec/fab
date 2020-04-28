@@ -8,6 +8,7 @@ import {
   isRelative,
   relativeToConfig,
 } from '@fab/cli'
+import * as path from 'path'
 
 const log = _log('Builder')
 
@@ -39,7 +40,7 @@ type Plugins = {
 
 export default class Builder {
   static async build(config_path: string, config: FabConfig, skip_cache: boolean) {
-    log(`💎 💚fab build💚 💎\n`)
+    log.announce(`fab build`)
     log(`Reading plugins from config.`)
     const { build_plugins, runtime_plugins } = await this.getPlugins(config_path, config)
 
@@ -155,11 +156,9 @@ export default class Builder {
     }
 
     log(`Found the following 💛build-time💛 plugins:
-    🖤${build_plugins.map((b) => b.plugin_name).join('\n')}🖤
-    `)
+    🖤${build_plugins.map((b) => b.plugin_name).join('\n')}🖤`)
     log(`and the following 💛runtime💛 plugins:
-    🖤${runtime_plugins.join('\n')}🖤
-    `)
+    🖤${runtime_plugins.map((b) => path.relative(process.cwd(), b)).join('\n')}🖤`)
 
     return { build_plugins, runtime_plugins }
   }

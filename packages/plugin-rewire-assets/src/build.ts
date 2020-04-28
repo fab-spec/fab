@@ -7,10 +7,11 @@ import {
 } from './types'
 import hasha from 'hasha'
 import path from 'path'
-import { InvalidConfigError } from '@fab/cli'
+import { InvalidConfigError, _log } from '@fab/cli'
 // @ts-ignore
 import { isBinaryPromise } from 'istextorbinary'
 import { DEFAULT_IMMUTABILITY_CHECK } from './constants'
+const log = _log('@fab/plugin-rewire-assets')
 
 export async function build(
   args: RewireAssetsArgs,
@@ -44,6 +45,7 @@ export async function build(
       }
     }
   }
+  log(`Inlining 💛${to_inline.length}💛 asset${to_inline.length === 1 ? '' : 's'}.`)
 
   const inlined_assets: InlineAssets = {}
   for (const filename of to_inline) {
@@ -56,6 +58,12 @@ export async function build(
     proto_fab.files.delete(filename)
   }
 
+  log(`💚✔💚 Done.`)
+  log(
+    `Generating server code to rewire 💛${to_rename.length}💛 asset${
+      to_rename.length === 1 ? '' : 's'
+    }.`
+  )
   const renamed_assets: RenamedAssets = {}
   for (const filename of to_rename) {
     const contents = proto_fab.files.get(filename)!

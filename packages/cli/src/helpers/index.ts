@@ -23,7 +23,7 @@ function format(str: string, indent = 0, first_line_indent = 0) {
   )
 }
 
-const WIDTH = 17
+const WIDTH = 14
 type StrFn = (d: string) => string
 export const _log = (full_prefix: string) => {
   let needs_shortening = full_prefix.length > WIDTH
@@ -37,7 +37,8 @@ export const _log = (full_prefix: string) => {
       console.log(format(str))
     } else {
       if (needs_shortening) {
-        console.log(format(`🖤[${full_prefix}]🖤 ${str}`, indent))
+        const first = full_prefix.slice(0, WIDTH - 1)
+        console.log(format(`🖤[${first}…]🖤 ${str}`, indent))
         needs_shortening = false
       } else {
         console.log(format(`${prefix} ${str}`, indent))
@@ -70,6 +71,9 @@ export const _log = (full_prefix: string) => {
   }
   log.note = (str: string) => {
     log(`💚NOTE:💚 ${str}`)
+  }
+  log.announce = (str: string) => {
+    log(`💎 💚${str}💚 💎`)
   }
   return log
 }
