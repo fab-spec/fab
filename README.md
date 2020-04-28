@@ -14,7 +14,7 @@ Frontend Application Bundles (💎 FABs) are a **bundle format for frontend appl
 A bit like a Docker container, but specifically for frontend, they **unify server-side JavaScript with static sites & single page applications (SPAs)** in a single format, allowing you to separate _what you're building_ from _where you're planning to host it_.
 
 <h5 align="center">
-  <img width="450px" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/63136503-b5e46080-c015-11e9-9f69-c974e11d9528.png"/>
+  <img width="600px" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/80478903-1ddd9b80-8946-11ea-8199-23468fb1f18f.png"/>
 </h5>
 
 > 👉 **Want to get started?** Head to [fab.dev/guides/getting-started](https://fab.dev/guides/getting-started) to start building your own FABs, or read on for more information about the project.
