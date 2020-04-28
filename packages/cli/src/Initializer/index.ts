@@ -15,6 +15,7 @@ import {
   PackageJson,
 } from './constants'
 import { FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic } from './frameworks'
+import { mergeScriptsAfterBuild } from './utils'
 
 const confirmAndRespond = async (
   message: string,
@@ -383,10 +384,7 @@ export default class Initializer {
       JSON.stringify(
         {
           ...package_json,
-          scripts: {
-            ...package_json.scripts,
-            ...framework.scripts,
-          },
+          scripts: mergeScriptsAfterBuild(package_json.scripts, framework.scripts),
         },
         null,
         2
