@@ -34,6 +34,12 @@ FAB builds use a `fab.config.json5` file:
       API_URL: 'https://staging.lol.com',
     },
   },
+  deploy: {
+    'deploy-provider-name': {
+      setting: 'value',
+      secret: '@ENV_VAR'
+    }
+  }
 }
 ```
 

@@ -4,7 +4,7 @@ import path from 'path'
 import semver from 'semver'
 import execa from 'execa'
 
-import { confirm, FabInitError, JSON5Config, log, prompt } from '../'
+import { _log, confirm, FabInitError, JSON5Config, prompt } from '../'
 import {
   BASE_CONFIG,
   DEFAULT_DEPS,
@@ -16,6 +16,7 @@ import {
 } from './constants'
 import { FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic } from './frameworks'
 import { mergeScriptsAfterBuild } from './utils'
+const log = _log('Initializer')
 
 const confirmAndRespond = async (
   message: string,
@@ -61,7 +62,8 @@ export default class Initializer {
     skip_framework_detection: boolean
   ) {
     this.yes = yes
-    log(`💎 💚fab init: ${this.description}💚 💎\n`)
+    log.announce(`fab init — ${this.description}`)
+
     /* First, figure out the nearest package.json */
     const package_json_path = await pkgUp()
     if (!package_json_path) {
@@ -148,7 +150,7 @@ export default class Initializer {
 
     if (framework) {
       log(
-        `Found a 💛${framework.name}💛 project. We know exactly how to configure this 👍\n`
+        `💚Success!💚 Found a 💛${framework.name}💛 project. We know exactly how to configure this 👍\n`
       )
       return framework
     } else {
@@ -221,6 +223,10 @@ export default class Initializer {
   }
 
   static async determineProjectType(package_json: PackageJson) {
+    log(`Searching for a 💛known project type💛...
+    🖤If your project is not correctly detected,🖤
+    🖤or if the generated config is incorrect,🖤
+    🖤please leave some feedback at🖤 💛https://fab.dev/guides/known-project-types💛`)
     return (
       (await this.isNext9(package_json)) ||
       (await this.isCreateReactApp(package_json)) ||

@@ -60,5 +60,8 @@
   "version": "0.0.0",
   "dependencies": {
     "chokidar": "^3.3.1"
-  }
+  },
+  "homepage": "https://github.com/fab-spec/fab",
+  "bugs": "https://github.com/fab-spec/fab/issues",
+  "repository": "fab-spec/fab"
 }

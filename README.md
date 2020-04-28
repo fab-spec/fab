@@ -105,9 +105,11 @@ _**Frontend Application Bundles**_ are the container format that work equally we
 
 ## Contributors
 
+This project is being led by [Glen Maddern](https://twitter.com/glenmaddern), previously a creator of [Styled Components](https://styled-components.com) & [CSS Modules](https://github.com/css-modules/css-modules), and supported by the whole team at [Linc](https://linc.sh), which is a pre-configured CI/CD pipeline for sites built with FABs.
+
 ### Code Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](https://fab.dev/guides/contributing)].
+Thank you to everyone who has contributed code so far. [[Get involved yourself](https://fab.dev/guides/contributing), if you like].
 <a href="https://github.com/fab-spec/fab/graphs/contributors"><img src="https://opencollective.com/fab/contributors.svg?width=890&button=false" /></a>
 
 ### Financial Contributors
