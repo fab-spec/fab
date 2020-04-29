@@ -192,6 +192,7 @@ describe('Create React App E2E Test', () => {
       const config = jju.parse(await fs.readFile(`${cwd}/fab.config.json5`, 'utf8'))
       config.settings.production.E2E_TEST = 'extremely working!'
       config.settings.production.OTHER_SETTING = 'production value'
+      config.settings.production._GOVERNMENT_SECRETS = 'DO_NOT_INJECT'
       await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
 
       await buildFab(cwd)
@@ -207,6 +208,8 @@ describe('Create React App E2E Test', () => {
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
       expect(homepage_response).toContain(`"E2E_TEST":"extremely working!"`)
       expect(homepage_response).toContain(`"OTHER_SETTING":"production value"`)
+      expect(homepage_response).not.toContain(`_GOVERNMENT_SECRETS`)
+      expect(homepage_response).not.toContain(`DO_NOT_INJECT`)
 
       config.settings!.staging = { E2E_TEST: 'totes overridden!' }
       await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
