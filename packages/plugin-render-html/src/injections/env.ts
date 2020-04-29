@@ -14,8 +14,8 @@ export function generateReplacements(config: EnvInjectionConfig, settings: FabSe
       sanitised_settings[key] = value
     }
   }
-  const settings_json = JSON.stringify(settings)
+  const settings_json = JSON.stringify(sanitised_settings)
   return {
-    FAB_ENV_INJECTION: `<script>window.${name}=${sanitised_settings};</script>`,
+    FAB_ENV_INJECTION: `<script>window.${name}=${settings_json};</script>`,
   }
 }

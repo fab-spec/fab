@@ -41,3 +41,64 @@ export default function runtime() {
   }
 }
 ```
+
+```js
+// dreamcode.js
+import { Runtime } from '@fab/core'
+
+export default Runtime.responder(({ url }) => {
+  if (url.pathname.startsWith('/api/')) {
+    // snip off the /api part of the URL
+    const route = url.pathname.slice(4)
+    // then
+    return fetch(`https://api.example.com${route}`)
+  }
+})
+```
+
+```js
+// dreamcode.js
+import { Runtime } from '@fab/core'
+
+Runtime.addResponder(({ url }) => {
+  if (url.pathname.startsWith('/api/')) {
+    // snip off the /api part of the URL
+    const route = url.pathname.slice(4)
+    // then
+    return fetch(`https://api.example.com${route}`)
+  }
+})
+```
+
+```js
+// dreamcode.js
+import { Runtime } from '@fab/core'
+
+Runtime.on('/api/:route', (match) => fetch(`https://api.example.com${match.route}`))
+```
+
+```js
+// dreamcode.js
+import { Runtime } from '@fab/core'
+
+Runtime.withSetup(({ importantSetupShit }) => {
+  Runtime.on('/api/:route', (match) => fetch(`https://api.example.com${match.route}`))
+})
+```
+
+```js
+// dreamcode.js
+import { Runtime } from '@fab/core'
+
+Runtime.proxy('/api/:route', 'https://api.example.com/:route')
+```
+
+```js
+// dreamcode.js
+import { withSetup } from '@fab/core'
+
+withSetup((Runtime, { importantSetupShit }) => {
+  Runtime.on('/api/:route', (match) => fetch(`https://api.example.com${match.route}`))
+})
+```
+
