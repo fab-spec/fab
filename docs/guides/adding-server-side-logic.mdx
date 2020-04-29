@@ -102,3 +102,15 @@ withSetup((Runtime, { importantSetupShit }) => {
 })
 ```
 
+
+```js
+// dreamcode.js
+import { Redirects } from '@fab/core'
+
+Redirects.push({
+  from: "/api/*",
+  to: "https://api.example.com/:splat",
+  status: 200,
+  force: true
+})
+```
