@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@fab/core": "0.1.3",
+    "@fab/cli": "0.1.3",
     "@types/node": "^12.12.14",
     "@types/path-to-regexp": "^1.7.0",
     "acorn": "^7.1.0",
