@@ -24,17 +24,13 @@ export function loadModule(log: Logger, module_name: string, paths?: string[]) {
 
 async function tryLoadingMultiple(module_names: string[], use_execa = false) {
   const attempts: { [name: string]: { module?: any; error?: Error } } = {}
-  console.log({ module_names, use_execa })
   await Promise.all(
     module_names.map(async (name) => {
       try {
         if (use_execa) {
           const this_we_run = `console.log(require.resolve('${name}'))`
-          console.log({ this_we_run })
           const module_path = (await execa(`node`, ['-e', this_we_run])).stdout.trim()
-          console.log({ module_path })
           const module = tryLoading(module_path)
-          console.log({ module })
           attempts[name] = { module }
         } else {
           const module = tryLoading(name)
