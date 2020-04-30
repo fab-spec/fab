@@ -1,6 +1,6 @@
 {
   "name": "fab",
-  "version": "0.1.3",
+  "version": "0.1.4-alpha.0",
   "description": "An alias for @fab/cli",
   "main": "fab.js",
   "scripts": {
@@ -27,6 +27,6 @@
   },
   "homepage": "https://github.com/fab-spec/fab#readme",
   "dependencies": {
-    "@fab/cli": "0.1.3"
+    "@fab/cli": "0.1.4-alpha.0"
   }
 }
