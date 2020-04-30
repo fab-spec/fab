@@ -31,7 +31,7 @@ export default class Packager {
 
     const { package_name } = provider
     log(`Loading packager code from ${package_name}`)
-    const packager = loadModule(package_name, [process.cwd()]) as FabPackagerExports<
+    const packager = loadModule(log, package_name) as FabPackagerExports<
       ConfigTypes.Union
     >
     log(`💚✔💚 Done.`)

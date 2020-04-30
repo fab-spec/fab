@@ -58,7 +58,6 @@ export default class Serve extends Command {
       this._help()
     }
     const server_pkg = require('@fab/server').default as FabServerExports
-    console.log({ server_pkg })
     const server = server_pkg.createServer(file, flags as ServerArgs)
     await server.serve(
       flags['experimental-v8-sandbox'] ? SandboxType.v8isolate : SandboxType.nodeVm

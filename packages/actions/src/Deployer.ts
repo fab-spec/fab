@@ -142,7 +142,7 @@ export default class Deployer {
 
   private static loadPackage<T>(provider: string, fn: string): T {
     const pkg = HOSTING_PROVIDERS[provider].package_name
-    const loaded = loadModule(pkg, [process.cwd()])
+    const loaded = loadModule(log, pkg)
 
     if (typeof loaded[fn] !== 'function') {
       throw new FabDeployError(`${pkg} doesn't export a '${fn}' method!`)

@@ -1,7 +1,24 @@
 import chalk from 'chalk'
-export * from './paths'
 import cli from 'cli-ux'
 import { IPromptOptions } from 'cli-ux/lib/prompt'
+
+export * from './paths'
+export * from './modules'
+
+export const confirmAndRespond = async (
+  log: Logger,
+  message: string,
+  if_yes: string = `Ok, proceeding...`,
+  if_no: string = `Ok, exiting`
+) => {
+  const response = await confirm(message)
+  if (response) {
+    log(if_yes)
+  } else {
+    log(if_no)
+  }
+  return response
+}
 
 function format(str: string, indent = 0, first_line_indent = 0) {
   return (
@@ -75,6 +92,8 @@ export const _log = (full_prefix: string) => {
   log.announce = (str: string) => {
     log(`💎 💚${str}💚 💎`)
   }
+  log.confirmAndRespond = (message: string, if_yes?: string, if_no?: string) =>
+    confirmAndRespond(log, message, if_yes, if_no)
   return log
 }
 
@@ -84,11 +103,4 @@ export const confirm = (message: string) => cli.confirm(format(message))
 export const prompt = (message: string, opts?: IPromptOptions) =>
   cli.prompt(format(message), opts)
 
-export const loadModule = (module_name: string, paths: string[]) => {
-  try {
-    return require(require.resolve(module_name, { paths }))
-  } catch (e) {
-    log.error(`ERROR: FAILED TO LOAD ${module_name}.`)
-    throw e
-  }
-}
+export type Logger = ReturnType<typeof _log>
