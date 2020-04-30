@@ -1,29 +1,33 @@
 {
   "name": "fab-spec",
+  "version": "0.0.0",
   "private": true,
+  "homepage": "https://github.com/fab-spec/fab",
+  "bugs": "https://github.com/fab-spec/fab/issues",
+  "repository": "fab-spec/fab",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "build": "lerna run build --parallel",
     "build:codesandbox": "lerna exec -- npm pack",
+    "build:watch": "run-p build:watch:*",
+    "build:watch:cjs": "yarn tsc --module commonjs --outDir build/lib --watch --preserveWatchOutput > /dev/null",
     "build:watch:copy": "ts-node build/watch.ts",
     "build:watch:esm": "yarn tsc --module esnext --outDir build/esm --watch --preserveWatchOutput --pretty | grep .",
-    "build:watch:cjs": "yarn tsc --module commonjs --outDir build/lib --watch --preserveWatchOutput > /dev/null",
-    "build:watch": "run-p build:watch:*",
     "clean": "rm -rf build/{esm,lib} && lerna run clean --parallel",
     "link-all": "lerna exec -- yarn link",
     "prettify": "prettier \"packages/**/*.{js,ts,tsx}\" --write",
+    "publish:latest": "lerna publish from-package --yes --dist-tag latest",
+    "publish:next": "lerna publish from-package --yes --dist-tag next",
+    "release:patch-latest": "yarn clean && yarn version:patch && yarn publish:latest && git push && git push --tags",
+    "release:prerelease-latest": "yarn clean && yarn version:prerelease && yarn publish:latest && git push && git push --tags",
     "test": "lerna run test --stream --parallel",
     "test:watch": "lerna run test --stream --parallel -- --watch",
     "typecheck": "tsc --noEmit",
-    "release:patch-latest": "yarn clean && yarn version:patch && yarn publish:latest && git push && git push --tags",
-    "release:prerelease-latest": "yarn clean && yarn version:prerelease && yarn publish:latest && git push && git push --tags",
     "version:minor": "lerna version minor --exact --force-publish --yes --no-push",
     "version:patch": "lerna version patch --exact --force-publish --yes --no-push",
-    "version:prerelease": "lerna version prerelease --exact --force-publish --yes --no-push",
-    "publish:latest": "lerna publish from-package --yes --dist-tag latest",
-    "publish:next": "lerna publish from-package --yes --dist-tag next"
+    "version:prerelease": "lerna version prerelease --exact --force-publish --yes --no-push"
   },
   "husky": {
     "hooks": {
@@ -39,11 +43,13 @@
     "@types/node": "^12.12.14",
     "@types/node-fetch": "^2.5.4",
     "chai": "^4.2.0",
+    "chokidar": "^3.3.1",
     "cross-fetch": "^3.0.4",
     "husky": "^3.1.0",
     "lerna": "^3.19.0",
     "lint-staged": "^9.5.0",
     "mocha": "^6.2.2",
+    "nock": "^12.0.3",
     "npm-run-all": "^4.1.5",
     "nyc": "^13",
     "prettier": "^1.19.1",
@@ -53,15 +59,8 @@
     "typescript": "~3.7.2"
   },
   "resolutions": {
+    "**/levelup/bl": ">=0.9.5",
     "kind-of": ">=6.0.3",
-    "minimist": ">=0.2.1",
-    "**/levelup/bl": ">=0.9.5"
-  },
-  "version": "0.0.0",
-  "dependencies": {
-    "chokidar": "^3.3.1"
-  },
-  "homepage": "https://github.com/fab-spec/fab",
-  "bugs": "https://github.com/fab-spec/fab/issues",
-  "repository": "fab-spec/fab"
+    "minimist": ">=0.2.1"
+  }
 }
