@@ -2,15 +2,44 @@
 import { useRef, useState } from 'react'
 import { jsx, Layout as BaseLayout, Main, Container } from 'theme-ui'
 import { Global, css } from '@emotion/core'
+import styled from '@emotion/styled'
 
 import { Header } from 'gatsby-theme-docz/src/components/Header'
 import { Sidebar } from 'gatsby-theme-docz/src/components/Sidebar'
 import * as styles from 'gatsby-theme-docz/src/components/Layout/styles'
 
+const systemFont = css`
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+`
+
+const Content = styled.div`
+  max-width: 800px;
+  padding: 2rem;
+  margin: 0 auto;
+
+  h1 {
+    ${systemFont};
+    margin: 4rem 0 4rem;
+    font-size: 3rem;
+    font-weight: 300;
+
+    text-align: center;
+  }
+  h2,
+  h3 {
+    margin-top: 3rem;
+    font-weight: 600;
+    font-size: 1.75rem;
+  }
+`
+
 const global = css`
   body {
     margin: 0;
     padding: 0;
+    font-variant-ligatures: common-ligatures;
+    ${systemFont};
   }
   '.icon-link': {
     display: none;
@@ -37,12 +66,7 @@ export const Layout = ({ children }) => {
             onBlur={() => setOpen(false)}
             onClick={() => setOpen(false)}
           />
-          <Container
-            sx={{ ...styles.content, width: '80%', '& h2': { marginTop: '4rem' } }}
-            data-testid="main-container"
-          >
-            {children}
-          </Container>
+          <Content data-testid="main-container">{children}</Content>
         </div>
       </Main>
     </BaseLayout>

@@ -11,7 +11,7 @@
 
 Frontend Application Bundles (💎 FABs) are a **bundle format for frontend applications**.
 
-A bit like a Docker container, but specifically for frontend, they **unify server-side JavaScript with static sites & single page applications (SPAs)** in a single format, allowing you to separate _what you're building_ from _where you're planning to host it_.
+They **unify static sites, single page applications (SPAs), server-side rendering (SSR) & server-side logic** in a single format, one that is universally compatible with and **easy to deploy to a wide range of hosting providers**, even your own infrastructure!
 
 <h5 align="center">
   <img width="600px" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/80478903-1ddd9b80-8946-11ea-8199-23468fb1f18f.png"/>
@@ -25,9 +25,9 @@ Because FABs include [server-side JavaScript](https://fab.dev/kb/fab-structure) 
 
 - Deploy a [server-rendered NextJS app to Cloudflare workers](https://fab.dev/examples/nextjs-on-cloudflare-workers).
 - [Add redirect rules](https://fab.dev/examples/add-redirect-rules-to-create-react-app) to a Create React App project, without ejecting.
-- Use Gatsby to generate a logged-in vs logged-out homepage and [switch which one is served](https://fab.dev/examples/switch-gatsby-landing-page) depending on a cookie.
-- [Guard your application](https://fab.dev/examples/preflight-check-authentication) against unauthenticated users.
-- Deploy every commit to a unique URL to [share progress with colleagues](https://fab.dev/examples/share-progress-with-colleagues).
+- Use Gatsby to generate a logged-in vs logged-out homepage and [dynamically choose which one to serve](https://fab.dev/examples/switch-gatsby-landing-page) to each user.
+- [Guard your application](https://fab.dev/examples/preflight-check-authentication) against unauthenticated users, by checking a cookie before you serve any JS or HTML.
+- Deploy every commit to a unique URL to [share your progress with colleagues](https://fab.dev/examples/share-progress-with-colleagues).
 - ...and more
 
 > 👉 Head to [the examples directory](https://github.com/fab-spec/fab/tree/next/examples) on GitHub for the full list of suggested use-cases, or [join our Discord channel](https://discord.gg/Qvj3pJY) to suggest your own.
@@ -36,15 +36,15 @@ Because FABs include [server-side JavaScript](https://fab.dev/kb/fab-structure) 
 
 At the moment, the FAB project is focussing on supporting the following projects, to try to give the best possible experience for the most users.
 
-> 👉 If your app is in the following list, `fab init` should be all you need to run to get started!
+> 👉 If your app is in the following list, `npx fab init` should be all you need to run to get started!
 >
 > See [fab.dev/guides/getting-started](https://fab.dev/guides/getting-started) for more info.
 
 - Client-side rendered React (e.g. Create React App & friends)
 - Server-side, client-side & static pre-rendered NextJS
-- VueJS, AngularJS, Svelte etc that compile to static assets
-- Anything else that's fully static (i.e. any app that can be hosted on Netlify or S3)
-- Custom server-side rendered applications, with [some conversion](https://fab.dev/guides/converting-custom-ssr).
+- VueJS, AngularJS, Svelte etc projects that compile to static assets
+- Anything else that's fully static (i.e. any app that can be hosted on S3, Netlify, Surge, etc.)
+- An existing server-side rendered applications, with [some conversion](https://fab.dev/guides/converting-custom-ssr).
 
 However, _any_ server-side application that runs in (or compiles to) JavaScript, plus any amount of client-side code, should be able to be supported. If your application is not covered by the above list, it's worth reading the [FAB project goals](https://fab.dev/kb/project-goals) and then [getting involved](https://fab.dev/guides/giving-feedback) to make sure your needs will be supported in future.
 

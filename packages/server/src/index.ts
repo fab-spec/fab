@@ -114,13 +114,7 @@ class Server implements ServerType {
             let fetch_res = await renderer.render(
               // @ts-ignore
               fetch_req as Request,
-              Object.assign(
-                {
-                  __fab_server: '@fab/server',
-                },
-                production_settings,
-                settings_overrides
-              )
+              Object.assign({}, production_settings, settings_overrides)
             )
             if (isRequest(fetch_res)) {
               console.log('GOT ME A NODE BOI REQUEST')

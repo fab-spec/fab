@@ -20,7 +20,7 @@ const log = _log('Initializer')
 
 const confirmAndRespond = async (
   message: string,
-  if_yes: string = `Ok, proceeding...\n`,
+  if_yes: string = `Ok, proceeding...`,
   if_no: string = `Ok, exiting`
 ) => {
   const response = await confirm(message)
@@ -103,8 +103,8 @@ export default class Initializer {
     if (this.yes) {
       log.info(`Proceeding...`)
     } else {
-      const confirmed = await confirmAndRespond(
-        `💚Ready to proceed.💚 This process will:
+      const confirmed = await confirmAndRespond(`
+        💚Ready to proceed.💚 This process will:
         • Generate a 💛fab.config.json5💛 file for your project
         • Add 💛build:fab💛 and related scripts to your 💛package.json💛
         • Add 💛.fab💛 and 💛fab.zip💛 to your 💛.gitignore💛
@@ -112,8 +112,7 @@ export default class Initializer {
           use_yarn ? 'yarn' : 'npm'
         }💛
 
-        Good to go? [yN]`
-      )
+        Good to go? [yN]`)
       if (!confirmed) return
     }
 
@@ -150,7 +149,7 @@ export default class Initializer {
 
     if (framework) {
       log(
-        `💚Success!💚 Found a 💛${framework.name}💛 project. We know exactly how to configure this 👍\n`
+        `💚Success!💚 Found a 💛${framework.name}💛 project. We know exactly how to configure this 👍`
       )
       return framework
     } else {

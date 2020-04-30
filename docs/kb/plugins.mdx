@@ -6,7 +6,23 @@ menu: Knowledge Base
 
 # Plugins
 
-What makes FAB plugins different to other JS web tooling is that plugins are can be invoked during _both_ compile time & at runtime. What this means is that a plugin can read/manipulate a FAB as it's being constructed, and _also_ inject the server-side code needed. This is best demonstrated with a simple example:
+What makes FAB plugins different to other JS web tooling is that **plugins can be invoked during _both_ compile time & at runtime**. What this means is that a plugin can read/manipulate a FAB as it's being constructed, and _also_ inject the server-side code needed.
+
+## Runtime-only vs Build-time-and-runtime plugins
+
+A plugin can be as simple as a single-file, but in that case it _can only have a runtime component_ (see the [Adding Server-Side Logic](/guides/adding-server-side-logic) guide for simple examples). Runtime-only plugins cover a lot of the small, project-specific customisations you'll need: adding proxying, redirects, checking cookies, setting headers, that sort of thing.
+
+For plugins that affect _both_ the build phase and runtime phase of a FAB build, two files are needed: a `build.js` (or `.ts`) and `runtime.js` (or `.ts`). See the [Plugin Resolution](#plugin-resolution) and [Using Typescript](#using-typescript) sections below for the specifics.
+
+Two separate files are required because they're executed in very different ways:
+
+* `build` is called by the `@fab/cli`, so has access to the full NodeJS ecosystem of tools, and direct access to the filesystem, and can use CLI utilities like `log`, `prompt` or `confirm`. This file needs to be in a format interpretable by your current NodeJS version
+* `runtime` is **compiled into the FAB itself** using Rollup. This means it, and its dependencies, _need to be compatible with the [FAB Runtime Environment](/kb/fab-runtime-environment)_, so 
+
+
+## Build-time example: Generating 301 redirects for old blog URLs
+
+
 
 ```js
 // server/old-blog-url-format.js
@@ -57,10 +73,6 @@ export const runtime = (args, metadata) => {
 }
 ```
 
-## Build-time vs Run-time
-
-Though you _can_ use a single file to export both a `build` and `runtime` export, for anything more sophisticated you're going to want to have separate files. This is because the two commands run at different times, in quite different environments. `build` is called by the CLI, so has access to the full NodeJS ecosystem of tools, and direct access to the filesystem. `runtime`, on the other hand, is **compiled into the FAB itself**. This means it, and its dependencies, _need to be compatible with the [FAB Runtime Environment](/kb/fab-runtime-environment)_, which is pure JS, no NodeJS at all.
-
 ## Plugin resolution
 
 We handle (read: hide from the user) this complexity by allowing a single plugin entry to represent both, while keeping the files separate. For example, for a plugin config like:
@@ -108,7 +120,7 @@ You can also be more explicit if you like:
 }
 ```
 
-## Typescript support
+## Using Typescript
 
 The FAB project is 100% Typescript, so we support defining your plugins in Typescript as well. In the above examples, anywhere `.js` is referenced, a `.ts` file should work as well.
 
@@ -176,3 +188,19 @@ At the moment, the plugin loading system isn't as sophisticated as we'd like it 
 - [Plugins that use ES Modules or Typescript syntax can't be used for the `build` step](https://github.com/fab-spec/fab/issues/66)
 - [Typescript plugins aren't typechecked](https://github.com/fab-spec/fab/issues/65)
 - [Runtime plugins aren't checked for validity before being passed to the Compiler](https://github.com/fab-spec/fab/issues/67)
+
+
+For a given entry in the `plugins` key of your `fab.config.json5` file, e.g.
+
+```json5
+{
+  plugins: {
+    './some-local-file': {/*...*/},
+    '@some-org/package-name': {/*...*/},
+  }
+}
+```
+
+The FAB compiler will attempt to resolve `'./some-local-file` _relative to the location of the `fab.config.json5`, then look for `./some-local-file/runtime` if that's not found. The same happens with the NPM package: first `'@some-org/package-name'` is attempted, then `
+
+Though you _can_ use a single file to export both a `build` and `runtime` export, for anything more sophisticated you're going to want to have separate files. This is because the two commands run at different times, in quite different environments. `build` is called by the CLI, so has access to the full NodeJS ecosystem of tools, and direct access to the filesystem. `runtime`, on the other hand, is **compiled into the FAB itself**. This means it, and its dependencies, _need to be compatible with the [FAB Runtime Environment](/kb/fab-runtime-environment)_, which is pure JS, no NodeJS at all.
