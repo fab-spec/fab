@@ -1,4 +1,4 @@
-name: FAB CI
+name: FAB Public Package CI
 
 on:
   push:

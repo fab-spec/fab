@@ -105,7 +105,12 @@ _**Frontend Application Bundles**_ are the container format that work equally we
 
 ## Contributors
 
-This project is being led by [Glen Maddern](https://twitter.com/glenmaddern), previously a creator of [Styled Components](https://styled-components.com) & [CSS Modules](https://github.com/css-modules/css-modules), and supported by the whole team at [Linc](https://linc.sh), which is a pre-configured CI/CD pipeline for sites built with FABs.
+This project is being led by [Glen Maddern](https://github.com/geelen), previously a creator of [Styled Components](https://styled-components.com) & [CSS Modules](https://github.com/css-modules/css-modules), and supported by the whole team at [Linc](https://linc.sh), which is a pre-configured CI/CD pipeline for sites built with FABs.
+
+Special thanks also must go to:
+
+- [Jed Schmidt](https://github.com/jed) for donating the `fab` package name on NPM, replacing his super original and inventive [streaming JavaScript framework](https://www.npmjs.com/package/fab/v/0.5.3-original) from 2011!
+- [Charlie Gleason](https://github.com/superhighfives) for the awesome FAB logo design!
 
 ### Code Contributors
 
