@@ -17,12 +17,11 @@
 <!-- usage -->
 
 ```sh-session
-$ npm install -g @fab/cli
-$ fab COMMAND
+$ npx fab COMMAND
 running command...
-$ fab (-v|--version|version)
-@fab/cli/0.1.4-alpha.0 darwin-x64 node-v13.12.0
-$ fab --help [COMMAND]
+$ npx fab (-v|--version|version)
+@fab/cli/0.1.3 darwin-x64 node-v13.12.0
+$ npx fab --help [COMMAND]
 USAGE
   $ fab COMMAND
 ...
@@ -59,7 +58,7 @@ EXAMPLES
   $ fab build --config=fab.config.json5
 ```
 
-_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.1.4-alpha.0/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.1.3/lib/commands/build.js)_
 
 ## `fab deploy [FILE]`
 
@@ -93,7 +92,7 @@ EXAMPLE
   $ fab deploy fab.zip
 ```
 
-_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.1.4-alpha.0/lib/commands/deploy.js)_
+_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.1.3/lib/commands/deploy.js)_
 
 ## `fab help [COMMAND]`
 
@@ -133,7 +132,7 @@ EXAMPLES
   $ fab init --config=fab.config.json5
 ```
 
-_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.1.4-alpha.0/lib/commands/init.js)_
+_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.1.3/lib/commands/init.js)_
 
 ## `fab package [FILE]`
 
@@ -162,7 +161,7 @@ EXAMPLE
   $ fab package --target=aws-lambda-edge fab.zip
 ```
 
-_See code: [lib/commands/package.js](https://github.com/fab-spec/fab/blob/v0.1.4-alpha.0/lib/commands/package.js)_
+_See code: [lib/commands/package.js](https://github.com/fab-spec/fab/blob/v0.1.3/lib/commands/package.js)_
 
 ## `fab serve [FILE]`
 
@@ -195,6 +194,6 @@ EXAMPLES
   $ fab serve --env=staging fab.zip
 ```
 
-_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.1.4-alpha.0/lib/commands/serve.js)_
+_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.1.3/lib/commands/serve.js)_
 
 <!-- commandsstop -->

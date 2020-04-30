@@ -9,12 +9,18 @@ export default {
     'Home',
     {
       name: 'Guides',
-      menu: ['Getting Started', 'Deploying', 'Giving Feedback', 'Deploying'],
+      menu: [
+        'Getting Started',
+        'Deploying',
+        'Adding Server-Side Logic',
+        'Giving Feedback',
+        'Deploying',
+      ],
     },
-    {
-      name: 'Examples',
-      menu: ['NextJS on Cloudflare Workers'],
-    },
+    //{
+    //  name: 'Examples',
+    //  menu: ['NextJS on Cloudflare Workers'],
+    //},
     {
       name: 'Knowledge Base',
       menu: ['Configuration', 'Plugins', 'Settings'],
@@ -23,12 +29,6 @@ export default {
   themeConfig: {
     colors: { sidebar: { bg: '#EEF1F5' } },
     styles: {
-      body: {
-        fontVariantLigatures: 'common-ligatures',
-        background: 'green', //'#fefefe',
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";',
-      },
       code: {
         whiteSpace: 'nowrap',
       },
