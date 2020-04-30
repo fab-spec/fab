@@ -17,12 +17,11 @@
 <!-- usage -->
 
 ```sh-session
-$ npm install -g @fab/cli
-$ fab COMMAND
+$ npx fab COMMAND
 running command...
-$ fab (-v|--version|version)
+$ npx fab (-v|--version|version)
 @fab/cli/0.1.3 darwin-x64 node-v13.12.0
-$ fab --help [COMMAND]
+$ npx fab --help [COMMAND]
 USAGE
   $ fab COMMAND
 ...
