@@ -17,11 +17,11 @@ chokidar
     copyPackageReadmeToDocs(source)
   })
 
-chokidar
-  .watch(path.resolve(__dirname, '../../examples/*/README.md'))
-  .on('all', (event, source) => {
-    copyExampleReadmeToDocs(source)
-  })
+//chokidar
+//  .watch(path.resolve(__dirname, '../../examples/*/README.md'))
+//  .on('all', (event, source) => {
+//    copyExampleReadmeToDocs(source)
+//  })
 
 chokidar.watch(path.resolve(__dirname, '../../README.md')).on('all', (event, source) => {
   copyHomePackageReadmeToDocs(source)

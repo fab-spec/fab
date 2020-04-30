@@ -23,14 +23,14 @@ They **unify static sites, single page applications (SPAs), server-side renderin
 
 Because FABs include [server-side JavaScript](https://fab.dev/kb/fab-structure) capabilities but deploy as easily as [uploading a ZIP file](https://fab.dev/guides/deploying), you can start to add server-side logic without the complexity of managing servers. Making it easy to do things like:
 
-- Deploy a [server-rendered NextJS app to Cloudflare workers](https://fab.dev/examples/nextjs-on-cloudflare-workers).
-- [Add redirect rules](https://fab.dev/examples/add-redirect-rules-to-create-react-app) to a Create React App project, without ejecting.
-- Use Gatsby to generate a logged-in vs logged-out homepage and [dynamically choose which one to serve](https://fab.dev/examples/switch-gatsby-landing-page) to each user.
-- [Guard your application](https://fab.dev/examples/preflight-check-authentication) against unauthenticated users, by checking a cookie before you serve any JS or HTML.
-- Deploy every commit to a unique URL to [share your progress with colleagues](https://fab.dev/examples/share-progress-with-colleagues).
+- Deploy a server-rendered NextJS app to Cloudflare workers.
+- Add redirect rules to a Create React App project, without ejecting.
+- Use Gatsby to generate a logged-in vs logged-out homepage and dynamically choose which one to serve to each user.
+- Guard your application against unauthenticated users, by checking a cookie before you serve any JS or HTML.
+- Deploy every commit to a unique URL to share your progress with colleagues.
 - ...and more
 
-> 👉 Head to [the examples directory](https://github.com/fab-spec/fab/tree/next/examples) on GitHub for the full list of suggested use-cases, or [join our Discord channel](https://discord.gg/Qvj3pJY) to suggest your own.
+> 👉 These examples will be being fleshed out in the coming days, for now the best place to learn is the [Adding Server-Side Logic](https://fab.dev/guides/adding-server-side-logic) step of the [guide](https://fab.dev/guides/getting-started), or [join our Discord channel](https://discord.gg/Qvj3pJY) to discuss your use-case.
 
 ## What frameworks & projects are supported?
 
