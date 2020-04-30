@@ -22,23 +22,40 @@ export function loadModule(log: Logger, module_name: string, paths?: string[]) {
   }
 }
 
-function tryLoadingMultiple(module_names: string[]) {
+async function tryLoadingMultiple(module_names: string[], use_execa = false) {
   const attempts: { [name: string]: { module?: any; error?: Error } } = {}
-  module_names.forEach((name) => {
-    try {
-      const module = tryLoading(name)
-      attempts[name] = { module }
-    } catch (error) {
-      attempts[name] = { error }
-    }
-  })
+  console.log({ module_names, use_execa })
+  await Promise.all(
+    module_names.map(async (name) => {
+      try {
+        if (use_execa) {
+          const this_we_run = `console.log(require.resolve('${name}'))`
+          console.log({ this_we_run })
+          const module_path = (await execa(`node`, ['-e', this_we_run])).stdout.trim()
+          console.log({ module_path })
+          const module = tryLoading(module_path)
+          console.log({ module })
+          attempts[name] = { module }
+        } else {
+          const module = tryLoading(name)
+          attempts[name] = { module }
+        }
+      } catch (error) {
+        attempts[name] = { error }
+      }
+    })
+  )
   return attempts
 }
 
-export async function loadOrInstallModule(log: Logger, module_names: string[]) {
+export async function loadOrInstallModules(
+  log: Logger,
+  module_names: string[]
+): Promise<any[]> {
   const root_dir = process.cwd()
-  const first_attempt = tryLoadingMultiple(module_names)
+  const first_attempt = await tryLoadingMultiple(module_names)
   const missing_modules = module_names.filter((name) => first_attempt[name].error)
+  console.log({ missing_modules })
 
   if (missing_modules.length === 0) {
     return module_names.map((name) => first_attempt[name].module)
@@ -56,7 +73,7 @@ export async function loadOrInstallModule(log: Logger, module_names: string[]) {
   }
   await installDependencies(use_yarn, missing_modules, root_dir)
 
-  const second_attempt = tryLoadingMultiple(missing_modules)
+  const second_attempt = await tryLoadingMultiple(missing_modules, true)
   const still_missing = missing_modules.filter((name) => second_attempt[name].error)
   if (still_missing.length > 0) {
     log.error(`Still cannot resolve these modules: ${still_missing.join(',')}`)
@@ -66,6 +83,12 @@ export async function loadOrInstallModule(log: Logger, module_names: string[]) {
   return module_names.map(
     (name) => second_attempt[name].module || first_attempt[name].module
   )
+}
+export async function loadOrInstallModule(
+  log: Logger,
+  module_name: string
+): Promise<any> {
+  return (await loadOrInstallModules(log, [module_name]))[0]
 }
 
 export async function installDependencies(
