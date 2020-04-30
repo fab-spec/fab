@@ -29,7 +29,7 @@ describe('Yarn 2 tests', () => {
     )
     await fs.writeFile(path.join(src_dir, 'index.html'), '<h1>HULLO</h1>')
     await cwd_shell(`yarn set version berry`)
-    await cwd_shell(`yarn-dlx fab init -y`)
+    await cwd_shell(`yarn dlx fab init -y`)
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
 
