@@ -12,16 +12,21 @@ try {
 } catch (err) {}
 
 chokidar
-  .watch(path.resolve(__dirname, '../../packages/*/README.md'))
+  .watch(
+    path.resolve(
+      __dirname,
+      '../../packages/{cli,core,input-,plugin-,deployer-,server}*/README.md'
+    )
+  )
   .on('all', (event, source) => {
     copyPackageReadmeToDocs(source)
   })
 
-chokidar
-  .watch(path.resolve(__dirname, '../../examples/*/README.md'))
-  .on('all', (event, source) => {
-    copyExampleReadmeToDocs(source)
-  })
+//chokidar
+//  .watch(path.resolve(__dirname, '../../examples/*/README.md'))
+//  .on('all', (event, source) => {
+//    copyExampleReadmeToDocs(source)
+//  })
 
 chokidar.watch(path.resolve(__dirname, '../../README.md')).on('all', (event, source) => {
   copyHomePackageReadmeToDocs(source)

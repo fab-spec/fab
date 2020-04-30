@@ -5,8 +5,9 @@
   "license": "MIT",
   "scripts": {
     "build:fab": "npm run docz:build && npm run fab:build",
-    "docz:build": "node scripts/build.js && docz build",
-    "docz:dev": "concurrently \"docz dev --port=2999\" \"node scripts/watch.js\"",
+    "clean": "rm -rf readmes",
+    "docz:build": "npm run clean && node scripts/build.js && docz build",
+    "docz:dev": "npm run clean && concurrently \"BROWSER=none docz dev --port=2999\" \"node scripts/watch.js\"",
     "docz:serve": "docz build && docz serve",
     "fab:build": "fab build",
     "fab:serve": "fab serve fab.zip",
