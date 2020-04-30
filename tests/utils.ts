@@ -12,6 +12,8 @@ export const shell = async (command: string, ...opts: any) => {
   promise.stderr!.pipe(process.stderr)
   return promise
 }
+export const _shell = (cwd: string) => async (command: string, ...opts: any) =>
+  shell(command, { cwd, ...opts })
 
 const SHOULD_HAVE_THROWN = `Shouldn't get here, expected to have already thrown`
 
