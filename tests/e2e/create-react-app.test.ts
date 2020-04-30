@@ -115,8 +115,7 @@ describe('Create React App E2E Test', () => {
 
       const homepage_response = await request('', '/', port)
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
-      expect(homepage_response).toContain(`window.FAB_SETTINGS`)
-      expect(homepage_response).toContain(`"__fab_server":"@fab/server"`)
+      expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
 
       const hello_response = await request('', '/hello', port)
       expect(hello_response).toEqual(homepage_response)
@@ -176,8 +175,7 @@ describe('Create React App E2E Test', () => {
 
       const homepage_response = await request('', '/', port)
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
-      expect(homepage_response).toContain(`window.FAB_SETTINGS`)
-      expect(homepage_response).toContain(`"__fab_server":"@fab/server"`)
+      expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
 
       const hello_response = await request('', '/hello', port)
       expect(hello_response).not.toEqual(homepage_response)
