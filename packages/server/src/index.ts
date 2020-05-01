@@ -1,15 +1,15 @@
 import fs from 'fs-extra'
 
 import {
+  FabServerExports,
   FetchApi,
   getContentType,
   SandboxType,
   ServerArgs,
-  ServerType,
-  FabServerExports,
   ServerConstructor,
+  ServerType,
 } from '@fab/core'
-import { InvalidConfigError, JSON5Config } from '@fab/cli'
+import { _log, InvalidConfigError, JSON5Config } from '@fab/cli'
 import { readFilesFromZip } from './utils'
 import v8_sandbox from './sandboxes/v8-isolate'
 import node_vm_sandbox from '@fab/sandbox-node-vm'
@@ -24,6 +24,7 @@ function isRequest(fetch_res: Request | Response): fetch_res is Request {
     fetch_res instanceof NodeFetchRequest || fetch_res.constructor?.name === 'Request'
   )
 }
+const log = _log(`Server`)
 
 class Server implements ServerType {
   filename: string
@@ -48,11 +49,13 @@ class Server implements ServerType {
     if (!(await fs.pathExists(this.filename))) {
       throw new InvalidConfigError(`Could not find file '${this.filename}'`)
     }
+    log(`Reading 💛${this.filename}💛...`)
 
     const settings_overrides = await this.getSettingsOverrides()
 
     const files = await readFilesFromZip(this.filename)
-    console.log(files)
+
+    log.tick(`Done. Booting FAB server...`)
 
     const src_buffer = files['/server.js']
     if (!src_buffer) {
@@ -62,7 +65,6 @@ class Server implements ServerType {
 
     const enhanced_fetch: FetchApi = async (url, init?) => {
       const request_url = typeof url === 'string' ? url : url.url
-      console.log({ request_url })
       if (request_url.startsWith('/')) {
         if (!request_url.startsWith('/_assets/')) {
           throw new Error('Fetching relative URLs for non-assets is not permitted.')
@@ -79,6 +81,8 @@ class Server implements ServerType {
         ? await v8_sandbox(src)
         : await node_vm_sandbox(src, enhanced_fetch)
 
+    log.tick(`Done. Booting VM...`)
+
     await new Promise((resolve, reject) => {
       const app = express()
 
@@ -93,7 +97,6 @@ class Server implements ServerType {
 
       app.all('*', async (req, res) => {
         try {
-          console.log({ url: req.url })
           const pathname = url.parse(req.url!).pathname!
           if (pathname.startsWith('/_assets')) {
             res.setHeader('Content-Type', getContentType(pathname))
@@ -117,12 +120,8 @@ class Server implements ServerType {
               Object.assign({}, production_settings, settings_overrides)
             )
             if (isRequest(fetch_res)) {
-              console.log('GOT ME A NODE BOI REQUEST')
-              console.log(fetch_res)
-              console.log(fetch_res.url)
               fetch_res = await enhanced_fetch(fetch_res)
             }
-            console.log({ status: fetch_res.status })
             res.status(fetch_res.status)
             // This is a NodeFetch response, which has this method, but
             // the @fab/core types are from dom.ts, which doesn't. This
@@ -145,13 +144,16 @@ class Server implements ServerType {
           res.writeHead(500, 'Internal Error')
           res.end()
         }
+
+        log(`🖤${req.url}🖤`)
       })
       const server = http.createServer(app)
       //   ? https.createServer({ key: this.key, cert: this.cert }, app)
       server.listen(this.port, resolve)
     })
 
-    console.log(`Listening on http://localhost:${this.port}`)
+    log.tick(`Done.`)
+    log(`Listening on 💛http://localhost:${this.port}💛`)
   }
 
   private async getSettingsOverrides() {

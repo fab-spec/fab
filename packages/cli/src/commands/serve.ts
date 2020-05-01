@@ -5,7 +5,8 @@ import {
   ServerArgs,
   FabServerExports,
 } from '@fab/core'
-import { loadOrInstallModule, log } from '../helpers'
+import { loadOrInstallModule, _log } from '../helpers'
+const log = _log(`Server`)
 
 export default class Serve extends Command {
   static description = 'fab serve: Serve a FAB in a local NodeJS Express server'
@@ -57,6 +58,7 @@ export default class Serve extends Command {
       log.error('ERROR: You must provide a FAB filename to serve.\n')
       this._help()
     }
+    log.announce(`fab serve`)
     const server_pkg = (await loadOrInstallModule(log, '@fab/server'))
       .default as FabServerExports
     const server = server_pkg.createServer(file, flags as ServerArgs)

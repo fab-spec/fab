@@ -3,7 +3,14 @@ import pkgUp from 'pkg-up'
 import path from 'path'
 import semver from 'semver'
 
-import { _log, FabInitError, installDependencies, JSON5Config, prompt } from '../'
+import {
+  _log,
+  FabInitError,
+  installDependencies,
+  JSON5Config,
+  prompt,
+  useYarn,
+} from '../'
 import {
   BASE_CONFIG,
   DEFAULT_DEPS,
@@ -15,7 +22,6 @@ import {
 } from './constants'
 import { FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic } from './frameworks'
 import { mergeScriptsAfterBuild } from './utils'
-import { useYarn } from '../helpers/modules'
 
 const log = _log('Initializer')
 

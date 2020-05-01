@@ -40,7 +40,7 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
       // console.log(filename)
       // console.log(htmls[filename].strings.map(str => str.slice(0, 100)))
       // console.log(htmls[filename].varNames)
-      log(`💚  ✔💚 🖤${filename}🖤`)
+      log.tick(`🖤${filename}🖤`, 2)
       // await new Promise((res) => setTimeout(res, 200))
     }
   }

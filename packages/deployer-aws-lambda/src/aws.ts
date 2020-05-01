@@ -11,7 +11,7 @@ export const updateLambda = async (
 ) => {
   log(`Updating Lambda`)
   const package_contents = await fs.readFile(package_path)
-  log(`💚✔💚 Read lambda package. Uploading...`)
+  log.tick(`Read lambda package. Uploading...`)
   const lambda = new aws.Lambda({
     accessKeyId,
     secretAccessKey,
@@ -91,7 +91,7 @@ export const updateCloudFront = async (
     update_response.Distribution?.DomainName,
     ...(config.DistributionConfig?.Aliases?.Items || []),
   ]
-  log(`💚✔💚 Done.`)
+  log.tick(`Done.`)
   log(`Got response status: 💛${update_response.Distribution?.Status}💛
     🖤(CloudFront can take a few minutes to update)🖤`)
   // todo: make this a config option
@@ -122,7 +122,7 @@ export const updateCloudFront = async (
       })
       .promise()
 
-    log(`💚✔💚 Done.`)
+    log.tick(`Done.`)
   } catch (e) {
     log(`❌ Invalidation failed. Could be a permissions issue?`)
   }

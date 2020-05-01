@@ -72,11 +72,11 @@ export function runtime() {
 
   return async function responder({ request, url }) {
     //   global.FAB_SETTINGS = settings
-    console.log(`REQUEST! ${url}`)
+    // console.log(`REQUEST! ${url}`)
     const { pathname, protocol } = url
 
     const renderer = pathname === '/' ? getRenderer('/index') : getRenderer(pathname)
-    console.log({ renderer })
+    // console.log({ renderer })
     if (renderer) {
       return await invokeRenderer(renderer, request, pathname, protocol)
     }

@@ -34,6 +34,7 @@ function format(str: string, indent = 0, first_line_indent = 0) {
           return ''
         }
       )
+      .replace(/\.{3}/g, '…')
       .split('\n')
       .map((line) => line.trim())
       .join(`\n${' '.repeat(indent)}`)
@@ -89,11 +90,14 @@ export const _log = (full_prefix: string) => {
   log.note = (str: string) => {
     log(`💚NOTE:💚 ${str}`)
   }
+  log.tick = (str: string, indent: number = 0) => {
+    log(`💚${' '.repeat(indent)}✔💚 ${str}`)
+  }
   log.announce = (str: string) => {
     log(`💎 💚${str}💚 💎`)
   }
   log.confirmAndRespond = (message: string, if_yes?: string, if_no?: string) =>
-    confirmAndRespond(log, message, if_yes, if_no)
+    confirmAndRespond(log, `${prefix} ${message}`, if_yes, if_no)
   return log
 }
 

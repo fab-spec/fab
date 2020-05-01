@@ -34,7 +34,7 @@ export default class Packager {
     const packager = loadModule(log, package_name) as FabPackagerExports<
       ConfigTypes.Union
     >
-    log(`💚✔💚 Done.`)
+    log.tick(`Done.`)
 
     if (env) throw new Error('Not implemented ENV support yet')
     const env_overrides = {}
