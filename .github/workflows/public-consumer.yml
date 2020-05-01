@@ -5,6 +5,7 @@ on:
     branches:
       - next
       - master
+      - auto-install-flag
 
 jobs:
   public_package_build:
