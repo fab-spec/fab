@@ -1,6 +1,6 @@
 {
   "name": "@fab/cli",
-  "version": "0.1.5",
+  "version": "0.1.6-alpha.0",
   "description": "The CLI entry-point for the FAB ecosystem",
   "keywords": [
     "fab",
@@ -35,7 +35,7 @@
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
-    "@fab/core": "0.1.5",
+    "@fab/core": "0.1.6-alpha.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/errors": "^1",
