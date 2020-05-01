@@ -95,7 +95,10 @@ describe('Create React App E2E Test', () => {
       }
       await buildFab(cwd)
 
-      server_process = cmd(`yarn fab:serve --port=${port}`, { cwd })
+      const auto_install = process.env.PUBLIC_PACKAGES ? '--auto-install' : ''
+      server_process = cmd(`yarn fab:serve ${auto_install} --port=${port}`, {
+        cwd,
+      })
       // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)
       await Promise.race([
         server_process,

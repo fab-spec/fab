@@ -197,7 +197,8 @@ export type DeployFn = (
   assets_host: DeployProviders | undefined,
   env: string | undefined,
   assets_only: boolean,
-  assets_already_deployed_at: string | undefined
+  assets_already_deployed_at: string | undefined,
+  auto_install: boolean
 ) => Promise<string>
 
 export type BuildFn = (

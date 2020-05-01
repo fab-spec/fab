@@ -21,7 +21,7 @@ $ npm install -g @fab/cli
 $ fab COMMAND
 running command...
 $ fab (-v|--version|version)
-@fab/cli/0.1.4 darwin-x64 node-v13.12.0
+@fab/cli/0.1.6-alpha.0 darwin-x64 node-v13.12.0
 $ fab --help [COMMAND]
 USAGE
   $ fab COMMAND
@@ -59,7 +59,7 @@ EXAMPLES
   $ fab build --config=fab.config.json5
 ```
 
-_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.1.4/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v0.1.6-alpha.0/lib/commands/build.js)_
 
 ## `fab deploy [FILE]`
 
@@ -81,6 +81,9 @@ OPTIONS
 
   --assets-only                                            Skip server deploy, just upload assets
 
+  --auto-install                                           If you need dependent packages (e.g. @fab/deploy-*), install
+                                                           them without prompting
+
   --env=env                                                Override production settings with a different environment
                                                            defined in your FAB config file.
 
@@ -93,7 +96,7 @@ EXAMPLE
   $ fab deploy fab.zip
 ```
 
-_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.1.4/lib/commands/deploy.js)_
+_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v0.1.6-alpha.0/lib/commands/deploy.js)_
 
 ## `fab help [COMMAND]`
 
@@ -133,7 +136,7 @@ EXAMPLES
   $ fab init --config=fab.config.json5
 ```
 
-_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.1.4/lib/commands/init.js)_
+_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v0.1.6-alpha.0/lib/commands/init.js)_
 
 ## `fab package [FILE]`
 
@@ -162,7 +165,7 @@ EXAMPLE
   $ fab package --target=aws-lambda-edge fab.zip
 ```
 
-_See code: [lib/commands/package.js](https://github.com/fab-spec/fab/blob/v0.1.4/lib/commands/package.js)_
+_See code: [lib/commands/package.js](https://github.com/fab-spec/fab/blob/v0.1.6-alpha.0/lib/commands/package.js)_
 
 ## `fab serve [FILE]`
 
@@ -177,6 +180,8 @@ OPTIONS
                              --env.
 
   -h, --help                 show CLI help
+
+  --auto-install             If you need dependent packages (e.g. @fab/serve), install them without prompting
 
   --cert=cert                SSL certificate to use
 
@@ -195,6 +200,6 @@ EXAMPLES
   $ fab serve --env=staging fab.zip
 ```
 
-_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.1.4/lib/commands/serve.js)_
+_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v0.1.6-alpha.0/lib/commands/serve.js)_
 
 <!-- commandsstop -->

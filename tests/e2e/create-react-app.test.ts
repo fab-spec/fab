@@ -88,7 +88,10 @@ describe('Create React App E2E Test', () => {
     const createServer = async (port: number, args: string = '') => {
       cancelServer()
 
-      server_process = cmd(`yarn fab:serve --port=${port} ${args}`, { cwd })
+      const auto_install = process.env.PUBLIC_PACKAGES ? '--auto-install' : ''
+      server_process = cmd(`yarn fab:serve ${auto_install} --port=${port} ${args}`, {
+        cwd,
+      })
       // See if `server_process` explodes in the first 2 seconds (e.g. if the port is in use)
       await Promise.race([
         server_process,

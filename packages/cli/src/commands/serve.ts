@@ -46,6 +46,10 @@ export default class Serve extends Command {
         'Path to config file. Only used for SETTINGS in conjunction with --env.',
       default: DEFAULT_CONFIG_FILENAME,
     }),
+    'auto-install': flags.boolean({
+      description:
+        'If you need dependent packages (e.g. @fab/serve), install them without prompting',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -59,8 +63,9 @@ export default class Serve extends Command {
       this._help()
     }
     log.announce(`fab serve`)
-    const server_pkg = (await loadOrInstallModule(log, '@fab/server'))
-      .default as FabServerExports
+    const server_pkg = (
+      await loadOrInstallModule(log, '@fab/server', flags['auto-install'])
+    ).default as FabServerExports
     const server = server_pkg.createServer(file, flags as ServerArgs)
     await server.serve(
       flags['experimental-v8-sandbox'] ? SandboxType.v8isolate : SandboxType.nodeVm

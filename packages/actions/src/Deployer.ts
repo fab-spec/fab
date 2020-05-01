@@ -19,6 +19,8 @@ import {
 const log = _log('Deployer')
 
 export default class Deployer {
+  private static auto_install: boolean
+
   static async deploy(
     config: JSON5Config,
     file_path: string,
@@ -27,8 +29,11 @@ export default class Deployer {
     assets_host: DeployProviders | undefined,
     env: string | undefined,
     assets_only: boolean,
-    assets_already_deployed_at: string | undefined
+    assets_already_deployed_at: string | undefined,
+    auto_install: boolean
   ) {
+    this.auto_install = auto_install
+
     log(`💎 💚fab deployer💚 💎\n`)
     const { deploy } = config.data
 
@@ -137,7 +142,7 @@ export default class Deployer {
 
   private static async loadPackage<T>(provider: string, fn: string): Promise<T> {
     const pkg = HOSTING_PROVIDERS[provider].package_name
-    const loaded = await loadOrInstallModule(log, pkg)
+    const loaded = await loadOrInstallModule(log, pkg, this.auto_install)
 
     if (typeof loaded[fn] !== 'function') {
       throw new FabDeployError(`${pkg} doesn't export a '${fn}' method!`)
@@ -154,7 +159,11 @@ export default class Deployer {
   ): Promise<[T, U]> {
     const pkgA = HOSTING_PROVIDERS[providerA].package_name
     const pkgB = HOSTING_PROVIDERS[providerB].package_name
-    const [loadedA, loadedB] = await loadOrInstallModules(log, [pkgA, pkgB])
+    const [loadedA, loadedB] = await loadOrInstallModules(
+      log,
+      [pkgA, pkgB],
+      this.auto_install
+    )
 
     if (typeof loadedA[fnA] !== 'function') {
       throw new FabDeployError(`${pkgA} doesn't export a '${fnA}' method!`)

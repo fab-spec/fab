@@ -1,6 +1,6 @@
 {
   "name": "@fab/plugin-render-html",
-  "version": "0.1.4",
+  "version": "0.1.6-alpha.0",
   "description": "Module to render static HTML files with FAB injections",
   "keywords": [
     "fab"
@@ -30,8 +30,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/cli": "0.1.4",
-    "@fab/core": "0.1.4",
+    "@fab/cli": "0.1.6-alpha.0",
+    "@fab/core": "0.1.6-alpha.0",
     "@types/cheerio": "^0.22.15",
     "@types/node": "^12.12.14",
     "cheerio": "^1.0.0-rc.3",

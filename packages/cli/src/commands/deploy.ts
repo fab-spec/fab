@@ -43,6 +43,10 @@ export default class Deploy extends Command {
     'assets-only': flags.boolean({
       description: 'Skip server deploy, just upload assets',
     }),
+    'auto-install': flags.boolean({
+      description:
+        'If you need dependent packages (e.g. @fab/deploy-*), install them without prompting',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -64,7 +68,8 @@ export default class Deploy extends Command {
       flags['assets-host'],
       flags.env,
       flags['assets-only'],
-      flags['assets-already-deployed-at']
+      flags['assets-already-deployed-at'],
+      flags['auto-install']
     )
   }
 }
