@@ -43,6 +43,13 @@ Table of Contents
          4.1.3.1  Content-Encoding
          4.1.3.2  Content-Type
       4.2  Server component
+   5. Server JavaScript interface
+      5.1  Render method
+      5.2  Production settings
+         5.2.1  Encrypted variables
+      5.3  metadata
+   6. Hosting runtime specification
+      6.1  Fetch
 
 
 1. Introduction
@@ -297,11 +304,12 @@ Table of Contents
    Compression is one of the many techniques used to improve the 
    performance of web sites & applications. Beyond the content
    negotion as specified in the HTTP specification, there are some
-   additional requirements for FAB hosting runtimes.
+   additional recommendations for FAB hosting runtimes.
    
    If an application has included a text-based asset file with the same
    filename, but including the '.br' suffix, the hosting runtime SHOULD
-   serve that file with the Brotli content-encoding 'br' set.
+   serve that file with the Brotli content-encoding 'br' set if the client
+   including Brotli support in the Accept-Encoding header.
 
    So a request for:
 
@@ -312,7 +320,7 @@ Table of Contents
    Accept: */*
 
    when a file called '/_assets/main.abcde1234.js.br' is available, the
-   runtime must respond with this file as the body and the following
+   runtime SHOULD respond with this file as the body and the following
    headers:
 
    HTTP/1.1 200 OK
@@ -339,10 +347,10 @@ Table of Contents
    User-Agent: UA 1.1
    Accept: image/avif, image/webp, */*
 
-   and no file with filename '/_assets/hero.12345abcd.avif' is
-   not available, but `/_assets/hero.12345abcd.webp` is, the hosting
-   runtime SHOULD respond with the `/_assets/hero.12345abcd.webp` file
-   as the body of the response and the following headers:
+   and no file with filename '/_assets/hero.12345abcd.avif' is available,
+   but `/_assets/hero.12345abcd.webp` is, the hosting runtime SHOULD
+   respond with the `/_assets/hero.12345abcd.webp` file as the body of the
+   response and the following headers:
 
    HTTP/1.1 200 OK
    Content-Type: image/webp
@@ -350,7 +358,69 @@ Table of Contents
    Vary: Accept, Accept-Encoding
    ...
 
-   A hosting runtime MAY generate these alternative formats on
-   deployment, but MUST make sure application developers are aware and
-   SHOULD allow them to opt-out.
+   A hosting runtime MAY generate these alternative formats ondeployment, but
+   MUST make sure application developers are aware and SHOULD allow them to
+   opt-out.
 
+   4.2  Server component
+
+   What sets Frontend Application Bundles apart from regular static assets
+   deployments is that it contains server logic for serving requests. The code
+   for this is contained in a single javascript file in the root directory
+   called 'server.js'.
+
+   The reason for the single file is to make it easier for hosting runtimes to
+   manage multiple versions of the same application without introducing 
+   versioning bugs. The server and all its dependencies are contained in one
+   file. And because the file is re-used for many requests and servers generally
+   have much better network connections than clients, create one large bundle
+   is not much of a bottleneck.
+
+   The Javascript interface of the server.js is described in chapter 5.
+
+5.  Server JavaScript interface
+
+   The server.js is a CommonJS compatible JavaScript file with 3 exports:
+   * getProdSettings()
+   * render(request, settings) => response
+   * metadata property
+
+   The exports are described in more detail below
+
+   5.1  Render method
+
+   The core method of a FAB is a single render method that takes a Request
+   object and a settings object and returns either a Response or a Request
+   object. The Request and Response objects are defined in the JavaScript
+   Fetch specification at: https://fetch.spec.whatwg.org/
+
+   The settings object is a dictionary of key/value pairs. The contents of the
+   settings object is not specified, but MUST contain all the configuration
+   that the application needs to function. This can include API URLs, secrets
+   or feature flags.
+
+   When the FAB returns a Response object the hosting runtime MUST create a
+   HTTP response to the client that corresponds with the content of the
+   Response object returned by the FAB.
+
+   When the FAB returns a Request object it signals to the hosting runtime that
+   it should proxy that request to the client. The hosting runtime MAY return
+   a cached copy, if it has one cached.
+
+   The one change from the Fetch spec is that the FAB may return a Request
+   object with a relative URL starting with `/_assets/`. To signal it would
+   like to return one of the static assets.
+   
+   
+   5.2  Production settings
+
+   TODO: Production settings in the bundle. Doesn't break 12 factor apps.
+   Makes it so that every change to production code has a corresponding commit 
+   in the repository.
+
+   5.2.1 Encrypted variables
+
+   Most settings for frontend applications are not secret, as most of them end
+   up in the browser, where anyone can see them. But it is possible to have
+   server-only settings that should stay secret. We will be defining an
+   interface on how to handle that later.
