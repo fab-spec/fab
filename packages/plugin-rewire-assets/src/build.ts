@@ -58,7 +58,7 @@ export async function build(
     proto_fab.files.delete(filename)
   }
 
-  log(`💚✔💚 Done.`)
+  log.tick(`Done.`)
   log(
     `Generating server code to rewire 💛${to_rename.length}💛 asset${
       to_rename.length === 1 ? '' : 's'
@@ -82,6 +82,7 @@ export async function build(
     proto_fab.files.set(asset_path, contents)
     proto_fab.files.delete(filename)
   }
+  log.tick(`Done.`)
 
   proto_fab.metadata.rewire_assets = { inlined_assets, renamed_assets }
 }

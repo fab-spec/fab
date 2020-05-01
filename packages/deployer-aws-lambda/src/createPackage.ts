@@ -16,11 +16,11 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   const output_dir = path.dirname(package_path)
   const work_dir = path.join(output_dir, `aws-lambda-${nanoid()}`)
   await fs.ensureDir(work_dir)
-  log(`💚✔💚 Generated working dir in 💛${work_dir}💛`)
+  log.tick(`Generated working dir in 💛${work_dir}💛`)
   await extract(fab_path, work_dir)
-  log(`💚✔💚 Unpacked FAB`)
+  log.tick(`Unpacked FAB`)
   await fs.copy(path.join(__dirname, '../templates'), work_dir)
-  log(`💚✔💚 Copied AWS Lambda shim`)
+  log.tick(`Copied AWS Lambda shim`)
 
   const parsed = new URL(assets_url)
   const packaged_config = {
@@ -34,7 +34,7 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
     path.join(work_dir, 'packaged_config.js'),
     `module.exports = ${JSON.stringify(packaged_config)};`
   )
-  log(`💚✔💚 Generated PACKAGED_CONFIG file`)
+  log.tick(`Generated PACKAGED_CONFIG file`)
 
   // await copyIndex(work_dir)
   const packaged = new Zip()
@@ -43,6 +43,6 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   packaged.addFile(path.join(work_dir, 'server.js'), 'server.js')
   packaged.addFolder(path.join(work_dir, 'vendor'), 'vendor')
   await packaged.archive(package_path)
-  log(`💚✔💚 Generated lambda zip file`)
+  log.tick(`Generated lambda zip file`)
   log.time((d) => `Created package in ${d}.`)
 }

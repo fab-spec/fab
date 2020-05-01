@@ -2,9 +2,15 @@ import fs from 'fs-extra'
 import pkgUp from 'pkg-up'
 import path from 'path'
 import semver from 'semver'
-import execa from 'execa'
 
-import { _log, confirm, FabInitError, JSON5Config, prompt } from '../'
+import {
+  _log,
+  FabInitError,
+  installDependencies,
+  JSON5Config,
+  prompt,
+  useYarn,
+} from '../'
 import {
   BASE_CONFIG,
   DEFAULT_DEPS,
@@ -16,21 +22,8 @@ import {
 } from './constants'
 import { FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic } from './frameworks'
 import { mergeScriptsAfterBuild } from './utils'
-const log = _log('Initializer')
 
-const confirmAndRespond = async (
-  message: string,
-  if_yes: string = `Ok, proceeding...`,
-  if_no: string = `Ok, exiting`
-) => {
-  const response = await confirm(message)
-  if (response) {
-    log(if_yes)
-  } else {
-    log(if_no)
-  }
-  return response
-}
+const log = _log('Initializer')
 
 const promptWithDefault = async (
   message: string,
@@ -82,7 +75,7 @@ export default class Initializer {
             package_json_path
           )}💚`
         )
-        const confirmed = await confirmAndRespond(
+        const confirmed = await log.confirmAndRespond(
           `💛Are you sure you want to configure a FAB here?💛`
         )
         if (!confirmed) return
@@ -98,12 +91,12 @@ export default class Initializer {
     )
     if (!framework) return
 
-    const use_yarn = await fs.pathExists(path.join(root_dir, 'yarn.lock'))
+    const use_yarn = await useYarn(root_dir)
 
     if (this.yes) {
       log.info(`Proceeding...`)
     } else {
-      const confirmed = await confirmAndRespond(`
+      const confirmed = await log.confirmAndRespond(`
         💚Ready to proceed.💚 This process will:
         • Generate a 💛fab.config.json5💛 file for your project
         • Add 💛build:fab💛 and related scripts to your 💛package.json💛
@@ -173,7 +166,7 @@ export default class Initializer {
       `)
 
       const attempt_static =
-        this.yes || (await confirmAndRespond(`Would you like to proceed?`))
+        this.yes || (await log.confirmAndRespond(`Would you like to proceed?`))
       if (!attempt_static) return
 
       return await this.setupStaticFramework(package_json, root_dir)
@@ -276,7 +269,7 @@ export default class Initializer {
       const export_build =
         this.yes || build_cmd === 'npm run export'
           ? true
-          : await confirmAndRespond(`Is this a static (i.e. 💛next export💛) site?`)
+          : await log.confirmAndRespond(`Is this a static (i.e. 💛next export💛) site?`)
       return Frameworks.Next9({ export_build, build_cmd })
     } else {
       return Frameworks.Next9({ export_build: false, build_cmd: 'npm run build' })
@@ -327,11 +320,7 @@ export default class Initializer {
     log(`💚Installing required development dependencies💚:
       ${dependencies.join('\n  ')}
       using 💛${use_yarn ? 'yarn' : 'npm'}💛`)
-    if (use_yarn) {
-      await execa('yarn', ['add', '--dev', ...dependencies], { cwd: root_dir })
-    } else {
-      await execa('npm', ['i', '--save-dev', ...dependencies], { cwd: root_dir })
-    }
+    await installDependencies(use_yarn, dependencies, root_dir)
     log(`
       💚Done!💚
 
@@ -352,7 +341,7 @@ export default class Initializer {
       log.warn(`Existing config has a "plugins" section.`)
       const confirmed =
         (this.yes && log(`Overwriting since -y is set.`)) ||
-        (await confirmAndRespond(
+        (await log.confirmAndRespond(
           `Would you like to overwrite it?`,
           `Ok, overwriting...`,
           `Ok, leaving as-is.`
@@ -381,7 +370,7 @@ export default class Initializer {
       log(`We want to add/overwrite the following lines to your 💛package.json💛:
         💛${JSON.stringify(framework.scripts, null, 2)}💛
       `)
-      const ok = await confirmAndRespond(`Overwrite existing scripts?`)
+      const ok = await log.confirmAndRespond(`Overwrite existing scripts?`)
       if (!ok) return
     }
     await fs.writeFile(

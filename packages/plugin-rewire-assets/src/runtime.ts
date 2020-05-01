@@ -27,7 +27,6 @@ export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> =
     const renamed = matchPath(renamed_assets, pathname)
     if (renamed) {
       if (renamed.immutable) {
-        console.log('Returning new request!!')
         return new Request(renamed.asset_path)
       } else {
         const response = await fetch(renamed.asset_path)
