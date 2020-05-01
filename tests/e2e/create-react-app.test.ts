@@ -63,6 +63,8 @@ describe('Create React App E2E Test', () => {
       'fab:serve': 'fab serve fab.zip',
     }
     await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
+    // Todo: this really shouldn't be needed.
+    await shell(`yarn add @fab/server`)
     await shell(`yarn build:fab`, { cwd })
 
     const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
