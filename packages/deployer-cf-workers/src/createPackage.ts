@@ -24,9 +24,9 @@ export const createPackage: FabPackager<ConfigTypes.CFWorkers> = async (
   const output_dir = path.dirname(package_path)
   const work_dir = path.join(output_dir, `cf-workers-${nanoid()}`)
   await fs.ensureDir(work_dir)
-  log(`💚✔💚 Generated working dir in 💛${work_dir}💛.`)
+  log.tick(`Generated working dir in 💛${work_dir}💛.`)
   await extract(fab_path, work_dir)
-  log(`💚✔💚 Unpacked FAB.`)
+  log.tick(`Unpacked FAB.`)
 
   const fab_server_src = await fs.readFile(path.join(work_dir, 'server.js'), 'utf8')
   const injections = templateInjections(fab_server_src, assets_url)
@@ -39,7 +39,7 @@ export const createPackage: FabPackager<ConfigTypes.CFWorkers> = async (
     ${injections};
     ${template};
   `
-  log(`💚✔💚 Generated worker file.`)
+  log.tick(`Generated worker file.`)
 
   const worker_file = path.join(work_dir, 'worker.js')
   await fs.writeFile(worker_file, worker_js)

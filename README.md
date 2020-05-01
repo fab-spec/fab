@@ -21,10 +21,10 @@ They **unify static sites, single page applications (SPAs), server-side renderin
 
 ## What can I can use FABs for?
 
-Because FABs include [server-side JavaScript](https://fab.dev/kb/fab-structure) capabilities but deploy as easily as [uploading a ZIP file](https://fab.dev/guides/deploying), you can start to add server-side logic without the complexity of managing servers. Making it easy to do things like:
+Because FABs include [server-side JavaScript](https://fab.dev/kb/fab-structure) capabilities but deploy [with a single command](https://fab.dev/guides/deploying), you can start to add server-side logic without the complexity of managing servers. Making it easy to do things like:
 
-- Deploy a server-rendered NextJS app to Cloudflare workers.
-- Add redirect rules to a Create React App project, without ejecting.
+- Deploy anything, even a server-rendered NextJS app, to Cloudflare workers.
+- Add server-side logic like redirects & proxying to a Create React App project, without ejecting.
 - Use Gatsby to generate a logged-in vs logged-out homepage and dynamically choose which one to serve to each user.
 - Guard your application against unauthenticated users, by checking a cookie before you serve any JS or HTML.
 - Deploy every commit to a unique URL to share your progress with colleagues.

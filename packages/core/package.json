@@ -1,6 +1,6 @@
 {
   "name": "@fab/core",
-  "version": "0.1.4-alpha.0",
+  "version": "0.1.4",
   "private": false,
   "description": "Common code for all FAB projects",
   "keywords": [

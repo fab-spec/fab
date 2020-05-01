@@ -5,15 +5,15 @@ import {
   ENV_VAR_SYNTAX,
   FabDeployerExports,
   FabSettings,
-  DeployFn,
   HOSTING_PROVIDERS,
 } from '@fab/core'
 import {
-  JSON5Config,
   _log,
   FabDeployError,
   InvalidConfigError,
-  loadModule,
+  JSON5Config,
+  loadOrInstallModule,
+  loadOrInstallModules,
 } from '@fab/cli'
 
 const log = _log('Deployer')
@@ -50,7 +50,7 @@ export default class Deployer {
     )
     log(`Creating package directory 💛${package_dir}💛:`)
     await fs.ensureDir(package_dir)
-    log(`💚✔💚 Done.`)
+    log.tick(`Done.`)
 
     if (assets_provider) {
       const deployed_url = await this.deployAssetsAndServer(
@@ -69,7 +69,7 @@ export default class Deployer {
         `💚NOTE:💚 skipping assets deploy, using 💛${assets_already_deployed_at}💛 for assets URL.`
       )
 
-      const server_deployer = this.loadPackage<FabDeployerExports<any>>(
+      const server_deployer = await this.loadPackage<FabDeployerExports<any>>(
         server_provider,
         'deployServer'
       )
@@ -97,7 +97,7 @@ export default class Deployer {
     assets_only: boolean
   ) {
     if (server_provider === assets_provider) {
-      const deployer = this.loadPackage<FabDeployerExports<any>>(
+      const deployer = await this.loadPackage<FabDeployerExports<any>>(
         assets_provider,
         'deployBoth'
       )
@@ -110,15 +110,10 @@ export default class Deployer {
       )
     }
 
-    const assets_deployer = this.loadPackage<FabDeployerExports<any>>(
-      assets_provider,
-      'deployAssets'
-    )
-
-    const server_deployer = this.loadPackage<FabDeployerExports<any>>(
-      server_provider,
-      'deployServer'
-    )
+    const [assets_deployer, server_deployer] = await this.loadTwoPackages<
+      FabDeployerExports<any>,
+      FabDeployerExports<any>
+    >(assets_provider, 'deployAssets', server_provider, 'deployServer')
 
     const assets_url = await assets_deployer.deployAssets!(
       file_path,
@@ -140,15 +135,35 @@ export default class Deployer {
     )
   }
 
-  private static loadPackage<T>(provider: string, fn: string): T {
+  private static async loadPackage<T>(provider: string, fn: string): Promise<T> {
     const pkg = HOSTING_PROVIDERS[provider].package_name
-    const loaded = loadModule(pkg, [process.cwd()])
+    const loaded = await loadOrInstallModule(log, pkg)
 
     if (typeof loaded[fn] !== 'function') {
       throw new FabDeployError(`${pkg} doesn't export a '${fn}' method!`)
     }
 
     return loaded as T
+  }
+
+  private static async loadTwoPackages<T, U>(
+    providerA: string,
+    fnA: string,
+    providerB: string,
+    fnB: string
+  ): Promise<[T, U]> {
+    const pkgA = HOSTING_PROVIDERS[providerA].package_name
+    const pkgB = HOSTING_PROVIDERS[providerB].package_name
+    const [loadedA, loadedB] = await loadOrInstallModules(log, [pkgA, pkgB])
+
+    if (typeof loadedA[fnA] !== 'function') {
+      throw new FabDeployError(`${pkgA} doesn't export a '${fnA}' method!`)
+    }
+    if (typeof loadedB[fnB] !== 'function') {
+      throw new FabDeployError(`${pkgB} doesn't export a '${fnB}' method!`)
+    }
+
+    return [loadedA as T, loadedB as U]
   }
 
   private static async deployServer(

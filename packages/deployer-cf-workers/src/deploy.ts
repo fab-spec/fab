@@ -104,7 +104,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
       ❤️${JSON.stringify(create_route_response)}❤️`)
       }
     }
-    log(`💚✔💚 Done.`)
+    log.tick(`Done.`)
     log.time((d) => `Deployed in ${d}.`)
 
     return new URL(route).origin
@@ -140,7 +140,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
       throw new FabDeployError(`Error publishing the script on a workers.dev subdomain, got response:
       ❤️${JSON.stringify(publish_response)}❤️`)
     }
-    log(`💚✔💚 Done.`)
+    log.tick(`Done.`)
     log.time((d) => `Deployed in ${d}.`)
 
     return `https://${script_name}.${subdomain}.workers.dev`
@@ -182,7 +182,7 @@ function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
 }
 
 async function getApi(api_token: string) {
-  log(`💚✔💚 Config valid, checking API token...`)
+  log.tick(`Config valid, checking API token...`)
   const api = await getCloudflareApi(api_token)
   return api
 }
@@ -197,7 +197,7 @@ async function packageAndUpload(
   account_id: string,
   script_name: string
 ) {
-  log(`💚✔💚 API token valid, packaging...`)
+  log.tick(`API token valid, packaging...`)
   await createPackage(fab_path, package_path, config, env_overrides, assets_url)
 
   log.time(`Uploading script...`)
@@ -211,5 +211,5 @@ async function packageAndUpload(
     throw new FabDeployError(`Error uploading the script, got response:
     ❤️${JSON.stringify(upload_response)}❤️`)
   }
-  log(`💚✔💚 Uploaded, publishing...`)
+  log.tick(`Uploaded, publishing...`)
 }

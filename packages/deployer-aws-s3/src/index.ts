@@ -18,9 +18,9 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.AwsS3> = async (
 
   const extracted_dir = path.join(working_dir, `cf-workers-${nanoid()}`)
   await fs.ensureDir(extracted_dir)
-  log(`💚✔💚 Generated working dir in 💛${extracted_dir}💛.`)
+  log.tick(`Generated working dir in 💛${extracted_dir}💛.`)
   await extract(fab_path, extracted_dir)
-  log(`💚✔💚 Unpacked FAB.`)
+  log.tick(`Unpacked FAB.`)
 
   return await doUpload(access_key, secret_key, region, bucket_name, extracted_dir)
 }
@@ -36,10 +36,10 @@ const doUpload = async (
 
   const s3 = authenticate(region, access_key, secret_key)
   await createBucket(s3, bucket_name)
-  log(`💚✔💚 Created bucket 💛${bucket_name}💛 in region 💛${region}💛.`)
+  log.tick(`Created bucket 💛${bucket_name}💛 in region 💛${region}💛.`)
 
   await makeBucketWebsite(s3, bucket_name)
-  log(`💚✔💚 Configured S3 website at 💛${assets_host}💛.`)
+  log.tick(`Configured S3 website at 💛${assets_host}💛.`)
 
   log(`Uploading files...`)
   const files = await globby(['_assets/**/*'], { cwd: extracted_dir })

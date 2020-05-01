@@ -40,7 +40,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   const pages_dir_hash = await md5dir(pages_dir)
   // console.log({ pages_dir, pages_dir_hash })
 
-  log(`Finding all static HTML pages`)
+  log(`Finding all static HTML pages...`)
   const html_files = await globby([`**/*.html`, `!_*`], { cwd: pages_dir })
 
   await Promise.all(
@@ -52,7 +52,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     })
   )
 
-  log(`Found 💛${html_files.length} static html pages💛.`)
+  log.tick(`Found 💛${html_files.length} static html pages💛.`)
 
   const cache_dir = path.join(config_dir, '.fab', '.cache')
   const render_code_file = path.join(
@@ -146,9 +146,9 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
         `/_next/static/${asset_file}`,
         await fs.readFile(path.resolve(static_dir, asset_file))
       )
-      log(`  💛${asset_file}💛 read.`)
     }
   }
+  log.tick(`Found ${asset_files.length} assets.`)
 
   log(`Finding all public files`)
   const public_files = await globby([`**/*`], { cwd: public_dir })
@@ -158,7 +158,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
         `/${public_file}`,
         await fs.readFile(path.resolve(public_dir, public_file))
       )
-      log(`  💛${public_file}💛 read.`)
+      log.tick(`🖤${public_file}🖤`, 2)
     }
   }
 }
@@ -192,6 +192,6 @@ async function getRenderCode(
     previous_caches.map((cache) => fs.remove(path.join(cache_dir, cache)))
   )
   await fs.writeFile(renderer_cache, render_code)
-  log(`💚✔💚 Wrote 💛${renderer_cache}💛`)
+  log.tick(`Wrote 💛${renderer_cache}💛`)
   return render_code
 }

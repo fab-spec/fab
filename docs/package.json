@@ -1,5 +1,5 @@
 {
-  "name": "docs",
+  "name": "@fab/docs",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -27,5 +27,9 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet-async": "^1.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fab-spec/fab.git"
   }
 }
