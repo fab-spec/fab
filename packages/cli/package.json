@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "@fab/core": "0.1.4-alpha.0",
-    "@fab/server": "0.1.4-alpha.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/errors": "^1",
