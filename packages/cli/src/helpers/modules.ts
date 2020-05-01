@@ -50,14 +50,14 @@ export async function loadOrInstallModules(
   }
 
   const use_yarn = await useYarn(root_dir)
-  log(`❤️WARNING❤️: Missing required modules:
+  log(`${
+    auto_install
+      ? `💚NOTE💚: Installing required modules due to 💛--auto-install💛 flag:`
+      : `❤️WARNING❤️: Missing required modules:`
+  }
   ${missing_modules.map((name) => `💛${name}💛`).join('\n')}`)
   const proceed = auto_install
-    ? log(
-        `NOTE: 💛--auto-install💛 set. Installing them using 💛${
-          use_yarn ? 'yarn' : 'npm'
-        }💛?`
-      )
+    ? log(`using 💛${use_yarn ? 'yarn' : 'npm'}💛.`)
     : await log.confirmAndRespond(
         `Would you like to install them using 💛${use_yarn ? 'yarn' : 'npm'}💛?`
       )
