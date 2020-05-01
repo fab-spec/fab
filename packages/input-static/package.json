@@ -1,9 +1,11 @@
 {
   "name": "@fab/input-static",
-  "version": "0.0.7-alpha.12",
+  "version": "0.1.4-alpha.0",
   "description": "Module to handle a directory of HTML & assets",
   "keywords": [
-    "fab"
+    "fab",
+    "fab-input",
+    "plugin"
   ],
   "homepage": "https://github.com/fab-spec/fab#readme",
   "bugs": {
@@ -25,12 +27,13 @@
     "build:cjs": "tsc --module commonjs --outDir lib",
     "build:esm": "tsc --module esnext --outDir esm",
     "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
-    "clean": "rm -rf esm lib",
+    "clean": "rm -rf esm lib package-lock.json",
     "prepack": "npm run clean && npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.12",
+    "@fab/cli": "0.1.4-alpha.0",
+    "@fab/core": "0.1.4-alpha.0",
     "@types/node": "^12.12.14",
     "fs-extra": "^8.1.0",
     "globby": "^10"

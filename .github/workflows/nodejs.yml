@@ -37,11 +37,44 @@ jobs:
         yarn test
       env:
         CI: true
-    - name: Run e2e tests
+    - name: Setup e2e tests
       run: |
         yarn link-all
         cd tests
         yarn
-        yarn test
       env:
         CI: true
+    - name: "E2E: Paths correctly set up"
+      run: |
+        cd tests
+        yarn test paths-exist
+      env:
+        CI: true
+    - name: "E2E: CLI reports errors correctly"
+      run: |
+        cd tests
+        yarn test cli-errors
+      env:
+        CI: true
+    - name: "E2E: Create React App"
+      run: |
+        cd tests
+        yarn test create-react-app
+      env:
+        CI: true
+    - name: "E2E: NextJS"
+      run: |
+        cd tests
+        yarn test nextjs
+      env:
+        CI: true
+    - name: "E2E: Deploying to CF Workers, AWS Lambda & S3"
+      run: |
+        cd tests
+        yarn test deploys
+      env:
+        CI: true
+        CF_WORKERS_API_TOKEN: ${{ secrets.CF_WORKERS_API_TOKEN }}
+        AWS_S3_SECRET_KEY: ${{ secrets.AWS_S3_SECRET_KEY }}
+        AWS_CRA_SECRET: ${{ secrets.AWS_CRA_SECRET }}
+        AWS_NEXTJS_SECRET: ${{ secrets.AWS_NEXTJS_SECRET }}

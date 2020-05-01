@@ -1,9 +1,12 @@
 {
   "name": "@fab/input-nextjs",
-  "version": "0.0.7-alpha.12",
+  "version": "0.1.4-alpha.0",
   "description": "Module to kick off a FAB build from a NextJS project",
   "keywords": [
-    "fab"
+    "aws",
+    "deploy",
+    "fab",
+    "s3"
   ],
   "homepage": "https://github.com/fab-spec/fab#readme",
   "bugs": {
@@ -25,12 +28,13 @@
     "build:cjs": "tsc --module commonjs --outDir lib",
     "build:esm": "tsc --module esnext --outDir esm",
     "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
-    "clean": "rm -rf esm lib",
+    "clean": "rm -rf esm lib package-lock.json",
     "prepack": "npm run clean && npm run build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/core": "0.0.7-alpha.12",
+    "@fab/cli": "0.1.4-alpha.0",
+    "@fab/core": "0.1.4-alpha.0",
     "@types/node": "^12.12.14",
     "@types/path-to-regexp": "^1.7.0",
     "acorn": "^7.1.0",
@@ -40,6 +44,7 @@
     "md5-dir": "^0.2.0",
     "memfs": "^3.0.4",
     "mock-express-response": "^0.2.2",
+    "path-to-regexp": "^6.1.0",
     "prettier": "^1.19.1",
     "webpack": "^4.41.5"
   },

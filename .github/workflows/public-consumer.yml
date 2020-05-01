@@ -1,12 +1,13 @@
-name: FAB CI
+name: FAB Public Package CI
 
 on:
   push:
     branches:
       - next
+      - master
 
 jobs:
-  build:
+  public_package_build:
 
     runs-on: ubuntu-latest
 
@@ -20,18 +21,31 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Yarn install (for typescript definitions)
-      run: |
-        yarn
-    - name: Globally install @fab/cli
-      run: |
-        yarn global add @fab/cli
-    - name: Run e2e tests
+    - name: Setup e2e tests
       run: |
         cd tests
         yarn
-        yarn add @fab/cli
-        yarn test
       env:
         CI: true
-        PUBLIC_PACKAGES: true
+#    - name: "E2E: yarn2"
+#      run: |
+#        cd tests
+#        PUBLIC_PACKAGES=true yarn test yarn2
+#      env:
+#        CI: true
+    - name: "E2E: paths-exist"
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test paths-exist
+      env:
+        CI: true
+    - name: "E2E: create-react-app"
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test create-react-app
+      env:
+        CI: true
+    - name: "E2E: nextjs"
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test nextjs

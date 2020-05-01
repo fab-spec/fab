@@ -27,12 +27,10 @@ export const Sidebar = React.forwardRef((props, ref) => {
       <Box onClick={props.onClick} sx={styles.overlay(props)}>
         {props.open && <Global styles={styles.global} />}
       </Box>
-      <Box
-        ref={ref}
-        sx={{ ...styles.wrapper(props), borderTop: 'solid 3px #1865FB' }}
-        data-testid="sidebar"
-      >
-        <img src="/public/fab-square-logo.png" width="100%" />
+      <Box ref={ref} sx={{ ...styles.wrapper(props) }} data-testid="sidebar">
+        <a href="/">
+          <img src="/public/fab-square-logo.png" width="100%" />
+        </a>
 
         <NavSearch
           placeholder="Type to search..."

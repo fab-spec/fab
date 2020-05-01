@@ -1,9 +1,9 @@
 import { Command, flags } from '@oclif/command'
 import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
-import Initializer from '../actions/Initializer'
+import Initializer from '../Initializer'
 
 export default class Init extends Command {
-  static description = 'Generate a FAB config on a new project'
+  static description = Initializer.description
 
   static examples = [`$ fab init`, `$ fab init --config=fab.config.json5`]
 
@@ -25,12 +25,21 @@ export default class Init extends Command {
     version: flags.string({
       description: 'What NPM version or dist-tag to use for installing FAB packages',
     }),
+    'skip-framework-detection': flags.boolean({
+      description: "Don't try to auto-detect framework, set up manually.",
+    }),
   }
 
   static args = []
 
   async run() {
     const { args, flags } = this.parse(Init)
-    await Initializer.init(flags.config, flags.yes, flags['skip-install'], flags.version)
+    await Initializer.init(
+      flags.config,
+      flags.yes,
+      flags['skip-install'],
+      flags.version,
+      flags['skip-framework-detection']
+    )
   }
 }

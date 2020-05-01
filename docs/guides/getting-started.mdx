@@ -4,35 +4,24 @@ route: '/guides/getting-started'
 menu: Guides
 ---
 
-# Getting Started
-
-> **Note:** FAB v1 is in _public pre-release_. Things will change, but [any feedback](/guides/feedback) you can give is greatly appreciated.
+# Getting Started with FABs
 
 FABs are a [special zip file](/kb/fab-structure) that contains a complete snapshot of your application: all your server-side code, all your client-side assets, and it can be deployed [anywhere that runs JS](/guides/deploying).
 
-## Installing
-
-```
-yarn global add @fab/cli
-npm install -g @fab/cli
-```
-
-> **Note:** in the future, you will not need to do this, instead you can use `npx fab` and `yarn dlx fab` to do everything without global installation. But [not yet](https://github.com/fab-spec/fab/issues/71).
-
 ## `fab init`
 
-You can configure a repository to build a FAB by running `fab init` in the repo:
+You can configure a repository to build a FAB by running `npx fab init` in the repo:
 
 ```sh
-fab init -y
+npx fab init
 ```
-
-> **Note:** `-y` means "accept all prompts". It's mandatory right now because [I haven't built prompting yet 😳](https://github.com/fab-spec/fab/issues/73)
 
 The following frameworks are supported:
 
 * Create React App
 * NextJS 9+
+
+Anything else will be treated as a "static" build i.e. a project with no server-side component. It'll look for a command like `npm run build` to generate a directory like `build`, `dist` or `public`, which should cover everything from Angular to Vue to Gatsby. But as always, [leave an issue](https://github.com/fab-spec/fab/issues) if something you think _should_ happen _doesn't_ happen.
 
 ## `fab build`
 

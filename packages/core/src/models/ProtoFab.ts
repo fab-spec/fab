@@ -7,7 +7,6 @@ import {
 } from '../types'
 import { filenameOutsideFabLocations, getContentType } from '../helpers'
 import jsonKeysSort from 'json-keys-sort'
-import { RewireAssetsMetadata } from '@fab/rewire-assets/src/types'
 
 export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   files: FabFiles
@@ -29,7 +28,6 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
     // todo: an empty directory is... valid?
     const files_in_wrong_place = []
     for (const filename of this.files.keys()) {
-      console.log(filename)
       if (filenameOutsideFabLocations(filename)) {
         files_in_wrong_place.push(filename)
       }

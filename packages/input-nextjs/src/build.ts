@@ -8,7 +8,7 @@ import fs from 'fs-extra'
 import generateRenderer from './generateRenderer'
 import webpack from 'webpack'
 
-const log = _log(`[💚@fab/input-nextjs💚] `)
+const log = _log(`@fab/input-nextjs`)
 
 // @ts-ignore
 import md5dir from 'md5-dir/promise'
@@ -19,7 +19,8 @@ const WEBPACKED = `webpacked-nextjs-renderers`
 export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   args,
   proto_fab,
-  config_path
+  config_path,
+  skip_cache = false
 ) => {
   // const { dir } = args
   if (proto_fab.files!.size > 0) {
@@ -30,12 +31,14 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
 
   const config_dir = path.dirname(path.resolve(config_path))
   const { next_dir_name, next_dir, asset_prefix } = await preflightChecks(config_dir)
-  console.log({ next_dir_name, next_dir, asset_prefix })
+  // console.log({ next_dir_name, next_dir, asset_prefix })
 
-  log(`I am Input NextJS! Reading files from ${next_dir}`)
+  log(`Reading files from 💛${next_dir}💛`)
   const pages_dir = path.join(next_dir, 'serverless', 'pages')
+  const static_dir = path.join(next_dir, 'static')
+  const public_dir = path.resolve(next_dir, '../public')
   const pages_dir_hash = await md5dir(pages_dir)
-  console.log({ pages_dir, pages_dir_hash })
+  // console.log({ pages_dir, pages_dir_hash })
 
   log(`Finding all static HTML pages`)
   const html_files = await globby([`**/*.html`, `!_*`], { cwd: pages_dir })
@@ -57,12 +60,18 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     `${RENDERER}.${pages_dir_hash.slice(0, 7)}.js`
   )
 
-  const render_code_src = await getRenderCode(render_code_file, pages_dir, cache_dir)
-  // todo: hash render_code
+  const render_code_src = await getRenderCode(
+    render_code_file,
+    pages_dir,
+    cache_dir,
+    skip_cache
+  )
+  // todo: hash & cache render_code
 
-  // TEMPORARY: webpack this file to inject all the required shims
+  // Webpack this file to inject all the required shims, before rolling it up,
+  // since Webpack is way better at that job. Potentially this logic should be
+  // moved out into a separate module or into the core compiler.
   const webpacked_output = path.join(cache_dir, `${WEBPACKED}.js`)
-  console.log({ webpacked_output })
 
   const shims_dir = path.join(__dirname, 'shims')
 
@@ -100,6 +109,14 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
             '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
           },
         },
+        node: {
+          global: false,
+        },
+        plugins: [
+          new webpack.DefinePlugin({
+            eval: 'eeeeeevaaaaaaaal',
+          }),
+        ],
       },
       (err, stats) => {
         if (err || stats.hasErrors()) {
@@ -113,19 +130,53 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     )
   )
 
-  proto_fab.hypotheticals[`${RENDERER}.js`] = await fs.readFile(webpacked_output, 'utf8')
+  const webpacked_src = await fs.readFile(webpacked_output, 'utf8')
+  const haxxed_src = webpacked_src.replace(
+    /function\s+wrapfunction\s*\(([\w_]+)([, \w_]*)\)\s*{/gm,
+    'function wrapfunction ($1$2) {\nreturn $1;'
+  )
+  await fs.writeFile(path.join(cache_dir, `haxxed.js`), haxxed_src)
+  proto_fab.hypotheticals[`${RENDERER}.js`] = haxxed_src
+
+  log(`Finding all static assets`)
+  const asset_files = await globby([`**/*`], { cwd: static_dir })
+  if (asset_files.length > 0) {
+    for (const asset_file of asset_files) {
+      proto_fab.files.set(
+        `/_next/static/${asset_file}`,
+        await fs.readFile(path.resolve(static_dir, asset_file))
+      )
+      log(`  💛${asset_file}💛 read.`)
+    }
+  }
+
+  log(`Finding all public files`)
+  const public_files = await globby([`**/*`], { cwd: public_dir })
+  if (public_files.length > 0) {
+    for (const public_file of public_files) {
+      proto_fab.files.set(
+        `/${public_file}`,
+        await fs.readFile(path.resolve(public_dir, public_file))
+      )
+      log(`  💛${public_file}💛 read.`)
+    }
+  }
 }
 
 async function getRenderCode(
   renderer_cache: string,
   pages_dir: string,
-  cache_dir: string
+  cache_dir: string,
+  skip_cache: boolean
 ) {
   if (await fs.pathExists(renderer_cache)) {
-    log(
-      `Reusing NextJS renderer cache 💛${path.relative(process.cwd(), renderer_cache)}💛`
-    )
-    return await fs.readFile(renderer_cache, 'utf8')
+    const relative_path = path.relative(process.cwd(), renderer_cache)
+    if (skip_cache) {
+      log.note(`Skipping cached renderer, regenerating 💛${relative_path}💛`)
+    } else {
+      log(`Reusing NextJS renderer cache 💛${relative_path}💛`)
+      return await fs.readFile(renderer_cache, 'utf8')
+    }
   }
 
   log(`Finding all dynamic NextJS entry points`)
@@ -141,5 +192,6 @@ async function getRenderCode(
     previous_caches.map((cache) => fs.remove(path.join(cache_dir, cache)))
   )
   await fs.writeFile(renderer_cache, render_code)
+  log(`💚✔💚 Wrote 💛${renderer_cache}💛`)
   return render_code
 }

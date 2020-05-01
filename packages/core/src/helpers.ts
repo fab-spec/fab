@@ -40,3 +40,5 @@ export function matchPath<T>(
     lookup_table[`${pathname}${pathname.endsWith('/') ? '' : '/'}index.html`]
   )
 }
+
+export const stripTrailingSlash = (str: string) => str.replace(/\/$/, '')

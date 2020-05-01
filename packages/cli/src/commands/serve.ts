@@ -1,8 +1,11 @@
 import { Command, flags } from '@oclif/command'
-import { SandboxType, ServerArgs } from '@fab/core'
-import Server from '@fab/server'
+import {
+  DEFAULT_CONFIG_FILENAME,
+  SandboxType,
+  ServerArgs,
+  FabServerExports,
+} from '@fab/core'
 import { log } from '../helpers'
-import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
 
 export default class Serve extends Command {
   static description = 'fab serve: Serve a FAB in a local NodeJS Express server'
@@ -54,7 +57,9 @@ export default class Serve extends Command {
       log.error('ERROR: You must provide a FAB filename to serve.\n')
       this._help()
     }
-    const server = new Server(file, flags as ServerArgs)
+    const server_pkg = require('@fab/server').default as FabServerExports
+    console.log({ server_pkg })
+    const server = server_pkg.createServer(file, flags as ServerArgs)
     await server.serve(
       flags['experimental-v8-sandbox'] ? SandboxType.v8isolate : SandboxType.nodeVm
     )

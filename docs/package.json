@@ -4,13 +4,22 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build:fab": "npm run docz:build && fab-static .docz/dist",
-    "docz:build": "node scripts/build.js && docz build",
-    "docz:dev": "concurrently \"docz dev --port=2999\" \"node scripts/watch.js\"",
-    "docz:serve": "docz build && docz serve"
+    "build:fab": "npm run docz:build && npm run fab:build",
+    "clean": "rm -rf readmes",
+    "docz:build": "npm run clean && node scripts/build.js && docz build",
+    "docz:dev": "npm run clean && concurrently \"BROWSER=none docz dev --port=2999\" \"node scripts/watch.js\"",
+    "docz:serve": "docz build && docz serve",
+    "fab:build": "fab build",
+    "fab:serve": "fab serve fab.zip",
+    "fab:deploy": "dotenv -- fab deploy fab.zip"
   },
   "devDependencies": {
-    "@fab/static": "^0.1.8",
+    "@fab/actions": "^0.1.2",
+    "@fab/cli": "^0.1.2",
+    "@fab/input-static": "^0.1.2",
+    "@fab/plugin-render-html": "^0.1.2",
+    "@fab/plugin-rewire-assets": "^0.1.2",
+    "@fab/server": "^0.1.2",
     "chokidar": "^3.3.1",
     "concurrently": "^5.0.2",
     "docz": "^2.2.0",

@@ -1,4 +1,5 @@
 import { ProtoFab } from './models/ProtoFab'
+import { ConfigTypes } from './constants'
 
 export interface PluginArgs {
   [arg_name: string]: any
@@ -9,13 +10,15 @@ export interface BuildConfig {
 }
 
 export type FabSettings = {
-  [var_name: string]: string
+  [var_name: string]: string | boolean
 }
 
 export type DeployConfig = {
-  cf_workers_name?: string
-  s3_asset_bucket?: string
+  'cf-workers'?: ConfigTypes.CFWorkers
+  'aws-lambda-edge'?: ConfigTypes.AwsLambda
+  'aws-s3'?: ConfigTypes.AwsS3
 }
+export type DeployProviders = keyof DeployConfig
 
 export interface FabConfig {
   plugins: BuildConfig
@@ -41,7 +44,12 @@ export interface PluginMetadata {
 export type FabBuildStep<
   T extends PluginArgs = PluginArgs,
   U extends PluginMetadata = PluginMetadata
-> = (args: T, proto_fab: ProtoFab<U>, config_path: string) => Promise<void>
+> = (
+  args: T,
+  proto_fab: ProtoFab<U>,
+  config_path: string,
+  skip_cache?: boolean
+) => Promise<void>
 
 /*
  * A FabPluginRuntime is a setup function that returns a FabRequestResponder.
@@ -51,24 +59,29 @@ export type FabPluginRuntime<
   U extends PluginMetadata = PluginMetadata
 > = (args: T, metadata: U) => FabRequestResponder
 
+export type FabResponderMutableContext = {
+  [key: string]: any
+}
+export type FabResponderArgs = {
+  request: Request
+  settings: FabSettings
+  url: URL
+  context: FabResponderMutableContext
+}
 /*
  * A FabRequestResponder is an async function that optionally returns
  * a Response. If this responder should not handle this request, it
  * returns undefined and the next renderer is invoked.
  * */
-export type FabRequestContext = {
-  request: Request
-  settings: FabSettings
-  url: URL
-}
 export type FabRequestResponder = (
-  context: FabRequestContext
-) => Promise<Response | undefined | Directive>
+  context: FabResponderArgs
+) => Promise<undefined | Request | Response | Directive>
 
 export type ResponseInterceptor = (response: Response) => Promise<Response>
 
 export type Directive = {
   interceptResponse?: ResponseInterceptor
+  replaceRequest?: Request
 }
 
 export type FabFilesObject = { [k: string]: string }
@@ -85,6 +98,10 @@ export type FabMetadata = {
   plugin_metadata: PluginMetadata
 }
 
+export type ServerConstructor = (filename: string, args: ServerArgs) => ServerType
+export interface ServerType {
+  serve(runtimeType: SandboxType): Promise<void>
+}
 export type ServerArgs = {
   port: string
   cert: string | undefined
@@ -103,7 +120,10 @@ export enum SandboxType {
  * between the platform-specific runtimes (@fab/server,
  * @fab/cf-workers-wrapper, Linc.sh etc) and the FAB itself.
  * */
-export type FabSpecRender = (request: Request, settings: FabSettings) => Promise<Response>
+export type FabSpecRender = (
+  request: Request,
+  settings: FabSettings
+) => Promise<Request | Response>
 export type FabSpecMetadata = {
   production_settings: FabSettings
 }
@@ -111,4 +131,93 @@ export type FabSpecMetadata = {
 export type FabSpecExports = {
   render: FabSpecRender
   metadata: FabSpecMetadata
+}
+
+export type FetchApi = (url: string | Request, init?: RequestInit) => Promise<Response>
+
+export type FabServerDeployer<T extends ConfigTypes.Union> = (
+  fab_path: string,
+  working_dir: string,
+  config: T,
+  env_overrides: FabSettings,
+  assets_url: string
+) => Promise<string>
+
+export type FabAssetsDeployer<T extends ConfigTypes.Union> = (
+  fab_path: string,
+  working_dir: string,
+  config: T
+) => Promise<string>
+
+export type FabDeployer<T extends ConfigTypes.Union> = (
+  fab_path: string,
+  working_dir: string,
+  config: T,
+  env_overrides: FabSettings
+) => Promise<string>
+
+export type FabDeployerExports<T extends ConfigTypes.Union> = {
+  deployServer?: FabServerDeployer<T>
+  deployAssets?: FabAssetsDeployer<T>
+  deployBoth?: FabDeployer<T>
+}
+
+export type FabPackager<T extends ConfigTypes.Union> = (
+  fab_path: string,
+  package_path: string,
+  config: T,
+  env_overrides: FabSettings,
+  assets_url: string
+) => Promise<void>
+
+export type FabPackagerExports<T extends ConfigTypes.Union> = {
+  createPackage: FabPackager<T>
+}
+
+export interface JSON5ConfigI {
+  data: FabConfig
+  str_contents: string
+  write(file_path: string): Promise<void>
+}
+
+export type PackageFn = (
+  file_path: string,
+  config: FabConfig,
+  target: DeployProviders,
+  output_path: string | undefined,
+  assets_url: string,
+  env: string | undefined
+) => Promise<void>
+
+export type DeployFn = (
+  config: JSON5ConfigI,
+  file_path: string,
+  package_dir: string,
+  server_host: DeployProviders | undefined,
+  assets_host: DeployProviders | undefined,
+  env: string | undefined,
+  assets_only: boolean,
+  assets_already_deployed_at: string | undefined
+) => Promise<string>
+
+export type BuildFn = (
+  config_path: string,
+  config: FabConfig,
+  skip_cache: boolean
+) => Promise<void>
+
+export type FabActionsExports = {
+  Packager: {
+    package: PackageFn
+  }
+  Deployer: {
+    deploy: DeployFn
+  }
+  Builder: {
+    build: BuildFn
+  }
+}
+
+export type FabServerExports = {
+  createServer: ServerConstructor
 }

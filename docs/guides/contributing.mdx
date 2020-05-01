@@ -60,17 +60,15 @@ For `create-react-app`:
 
 ```sh
 # in the fab/tests dir
-FAB_E2E_CRA_DIR=/var/folders/83/r8pycjcn0d93h/T/tmp-20093cop/cra-test yarn test create-react-app
+FAB_E2E_SKIP_CREATE=true yarn test create-react-app
 ```
 
 For `nextjs`:
 
 ```sh
 # in the fab/tests dir
-FAB_E2E_NEXTJS_DIR=/var/folders/83/r8pycjcn0d93h/T/tmp-10668Ibj/nextjs-test yarn test nextjs
+FAB_E2E_SKIP_CREATE=true yarn test nextjs
 ```
-
-Note the `/var/folders/.../[cra|nextjs]-test` directory is **whatever your last test run used** (you should see it in the console logs). This format skips the creation of a new project, instead using `git reset --hard` and `git clean -df` to restore the project to its previous state.
 
 ### Tweaking tests & source code
 

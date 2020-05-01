@@ -15,7 +15,7 @@ FAB builds use a `fab.config.json5` file:
     '@fab/input-static': {
       dir: 'dist', // Read files from this directory
     },
-    '@fab/serve-html': {
+    '@fab/plugin-render-html': {
       // Enrich HTML files with:
       injections: {
         env: {
@@ -26,7 +26,7 @@ FAB builds use a `fab.config.json5` file:
         },
       },
     },
-    '@fab/rewire-assets': {},
+    '@fab/plugin-rewire-assets': {},
   },
   settings: {
     production: './production-settings.json',
@@ -34,6 +34,12 @@ FAB builds use a `fab.config.json5` file:
       API_URL: 'https://staging.lol.com',
     },
   },
+  deploy: {
+    'deploy-provider-name': {
+      setting: 'value',
+      secret: '@ENV_VAR'
+    }
+  }
 }
 ```
 

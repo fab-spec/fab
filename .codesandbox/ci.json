@@ -1,10 +1,11 @@
 {
   "packages": [
+    "packages/actions",
     "packages/cli",
     "packages/core",
     "packages/input-static",
-    "packages/rewire-assets",
-    "packages/serve-html"
+    "packages/plugin-rewire-assets",
+    "packages/plugin-render-html"
   ],
   "buildCommand": "build:codesandbox",
   "sandboxes": ["dazzling-cray-t0ru6"]
