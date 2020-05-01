@@ -38,7 +38,8 @@ async function tryLoadingMultiple(module_names: string[]) {
 
 export async function loadOrInstallModules(
   log: Logger,
-  module_names: string[]
+  module_names: string[],
+  auto_install: boolean
 ): Promise<any[]> {
   const root_dir = process.cwd()
   const first_attempt = await tryLoadingMultiple(module_names)
@@ -51,9 +52,15 @@ export async function loadOrInstallModules(
   const use_yarn = await useYarn(root_dir)
   log(`❤️WARNING❤️: Missing required modules:
   ${missing_modules.map((name) => `💛${name}💛`).join('\n')}`)
-  const proceed = await log.confirmAndRespond(
-    `Would you like to install them using 💛${use_yarn ? 'yarn' : 'npm'}💛?`
-  )
+  const proceed = auto_install
+    ? log(
+        `NOTE: 💛--auto-install💛 set. Installing them using 💛${
+          use_yarn ? 'yarn' : 'npm'
+        }💛?`
+      )
+    : await log.confirmAndRespond(
+        `Would you like to install them using 💛${use_yarn ? 'yarn' : 'npm'}💛?`
+      )
   if (!proceed) {
     log.error(`Cannot continue without these modules`)
     throw first_attempt[missing_modules[0]].error
@@ -71,11 +78,13 @@ export async function loadOrInstallModules(
     (name) => second_attempt[name].module || first_attempt[name].module
   )
 }
+
 export async function loadOrInstallModule(
   log: Logger,
-  module_name: string
+  module_name: string,
+  auto_install: boolean
 ): Promise<any> {
-  return (await loadOrInstallModules(log, [module_name]))[0]
+  return (await loadOrInstallModules(log, [module_name], auto_install))[0]
 }
 
 export async function installDependencies(
