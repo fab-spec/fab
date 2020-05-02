@@ -32,6 +32,39 @@ const Content = styled.div`
     font-weight: 600;
     font-size: 1.75rem;
   }
+  h1,
+  h2,
+  h3 {
+    code {
+      font-size: 0.85em;
+      font-weight: 400;
+    }
+  }
+
+  p {
+    line-height: 1.5;
+  }
+
+  p > code,
+  p > a > code {
+    font-size: 0.85em;
+    font-weight: 300;
+    white-space: nowrap;
+    padding: 0.2em 0.4em;
+  }
+  p > code {
+    background: rgba(255, 239, 213, 0.4);
+  }
+
+  pre {
+    font-size: 0.9rem;
+    background: rgba(255, 239, 213, 0.2) !important;
+  }
+
+  pre * {
+    font-family: Operator Mono SSm, Inconsolata !important;
+    font-weight: 300;
+  }
 `
 
 const global = css`
