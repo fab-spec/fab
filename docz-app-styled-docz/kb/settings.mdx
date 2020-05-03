@@ -1,0 +1,48 @@
+---
+name: 'Settings'
+route: '/kb/settings'
+menu: Knowledge Base
+---
+
+The `settings` part of you [FAB config](/kb/configuration) is used to provide both **production and non-production settings** that are injected by your [FAB runtime](/kb/runtime). For example:
+
+```json5
+// fab.config.json5
+{
+  // plugins, deploy, etc.
+  settings: {
+    production: {
+      API_URL: 'https://api.example.com/graphql',
+      DEFAULT_LANG: 'en-GB',
+      _SECRET_KEY: 'abcd1234'
+    },
+    staging: {
+      API_URL: 'https://staging.example.com/graphql',
+    },
+  },
+}
+```
+
+When deploying, the `production` environment is the default, but you can invoke the other environments using `fab serve`:
+
+```
+fab serve fab.zip
+fab serve --env=staging fab.zip
+```
+
+Each non-production environment acts as an _override_ to `production`, so in the case of `--env=staging` above, you will get the following result:
+
+```html
+<head>
+  <!-- ... -->
+  <script>
+    window.FAB_SETTINGS = {
+      API_URL: 'https://staging.example.com/graphql',
+      DEFAULT_LANG: 'en-GB',
+    }
+  </script>
+</head>
+<body>
+  <!-- ... -->
+</body>
+```

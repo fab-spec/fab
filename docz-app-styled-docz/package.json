@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "name": "@fab/docs",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fab-spec/fab.git"
+  },
+  "license": "MIT",
+  "files": [
+    "src/",
+    "package.json"
+  ],
+  "scripts": {
+    "dev": "docz dev",
+    "build": "docz build",
+    "clean": "rm -rf readmes",
+    "docz:build": "npm run clean && node scripts/build.js && docz build",
+    "docz:dev": "npm run clean && concurrently \"BROWSER=none docz dev --port=2999\" \"node scripts/watch.js\"",
+    "docz:serve": "docz build && docz serve"
+  },
+  "dependencies": {
+    "docz": "latest",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.3.2",
+    "chokidar": "^3.3.1",
+    "concurrently": "^5.0.2",
+    "fast-glob": "^3.1.1",
+    "react-helmet-async": "^1.0.4"
+  }
+}

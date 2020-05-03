@@ -1,0 +1,13 @@
+---
+name: 'Converting Custom SSR'
+route: '/guides/converting-custom-ssr'
+menu: Guides
+---
+
+# Converting Custom Server-Side-Rendered to use FABs
+
+_TODO: convert BBC's Simorgh and use it as an example_.
+
+While FABs have proof-of-concept conversions for a few simplified server-side-rendering applications, the general incompatibility of NodeJS server packages (e.g. in the [`express`](https://npmjs.com/package/express) ecosystem) with FAB's [V8 runtime](https://fab.dev/kb/fab-runtime-environment) makes this a challenge.
+
+That said, converting NextJS's "serverless" output, which is still very NodeJS-y, to run on FABs proves that it is possible. In lieu of better documentation here, the best way to understand how that works is to [look at the code]() or [get in touch](https://fab.dev/guides/feedback#jump-in-the-discord-chat)

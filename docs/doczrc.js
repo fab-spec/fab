@@ -48,4 +48,11 @@ export default {
     showPlaygroundEditor: false,
     codeSandbox: false,
   },
+  gatsbyRemarkPlugins: [
+    {
+      resolve: 'gatsby-remark-vscode',
+      // OPTIONAL
+      options: {},
+    },
+  ],
 }
