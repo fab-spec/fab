@@ -4,7 +4,7 @@ export interface TsExampleArgs extends PluginArgs {
   the_time_is: string
 }
 
-export interface TsExampleMetadata extends PluginMetadata {
+export interface TsExampleMetadata extends PluginMetadata<TsExampleArgs> {
   ts_test: {
     what_time_is_it: string
   }

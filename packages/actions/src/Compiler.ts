@@ -12,7 +12,7 @@ export class Compiler {
     const {
       output: [output, ...chunks],
     } = await rollupCompile(
-      require.resolve('@fab/actions/src/runtime'),
+      require.resolve('@fab/actions/esm/runtime'),
       { format: 'umd', exports: 'named', name: '__fab' },
       {
         ...proto_fab.hypotheticals,

@@ -50,8 +50,8 @@ export class Runtime {
 
   static on404() {}
 
-  static getMetadata<T extends PluginMetadata = PluginMetadata>() {
-    return this.getInstance().metadata as T
+  static getMetadata<T extends PluginMetadata = PluginMetadata>(plugin_name: keyof T) {
+    return (this.getInstance().metadata as T)[plugin_name]
   }
 
   static getInstance(): Runtime {

@@ -28,12 +28,13 @@ export interface FabConfig {
   deploy?: DeployConfig
 }
 
-export interface PluginMetadataContent {
+export interface PluginMetadataContent<T extends PluginArgs = {}> {
+  args: T
   [metadata_name: string]: any
 }
 
-export interface PluginMetadata {
-  [plugin_name: string]: PluginMetadataContent
+export interface PluginMetadata<T extends PluginArgs = {}> {
+  [plugin_name: string]: PluginMetadataContent<T>
 }
 
 /*

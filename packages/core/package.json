@@ -14,7 +14,8 @@
   "files": [
     "lib",
     "esm",
-    "runtime.js"
+    "runtime.js",
+    "runtime.d.ts"
   ],
   "main": "lib/index.js",
   "module": "esm/index.js",

@@ -9,6 +9,8 @@ import {
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
 import { ITokens } from 'micromustache'
+import { Runtime } from '@fab/core/runtime'
+import { TsExampleMetadata } from '@fab/actions/test/fixtures/plugins/typescript-example/types'
 
 // Todo: this should be part of the context.
 // Maybe it should be optional though, with this as the fallback.
@@ -17,6 +19,9 @@ const getNonce = () => {
     .toString(16)
     .slice(2)
 }
+
+const metadata = Runtime.getMetadata<ServeHtmlMetadata>('serve_html')
+const args = Runtime.getConfigArgs<ServeHtmlArgs>('serve_html')
 
 export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
   args: ServeHtmlArgs,

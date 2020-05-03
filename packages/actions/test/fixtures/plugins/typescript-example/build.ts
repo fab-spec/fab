@@ -1,10 +1,4 @@
-import {
-  ProtoFab,
-  PluginArgs,
-  FabBuildStep,
-  FabPluginRuntime,
-  PluginMetadata,
-} from '@fab/core'
+import { FabBuildStep } from '@fab/core'
 import { TsExampleMetadata, TsExampleArgs } from './types'
 
 export const build: FabBuildStep<TsExampleArgs, TsExampleMetadata> = async (

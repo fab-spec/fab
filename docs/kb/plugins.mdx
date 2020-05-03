@@ -166,60 +166,7 @@ The FAB project is 100% Typescript, so we support defining your plugins in Types
 
 Note: we don't [currently](https://github.com/fab-spec/fab/issues/65) do any typechecking during build, that's up to you. Usually IDE integration is enough to guide you for simple plugins.
 
-Relevant types can all be imported from `@fab/core`:
-
-```ts
-import {
-  ProtoFab,
-  PluginArgs,
-  PluginMetadataContent,
-  FabBuildStep,
-  FabPluginRuntime,
-  PluginMetadata,
-  FabSettings,
-} from '@fab/core'
-
-interface MyPluginArgs extends PluginArgs {
-  'any-args'?: number
-  'you-want'?: RegExp
-  'from-config'?: string
-}
-
-interface MyPluginMetadata extends PluginMetadata {
-  my_plugin_name: {
-    my_metadata_object: {
-      // Define what you want to pass from build to runtime
-    }
-  }
-}
-
-export const build: FabBuildStep = async (
-  args: MyPluginArgs,
-  proto_fab: ProtoFab<MyPluginMetadata>
-) => {
-  // Make changes to proto_fab
-}
-
-export const runtime: FabPluginRuntime = (
-  args: MyPluginArgs,
-  metadata: MyPluginMetadata
-) => {
-  const { my_metadata_object } = metadata.my_plugin_name
-
-  return async ({
-    request,
-    settings,
-    url,
-  }: {
-    request: Request
-    settings: FabSettings
-    url: URL
-  }) => {
-    // Return undefined to skip plugin, a Response to respond,
-    // or a Directive for more advanced behaviour
-  }
-}
-```
+See 
 
 ## Restrictions
 
