@@ -1,8 +1,9 @@
 import { expect } from 'chai'
 import { FabFilesObject, FabResponderArgs, FabSettings, ProtoFab } from '@fab/core'
 import { build } from '../src/build'
-import { runtime } from '../src/runtime'
 import { ServeHtmlArgs, ServeHtmlMetadata } from '../src/types'
+
+import { responder } from '../src/runtime'
 
 // todo: must be a better way to define this for the test run
 import { Request, Response } from 'node-fetch'
@@ -26,10 +27,6 @@ function requestObj(path: string, settings: FabSettings): FabResponderArgs {
 }
 
 describe('Runtime', () => {
-  it('should be a function', () => {
-    expect(runtime).to.be.a('function')
-  })
-
   it('should inject settings', async () => {
     const args = {}
     const files = {

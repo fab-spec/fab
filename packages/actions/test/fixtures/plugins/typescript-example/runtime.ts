@@ -1,7 +1,7 @@
 import { Runtime } from '@fab/core/runtime'
 import { TsExampleMetadata } from './types'
 
-const metadata = Runtime.getMetadata<TsExampleMetadata>('ts_test')
+const metadata = Runtime.getMetadata<TsExampleMetadata>().ts_test
 
 Runtime.onAll(async () => {
   return new Response(
