@@ -22,6 +22,7 @@
     "publish:next": "lerna publish from-package --yes --dist-tag next",
     "release:patch-latest": "yarn clean && yarn version:patch && yarn publish:latest && git push && git push --tags",
     "release:prerelease-latest": "yarn clean && yarn version:prerelease && yarn publish:latest && git push && git push --tags",
+    "release:prerelease-next": "yarn clean && yarn version:prerelease && yarn publish:next && git push && git push --tags",
     "test": "lerna run test --stream --parallel",
     "test:watch": "lerna run test --stream --parallel -- --watch",
     "typecheck": "tsc --noEmit",
