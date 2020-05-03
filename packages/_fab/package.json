@@ -1,6 +1,6 @@
 {
   "name": "fab",
-  "version": "0.1.6-alpha.0",
+  "version": "0.2.0-alpha.0",
   "description": "An alias for @fab/cli",
   "keywords": [
     "fab"
@@ -27,6 +27,6 @@
     "prepack": "cat PREAMBLE.md > README.md && cat ../cli/README.md >> README.md"
   },
   "dependencies": {
-    "@fab/cli": "0.1.6-alpha.0"
+    "@fab/cli": "0.2.0-alpha.0"
   }
 }
