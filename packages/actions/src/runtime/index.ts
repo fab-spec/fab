@@ -8,23 +8,18 @@ import {
   FabSpecMetadata,
   NO_RESPONSE_STATUS_CODE,
 } from '@fab/core'
-import { render as final_responder } from './final_responder'
+import { Directive, ResponseInterceptor } from '@fab/core'
 
-/*
- * Here, we import "files" that are going to be injected by the Rollup build.
- * */
-
+import runtime from './setup-runtime-responders'
+import './final_responder'
 // @ts-ignore
 import { runtimes } from 'user-defined-pipeline'
 // @ts-ignore
-import { fab_metadata } from 'fab-metadata'
-// @ts-ignore
 import { production_settings } from 'production-settings'
-import { Directive, ResponseInterceptor } from '@fab/core'
 
-const pipeline = [...(runtimes as FabPluginRuntime[]), final_responder].map((runtime) =>
-  runtime({}, (fab_metadata as FabMetadata).plugin_metadata)
-)
+// const pipeline = [...(runtimes as FabPluginRuntime[]), final_responder].map((runtime) =>
+//   runtime({}, (fab_metadata as FabMetadata).plugin_metadata)
+// )
 
 export const render: FabSpecRender = async (request: Request, settings: FabSettings) => {
   const url = new URL(request.url)
@@ -44,7 +39,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 
   let chained_request = request
 
-  for (const responders of pipeline) {
+  for (const responders of runtime.getPipeline()) {
     const response = await responders({
       request: chained_request.clone(),
       settings,
