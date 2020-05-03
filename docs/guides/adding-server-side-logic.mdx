@@ -30,109 +30,33 @@ Following on from the previous example, we can see how much more general the FAB
 
 ```js
 // proxy-api.js
-export default function runtime() {
-  return async function respond({ url }) {
-    if (url.pathname.startsWith('/api/')) {
-      // snip off the /api part of the URL
-      const route = url.pathname.slice(4)
-      // then
-      return fetch(`https://api.example.com${route}`)
-    }
-  }
+export default function ProxyApi(Runtime) {
+  Runtime.matches('/api/:route(.*)', ({ route }) =>
+    fetch(`https://api.example.com/${route}`)
+  )
 }
 ```
-<!--
 
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
+## Making a simple server-side request on a URL
 
-export default Runtime.responder(({ url }) => {
-  if (url.pathname.startsWith('/api/')) {
-    // snip off the /api part of the URL
-    const route = url.pathname.slice(4)
-    // then
-    return fetch(`https://api.example.com${route}`)
-  }
-})
-```
+```ts
+import { FABRuntime } from '@fab/core'
 
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-Runtime.addResponder(({ url }) => {
-  if (url.pathname.startsWith('/api/')) {
-    // snip off the /api part of the URL
-    const route = url.pathname.slice(4)
-    // then
-    return fetch(`https://api.example.com${route}`)
-  }
-})
-```
-
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-Runtime.on('/api/:route', (match) => fetch(`https://api.example.com${match.route}`))
-```
-
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-Runtime.withSetup(({ importantSetupShit }) => {
-  Runtime.on('/api/:route', (match) => fetch(`https://api.example.com${match.route}`))
-})
-```
-
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-Runtime.proxy('/api/:route', 'https://api.example.com/:route')
-```
-
-```js
-// dreamcode.js
-import { withSetup } from '@fab/core'
-
-withSetup((Runtime, { importantSetupShit }) => {
-  Runtime.on('/api/:route', (match) => fetch(`https://api.example.com${match.route}`))
-})
-```
-
-
-```js
-// dreamcode.js
-import { Redirects } from '@fab/core'
-
-Redirects.push({
-  from: "/api/*",
-  to: "https://api.example.com/:splat",
-  status: 200,
-  force: true
-})
-```
-
-
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-Runtime.on('/geolocate', async () => {
-  const geo_response = await (await fetch('http://ip-api.com/json')).json()
-  return new Response(JSON.stringify({
-    country: geo_response.country,
-    region: geo_response.regionName,
-    city: geo_response.city
-  }), {
-    headers: {
-      'Content-Type': 'application/json'
-    }
+export default (Runtime: FABRuntime) => {
+  Runtime.exact('/geolocate', async () => {
+    const geo_response = await (await fetch('http://ip-api.com/json')).json()
+    return new Response(
+      JSON.stringify({
+        country: geo_response.country,
+        region: geo_response.regionName,
+        city: geo_response.city,
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
   })
-})
+}
 ```
-
--->
