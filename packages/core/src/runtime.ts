@@ -6,6 +6,7 @@ import {
   FabFileMetadata,
   FabMetadata,
 } from '@fab/core'
+import { Key, pathToRegexp } from 'path-to-regexp'
 
 export enum Priority {
   LAST,
@@ -50,12 +51,41 @@ export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
     this.pipeline[priority].push(responder)
   }
 
-  on(route: string, responder: FabRequestResponderWithMatches, priority?: Priority) {
-    // const regexp = pathToRegexp(route)
+  onCondition(
+    test_fn: (context: FabResponderArgs) => boolean,
+    responder: FabRequestResponder,
+    priority?: Priority
+  ) {
+    this.addToPipeline(async (context: FabResponderArgs) => {
+      if (test_fn(context)) {
+        return await responder(context)
+      }
+      return undefined
+    }, priority)
+  }
+
+  startsWith(prefix: string, responder: FabRequestResponder, priority?: Priority) {
+    this.onCondition(({ url }) => url.pathname.startsWith(prefix), responder, priority)
+  }
+
+  exact(match: string, responder: FabRequestResponder, priority?: Priority) {
+    this.onCondition(({ url }) => url.pathname === match, responder, priority)
+  }
+
+  matches(route: string, responder: FabRequestResponderWithMatches, priority?: Priority) {
+    const groups: Key[] = []
+    const regexp = pathToRegexp(route, groups)
+    console.log(regexp)
+    console.log({ groups })
     this.addToPipeline(async (context: FabResponderArgs) => {
       const { pathname } = context.url
-      if (false /*regexp matches url*/) {
-        return await responder({}, context)
+      const match = regexp.exec(pathname)
+      if (match) {
+        const named_matches: { [key: string]: string } = {}
+        groups.forEach((group, i) => {
+          named_matches[group.name] = match[i + 1]
+        })
+        return await responder(named_matches, context)
       }
       return undefined
     }, priority)

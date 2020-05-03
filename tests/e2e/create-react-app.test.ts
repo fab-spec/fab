@@ -155,14 +155,12 @@ describe('Create React App E2E Test', () => {
         `${cwd}/fab-plugins/hello-world.js`,
         // language=JavaScript
         `
-        export const runtime = (args, metadata) => {
-          return async ({ url }) => {
-            if (url.pathname === '/hello') {
-              return new Response('HELLO WORLD!\\n', {
-                status: 200
-              })
-            }
-          }
+        export default Runtime => {
+          Runtime.matches('/hello/:whom?', async ({whom = 'world'}) => {
+            return new Response('HELLO ' + whom.toUpperCase() + '!\\n', {
+              status: 200
+            })
+          })
         }
         `
       )
@@ -183,6 +181,10 @@ describe('Create React App E2E Test', () => {
       const hello_response = await request('', '/hello', port)
       expect(hello_response).not.toEqual(homepage_response)
       expect(hello_response).toContain('HELLO WORLD!')
+
+      const hello_fab_response = await request('', '/hello/fab', port)
+      expect(hello_fab_response).not.toEqual(homepage_response)
+      expect(hello_fab_response).toContain('HELLO FAB!')
     })
 
     it('should reflect settings changes', async () => {

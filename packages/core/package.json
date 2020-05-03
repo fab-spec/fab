@@ -13,9 +13,7 @@
   "author": "Glen Maddern",
   "files": [
     "lib",
-    "esm",
-    "runtime.js",
-    "runtime.d.ts"
+    "esm"
   ],
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -31,7 +29,8 @@
   },
   "dependencies": {
     "@types/node": "^12.12.14",
-    "mime-types": "^2.1.25"
+    "mime-types": "^2.1.25",
+    "path-to-regexp": "^6.1.0"
   },
   "publishConfig": {
     "access": "public"

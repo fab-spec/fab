@@ -61,29 +61,32 @@ This is available to our runtime component under `Runtime.metadata`, allowing us
 ```js
 // server/redirect-old-blog-urls/runtime.js
 
-import { Runtime } from '@fab/core/runtime'
+// We export a default function that takes a 'Runtime' object
+// that lets us declare route handlers
+export default function BlogRedirectRuntime(Runtime) {
 
-// We register a handler to match the old posts
-Runtime.on('/posts/:id', async (matches, { request, settings, url }) => {
-  // grab the :id off the request and look it up in the metadata
-  const { id } = matches
-  const new_article_url = Runtime.metadata.article_urls[id]
+  // Register a handler to match the old posts
+  Runtime.match('/posts/:id', async (params, { request, settings, url }) => {
+    // grab the :id off the URL params and look it up in the metadata
+    const { id } = params
+    const new_article_url = Runtime.metadata.article_urls[id]
 
-  // If the ID matches, we can return a 301 that points to it
-  if (new_article_url) {
-    return new Response(null, {
-      status: 301,
-      headers: {
-        Location: new_article_url,
-      },
-    })
-  } else {
-    // If the :id doesn't match anything we know of, we could render
-    // a 404 ourselves here, but we could also just return undefined
-    // to let the rest of the FAB runtime handle it.
-    return undefined
-  }
-})
+    // If the ID matches, we can return a 301 that points to it
+    if (new_article_url) {
+      return new Response(null, {
+        status: 301,
+        headers: {
+          Location: new_article_url,
+        },
+      })
+    } else {
+      // If the :id doesn't match anything we know of, we could render
+      // a 404 ourselves here, but we could also just return undefined
+      // to let the rest of the FAB runtime handle it.
+      return undefined
+    }
+  })
+}
 ```
 
 To include this in our FAB build, we edit `fab.config.json5` to reference our new plugin directory, which will look for `build.js` and `runtime.js` files within it (see [Plugin resolution]:
@@ -107,7 +110,8 @@ For plugins with both build and runtime effects, we require two separate files `
 
 - `build.js` is called by `@fab/cli`, so has access to the full NodeJS ecosystem of tools, and direct access to the filesystem, and can use CLI utilities like `log`, `prompt` or `confirm`, as well as make arbitrary HTTP requests.
 
-   Note: `build.js` needs to be in a format interpretable by your current NodeJS version.
+  Note: `build.js` needs to be in a format interpretable by your current NodeJS version.
+
 - `runtime.js` is **compiled into the FAB itself** using Rollup. This means it, and its dependencies, _need to be compatible with the [FAB Runtime Environment](/kb/fab-runtime-environment)_, but it also means that ES Modules syntax and/or Typescript are natively supported (although no typechecking takes place, see [below](#using-typescript)).
 
 ## Plugin resolution
@@ -193,4 +197,3 @@ For a given entry in the `plugins` key of your `fab.config.json5` file, e.g.
   },
 }
 ```
-
