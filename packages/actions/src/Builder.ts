@@ -132,13 +132,6 @@ export default class Builder {
           // Relevant issue: https://github.com/fab-spec/fab/issues/67
           runtime_plugin = plugin_path
         } else {
-          if (typeof module.build === 'function') {
-            build_plugin = {
-              plugin_name,
-              builder: module.build,
-              plugin_args,
-            }
-          }
           if (typeof module.runtime === 'function') {
             runtime_plugin = plugin_path
           }
