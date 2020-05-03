@@ -1,27 +1,26 @@
 /* Outermost FAB server, imports the plugin chain and responds to requests */
 
 import {
+  Directive,
   FabSettings,
-  FabSpecRender,
-  FabPluginRuntime,
-  FabMetadata,
   FabSpecMetadata,
+  FabSpecRender,
   NO_RESPONSE_STATUS_CODE,
+  ResponseInterceptor,
 } from '@fab/core'
+import { FabPluginRuntime, FABRuntime } from '@fab/core/runtime'
+
 import final_responder from './final_responder'
-
-/*
- * Here, we import "files" that are going to be injected by the Rollup build.
- * */
-
 // @ts-ignore
 import { runtimes } from 'user-defined-pipeline'
 // @ts-ignore
 import { fab_metadata } from 'fab-metadata'
 // @ts-ignore
 import { production_settings } from 'production-settings'
-import { Directive, ResponseInterceptor } from '@fab/core'
-import { FABRuntime } from '@fab/core/runtime'
+
+/*
+ * Here, we import "files" that are going to be injected by the Rollup build.
+ * */
 
 FABRuntime.initialize(fab_metadata, [
   ...(runtimes as FabPluginRuntime[]),

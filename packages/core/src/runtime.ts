@@ -1,9 +1,9 @@
-import { FabMetadata, FabRequestResponder, PluginMetadata } from '@fab/core'
 import {
-  FabPluginRuntime,
+  FabRequestResponder,
+  PluginMetadata,
   FabRequestResponderWithMatches,
   FabResponderArgs,
-} from './types'
+} from '@fab/core'
 
 export enum Priority {
   LAST,
@@ -13,14 +13,15 @@ export enum Priority {
   FIRST,
 }
 
-export class Runtime {
-  private static instance: Runtime | undefined
-  private metadata: PluginMetadata
+export type FabPluginRuntime = (Runtime: FABRuntime) => void
+
+export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
+  metadata: T
   private pipeline: {
     [order in Priority]: FabRequestResponder[]
   }
 
-  constructor(metadata: PluginMetadata) {
+  constructor(metadata: T) {
     this.metadata = metadata
     this.pipeline = {
       [Priority.LAST]: [],
@@ -39,57 +40,6 @@ export class Runtime {
       ...this.pipeline[Priority.LATER],
       ...this.pipeline[Priority.LAST],
     ]
-  }
-
-  addToPipeline(responder: FabRequestResponder, priority: Priority = Priority.MIDDLE) {
-    this.pipeline[priority].push(responder)
-  }
-
-  static on(route: string, callback: () => {}, priority: string) {
-    const instance = this.getInstance()
-  }
-
-  static onAll(responder: FabRequestResponder, priority?: Priority) {
-    const instance = this.getInstance()
-  }
-
-  static on404() {}
-
-  static getMetadata<T extends PluginMetadata = PluginMetadata>() {
-    return this.getInstance().metadata as T
-  }
-
-  static getInstance(): Runtime {
-    if (Runtime.instance) return Runtime.instance
-
-    throw new Error(
-      'Tried to call Runtime.getInstance() before something had called Runtime.initialise()'
-    )
-  }
-
-  static initialise(metadata: PluginMetadata) {
-    if (Runtime.instance)
-      throw new Error(`Already initialised, can't call Runtime.initialise() again`)
-
-    return (Runtime.instance = new Runtime(metadata))
-  }
-}
-
-export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
-  metadata: T
-  private pipeline: {
-    [order in Priority]: FabRequestResponder[]
-  }
-
-  constructor(metadata: T) {
-    this.metadata = metadata
-    this.pipeline = {
-      [Priority.LAST]: [],
-      [Priority.LATER]: [],
-      [Priority.MIDDLE]: [],
-      [Priority.EARLY]: [],
-      [Priority.FIRST]: [],
-    }
   }
 
   addToPipeline(responder: FabRequestResponder, priority: Priority = Priority.MIDDLE) {

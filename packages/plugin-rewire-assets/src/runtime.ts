@@ -1,6 +1,5 @@
-import { RewireAssetsArgs, RewireAssetsMetadata } from './types'
-import { FabPluginRuntime, getCacheHeaders, matchPath } from '@fab/core'
-import { NON_IMMUTABLE_HEADERS } from '@fab/core'
+import { RewireAssetsMetadata } from './types'
+import { getCacheHeaders, matchPath, NON_IMMUTABLE_HEADERS } from '@fab/core'
 import { FABRuntime } from '@fab/core/runtime'
 
 export default function RewireAssetsRuntime(Runtime: FABRuntime<RewireAssetsMetadata>) {

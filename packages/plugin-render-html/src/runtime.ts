@@ -4,7 +4,6 @@ import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
 import { ITokens } from 'micromustache'
 import { FABRuntime } from '@fab/core/runtime'
-import { FabRequestResponder } from '@fab/core'
 
 // Todo: this should be part of the context.
 // Maybe it should be optional though, with this as the fallback.

@@ -4,6 +4,7 @@ import { build } from '../src/build'
 import { ServeHtmlArgs, ServeHtmlMetadata } from '../src/types'
 
 import runtime from '../src/runtime'
+import { FABRuntime } from '@fab/core/runtime'
 
 // todo: must be a better way to define this for the test run
 import { Request, Response } from 'node-fetch'
@@ -33,8 +34,9 @@ describe('Runtime', () => {
       '/index.html': `<html><head><title>HTML Test</title></head><body>here</body></html>`,
     }
     const proto_fab = await doBuild(files, args)
-
-    const renderer = runtime(args, proto_fab.metadata)
+    const Runtime = new FABRuntime(proto_fab.metadata)
+    runtime(Runtime)
+    const renderer = Runtime.getPipeline()[0]
     const response = (await renderer(
       requestObj('/', { SOME_VAR: 'some value' })
     )) as Response
@@ -56,8 +58,9 @@ describe('Runtime', () => {
       '/index.html': `<html><head><title>{{{ titleStr }}}</title></head><body>{{ bodyText }}</body></html>`,
     }
     const proto_fab = await doBuild(files, args)
-
-    const renderer = runtime(args, proto_fab.metadata)
+    const Runtime = new FABRuntime(proto_fab.metadata)
+    runtime(Runtime)
+    const renderer = Runtime.getPipeline()[0]
     const response = (await renderer(
       requestObj('/', { SOME_VAR: 'some value' })
     )) as Response
@@ -78,8 +81,9 @@ describe('Runtime', () => {
       '/index.html': `<html><head><title>HTML Test</title></head><body>here</body></html>`,
     }
     const proto_fab = await doBuild(files, args)
-
-    const renderer = runtime(args, proto_fab.metadata)
+    const Runtime = new FABRuntime(proto_fab.metadata)
+    runtime(Runtime)
+    const renderer = Runtime.getPipeline()[0]
     const response = (await renderer(
       requestObj('/', { SOME_VAR: 'some value' })
     )) as Response

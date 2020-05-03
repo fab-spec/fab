@@ -1,6 +1,5 @@
 import { ProtoFab } from './models/ProtoFab'
 import { ConfigTypes } from './constants'
-import { FABRuntime } from './runtime'
 
 export interface PluginArgs {
   [arg_name: string]: any
@@ -52,11 +51,6 @@ export type FabBuildStep<
   config_path: string,
   skip_cache?: boolean
 ) => Promise<void>
-
-/*
- * A FabPluginRuntime is a setup function that returns a FabRequestResponder.
- * */
-export type FabPluginRuntime = (Runtime: FABRuntime) => void
 
 export type FabResponderMutableContext = {
   [key: string]: any
