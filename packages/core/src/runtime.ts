@@ -63,7 +63,7 @@ export class Runtime {
   }
 
   static initialise(metadata: PluginMetadata) {
-    if (!Runtime.instance)
+    if (Runtime.instance)
       throw new Error(`Already initialised, can't call Runtime.initialise() again`)
 
     return (Runtime.instance = new Runtime(metadata))
