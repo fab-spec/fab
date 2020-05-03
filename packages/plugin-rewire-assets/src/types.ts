@@ -12,9 +12,10 @@ export type RenamedAssets = {
   [filename: string]: { asset_path: string; immutable: boolean }
 }
 
-export interface RewireAssetsMetadata extends PluginMetadata {
+export interface RewireAssetsMetadata extends PluginMetadata<RewireAssetsArgs> {
   rewire_assets: {
     inlined_assets: InlineAssets
     renamed_assets: RenamedAssets
+    args: RewireAssetsArgs
   }
 }

@@ -62,7 +62,7 @@ export class Runtime {
     )
   }
 
-  static initialise(metadata: FabMetadata) {
+  static initialise(metadata: PluginMetadata) {
     if (!Runtime.instance)
       throw new Error(`Already initialised, can't call Runtime.initialise() again`)
 

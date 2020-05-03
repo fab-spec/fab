@@ -31,8 +31,9 @@ In this example, we'll assume that the new blog posts have been rendered out to 
 // All build plugins must export this function and only this funciton
 export const build = async (args, proto_fab) => {
   // Anything we attach to proto_fab.metadata is serialised
-  // and available to your runtime code.
-  proto_fab.metadata.article_urls = {}
+  // and available to your runtime code. It is convention
+  // to always pass through the args from our config file.
+  proto_fab.metadata.article_urls = { args }
 
   // Loop through all the HTML files in the FAB
   for (const filename of proto_fab.files.keys()) {
@@ -166,7 +167,9 @@ The FAB project is 100% Typescript, so we support defining your plugins in Types
 
 Note: we don't [currently](https://github.com/fab-spec/fab/issues/65) do any typechecking during build, that's up to you. Usually IDE integration is enough to guide you for simple plugins.
 
-See 
+See https://github.com/fab-spec/fab/tree/new-runtime-api/packages/actions/test/fixtures/plugins/typescript-example for an example.
+
+> TODO: change that to `master` branch once merged.
 
 ## Restrictions
 

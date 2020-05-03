@@ -21,9 +21,10 @@ export interface ServeHtmlArgs extends PluginArgs {
 export type ServerHtmls = {
   [path: string]: ITokens
 }
-export interface ServeHtmlMetadata extends PluginMetadata {
+export interface ServeHtmlMetadata extends PluginMetadata<ServeHtmlArgs> {
   serve_html: {
     htmls: ServerHtmls
     resolved_fallback: string | undefined
+    args: ServeHtmlArgs
   }
 }

@@ -7,5 +7,6 @@ export interface TsExampleArgs extends PluginArgs {
 export interface TsExampleMetadata extends PluginMetadata<TsExampleArgs> {
   ts_test: {
     what_time_is_it: string
+    args: TsExampleArgs
   }
 }

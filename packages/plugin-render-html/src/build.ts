@@ -74,5 +74,6 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
   proto_fab.metadata.serve_html = {
     htmls,
     resolved_fallback,
+    args,
   }
 }
