@@ -3,6 +3,8 @@ import {
   PluginMetadata,
   FabRequestResponderWithMatches,
   FabResponderArgs,
+  FabFileMetadata,
+  FabMetadata,
 } from '@fab/core'
 
 export enum Priority {
@@ -17,12 +19,14 @@ export type FabPluginRuntime = (Runtime: FABRuntime) => void
 
 export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
   metadata: T
+  file_metadata: FabFileMetadata
   private pipeline: {
     [order in Priority]: FabRequestResponder[]
   }
 
-  constructor(metadata: T) {
+  constructor(metadata: T, file_metadata: FabFileMetadata) {
     this.metadata = metadata
+    this.file_metadata = file_metadata
     this.pipeline = {
       [Priority.LAST]: [],
       [Priority.LATER]: [],
@@ -63,8 +67,8 @@ export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
 
   on404() {}
 
-  static initialize(metadata: PluginMetadata, plugins: FabPluginRuntime[]) {
-    const instance = new FABRuntime(metadata)
+  static initialize(metadata: FabMetadata, plugins: FabPluginRuntime[]) {
+    const instance = new FABRuntime(metadata.plugin_metadata, metadata.file_metadata)
     plugins.forEach((plugin) => plugin(instance))
     return instance
   }

@@ -7,7 +7,7 @@ import {
   ProtoFab,
 } from '@fab/core'
 import { build } from '../src/build'
-import { ServeHtmlArgs, ServeHtmlMetadata } from '../src/types'
+import { RenderHtmlArgs, RenderHtmlMetadata } from '../src/types'
 
 import runtime from '../src/runtime'
 // todo: must be a better way to define this for the test run
@@ -17,8 +17,8 @@ global.Request = Request
 // @ts-ignore
 global.Response = Response
 
-async function doBuild(files: FabFilesObject, args: ServeHtmlArgs) {
-  const proto_fab = new ProtoFab<ServeHtmlMetadata>(files)
+async function doBuild(files: FabFilesObject, args: RenderHtmlArgs) {
+  const proto_fab = new ProtoFab<RenderHtmlMetadata>(files)
   await build(args, proto_fab)
   return proto_fab
 }
@@ -38,7 +38,7 @@ describe('Runtime', () => {
       '/index.html': `<html><head><title>HTML Test</title></head><body>here</body></html>`,
     }
     const proto_fab = await doBuild(files, args)
-    const Runtime = new FABRuntime(proto_fab.metadata)
+    const Runtime = new FABRuntime(proto_fab.metadata, {})
     // @ts-ignore
     runtime(Runtime)
     const renderer = Runtime.getPipeline()[0]
@@ -63,7 +63,7 @@ describe('Runtime', () => {
       '/index.html': `<html><head><title>{{{ titleStr }}}</title></head><body>{{ bodyText }}</body></html>`,
     }
     const proto_fab = await doBuild(files, args)
-    const Runtime = new FABRuntime(proto_fab.metadata)
+    const Runtime = new FABRuntime(proto_fab.metadata, {})
     // @ts-ignore
     runtime(Runtime)
     const renderer = Runtime.getPipeline()[0]
@@ -87,7 +87,7 @@ describe('Runtime', () => {
       '/index.html': `<html><head><title>HTML Test</title></head><body>here</body></html>`,
     }
     const proto_fab = await doBuild(files, args)
-    const Runtime = new FABRuntime(proto_fab.metadata)
+    const Runtime = new FABRuntime(proto_fab.metadata, {})
     // @ts-ignore
     runtime(Runtime)
     const renderer = Runtime.getPipeline()[0]

@@ -1,4 +1,4 @@
-import { ServeHtmlMetadata } from './types'
+import { RenderHtmlMetadata } from './types'
 import { FABRuntime, FabSettings, matchPath, NO_RESPONSE_STATUS_CODE } from '@fab/core'
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
@@ -12,8 +12,8 @@ const getNonce = () => {
     .slice(2)
 }
 
-export default function RenderHTMLRuntime(Runtime: FABRuntime<ServeHtmlMetadata>) {
-  const { htmls, resolved_fallback, args } = Runtime.metadata.serve_html
+export default function RenderHTMLRuntime(Runtime: FABRuntime<RenderHtmlMetadata>) {
+  const { htmls, resolved_fallback, args } = Runtime.metadata.render_html
   const { injections = DEFAULT_INJECTIONS } = args
   const error_page = matchPath(htmls, '/404')
 

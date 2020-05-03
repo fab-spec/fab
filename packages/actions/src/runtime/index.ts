@@ -23,6 +23,8 @@ import { production_settings } from 'production-settings'
  * Here, we import "files" that are going to be injected by the Rollup build.
  * */
 
+console.log({ fab_metadata })
+
 const Runtime = FABRuntime.initialize(fab_metadata, [
   ...(runtimes as FabPluginRuntime[]),
   final_responder,
