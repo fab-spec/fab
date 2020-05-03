@@ -123,26 +123,26 @@ export default class Builder {
                 `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
               )
         }
-
-        const module = await safeRequire(plugin_path)
-
-        if (!module) {
-          // This can happen if the plugin is runtime-only and uses non-CJS syntax,
-          // so just pass it through as a runtime plugin.
-          // Relevant issue: https://github.com/fab-spec/fab/issues/67
-          runtime_plugin = plugin_path
-        } else {
-          if (typeof module.runtime === 'function') {
-            runtime_plugin = plugin_path
-          }
-        }
+        //
+        // const module = await safeRequire(plugin_path)
+        //
+        // if (!module) {
+        //   // This can happen if the plugin is runtime-only and uses non-CJS syntax,
+        //   // so just pass it through as a runtime plugin.
+        //   // Relevant issue: https://github.com/fab-spec/fab/issues/67
+        runtime_plugin = plugin_path
+        // } else {
+        //   if (typeof module.runtime === 'function') {
+        //     runtime_plugin = plugin_path
+        //   }
+        // }
       }
-
-      if (!runtime_plugin && !build_plugin) {
-        log.warn(
-          `Plugin ${plugin_name} exports neither a "build" or "runtime" export, ignoring it.`
-        )
-      }
+      //
+      // if (!runtime_plugin && !build_plugin) {
+      //   log.warn(
+      //     `Plugin ${plugin_name} exports neither a "build" or "runtime" export, ignoring it.`
+      //   )
+      // }
 
       if (runtime_plugin) runtime_plugins.push(runtime_plugin)
       if (build_plugin) build_plugins.push(build_plugin)
