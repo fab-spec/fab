@@ -125,7 +125,7 @@ To avoid having to specify both input files, when a plugin is referenced in the 
 
 We first look to resolve `@fab/some-plugin/runtime` and `@fab/some-plugin/build`, which are then required and integrated at the relevant stage. If _neither_ of those files exist, we require `@fab/some-plugin` and consider it a runtime-only plugin.
 
-> 👉 Note: most `@fab/xxx` plugins do not have a `main` entry in their `package.json` file, meaning they cannot be required without adding `/build` or `/runtime`. It turns out it's the only good way to have a package on NPM with two separate, yet equally important, branches.
+> 👉 Note: most `@fab/xxx` plugins do not have a `main` entry in their `package.json` file, meaning they cannot be required without adding `/build` or `/runtime`. It turns out it's the only good way I could find to have a package on NPM with two separate, yet equally important, entry points. The more you know!
 
 Also note: this works the same with relative path plugins, like `./src/fab-server`:
 
@@ -156,7 +156,7 @@ Note: There's nothing wrong with referencing both files directly, if you prefer:
 }
 ```
 
-## Plugin Ordering
+## Ordering
 
 Plugins are invoked in the order in which they're defined in the `fab.config.json5` file, hence why we need to place our `./server/redirect-old-articles` plugin between `@fab/input-static` and `@fab/plugin-render-html` in our example above.
 
@@ -164,9 +164,9 @@ Plugins are invoked in the order in which they're defined in the `fab.config.jso
 
 The FAB project is 100% Typescript, so we support defining your plugins in Typescript as well. In the above examples, anywhere `.js` is referenced, a `.ts` file should work as well.
 
-Note: we don't [currently](https://github.com/fab-spec/fab/issues/65) do any typechecking during build, that's up to you. Usually IDE integration is enough to guide you for simple plugins, anything more complex probably needs its own toolchain anyway.
+Note: we don't [currently](https://github.com/fab-spec/fab/issues/65) do any typechecking during build, that's up to you. Usually IDE integration is enough to guide you for simple plugins.
 
-Relevant types can be imported from `@fab/core`:
+Relevant types can all be imported from `@fab/core`:
 
 ```ts
 import {
@@ -244,6 +244,3 @@ For a given entry in the `plugins` key of your `fab.config.json5` file, e.g.
 }
 ```
 
-The FAB compiler will attempt to resolve `'./some-local-file` \_relative to the location of the `fab.config.json5`, then look for `./some-local-file/runtime` if that's not found. The same happens with the NPM package: first `'@some-org/package-name'` is attempted, then `
-
-Though you _can_ use a single file to export both a `build` and `runtime` export, for anything more sophisticated you're going to want to have separate files. This is because the two commands run at different times, in quite different environments. `build` is called by the CLI, so has access to the full NodeJS ecosystem of tools, and direct access to the filesystem. `runtime`, on the other hand, is **compiled into the FAB itself**. This means it, and its dependencies, _need to be compatible with the [FAB Runtime Environment](/kb/fab-runtime-environment)_, which is pure JS, no NodeJS at all.
