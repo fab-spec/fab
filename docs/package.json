@@ -1,8 +1,12 @@
 {
   "name": "@fab/docs",
   "version": "1.0.0",
-  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fab-spec/fab.git"
+  },
   "license": "MIT",
+  "main": "index.js",
   "scripts": {
     "build:fab": "npm run docz:build && npm run fab:build",
     "clean": "rm -rf readmes",
@@ -10,8 +14,8 @@
     "docz:dev": "npm run clean && concurrently \"BROWSER=none docz dev --port=2999\" \"node scripts/watch.js\"",
     "docz:serve": "docz build && docz serve",
     "fab:build": "fab build",
-    "fab:serve": "fab serve fab.zip",
-    "fab:deploy": "dotenv -- fab deploy fab.zip"
+    "fab:deploy": "dotenv -- fab deploy fab.zip",
+    "fab:serve": "fab serve fab.zip"
   },
   "devDependencies": {
     "@fab/actions": "^0.1.2",
@@ -24,12 +28,9 @@
     "concurrently": "^5.0.2",
     "docz": "^2.2.0",
     "fast-glob": "^3.1.1",
+    "gatsby-remark-vscode": "^2.0.3",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet-async": "^1.0.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/fab-spec/fab.git"
   }
 }
