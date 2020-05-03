@@ -8,20 +8,25 @@ import {
   FabSpecMetadata,
   NO_RESPONSE_STATUS_CODE,
 } from '@fab/core'
-import { Directive, ResponseInterceptor } from '@fab/core'
+import final_responder from './final_responder'
 
-// Call this first, so we set up the Runtime API in @fab/core/runtime
-import runtime from './setup-runtime-responders'
-// Add our 404 generator
-import './final_responder'
-// Then add the user's stuff
-import 'user-defined-pipeline'
+/*
+ * Here, we import "files" that are going to be injected by the Rollup build.
+ * */
+
+// @ts-ignore
+import { runtimes } from 'user-defined-pipeline'
+// @ts-ignore
+import { fab_metadata } from 'fab-metadata'
 // @ts-ignore
 import { production_settings } from 'production-settings'
+import { Directive, ResponseInterceptor } from '@fab/core'
+import { FABRuntime } from '@fab/core/runtime'
 
-// const pipeline = [...(runtimes as FabPluginRuntime[]), final_responder].map((runtime) =>
-//   runtime({}, (fab_metadata as FabMetadata).plugin_metadata)
-// )
+FABRuntime.initialize(fab_metadata, [
+  ...(runtimes as FabPluginRuntime[]),
+  final_responder,
+])
 
 export const render: FabSpecRender = async (request: Request, settings: FabSettings) => {
   const url = new URL(request.url)
@@ -41,7 +46,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 
   let chained_request = request
 
-  for (const responders of runtime.getPipeline()) {
+  for (const responders of pipeline) {
     const response = await responders({
       request: chained_request.clone(),
       settings,

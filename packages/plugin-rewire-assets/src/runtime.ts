@@ -1,14 +1,12 @@
 import { RewireAssetsArgs, RewireAssetsMetadata } from './types'
 import { FabPluginRuntime, getCacheHeaders, matchPath } from '@fab/core'
 import { NON_IMMUTABLE_HEADERS } from '@fab/core'
+import { FABRuntime } from '@fab/core/runtime'
 
-export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> = (
-  args: RewireAssetsArgs,
-  metadata: RewireAssetsMetadata
-) => {
-  const { inlined_assets, renamed_assets } = metadata.rewire_assets
+export default function RewireAssetsRuntime(Runtime: FABRuntime<RewireAssetsMetadata>) {
+  const { inlined_assets, renamed_assets } = Runtime.metadata.rewire_assets
 
-  return async function({ url }) {
+  Runtime.onAll(async ({ url }) => {
     const { pathname } = url
 
     const inlined = matchPath(inlined_assets, pathname)
@@ -38,5 +36,5 @@ export const runtime: FabPluginRuntime<RewireAssetsArgs, RewireAssetsMetadata> =
     }
 
     return undefined
-  }
+  })
 }

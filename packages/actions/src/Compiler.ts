@@ -52,7 +52,13 @@ export class Compiler {
 
 function generatePipelineJs(plugin_runtimes: string[]) {
   return `
-    ${plugin_runtimes.map((plugin, i) => `import '${plugin}'`).join('\n')}
+    ${plugin_runtimes
+      .map((plugin, i) => `import runtime_${i} from '${plugin}'`)
+      .join('\n')}
+
+    export const runtimes = [
+      ${plugin_runtimes.map((plugin, i) => `runtime_${i}`).join(',')}
+    ]
   `
 }
 
