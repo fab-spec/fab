@@ -4,7 +4,7 @@ import { build } from '../src/build'
 import { ServeHtmlArgs, ServeHtmlMetadata } from '../src/types'
 
 import runtime from '../src/runtime'
-import { FABRuntime } from '@fab/core/runtime'
+import { FABRuntime } from '@fab/core/esm/runtime'
 
 // todo: must be a better way to define this for the test run
 import { Request, Response } from 'node-fetch'
@@ -38,7 +38,7 @@ describe('Runtime', () => {
     runtime(Runtime)
     const renderer = Runtime.getPipeline()[0]
     const response = (await renderer(
-      requestObj('/', { SOME_VAR: 'some value' })
+      requestObj('/', { SOME_VAR: 'some value', _SECRET_VAR: 'secret_value' })
     )) as Response
     expect(await response?.text()).to.equal(
       '<html><head><script>window.FAB_SETTINGS={"SOME_VAR":"some value"};</script><title>HTML Test</title></head><body>here</body></html>'
