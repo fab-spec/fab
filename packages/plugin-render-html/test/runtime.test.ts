@@ -4,7 +4,7 @@ import { build } from '../src/build'
 import { ServeHtmlArgs, ServeHtmlMetadata } from '../src/types'
 
 import runtime from '../src/runtime'
-import { FABRuntime } from '@fab/core/esm/runtime'
+import { FABRuntime } from '@fab/core/lib/runtime'
 
 // todo: must be a better way to define this for the test run
 import { Request, Response } from 'node-fetch'
@@ -35,6 +35,7 @@ describe('Runtime', () => {
     }
     const proto_fab = await doBuild(files, args)
     const Runtime = new FABRuntime(proto_fab.metadata)
+    // @ts-ignore
     runtime(Runtime)
     const renderer = Runtime.getPipeline()[0]
     const response = (await renderer(
@@ -59,6 +60,7 @@ describe('Runtime', () => {
     }
     const proto_fab = await doBuild(files, args)
     const Runtime = new FABRuntime(proto_fab.metadata)
+    // @ts-ignore
     runtime(Runtime)
     const renderer = Runtime.getPipeline()[0]
     const response = (await renderer(
@@ -82,6 +84,7 @@ describe('Runtime', () => {
     }
     const proto_fab = await doBuild(files, args)
     const Runtime = new FABRuntime(proto_fab.metadata)
+    // @ts-ignore
     runtime(Runtime)
     const renderer = Runtime.getPipeline()[0]
     const response = (await renderer(
