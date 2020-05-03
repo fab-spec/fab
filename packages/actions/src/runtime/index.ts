@@ -22,7 +22,7 @@ import { production_settings } from 'production-settings'
  * Here, we import "files" that are going to be injected by the Rollup build.
  * */
 
-FABRuntime.initialize(fab_metadata, [
+const Runtime = FABRuntime.initialize(fab_metadata, [
   ...(runtimes as FabPluginRuntime[]),
   final_responder,
 ])
@@ -45,7 +45,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 
   let chained_request = request
 
-  for (const responders of pipeline) {
+  for (const responders of Runtime.getPipeline()) {
     const response = await responders({
       request: chained_request.clone(),
       settings,
