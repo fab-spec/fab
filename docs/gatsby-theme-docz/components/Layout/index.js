@@ -41,18 +41,22 @@ const Content = styled.div`
     }
   }
 
-  p {
+  p,
+  li {
     line-height: 1.5;
+    font-size: 18px;
   }
 
   p > code,
-  p > a > code {
+  p > a > code,
+  li > code {
     font-size: 0.85em;
     font-weight: 300;
     white-space: nowrap;
-    padding: 0.2em 0.4em;
+    padding: 0.15em 0.4em;
   }
-  p > code {
+  p > code,
+  li > code {
     background: rgba(255, 239, 213, 0.4);
   }
 

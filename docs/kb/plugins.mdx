@@ -6,19 +6,19 @@ menu: Knowledge Base
 
 # Plugins
 
-What makes FAB plugins different to other JS web tooling is that **plugins can be invoked during _both_ compile time & at runtime**. This means a plugin can read/manipulate a FAB as it's being constructed, and _also_ inject the server-side code needed to do something with it.
+FAB plugins are different to other JS web tooling due to one important fact: **plugins are invoked during _both_ compile time _and_ at runtime**. This means a plugin can read/manipulate a FAB as it's being constructed, and _also inject the server-side code_ needed at runtime.
 
 For a lot of common use cases, runtime-only plugins will be all you need, and the [Adding Server-Side Logic](/guides/adding-server-side-logic) guide has a bunch of examples there. Here, we'll talk about the more advanced use-cases.
 
 The best way to understand how this works is with an example:
 
-## Build & run-time example: Generating 301 redirects for old blog URLs
+## Example: Generating 301 redirects for old blog URLs
 
 Let's say our website previously had a bunch of articles online at `/posts/:id` (e.g `http://example.com/posts/123`), but now we've moved to slightly SEO-friendlier URLs that have the post title in them: `/articles/:id-:title` (e.g `https://example.com/articles/123-top-10-cats-of-all-time`.
 
-There's still lots of traffic hitting the old links, and some decent search rankings for the terms, so we want to bring that across to the new URL using a [301 redirect](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/301). But when our server gets a request for `/posts/123`, it doesn't have enough information to _know_ what the new URL is: it can guess that it starts with `/articles/123-` but unless we provide it a lookup table (or it makes a request to a database or CMS with that info), it can't give the full new URL.
+There's still lots of traffic hitting the old links, and some decent search rankings for the terms, so we want to bring that across to the new URL using a [301 redirect](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/301). But when our server gets a request for `/posts/123`, it doesn't _know_ what the new URL is: it knows it will start with `/articles/123-` but unless we provide it a lookup table of all the artile titles (or it makes a request to a database or CMS with that info), it doesn't have enough information to redirect properly.
 
-At build time, however, we know all the URLs that we need to redirect, so we can generate a FAB with the relevant info. To do that we'll use the `metadata` [property](/api#protofabmetadata) on the [`ProtoFab`](/api#protofab) object.
+At build time, however, we _do_ know all the URLs that we need to redirect, so we can generate a FAB with the relevant info. To do that we'll use the `metadata` [property](/api#protofabmetadata) on the [`ProtoFab`](/api#protofab) object. This object gets serialised as part of the build process and injected into the FAB for runtime plugins to use.
 
 In this example, we'll assume that the new blog posts have been rendered out to the filesystem as `/articles/123-top-10-cats-of-all-time.html`, which means they're already available on the [`proto_fab.files`](/api#protofabfiles) object. But we could just as easily hit the API of our CMS to get the current articles, all we need is the list of URLs to generate redirects for:
 
@@ -85,7 +85,7 @@ Runtime.on('/posts/:id', async (matches, { request, settings, url }) => {
 })
 ```
 
-To activate this, we don't include the `build.js` and `runtime.js` files separately, we add the directory that contains them to the `fab.config.json5`:
+To include this in our FAB build, we edit `fab.config.json5` to reference our new plugin directory, which will look for `build.js` and `runtime.js` files within it (see [Plugin resolution]:
 
 ```json5
 {
@@ -98,18 +98,20 @@ To activate this, we don't include the `build.js` and `runtime.js` files separat
 }
 ```
 
-Note: the ordering is important here—our plugin must come _after_ `@fab/input-static` (otherwise the HTML files won't be on `proto_fab.files`) and _before_ `@fab/render-html`, since it [compiles HTML files into Markdown templates](https://github.com/fab-spec/fab/tree/master/packages/plugin-render-html) for efficient rendering, which means they'll no longer be on `proto_fab.files` for us to use. These considerations would not apply if we're sourcing the list of article URLs from some other source.
+**Note**: the ordering is important here—our plugin must come _after_ `@fab/input-static` (otherwise the HTML files won't be on `proto_fab.files` yet) and _before_ `@fab/render-html`, since it [compiles HTML files into Markdown templates](https://github.com/fab-spec/fab/tree/master/packages/plugin-render-html) for efficient rendering, which removes them from `proto_fab.files`. These considerations would not apply if we were sourcing the list of article URLs from some other source, for example making a HTTP request to a CMS for the current list.
 
-## Difference in execution environments
+## Execution environments of Build vs Runtime files
 
-For plugins with both build and runtime effects, two separate files are required because they're executed in very different ways:
+For plugins with both build and runtime effects, we require two separate files `build.js` and `runtime.js` because they're executed in very different ways:
 
-- `build` is called by the `@fab/cli`, so has access to the full NodeJS ecosystem of tools, and direct access to the filesystem, and can use CLI utilities like `log`, `prompt` or `confirm`, as well as make arbitrary (potentially slow) HTTP requests. `build.js` needs to be in a format interpretable by your current NodeJS version.
-- `runtime` is **compiled into the FAB itself** using Rollup. This means it, and its dependencies, _need to be compatible with the [FAB Runtime Environment](/kb/fab-runtime-environment)_, but it also means that ES Modules syntax and/or Typescript are natively supported (although no typechecking takes place).
+- `build.js` is called by `@fab/cli`, so has access to the full NodeJS ecosystem of tools, and direct access to the filesystem, and can use CLI utilities like `log`, `prompt` or `confirm`, as well as make arbitrary HTTP requests.
+
+   Note: `build.js` needs to be in a format interpretable by your current NodeJS version.
+- `runtime.js` is **compiled into the FAB itself** using Rollup. This means it, and its dependencies, _need to be compatible with the [FAB Runtime Environment](/kb/fab-runtime-environment)_, but it also means that ES Modules syntax and/or Typescript are natively supported (although no typechecking takes place, see [below](#using-typescript)).
 
 ## Plugin resolution
 
-When a plugin is declared in the config file, eg:
+To avoid having to specify both input files, when a plugin is referenced in the config file, eg:
 
 ```json5
 {
@@ -121,11 +123,9 @@ When a plugin is declared in the config file, eg:
 }
 ```
 
-...we first look to resolve `@fab/some-plugin/runtime` and `@fab/some-plugin/build`, which are then required and integrated at the relevant stage. If _neither_ of those files exist, we require `@fab/some-plugin` and consider it a runtime-only plugin.
+We first look to resolve `@fab/some-plugin/runtime` and `@fab/some-plugin/build`, which are then required and integrated at the relevant stage. If _neither_ of those files exist, we require `@fab/some-plugin` and consider it a runtime-only plugin.
 
-In general, to be safe, we recommend you follow the naming scheme of `build.{js/ts}` or `runtime.{ts,js}`.
-
-> Note: most `@fab/xxx` plugins do not have a `main` entry in their `package.json` file, meaning they cannot be required without adding `/build` or `/runtime`. It turns out it's the only good way to have a package on NPM with two separate, yet equally important, branches.
+> 👉 Note: most `@fab/xxx` plugins do not have a `main` entry in their `package.json` file, meaning they cannot be required without adding `/build` or `/runtime`. It turns out it's the only good way to have a package on NPM with two separate, yet equally important, branches.
 
 Also note: this works the same with relative path plugins, like `./src/fab-server`:
 
@@ -141,7 +141,7 @@ Also note: this works the same with relative path plugins, like `./src/fab-serve
 
 This will "just work" if `src/fab-server` is a directory with `build.js` and/or `runtime.js` inside it, or if it is a file `src/fab-server.js` that only defines runtime behaviour.
 
-You can also be more explicit if you like:
+Note: There's nothing wrong with referencing both files directly, if you prefer:
 
 ```json5
 {
@@ -155,6 +155,10 @@ You can also be more explicit if you like:
   },
 }
 ```
+
+## Plugin Ordering
+
+Plugins are invoked in the order in which they're defined in the `fab.config.json5` file, hence why we need to place our `./server/redirect-old-articles` plugin between `@fab/input-static` and `@fab/plugin-render-html` in our example above.
 
 ## Using Typescript
 
