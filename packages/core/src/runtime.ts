@@ -75,8 +75,6 @@ export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
   matches(route: string, responder: FabRequestResponderWithMatches, priority?: Priority) {
     const groups: Key[] = []
     const regexp = pathToRegexp(route, groups)
-    console.log(regexp)
-    console.log({ groups })
     this.addToPipeline(async (context: FabResponderArgs) => {
       const { pathname } = context.url
       const match = regexp.exec(pathname)
