@@ -1,9 +1,8 @@
 import { ServeHtmlMetadata } from './types'
-import { FabSettings, matchPath, NO_RESPONSE_STATUS_CODE } from '@fab/core'
+import { FABRuntime, FabSettings, matchPath, NO_RESPONSE_STATUS_CODE } from '@fab/core'
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
 import { ITokens } from 'micromustache'
-import { FABRuntime } from '@fab/core/runtime'
 
 // Todo: this should be part of the context.
 // Maybe it should be optional though, with this as the fallback.

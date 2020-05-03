@@ -2,13 +2,14 @@
 
 import {
   Directive,
+  FabPluginRuntime,
+  FABRuntime,
   FabSettings,
   FabSpecMetadata,
   FabSpecRender,
   NO_RESPONSE_STATUS_CODE,
   ResponseInterceptor,
 } from '@fab/core'
-import { FabPluginRuntime, FABRuntime } from '@fab/core/runtime'
 
 import final_responder from './final_responder'
 // @ts-ignore

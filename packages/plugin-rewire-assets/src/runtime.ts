@@ -1,6 +1,5 @@
 import { RewireAssetsMetadata } from './types'
-import { getCacheHeaders, matchPath, NON_IMMUTABLE_HEADERS } from '@fab/core'
-import { FABRuntime } from '@fab/core/runtime'
+import { FABRuntime, getCacheHeaders, matchPath, NON_IMMUTABLE_HEADERS } from '@fab/core'
 
 export default function RewireAssetsRuntime(Runtime: FABRuntime<RewireAssetsMetadata>) {
   const { inlined_assets, renamed_assets } = Runtime.metadata.rewire_assets

@@ -1,5 +1,4 @@
-import { NO_RESPONSE_STATUS_CODE } from '@fab/core'
-import { FABRuntime, Priority } from '@fab/core/runtime'
+import { FABRuntime, NO_RESPONSE_STATUS_CODE, Priority } from '@fab/core'
 
 export default function FinalResponder(Runtime: FABRuntime) {
   Runtime.onAll(async ({ url }) => {

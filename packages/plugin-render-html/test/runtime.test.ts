@@ -1,11 +1,15 @@
 import { expect } from 'chai'
-import { FabFilesObject, FabResponderArgs, FabSettings, ProtoFab } from '@fab/core'
+import {
+  FabFilesObject,
+  FabResponderArgs,
+  FABRuntime,
+  FabSettings,
+  ProtoFab,
+} from '@fab/core'
 import { build } from '../src/build'
 import { ServeHtmlArgs, ServeHtmlMetadata } from '../src/types'
 
 import runtime from '../src/runtime'
-import { FABRuntime } from '@fab/core/lib/runtime'
-
 // todo: must be a better way to define this for the test run
 import { Request, Response } from 'node-fetch'
 // @ts-ignore

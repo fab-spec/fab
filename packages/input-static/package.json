@@ -17,10 +17,9 @@
   "files": [
     "lib",
     "esm",
-    "src"
+    "src",
+    "build.js"
   ],
-  "main": "lib/build.js",
-  "module": "esm/build.js",
   "types": "esm/build.d.ts",
   "scripts": {
     "build": "yarn build:cjs && yarn build:esm",
