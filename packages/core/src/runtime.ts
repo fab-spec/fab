@@ -1,4 +1,4 @@
-import { FabMetadata, FabRequestResponder } from '@fab/core'
+import { FabMetadata, FabRequestResponder, PluginMetadata } from '@fab/core'
 
 export enum Priority {
   LAST,
@@ -10,12 +10,12 @@ export enum Priority {
 
 export class Runtime {
   private static instance: Runtime | undefined
-  private metadata: FabMetadata
+  private metadata: PluginMetadata
   private pipeline: {
     [order in Priority]: FabRequestResponder[]
   }
 
-  constructor(metadata: FabMetadata) {
+  constructor(metadata: PluginMetadata) {
     this.metadata = metadata
     this.pipeline = {
       [Priority.LAST]: [],
@@ -49,6 +49,10 @@ export class Runtime {
   }
 
   static on404() {}
+
+  static getMetadata<T extends PluginMetadata = PluginMetadata>() {
+    return this.getInstance().metadata as T
+  }
 
   static getInstance(): Runtime {
     if (Runtime.instance) return Runtime.instance

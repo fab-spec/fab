@@ -12,8 +12,8 @@
     './plugins/empty': {
       set: 'it up',
     },
-    './plugins/both-in-one-ts-file.ts': {
-      now: 'bring it home',
+    './plugins/typescript-example': {
+      the_time_is: 'NOW!',
     },
   },
 }

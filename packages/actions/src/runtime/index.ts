@@ -10,10 +10,12 @@ import {
 } from '@fab/core'
 import { Directive, ResponseInterceptor } from '@fab/core'
 
+// Call this first, so we set up the Runtime API in @fab/core/runtime
 import runtime from './setup-runtime-responders'
+// Add our 404 generator
 import './final_responder'
-// @ts-ignore
-import { runtimes } from 'user-defined-pipeline'
+// Then add the user's stuff
+import 'user-defined-pipeline'
 // @ts-ignore
 import { production_settings } from 'production-settings'
 
