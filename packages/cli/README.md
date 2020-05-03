@@ -21,7 +21,7 @@ $ npm install -g @fab/cli
 $ fab COMMAND
 running command...
 $ fab (-v|--version|version)
-@fab/cli/0.2.0-alpha.0 darwin-x64 node-v13.12.0
+@fab/cli/0.2.0-alpha.1 darwin-x64 node-v13.12.0
 $ fab --help [COMMAND]
 USAGE
   $ fab COMMAND
