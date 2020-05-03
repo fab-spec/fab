@@ -49,7 +49,9 @@ describe('Create React App E2E Test', () => {
     await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
     await shell(`cat .env`, { cwd })
     await shell(
-      process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
+      process.env.PUBLIC_PACKAGES
+        ? 'npx fab init -y --version=next'
+        : 'fab init -y --skip-install',
       {
         cwd,
       }
