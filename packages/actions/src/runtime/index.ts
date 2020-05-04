@@ -9,6 +9,7 @@ import {
   FabSpecRender,
   NO_RESPONSE_STATUS_CODE,
   ResponseInterceptor,
+  FABServerContext,
 } from '@fab/core'
 
 import final_responder from './final_responder'
@@ -19,19 +20,24 @@ import { fab_metadata } from 'fab-metadata'
 // @ts-ignore
 import { production_settings } from 'production-settings'
 
-/*
- * Here, we import "files" that are going to be injected by the Rollup build.
- * */
-
-const Runtime = FABRuntime.initialize(
-  fab_metadata,
-  [...(runtimes as FabPluginRuntime[]), final_responder],
-  {
-    bundle_id: 'LOLOLOLOL',
-  }
-)
+let Runtime: FABRuntime | undefined = undefined
+export const initialize = (server_context: FABServerContext) => {
+  Runtime = FABRuntime.initialize(
+    fab_metadata,
+    [...(runtimes as FabPluginRuntime[]), final_responder],
+    server_context
+  )
+}
 
 export const render: FabSpecRender = async (request: Request, settings: FabSettings) => {
+  if (!Runtime) {
+    console.log(`render() called without initialize()`)
+    console.log(`Injecting a dummy ServerContext`)
+    initialize({ bundle_id: '' })
+  }
+  if (!Runtime) {
+    throw new Error('Initialise called but no Runtime created!')
+  }
   const url = new URL(request.url)
 
   // If no middleware catches the 444 No Response, render a very generic 404 page
@@ -92,6 +98,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 
 export const metadata: FabSpecMetadata = {
   production_settings,
+  fab_version: '0.2',
 }
 
 /* Legacy support for env settings */

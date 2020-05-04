@@ -2,11 +2,10 @@ import fs from 'fs-extra'
 import { cmd, shell } from '../utils'
 import { ExecaChildProcess } from 'execa'
 import globby from 'globby'
-// @ts-ignore
-import md5file from 'md5-file/promise'
 import { buildFab, CRA_PORTS, getPorts, getWorkingDir } from './helpers'
 import path from 'path'
 import jju from 'jju'
+import { pathToSHA512 } from 'file-to-sha512'
 
 const getPort = getPorts(CRA_PORTS)
 
@@ -192,8 +191,7 @@ describe('Create React App E2E Test', () => {
 
     it('should reflect settings changes', async () => {
       await buildFab(cwd)
-      const first_fab_md5 = await md5file(`${cwd}/fab.zip`)
-      console.log({ first_fab_md5 })
+      const first_fab_sha = (await pathToSHA512(`${cwd}/fab.zip`)).slice(0, 32)
 
       const config = jju.parse(await fs.readFile(`${cwd}/fab.config.json5`, 'utf8'))
       config.settings.production.E2E_TEST = 'extremely working!'
@@ -202,9 +200,8 @@ describe('Create React App E2E Test', () => {
       await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
 
       await buildFab(cwd)
-      const second_fab_md5 = await md5file(`${cwd}/fab.zip`)
-      console.log({ second_fab_md5 })
-      expect(second_fab_md5).not.toEqual(first_fab_md5)
+      const second_fab_sha = (await pathToSHA512(`${cwd}/fab.zip`)).slice(0, 32)
+      expect(second_fab_sha).not.toEqual(first_fab_sha)
 
       const port = getPort()
       await createServer(port)
@@ -220,10 +217,10 @@ describe('Create React App E2E Test', () => {
       config.settings!.staging = { E2E_TEST: 'totes overridden!' }
       await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
       await buildFab(cwd)
-      const third_fab_md5 = await md5file(`${cwd}/fab.zip`)
-      console.log({ third_fab_md5 })
+      const third_fab_sha = (await pathToSHA512(`${cwd}/fab.zip`)).slice(0, 32)
+
       // Changing non-production settings doesn't change the bundle id
-      expect(third_fab_md5).toEqual(second_fab_md5)
+      expect(third_fab_sha).toEqual(second_fab_sha)
 
       const next_port = getPort()
       await createServer(next_port, '--env=staging')

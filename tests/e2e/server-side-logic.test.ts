@@ -3,6 +3,7 @@ import { buildFab, SERVER_SIDE_LOGIC_PORTS, getPorts, getWorkingDir } from './he
 import fs from 'fs-extra'
 import { cmd, _shell, shell } from '../utils'
 import { ExecaChildProcess } from 'execa'
+import { pathToSHA512 } from 'file-to-sha512'
 
 const getPort = getPorts(SERVER_SIDE_LOGIC_PORTS)
 
@@ -69,7 +70,11 @@ describe('Server-side logic tests', () => {
     })
 
     it('should hit Hello World', async () => {
-      expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
+      const bundle_id = (await pathToSHA512(`${cwd}/fab.zip`)).slice(0, 32)
+
+      const homepage_headers = await request('-I', '/', port)
+      expect(homepage_headers).toContain(`HTTP/1.1 200 OK`)
+      expect(homepage_headers).toContain(`X-FAB-ID: ${bundle_id}`)
       expect(await request('-I', '/hello', port)).toContain(`HTTP/1.1 200 OK`)
 
       const homepage_response = await request('', '/', port)

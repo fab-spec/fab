@@ -130,11 +130,13 @@ export type FabSpecRender = (
 ) => Promise<Request | Response>
 export type FabSpecMetadata = {
   production_settings: FabSettings
+  fab_version: string
 }
 
 export type FabSpecExports = {
   render: FabSpecRender
   metadata: FabSpecMetadata
+  initialize: (server_context: FABServerContext) => void
 }
 
 export type FetchApi = (url: string | Request, init?: RequestInit) => Promise<Response>
