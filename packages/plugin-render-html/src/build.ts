@@ -58,11 +58,11 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
     if (!htmls[resolved_fallback]) {
       if (typeof fallback === 'string') {
         throw new InvalidConfigError(
-          `@fab/input-static specifies a fallback of '${fallback}', which doesn't exist.`
+          `@fab/plugin-render-html specifies a fallback of '${fallback}', which doesn't exist.`
         )
       } else {
         log.warn(
-          `@fab/input-static has 'fallback: true', but '${resolved_fallback}' doesn't exist! Skipping.`
+          `@fab/plugin-render-html has 'fallback: true', but '${resolved_fallback}' doesn't exist! Skipping.`
         )
       }
     }
