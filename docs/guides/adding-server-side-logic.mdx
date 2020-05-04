@@ -30,7 +30,7 @@ Following on from the previous example, we can see how much more general the FAB
 
 ```js
 // proxy-api.js
-export default function ProxyApi(Runtime) {
+export default Runtime => {
   Runtime.on('/api/:route(.*)', ({ params }) =>
     fetch(`https://api.example.com/${params.route}`)
   )
@@ -43,7 +43,7 @@ export default function ProxyApi(Runtime) {
 // TypeScript server-side components work without transpilation
 import { FABRuntime } from '@fab/core'
 
-export default function GeolocateEndpoint(Runtime: FABRuntime) {
+export default (Runtime: FABRuntime) => {
   Runtime.on('/geolocate', async () => {
     const geo_response = await fetch('http://ip-api.com/json')
     const geo_json = await geo_response.json()
@@ -63,9 +63,7 @@ export default function GeolocateEndpoint(Runtime: FABRuntime) {
 ## Attaching a BUNDLE_ID header to all outgoing responses
 
 ```ts
-import { FABRuntime } from '@fab/core'
-
-export default function AttachFabID(Runtime: FABRuntime) {
+export default Runtime => {
   Runtime.interceptResponse(async (response) => {
     response.headers.set('X-FAB-ID', Runtime.context.bundle_id)
     return response
