@@ -1795,6 +1795,13 @@ istanbul-reports@^2.2.6:
   dependencies:
     handlebars "^4.1.2"
 
+jasmine-fail-fast@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/jasmine-fail-fast/-/jasmine-fail-fast-2.0.1.tgz#222daa16c89b675aba4ed9552d62cf0d1e759d71"
+  integrity sha512-En8ONwvDQOV+jyiZEZvbvUSLWSdJFj9HiWjhLdGq/V/gxs4XyST730ooe928BbRxv4bfy05OpykKuoOU4aLC5w==
+  dependencies:
+    lodash "^4.17.15"
+
 jest-changed-files@^24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-24.9.0.tgz#08d8c15eb79a7fa3fc98269bc14b451ee82f8039"

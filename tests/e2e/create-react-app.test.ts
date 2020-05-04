@@ -158,7 +158,7 @@ describe('Create React App E2E Test', () => {
         // language=JavaScript
         `
         export default Runtime => {
-          Runtime.matches('/hello/:whom?', async ({whom = 'world'}) => {
+          Runtime.on('/hello/:whom?', async ({whom = 'world'}) => {
             return new Response('HELLO ' + whom.toUpperCase() + '!\\n', {
               status: 200
             })

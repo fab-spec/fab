@@ -132,16 +132,12 @@ export default class Builder {
           // Relevant issue: https://github.com/fab-spec/fab/issues/67
           runtime_plugin = plugin_path
         } else {
-          if (typeof module.runtime === 'function') {
+          if (typeof module.default === 'function') {
             runtime_plugin = plugin_path
+          } else {
+            log.warn(`Plugin ${plugin_name} doesn't have a default export, ignoring it.`)
           }
         }
-      }
-
-      if (!runtime_plugin && !build_plugin) {
-        log.warn(
-          `Plugin ${plugin_name} exports neither a "build" or "runtime" export, ignoring it.`
-        )
       }
 
       if (runtime_plugin) runtime_plugins.push(runtime_plugin)

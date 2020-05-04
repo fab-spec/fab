@@ -31,7 +31,7 @@ describe('Builder', () => {
       path.resolve(`${__dirname}/../fixtures/plugins/typescript-example/runtime.ts`),
     ])
     expect(stdout).to.contain(
-      'Plugin ./plugins/empty exports neither a "build" or "runtime" export, ignoring it.'
+      `Plugin ./plugins/empty doesn't have a default export, ignoring it.`
     )
   })
 })

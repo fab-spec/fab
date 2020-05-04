@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "build": "true",
+    "build:fab": "npm run build && npm run fab:build",
+    "fab:build": "fab build",
+    "fab:serve": "fab serve fab.zip"
+  }
+}
