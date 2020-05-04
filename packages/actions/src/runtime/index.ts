@@ -30,13 +30,13 @@ export const initialize = (server_context: FABServerContext) => {
 }
 
 export const render: FabSpecRender = async (request: Request, settings: FabSettings) => {
+  // Support pre-v0.2 hosts
   if (!Runtime) {
     console.log(`render() called without initialize()`)
     console.log(`Injecting a dummy ServerContext`)
     initialize({ bundle_id: '' })
-  }
-  if (!Runtime) {
-    throw new Error('Initialise called but no Runtime created!')
+    // If we still don't have Runtime, we have to bail here.
+    if (!Runtime) throw new Error('Initialise called but no Runtime created!')
   }
   const url = new URL(request.url)
 

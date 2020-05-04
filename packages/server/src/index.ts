@@ -83,7 +83,8 @@ class Server implements ServerType {
         : await node_vm_sandbox(src, enhanced_fetch)
 
     const bundle_id = (await pathToSHA512(this.filename)).slice(0, 32)
-    renderer.initialize({ bundle_id })
+    // Support pre v0.2 FABs
+    if (typeof renderer.initialize === 'function') renderer.initialize({ bundle_id })
 
     log.tick(`Done. Booting VM...`)
 
