@@ -1,6 +1,6 @@
 {
   "name": "@fab/actions",
-  "version": "0.2.0-alpha.3",
+  "version": "0.2.0",
   "private": false,
   "description": "The guts of the FAB cli code, keeping the 'fab' package lean",
   "keywords": [
@@ -31,8 +31,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/cli": "0.2.0-alpha.3",
-    "@fab/core": "0.2.0-alpha.3",
+    "@fab/cli": "0.2.0",
+    "@fab/core": "0.2.0",
     "@rollup/plugin-alias": "^2.2.0",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-inject": "^4.0.1",
