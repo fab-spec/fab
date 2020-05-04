@@ -3,7 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const {
   copyHomePackageReadmeToDocs,
-  copyPackageReadmeToDocs,
+  //copyPackageReadmeToDocs,
   copyExampleReadmeToDocs,
 } = require('./utils')
 
@@ -11,16 +11,16 @@ try {
   fs.mkdirSync(path.resolve(__dirname, `../readmes`))
 } catch (err) {}
 
-chokidar
-  .watch(
-    path.resolve(
-      __dirname,
-      '../../packages/{cli,core,input-,plugin-,deployer-,server}*/README.md'
-    )
-  )
-  .on('all', (event, source) => {
-    copyPackageReadmeToDocs(source)
-  })
+//chokidar
+//  .watch(
+//    path.resolve(
+//      __dirname,
+//      '../../packages/{cli,core,input-,plugin-,deployer-,server}*/README.md'
+//    )
+//  )
+//  .on('all', (event, source) => {
+//    copyPackageReadmeToDocs(source)
+//  })
 
 //chokidar
 //  .watch(path.resolve(__dirname, '../../examples/*/README.md'))

@@ -29,7 +29,9 @@ FAB builds use a `fab.config.json5` file:
     '@fab/plugin-rewire-assets': {},
   },
   settings: {
-    production: './production-settings.json',
+    production: {
+      API_URL: 'https://api.lol.com',
+    },
     staging: {
       API_URL: 'https://staging.lol.com',
     },

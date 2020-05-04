@@ -1,5 +1,5 @@
 import { ProtoFab } from '@fab/core'
-import { ServeHtmlArgs, ServeHtmlMetadata, ServerHtmls } from './types'
+import { RenderHtmlArgs, RenderHtmlMetadata, CompiledHTMLs } from './types'
 import cheerio from 'cheerio'
 import { tokenize } from 'micromustache'
 import { DEFAULT_INJECTIONS } from './constants'
@@ -7,14 +7,17 @@ import { addInjectionPoint } from './injections/env'
 import { _log, InvalidConfigError } from '@fab/cli'
 const log = _log('@fab/plugin-render-html')
 
-export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMetadata>) {
+export async function build(
+  args: RenderHtmlArgs,
+  proto_fab: ProtoFab<RenderHtmlMetadata>
+) {
   const {
     'match-html': match_html = /\.html$/i,
     injections = DEFAULT_INJECTIONS,
     fallback = true,
   } = args
 
-  const htmls: ServerHtmls = {}
+  const htmls: CompiledHTMLs = {}
   let html_count = 0
 
   for (const [filename, contents] of proto_fab.files.entries()) {
@@ -71,8 +74,9 @@ export async function build(args: ServeHtmlArgs, proto_fab: ProtoFab<ServeHtmlMe
     log(`No fallback injected.`)
   }
 
-  proto_fab.metadata.serve_html = {
+  proto_fab.metadata.render_html = {
     htmls,
     resolved_fallback,
+    args,
   }
 }

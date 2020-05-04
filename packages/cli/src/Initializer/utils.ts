@@ -8,11 +8,19 @@ export const mergeScriptsAfterBuild = (
 ) => {
   const merged_scripts: StringMap = {}
   const script_names = Object.keys(existing_scripts)
+  let merged = false
   script_names.forEach((script_name, i) => {
-    if (i !== 0 && isBuildScript(script_names[i - 1]) && !isBuildScript(script_name)) {
+    if (
+      !merged &&
+      i !== 0 &&
+      isBuildScript(script_names[i - 1]) &&
+      !isBuildScript(script_name)
+    ) {
       Object.assign(merged_scripts, framework_scripts)
+      merged = true
     }
     merged_scripts[script_name] = existing_scripts[script_name]
   })
+  if (!merged) Object.assign(merged_scripts, framework_scripts)
   return merged_scripts
 }

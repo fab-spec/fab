@@ -1,16 +1,7 @@
-import {
-  PluginArgs,
-  PluginMetadata,
-  FabPluginRuntime,
-  ResponseInterceptor,
-  NO_RESPONSE_STATUS_CODE,
-} from '@fab/core'
+import { FABRuntime, NO_RESPONSE_STATUS_CODE, Priority } from '@fab/core'
 
-export const render: FabPluginRuntime<PluginArgs, PluginMetadata> = (
-  args: PluginArgs,
-  metadata: PluginMetadata
-) => {
-  return async function respond({ url }) {
+export default function FinalResponder({ Router }: FABRuntime) {
+  Router.onAll(async ({ url }) => {
     // We're the last middleware to be called, and so we:
     //   a) always respond
     //   b) return a status 444 No Response
@@ -22,5 +13,5 @@ export const render: FabPluginRuntime<PluginArgs, PluginMetadata> = (
       statusText: 'No Response',
       headers: {},
     })
-  }
+  }, Priority.LAST)
 }

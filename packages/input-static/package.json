@@ -1,6 +1,6 @@
 {
   "name": "@fab/input-static",
-  "version": "0.1.6-alpha.0",
+  "version": "0.2.1",
   "description": "Module to handle a directory of HTML & assets",
   "keywords": [
     "fab",
@@ -17,10 +17,9 @@
   "files": [
     "lib",
     "esm",
-    "src"
+    "src",
+    "build.js"
   ],
-  "main": "lib/build.js",
-  "module": "esm/build.js",
   "types": "esm/build.d.ts",
   "scripts": {
     "build": "yarn build:cjs && yarn build:esm",
@@ -32,8 +31,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/cli": "0.1.6-alpha.0",
-    "@fab/core": "0.1.6-alpha.0",
+    "@fab/cli": "0.2.1",
+    "@fab/core": "0.2.1",
     "@types/node": "^12.12.14",
     "fs-extra": "^8.1.0",
     "globby": "^10"

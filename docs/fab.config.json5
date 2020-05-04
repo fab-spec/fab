@@ -7,7 +7,8 @@
     "@fab/plugin-render-html": {
       fallback: "/index.html"
     },
-    "@fab/plugin-rewire-assets": {}
+    "@fab/plugin-rewire-assets": {},
+    './fab-server/add-bundle-id.ts': {},
     // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins
   },
   settings: {

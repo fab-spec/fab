@@ -14,12 +14,12 @@
     "fab:deploy": "dotenv -- fab deploy fab.zip"
   },
   "devDependencies": {
-    "@fab/actions": "^0.1.2",
-    "@fab/cli": "^0.1.2",
-    "@fab/input-static": "^0.1.2",
-    "@fab/plugin-render-html": "^0.1.2",
-    "@fab/plugin-rewire-assets": "^0.1.2",
-    "@fab/server": "^0.1.2",
+    "@fab/actions": "^0.2.0",
+    "@fab/cli": "^0.2.0",
+    "@fab/input-static": "^0.2.0",
+    "@fab/plugin-render-html": "^0.2.0",
+    "@fab/plugin-rewire-assets": "^0.2.0",
+    "@fab/server": "^0.2.0",
     "chokidar": "^3.3.1",
     "concurrently": "^5.0.2",
     "docz": "^2.2.0",

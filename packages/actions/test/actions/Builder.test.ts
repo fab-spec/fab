@@ -23,15 +23,15 @@ describe('Builder', () => {
     ).to.deep.equal([
       ['./plugins/build-and-render', { first: 'plugin' }],
       ['./plugins/build-only', { then: 'this one' }],
-      ['./plugins/both-in-one-ts-file.ts', { now: 'bring it home' }],
+      ['./plugins/typescript-example', { the_time_is: 'NOW!' }],
     ])
     expect(runtime_plugins).to.deep.equal([
       path.resolve(`${__dirname}/../fixtures/plugins/build-and-render/runtime.js`),
       path.resolve(`${__dirname}/../fixtures/plugins/runtime-only.js`),
-      path.resolve(`${__dirname}/../fixtures/plugins/both-in-one-ts-file.ts`),
+      path.resolve(`${__dirname}/../fixtures/plugins/typescript-example/runtime.ts`),
     ])
     expect(stdout).to.contain(
-      'Plugin ./plugins/empty exports neither a "build" or "runtime" export, ignoring it.'
+      `Plugin ./plugins/empty doesn't have a default export, ignoring it.`
     )
   })
 })

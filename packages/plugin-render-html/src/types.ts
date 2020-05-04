@@ -12,18 +12,19 @@ export type Injections = {
   }
 }
 
-export interface ServeHtmlArgs extends PluginArgs {
+export interface RenderHtmlArgs extends PluginArgs {
   'match-html'?: RegExp
   injections?: Injections
   fallback?: string | boolean
 }
 
-export type ServerHtmls = {
+export type CompiledHTMLs = {
   [path: string]: ITokens
 }
-export interface ServeHtmlMetadata extends PluginMetadata {
-  serve_html: {
-    htmls: ServerHtmls
+export interface RenderHtmlMetadata extends PluginMetadata<RenderHtmlArgs> {
+  render_html: {
+    htmls: CompiledHTMLs
     resolved_fallback: string | undefined
+    args: RenderHtmlArgs
   }
 }

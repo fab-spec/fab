@@ -78,5 +78,8 @@ export default async (src: string): Promise<FabSpecExports> => {
       return response as Response
     },
     metadata,
+    initialize() {
+      // TODO: wire this up
+    },
   }
 }

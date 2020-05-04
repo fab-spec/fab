@@ -12,7 +12,7 @@ export class Compiler {
     const {
       output: [output, ...chunks],
     } = await rollupCompile(
-      require.resolve('@fab/actions/lib/runtime'),
+      require.resolve('@fab/actions/esm/runtime'),
       { format: 'umd', exports: 'named', name: '__fab' },
       {
         ...proto_fab.hypotheticals,
@@ -53,7 +53,7 @@ export class Compiler {
 function generatePipelineJs(plugin_runtimes: string[]) {
   return `
     ${plugin_runtimes
-      .map((plugin, i) => `import { runtime as runtime_${i} } from '${plugin}'`)
+      .map((plugin, i) => `import runtime_${i} from '${plugin}'`)
       .join('\n')}
 
     export const runtimes = [
