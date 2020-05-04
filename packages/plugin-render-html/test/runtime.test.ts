@@ -38,7 +38,7 @@ describe('Runtime', () => {
       '/index.html': `<html><head><title>HTML Test</title></head><body>here</body></html>`,
     }
     const proto_fab = await doBuild(files, args)
-    const Runtime = new FABRuntime(proto_fab.metadata, {})
+    const Runtime = new FABRuntime(proto_fab.metadata, {}, { bundle_id: '' })
     // @ts-ignore
     runtime(Runtime)
     const renderer = Runtime.getPipeline()[0]
@@ -63,7 +63,7 @@ describe('Runtime', () => {
       '/index.html': `<html><head><title>{{{ titleStr }}}</title></head><body>{{ bodyText }}</body></html>`,
     }
     const proto_fab = await doBuild(files, args)
-    const Runtime = new FABRuntime(proto_fab.metadata, {})
+    const Runtime = new FABRuntime(proto_fab.metadata, {}, { bundle_id: '' })
     // @ts-ignore
     runtime(Runtime)
     const renderer = Runtime.getPipeline()[0]
@@ -87,7 +87,7 @@ describe('Runtime', () => {
       '/index.html': `<html><head><title>HTML Test</title></head><body>here</body></html>`,
     }
     const proto_fab = await doBuild(files, args)
-    const Runtime = new FABRuntime(proto_fab.metadata, {})
+    const Runtime = new FABRuntime(proto_fab.metadata, {}, { bundle_id: '' })
     // @ts-ignore
     runtime(Runtime)
     const renderer = Runtime.getPipeline()[0]

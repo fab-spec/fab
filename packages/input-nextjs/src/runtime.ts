@@ -38,7 +38,7 @@ async function invokeRenderer(
   }
 }
 
-export default function InputNextJsRuntime(Runtime: FABRuntime) {
+export default function InputNextJsRuntime({ Router }: FABRuntime) {
   const pathRenderers: { [path: string]: Renderer } = {}
   const regexpRenderers: { path_matcher: RegExp; renderer: Renderer }[] = []
   let errorRenderer: Renderer | undefined
@@ -70,7 +70,7 @@ export default function InputNextJsRuntime(Runtime: FABRuntime) {
     return undefined
   }
 
-  Runtime.onAll(async function responder({ request, url }) {
+  Router.onAll(async function responder({ request, url }) {
     //   global.FAB_SETTINGS = settings
     // console.log(`REQUEST! ${url}`)
     const { pathname, protocol } = url

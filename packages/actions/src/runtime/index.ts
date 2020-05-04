@@ -23,10 +23,13 @@ import { production_settings } from 'production-settings'
  * Here, we import "files" that are going to be injected by the Rollup build.
  * */
 
-const Runtime = FABRuntime.initialize(fab_metadata, [
-  ...(runtimes as FabPluginRuntime[]),
-  final_responder,
-])
+const Runtime = FABRuntime.initialize(
+  fab_metadata,
+  [...(runtimes as FabPluginRuntime[]), final_responder],
+  {
+    bundle_id: 'LOLOLOLOL',
+  }
+)
 
 export const render: FabSpecRender = async (request: Request, settings: FabSettings) => {
   const url = new URL(request.url)

@@ -12,8 +12,11 @@ const getNonce = () => {
     .slice(2)
 }
 
-export default function RenderHTMLRuntime(Runtime: FABRuntime<RenderHtmlMetadata>) {
-  const { htmls, resolved_fallback, args } = Runtime.metadata.render_html
+export default function RenderHTMLRuntime({
+  Router,
+  Metadata,
+}: FABRuntime<RenderHtmlMetadata>) {
+  const { htmls, resolved_fallback, args } = Metadata.render_html
   const { injections = DEFAULT_INJECTIONS } = args
   const error_page = matchPath(htmls, '/404')
 
@@ -51,7 +54,7 @@ export default function RenderHTMLRuntime(Runtime: FABRuntime<RenderHtmlMetadata
     return ret
   }
 
-  Runtime.onAll(async ({ url, settings }) => {
+  Router.onAll(async ({ url, settings }) => {
     const { pathname } = url
 
     const html = matchPath(htmls, pathname)

@@ -8,7 +8,7 @@ import {
   MatchParams,
 } from '@fab/core'
 import { Key, pathToRegexp } from 'path-to-regexp'
-import { ResponseInterceptor } from './types'
+import { FABServerContext, ResponseInterceptor } from './types'
 
 export enum Priority {
   LAST,
@@ -20,14 +20,10 @@ export enum Priority {
 
 export type FabPluginRuntime = (Runtime: FABRuntime) => void
 
-export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
-  metadata: T
-  file_metadata: FabFileMetadata
+export class FABRouter {
   private pipeline: { [order in Priority]: FabRequestResponder[] }
 
-  constructor(metadata: T, file_metadata: FabFileMetadata) {
-    this.metadata = metadata
-    this.file_metadata = file_metadata
+  constructor() {
     this.pipeline = {
       [Priority.LAST]: [],
       [Priority.LATER]: [],
@@ -90,10 +86,36 @@ export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
       }
     }, priority)
   }
+}
 
-  static initialize(metadata: FabMetadata, plugins: FabPluginRuntime[]) {
-    const instance = new FABRuntime(metadata.plugin_metadata, metadata.file_metadata)
+export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
+  Metadata: T
+  FileMetadata: FabFileMetadata
+  Router: FABRouter
+  ServerContext: FABServerContext
+
+  constructor(metadata: T, file_metadata: FabFileMetadata, context: FABServerContext) {
+    this.Metadata = metadata
+    this.FileMetadata = file_metadata
+    this.Router = new FABRouter()
+    this.ServerContext = context
+  }
+
+  static initialize(
+    metadata: FabMetadata,
+    plugins: FabPluginRuntime[],
+    context: FABServerContext
+  ) {
+    const instance = new FABRuntime(
+      metadata.plugin_metadata,
+      metadata.file_metadata,
+      context
+    )
     plugins.forEach((plugin) => plugin(instance))
     return instance
+  }
+
+  getPipeline() {
+    return this.Router.getPipeline()
   }
 }

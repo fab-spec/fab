@@ -1,10 +1,13 @@
 import { RewireAssetsMetadata } from './types'
 import { FABRuntime, getCacheHeaders, matchPath, NON_IMMUTABLE_HEADERS } from '@fab/core'
 
-export default function RewireAssetsRuntime(Runtime: FABRuntime<RewireAssetsMetadata>) {
-  const { inlined_assets, renamed_assets } = Runtime.metadata.rewire_assets
+export default function RewireAssetsRuntime({
+  Router,
+  Metadata,
+}: FABRuntime<RewireAssetsMetadata>) {
+  const { inlined_assets, renamed_assets } = Metadata.rewire_assets
 
-  Runtime.onAll(async ({ url }) => {
+  Router.onAll(async ({ url }) => {
     const { pathname } = url
 
     const inlined = matchPath(inlined_assets, pathname)
