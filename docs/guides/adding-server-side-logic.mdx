@@ -43,7 +43,7 @@ export default function ProxyApi(Runtime) {
 // TypeScript server-side components work without transpilation
 import { FABRuntime } from '@fab/core'
 
-export default (Runtime: FABRuntime) => {
+export default function GeolocateEndpoint(Runtime: FABRuntime) {
   Runtime.on('/geolocate', async () => {
     const geo_response = await fetch('http://ip-api.com/json')
     const geo_json = await geo_response.json()
@@ -65,7 +65,7 @@ export default (Runtime: FABRuntime) => {
 ```ts
 import { FABRuntime } from '@fab/core'
 
-export default (Runtime: FABRuntime) => {
+export default function AttachFabID(Runtime: FABRuntime) {
   Runtime.interceptResponse(async (response) => {
     response.headers.set('X-FAB-ID', Runtime.context.bundle_id)
     return response
