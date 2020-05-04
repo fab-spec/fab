@@ -31,8 +31,8 @@ Following on from the previous example, we can see how much more general the FAB
 ```js
 // proxy-api.js
 export default function ProxyApi(Runtime) {
-  Runtime.on('/api/:route(.*)', ({ route }) =>
-    fetch(`https://api.example.com/${route}`)
+  Runtime.on('/api/:route(.*)', ({ params }) =>
+    fetch(`https://api.example.com/${params.route}`)
   )
 }
 ```
@@ -40,20 +40,19 @@ export default function ProxyApi(Runtime) {
 ## Making a simple server-side request on a URL
 
 ```ts
+// TypeScript server-side components work without transpilation
 import { FABRuntime } from '@fab/core'
 
 export default (Runtime: FABRuntime) => {
   Runtime.on('/geolocate', async () => {
-    const geo_response = await (await fetch('http://ip-api.com/json')).json()
+    const geo_response = await fetch('http://ip-api.com/json')
+    const geo_json = await geo_response.json()
+    const { country, regionName, city } = geo_json
     return new Response(
-      JSON.stringify({
-        country: geo_response.country,
-        region: geo_response.regionName,
-        city: geo_response.city,
-      }),
+      `This request is being served from ${city} in ${regionName}, ${country}.`,
       {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'text/plain',
         },
       }
     )
@@ -68,7 +67,8 @@ import { FABRuntime } from '@fab/core'
 
 export default (Runtime: FABRuntime) => {
   Runtime.interceptResponse(async (response) => {
-    response.headers.set('X-FAB-ID', Runtime.hosting_context.bundle_id)
+    response.headers.set('X-FAB-ID', Runtime.context.bundle_id)
+    return response
   })
 }
 ```
