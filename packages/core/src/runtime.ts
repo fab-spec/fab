@@ -80,7 +80,6 @@ export class FABRouter {
     priority: Priority = Priority.EARLY
   ) {
     this.addToPipeline(async (context) => {
-      console.log('ADDING OUR INTERCEPTOR HIHIHI')
       return {
         interceptResponse: interceptor,
       }
