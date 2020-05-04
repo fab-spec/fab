@@ -157,8 +157,8 @@ describe('Create React App E2E Test', () => {
         `${cwd}/fab-plugins/hello-world.js`,
         // language=JavaScript
         `
-        export default Runtime => {
-          Runtime.on('/hello/:whom?', async ({ params }) => {
+        export default ({ Router }) => {
+          Router.on('/hello/:whom?', async ({ params }) => {
             const { whom = 'world' } = params
             return new Response('HELLO ' + whom.toUpperCase() + '!\\n', {
               status: 200,
