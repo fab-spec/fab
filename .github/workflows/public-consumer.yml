@@ -3,7 +3,9 @@ name: FAB Public Package CI
 on:
   push:
     branches:
-      - new-runtime-api
+      - next
+      - master
+      - auto-install-flag
 
 jobs:
   public_package_build:

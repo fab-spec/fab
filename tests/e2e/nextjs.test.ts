@@ -41,9 +41,7 @@ describe('Create React App E2E Test', () => {
 
   it('should configure the NextJS project to produce FABs', async () => {
     await shell(
-      process.env.PUBLIC_PACKAGES
-        ? 'npx fab init -y --version=next'
-        : 'fab init -y --skip-install',
+      process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
       {
         cwd,
       }
