@@ -31,7 +31,7 @@ Following on from the previous example, we can see how much more general the FAB
 ```js
 // proxy-api.js
 export default function ProxyApi(Runtime) {
-  Runtime.matches('/api/:route(.*)', ({ route }) =>
+  Runtime.on('/api/:route(.*)', ({ route }) =>
     fetch(`https://api.example.com/${route}`)
   )
 }
@@ -43,7 +43,7 @@ export default function ProxyApi(Runtime) {
 import { FABRuntime } from '@fab/core'
 
 export default (Runtime: FABRuntime) => {
-  Runtime.exact('/geolocate', async () => {
+  Runtime.on('/geolocate', async () => {
     const geo_response = await (await fetch('http://ip-api.com/json')).json()
     return new Response(
       JSON.stringify({
@@ -57,6 +57,18 @@ export default (Runtime: FABRuntime) => {
         },
       }
     )
+  })
+}
+```
+
+## Attaching a BUNDLE_ID header to all outgoing responses
+
+```ts
+import { FABRuntime } from '@fab/core'
+
+export default (Runtime: FABRuntime) => {
+  Runtime.interceptResponse(async (response) => {
+    response.headers.set('X-FAB-ID', Runtime.hosting_context.bundle_id)
   })
 }
 ```
