@@ -70,9 +70,10 @@ export type FabRequestResponder = (
   context: FabResponderArgs
 ) => Promise<undefined | Request | Response | Directive>
 
-export type FabRequestResponderWithMatches = (
-  matches: { [match_name: string]: string },
-  context: FabResponderArgs
+export type MatchParams = { [match_name: string]: string }
+
+export type FabRequestResponderWithParams = (
+  contextWithParams: FabResponderArgs & { params: MatchParams }
 ) => ReturnType<FabRequestResponder>
 
 export type ResponseInterceptor = (response: Response) => Promise<Response>

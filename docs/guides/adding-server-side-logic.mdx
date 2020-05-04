@@ -30,9 +30,35 @@ Following on from the previous example, we can see how much more general the FAB
 
 ```js
 // proxy-api.js
-export default Runtime => {
-  Runtime.on('/api/:route(.*)', ({ params }) =>
+export default ({ Router }) => {
+  Router.on('/api/:route(.*)', ({ params }) =>
     fetch(`https://api.example.com/${params.route}`)
+  )
+}
+```
+
+Note, you can use Typescript if you prefer, you only need to import the definition of `Runtime`
+
+```ts
+// proxy-api.ts
+import { FABRuntime } from '@fab/core'
+
+export default function ProxyApiHandler({ Router }: FABRuntime) {
+  Router.on('/api/:route(.*)', ({ params }) =>
+    fetch(`https://api.example.com/${params.route}`)
+  )
+}
+```
+
+You can also use [Settings](/kb/settings) to inject your API location, rather than hard-coding it into the handler:
+
+```ts
+// proxy-api.ts
+import { FABRuntime } from '@fab/core'
+
+export default function ProxyApiHandler({ Router }: FABRuntime) {
+  Router.on('/api/:route(.*)', ({ params, settings }) =>
+    fetch(`${settings.API_URL}/${params.route}`)
   )
 }
 ```
@@ -40,7 +66,6 @@ export default Runtime => {
 ## Making a simple server-side request on a URL
 
 ```ts
-// TypeScript server-side components work without transpilation
 import { FABRuntime } from '@fab/core'
 
 export default (Runtime: FABRuntime) => {
@@ -60,13 +85,31 @@ export default (Runtime: FABRuntime) => {
 }
 ```
 
-## Attaching a BUNDLE_ID header to all outgoing responses
+## Attaching a FAB bundle ID header to all outgoing responses
 
-```ts
-export default Runtime => {
+```js
+export default (Runtime) => {
   Runtime.interceptResponse(async (response) => {
     response.headers.set('X-FAB-ID', Runtime.context.bundle_id)
     return response
   })
+}
+```
+
+## Checking a cookie before allowing a request to proceed
+
+```js
+import { Priority } from '@fab/core'
+import { checkValidity } from 'somewhere'
+
+export default (Runtime) => {
+  Runtime.on(
+    '*',
+    async ({ request }) => {
+      if (!request.cookies['My-Auth']) {
+      }
+    },
+    Priority.FIRST
+  )
 }
 ```

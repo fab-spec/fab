@@ -158,9 +158,10 @@ describe('Create React App E2E Test', () => {
         // language=JavaScript
         `
         export default Runtime => {
-          Runtime.on('/hello/:whom?', async ({whom = 'world'}) => {
+          Runtime.on('/hello/:whom?', async ({ params }) => {
+            const { whom = 'world' } = params
             return new Response('HELLO ' + whom.toUpperCase() + '!\\n', {
-              status: 200
+              status: 200,
             })
           })
         }
