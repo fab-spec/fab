@@ -7,6 +7,7 @@ import nanoid from 'nanoid'
 import fs from 'fs-extra'
 import { extract } from 'zip-lib'
 import templateInjections from './templateInjections'
+import { pathToSHA512 } from 'file-to-sha512'
 
 export const createPackage: FabPackager<ConfigTypes.CFWorkers> = async (
   fab_path: string,
@@ -28,8 +29,10 @@ export const createPackage: FabPackager<ConfigTypes.CFWorkers> = async (
   await extract(fab_path, work_dir)
   log.tick(`Unpacked FAB.`)
 
+  const bundle_id = (await pathToSHA512(fab_path)).slice(0, 32)
+
   const fab_server_src = await fs.readFile(path.join(work_dir, 'server.js'), 'utf8')
-  const injections = templateInjections(fab_server_src, assets_url)
+  const injections = templateInjections(fab_server_src, assets_url, { bundle_id })
   const template = await fs.readFile(
     path.join(__dirname, '../templates/index.js'),
     'utf8'

@@ -1,6 +1,7 @@
 const FAB = globalThis.__fab // injected by UMD
 const ASSETS_URL = globalThis.__assets_url // inlined in packager
 const cache = caches.default
+const server_context = globalThis.__server_context // inlined in packager
 
 globalThis.orig_fetch = globalThis.fetch
 globalThis.fetch = (url, init) => {
@@ -18,6 +19,8 @@ globalThis.fetch = (url, init) => {
 
   return orig_fetch(url, init).then(makeResponseMutable)
 }
+
+if (typeof FAB.initialize === 'function') FAB.initialize(server_context)
 
 const handleRequest = async (request) => {
   const url = new URL(request.url)
