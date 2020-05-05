@@ -1,7 +1,8 @@
 import React from 'react'
 import Head from 'next/head'
+import fetch from 'cross-fetch'
 
-const Dynamic = ({ rando }) => (
+const Dynamic = (props) => (
   <div>
     <Head>
       <title>NextJS & FAB demo</title>
@@ -14,7 +15,13 @@ const Dynamic = ({ rando }) => (
       />
       <h1 className="title">Next.js running in a FAB!</h1>
       <p className="description">
-        This page was rendered on the server with a random number of {rando}
+        This page was rendered on the server with a random number of {props.rando}
+      </p>
+      <p className="description">
+        Server-side rendered from{' '}
+        <strong>
+          {props.city} in {props.regionName}, {props.country}
+        </strong>
       </p>
     </div>
 
@@ -43,8 +50,17 @@ const Dynamic = ({ rando }) => (
   </div>
 )
 
-Dynamic.getInitialProps = () => {
-  return { rando: Math.random() }
+Dynamic.getInitialProps = async () => {
+  const geo = { city: 'dunno', regionName: 'no idea', country: 'nup, not even that' }
+  try {
+    await Promise.race([
+      new Promise((res) => setTimeout(res, 1000)),
+      fetch('http://ip-api.com/json')
+        .then((r) => r.json())
+        .then((json) => Object.assign(geo, json)),
+    ])
+  } catch (e) {}
+  return { rando: Math.random(), ...geo }
 }
 
 export default Dynamic
