@@ -109,7 +109,23 @@ export const mergeWebpacks = (files: FabFilesObject) => {
  * this is where we reach in and snip them out. */
 function sanitise(module: any) {
   const str_contents = generate(module.value.body)
+  if (removeNodeFetch(str_contents, module)) return
   if (removeEval(str_contents, module)) return
+}
+
+/* If the NextJS server-side code uses node-fetch in some way, the FAB
+ * will explode (since that hard-codes to the low-level HTTP methods
+ * that aren't available in a FAB). This replaces any module that looks
+ * like it's trying to stub out `fetch`, with `globalThis.fetch` */
+function removeNodeFetch(str_contents: string, module: any) {
+  if (str_contents.match(/module.exports = exports = fetch;/)) {
+    const replacement_str = `module.exports = exports = globalThis.fetch`
+    const replacement_ast = acorn.parse(replacement_str)
+    // @ts-ignore
+    module.value.body.body = [replacement_ast.body[0]]
+    return true
+  }
+  return false
 }
 
 /* Something internal to NodeJS uses wrapfunction as a utility
