@@ -112,6 +112,10 @@ function sanitise(module: any) {
   if (removeEval(str_contents, module)) return
 }
 
+/* Something internal to NodeJS uses wrapfunction as a utility
+ * to mark functions as deprecated, then using eval to execute
+ * the original function. We inject an early return to avoid
+ * actually invoking the eval. */
 function removeEval(str_contents: string, module: any) {
   if (str_contents.match(/function\s+wrapfunction/)) {
     const replacement_str = str_contents.replace(
