@@ -20,7 +20,8 @@
     "esm",
     "src",
     "runtime.js",
-    "build.js"
+    "build.js",
+    "shims"
   ],
   "types": "esm/index.d.ts",
   "scripts": {
