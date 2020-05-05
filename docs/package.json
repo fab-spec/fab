@@ -11,7 +11,7 @@
     "docz:serve": "docz build && docz serve",
     "fab:build": "fab build",
     "fab:serve": "fab serve fab.zip",
-    "fab:deploy": "dotenv -- fab deploy fab.zip"
+    "fab:deploy": "fab deploy fab.zip"
   },
   "devDependencies": {
     "@fab/actions": "^0.2.0",
