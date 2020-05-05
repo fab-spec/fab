@@ -95,11 +95,33 @@ export const mergeWebpacks = (files: FabFilesObject) => {
 
     webpack_modules.forEach((module) => {
       if (seen_keys.has(module.key.value)) return
+      sanitise(module)
 
-      seen_keys.add(module.key.value)
       webpack_content.properties.push(module)
+      seen_keys.add(module.key.value)
     })
   })
 
   return generate(ast)
+}
+
+/* There's a couple of things in Next that aren't compatible with FABs,
+ * this is where we reach in and snip them out. */
+function sanitise(module: any) {
+  const str_contents = generate(module.value.body)
+  if (removeEval(str_contents, module)) return
+}
+
+function removeEval(str_contents: string, module: any) {
+  if (str_contents.match(/function\s+wrapfunction/)) {
+    const replacement_str = str_contents.replace(
+      /function\s+wrapfunction\s*\(([\w_]+)([, \w_]*)\)\s*{/gm,
+      'function wrapfunction ($1$2) {\nreturn $1;'
+    )
+    const replacement_ast = acorn.parse(replacement_str)
+    // @ts-ignore
+    module.value.body.body = [replacement_ast.body[0]]
+    return true
+  }
+  return false
 }

@@ -116,7 +116,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
         },
         plugins: [
           new webpack.DefinePlugin({
-            eval: 'eeeeeevaaaaaaaal',
+            eval: 'HERE_NO_EVAL',
           }),
         ],
       },
@@ -133,12 +133,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   )
 
   const webpacked_src = await fs.readFile(webpacked_output, 'utf8')
-  const haxxed_src = webpacked_src.replace(
-    /function\s+wrapfunction\s*\(([\w_]+)([, \w_]*)\)\s*{/gm,
-    'function wrapfunction ($1$2) {\nreturn $1;'
-  )
-  await fs.writeFile(path.join(cache_dir, `haxxed.js`), haxxed_src)
-  proto_fab.hypotheticals[`${RENDERER}.js`] = haxxed_src
+  proto_fab.hypotheticals[`${RENDERER}.js`] = webpacked_src
 
   log(`Finding all static assets`)
   const asset_files = await globby([`**/*`], { cwd: static_dir })
