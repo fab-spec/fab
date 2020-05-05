@@ -2,7 +2,7 @@ export default {
   typescript: false,
   title: 'FAB — Frontend Application Bundles',
   description: 'Homepage for the FAB project & specification',
-  files: ['./{readmes,kb,guides}/*.{md|mdx}'],
+  files: ['./{readmes,kb,guides,api}/*.{md|mdx}'],
   themesDir: './',
   public: 'public/',
   menu: [

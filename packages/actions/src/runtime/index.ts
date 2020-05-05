@@ -1,32 +1,43 @@
 /* Outermost FAB server, imports the plugin chain and responds to requests */
 
 import {
-  FabSettings,
-  FabSpecRender,
+  Directive,
   FabPluginRuntime,
-  FabMetadata,
+  FABRuntime,
+  FabSettings,
   FabSpecMetadata,
+  FabSpecRender,
   NO_RESPONSE_STATUS_CODE,
+  ResponseInterceptor,
+  FABServerContext,
 } from '@fab/core'
-import { render as final_responder } from './final_responder'
 
-/*
- * Here, we import "files" that are going to be injected by the Rollup build.
- * */
-
+import final_responder from './final_responder'
 // @ts-ignore
 import { runtimes } from 'user-defined-pipeline'
 // @ts-ignore
 import { fab_metadata } from 'fab-metadata'
 // @ts-ignore
 import { production_settings } from 'production-settings'
-import { Directive, ResponseInterceptor } from '@fab/core'
 
-const pipeline = [...(runtimes as FabPluginRuntime[]), final_responder].map((runtime) =>
-  runtime({}, (fab_metadata as FabMetadata).plugin_metadata)
-)
+let Runtime: FABRuntime | undefined = undefined
+export const initialize = (server_context: FABServerContext) => {
+  Runtime = FABRuntime.initialize(
+    fab_metadata,
+    [...(runtimes as FabPluginRuntime[]), final_responder],
+    server_context
+  )
+}
 
 export const render: FabSpecRender = async (request: Request, settings: FabSettings) => {
+  // Support pre-v0.2 hosts
+  if (!Runtime) {
+    console.log(`render() called without initialize()`)
+    console.log(`Injecting a dummy ServerContext`)
+    initialize({ bundle_id: '' })
+    // If we still don't have Runtime, we have to bail here.
+    if (!Runtime) throw new Error('Initialise called but no Runtime created!')
+  }
   const url = new URL(request.url)
 
   // If no middleware catches the 444 No Response, render a very generic 404 page
@@ -44,7 +55,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 
   let chained_request = request
 
-  for (const responders of pipeline) {
+  for (const responders of Runtime.getPipeline()) {
     const response = await responders({
       request: chained_request.clone(),
       settings,
@@ -87,6 +98,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 
 export const metadata: FabSpecMetadata = {
   production_settings,
+  fab_version: '0.2',
 }
 
 /* Legacy support for env settings */

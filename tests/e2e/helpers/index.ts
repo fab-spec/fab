@@ -4,6 +4,7 @@ import path from 'path'
 
 export const CRA_PORTS = 10100
 export const NEXTJS_PORTS = 10200
+export const SERVER_SIDE_LOGIC_PORTS = 10300
 
 export const getPorts = (first_port: number) => {
   let next_port = first_port

@@ -1,7 +1,7 @@
 // @ts-ignore
 import __generated from 'generated-nextjs-renderers.js'
 import { pathToRegexp } from 'path-to-regexp'
-import { FabRequestResponder, NO_RESPONSE_STATUS_CODE } from '@fab/core'
+import { FABRuntime, NO_RESPONSE_STATUS_CODE } from '@fab/core'
 
 const { renderers, MockExpressResponse } = __generated
 
@@ -38,7 +38,7 @@ async function invokeRenderer(
   }
 }
 
-export function runtime() {
+export default function InputNextJsRuntime({ Router }: FABRuntime) {
   const pathRenderers: { [path: string]: Renderer } = {}
   const regexpRenderers: { path_matcher: RegExp; renderer: Renderer }[] = []
   let errorRenderer: Renderer | undefined
@@ -70,7 +70,7 @@ export function runtime() {
     return undefined
   }
 
-  return async function responder({ request, url }) {
+  Router.onAll(async function responder({ request, url }) {
     //   global.FAB_SETTINGS = settings
     // console.log(`REQUEST! ${url}`)
     const { pathname, protocol } = url
@@ -90,5 +90,5 @@ export function runtime() {
           : response
       },
     }
-  } as FabRequestResponder
+  })
 }

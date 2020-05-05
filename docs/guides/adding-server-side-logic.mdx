@@ -8,6 +8,129 @@ menu: Guides
 
 One of the best use-cases for FABs, once your project [can produce a working FAB](/guides/getting-started), is to add small amounts of server-side logic to a mostly-static build, _without needing to change how you package & deploy your application_. This guide shows you how.
 
+> 👉 While some of these examples may be possible with "static" hosting providers, that always requires [vendor-specific configuration](#an-aside-static-hosting-isnt-really-static). FAB offers a different approach, since server-side JavaScript is always available, we can use **code over configuration**:
+
+## Proxying an API
+
+It can be quite convenient to proxy your backend API behind a route on your frontend, e.g. wiring up `https://example.com/api` connecting behind-the-scenes to `https://api.example.com`. This can help with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) concerns or simply to allow your frontend to freely connect to different backends. We can achieve this by connecting to the FAB's (server-side) Router:
+
+```js
+// proxy-api.js
+export default ({ Router }) => {
+  Router.on('/api/:route(.*)', ({ params }) =>
+    fetch(`https://api.example.com/${params.route}`)
+  )
+}
+```
+
+Adding this to your `fab.config.json5` to include it in your build:
+
+```json5
+{
+  plugins: {
+    // ...
+    './server/proxy-api': {},
+    // ...
+  },
+  // ...
+}
+```
+
+> 👉 Further examples on this page will omit this step, read the [Plugins](/kb/plugins) page for full details about configuring your `plugins` section of your configuration.
+
+## Typescript Components
+
+Note, you can use Typescript without needing a separate compile step, so we recommend doing so (and further examples will):
+
+> 👉 Even if you're not using Typescript for the rest of your project, your IDE may well have much better code completion & error-checking if you use it here.
+
+```ts
+// proxy-api.ts
+import { FABRuntime } from '@fab/core'
+
+export default function({ Router }: FABRuntime) {
+  Router.on('/api/:route(.*)', ({ params }) =>
+    fetch(`https://api.example.com/${params.route}`)
+  )
+}
+```
+
+You can also use [Settings](/kb/settings) to inject your API location, rather than hard-coding it into the handler:
+
+```ts
+// proxy-api.ts
+import { FABRuntime } from '@fab/core'
+
+export default function({ Router }: FABRuntime) {
+  Router.on('/api/:route(.*)', ({ params, settings }) =>
+    fetch(`${settings.API_URL}/${params.route}`)
+  )
+}
+```
+
+## Making a simple server-side request on a URL
+
+You can also transform the responses using the same [`fetch` API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) available in browsers & service workers:
+
+```ts
+// add-geolocation-endpoint
+import { FABRuntime } from '@fab/core'
+
+export default ({ Router }: FABRuntime) => {
+  Router.on('/geolocate', async () => {
+    const geo_response = await fetch('http://ip-api.com/json')
+    const geo_json = await geo_response.json()
+    const { country, regionName, city } = geo_json
+    return new Response(
+      `This request is being served from ${city} in ${regionName}, ${country}.`,
+      {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      }
+    )
+  })
+}
+```
+
+## Attaching a FAB bundle ID header to all outgoing responses
+
+```ts
+// attach-bundle-id.ts
+import { FABRuntime } from '@fab/core'
+
+export default ({ Router, ServerContext }: FABRuntime) => {
+  Router.interceptResponse(async (response) => {
+    response.headers.set('X-FAB-ID', ServerContext.bundle_id)
+    return response
+  })
+}
+```
+
+## Checking a cookie before allowing a request to proceed
+
+```js
+// check-cookie.ts
+import { FABRuntime, Priority } from '@fab/core'
+import { checkValidity } from 'somewhere'
+
+export default ({ Router }: FABRuntime) => {
+  // Could also use Router.on('*') here
+  Router.onAll(async ({ request }) => {
+    const cookie = request.cookies['My-Auth']
+    if (!cookie || !checkValidity(cookie)) {
+      // Allow the rest of the handlers to proceed
+      return undefined
+    } else {
+      return new Response(null, {
+        status: 401,
+        statusText: 'Unauthorized',
+      })
+    }
+  }, Priority.FIRST)
+}
+```
+
 ### An aside: "Static" hosting isn't really static
 
 Something that's often overlooked when choosing a hosting provider for a "static" project (e.g. client-side rendered or JAMstack) is that there is a whole host of server-side concerns that don't neatly fit into uploading a directory full of HTML files. These invariably end up being captured as vendor-specific config files, such as those for [Netlify](https://docs.netlify.com/configure-builds/file-based-configuration), [Vercel](https://vercel.com/docs/configuration) or [Firebase](https://firebase.google.com/docs/hosting/full-config); or configuration settings in the platform itself, such as for [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/dev/HowDoIWebsiteConfiguration.html).
@@ -22,117 +145,4 @@ For example, proxying requests that come in on `/api/*` to `api.example.com/*` w
   force = true
 ```
 
-While several of the server-side behaviours described here will be possible with the "static" host you're currently using, FAB offers a different approach: by standardising the inclusion of server-side JavaScript, we can now use _code over configuration_, and have a truly portable frontend application artefact, even if we're "only serving static HTML"!
-
-## Proxying an API
-
-Following on from the previous example, we can see how much more general the FAB approach is to solving this problem:
-
-```js
-// proxy-api.js
-export default function runtime() {
-  return async function respond({ url }) {
-    if (url.pathname.startsWith('/api/')) {
-      // snip off the /api part of the URL
-      const route = url.pathname.slice(4)
-      // then
-      return fetch(`https://api.example.com${route}`)
-    }
-  }
-}
-```
-<!--
-
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-export default Runtime.responder(({ url }) => {
-  if (url.pathname.startsWith('/api/')) {
-    // snip off the /api part of the URL
-    const route = url.pathname.slice(4)
-    // then
-    return fetch(`https://api.example.com${route}`)
-  }
-})
-```
-
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-Runtime.addResponder(({ url }) => {
-  if (url.pathname.startsWith('/api/')) {
-    // snip off the /api part of the URL
-    const route = url.pathname.slice(4)
-    // then
-    return fetch(`https://api.example.com${route}`)
-  }
-})
-```
-
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-Runtime.on('/api/:route', (match) => fetch(`https://api.example.com${match.route}`))
-```
-
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-Runtime.withSetup(({ importantSetupShit }) => {
-  Runtime.on('/api/:route', (match) => fetch(`https://api.example.com${match.route}`))
-})
-```
-
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-Runtime.proxy('/api/:route', 'https://api.example.com/:route')
-```
-
-```js
-// dreamcode.js
-import { withSetup } from '@fab/core'
-
-withSetup((Runtime, { importantSetupShit }) => {
-  Runtime.on('/api/:route', (match) => fetch(`https://api.example.com${match.route}`))
-})
-```
-
-
-```js
-// dreamcode.js
-import { Redirects } from '@fab/core'
-
-Redirects.push({
-  from: "/api/*",
-  to: "https://api.example.com/:splat",
-  status: 200,
-  force: true
-})
-```
-
-
-```js
-// dreamcode.js
-import { Runtime } from '@fab/core'
-
-Runtime.on('/geolocate', async () => {
-  const geo_response = await (await fetch('http://ip-api.com/json')).json()
-  return new Response(JSON.stringify({
-    country: geo_response.country,
-    region: geo_response.regionName,
-    city: geo_response.city
-  }), {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-})
-```
-
--->
+Compare that to the [Proxying an API](#proxying-an-api) section above. Now your server-side logic is self-contained, portable, and "just JavaScript".

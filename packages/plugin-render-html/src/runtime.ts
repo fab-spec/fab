@@ -1,11 +1,5 @@
-import { ServeHtmlArgs, ServeHtmlMetadata } from './types'
-import {
-  FabPluginRuntime,
-  FabResponderArgs,
-  FabSettings,
-  matchPath,
-  NO_RESPONSE_STATUS_CODE,
-} from '@fab/core'
+import { RenderHtmlMetadata } from './types'
+import { FABRuntime, FabSettings, matchPath, NO_RESPONSE_STATUS_CODE } from '@fab/core'
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
 import { ITokens } from 'micromustache'
@@ -18,13 +12,12 @@ const getNonce = () => {
     .slice(2)
 }
 
-export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
-  args: ServeHtmlArgs,
-  metadata: ServeHtmlMetadata
-) => {
+export default function RenderHTMLRuntime({
+  Router,
+  Metadata,
+}: FABRuntime<RenderHtmlMetadata>) {
+  const { htmls, resolved_fallback, args } = Metadata.render_html
   const { injections = DEFAULT_INJECTIONS } = args
-
-  const { htmls, resolved_fallback } = metadata.serve_html
   const error_page = matchPath(htmls, '/404')
 
   function render(html: ITokens, settings: FabSettings) {
@@ -48,7 +41,20 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
     })
   }
 
-  return async function responder({ url, settings }: FabResponderArgs) {
+  function stringify(tokens: ITokens, values: { [key: string]: string }): string {
+    const { strings, varNames } = tokens
+    let ret = ''
+    const { length } = varNames
+    for (let i = 0; i < length; i++) {
+      ret += strings[i]
+      ret += values[varNames[i]]
+    }
+
+    ret += strings[length]
+    return ret
+  }
+
+  Router.onAll(async ({ url, settings }) => {
     const { pathname } = url
 
     const html = matchPath(htmls, pathname)
@@ -75,18 +81,5 @@ export const runtime: FabPluginRuntime<ServeHtmlArgs, ServeHtmlMetadata> = (
       }
 
     return undefined
-  }
-}
-
-function stringify(tokens: ITokens, values: { [key: string]: string }): string {
-  const { strings, varNames } = tokens
-  let ret = ''
-  const { length } = varNames
-  for (let i = 0; i < length; i++) {
-    ret += strings[i]
-    ret += values[varNames[i]]
-  }
-
-  ret += strings[length]
-  return ret
+  })
 }

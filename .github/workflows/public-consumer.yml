@@ -5,7 +5,7 @@ on:
     branches:
       - next
       - master
-      - auto-install-flag
+      - new-runtime-api
 
 jobs:
   public_package_build:

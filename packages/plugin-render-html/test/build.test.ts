@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import { ProtoFab } from '@fab/core'
 import { build } from '../src/build'
-import { ServeHtmlMetadata } from '../src/types'
+import { RenderHtmlMetadata } from '../src/types'
 
 describe('Build time', () => {
   it('should be a function', () => {
@@ -12,7 +12,7 @@ describe('Build time', () => {
     const files = {
       '/main.css': 'some { css: here; }',
     }
-    const proto_fab = new ProtoFab<ServeHtmlMetadata>(files)
+    const proto_fab = new ProtoFab<RenderHtmlMetadata>(files)
     await build({}, proto_fab)
     expect(proto_fab._getEntries()).to.deep.equal([...Object.entries(files)])
   })
@@ -21,7 +21,7 @@ describe('Build time', () => {
     const files = {
       '/index.html': '<html>here</html>',
     }
-    const proto_fab = new ProtoFab<ServeHtmlMetadata>(files)
+    const proto_fab = new ProtoFab<RenderHtmlMetadata>(files)
     await build({}, proto_fab)
     expect(proto_fab._getEntries()).to.deep.equal([])
   })
@@ -31,9 +31,9 @@ describe('Build time', () => {
       '/index.html':
         '<html><head><title>HTML Test</title></head><body>here</body></html>',
     }
-    const proto_fab = new ProtoFab<ServeHtmlMetadata>(files)
+    const proto_fab = new ProtoFab<RenderHtmlMetadata>(files)
     await build({}, proto_fab)
-    const htmls = proto_fab.metadata.serve_html.htmls
+    const htmls = proto_fab.metadata.render_html.htmls
     expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
     expect(htmls['/index.html']).to.deep.equal({
       strings: [
@@ -49,14 +49,14 @@ describe('Build time', () => {
       '/index.html':
         '<html><head><title>HTML Test</title></head><body>here</body></html>',
     }
-    const proto_fab = new ProtoFab<ServeHtmlMetadata>(files)
+    const proto_fab = new ProtoFab<RenderHtmlMetadata>(files)
     await build(
       {
         injections: {},
       },
       proto_fab
     )
-    const htmls = proto_fab.metadata.serve_html.htmls
+    const htmls = proto_fab.metadata.render_html.htmls
     expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
 
     expect(htmls['/index.html']).to.deep.equal({
@@ -66,7 +66,7 @@ describe('Build time', () => {
   })
 
   it(`should explode if you try to use an injection it doesn't know about`, async () => {
-    const proto_fab = new ProtoFab<ServeHtmlMetadata>()
+    const proto_fab = new ProtoFab<RenderHtmlMetadata>()
     await build(
       {
         injections: {

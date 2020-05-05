@@ -1,0 +1,11 @@
+{
+  plugins: {
+    '@fab/input-static': { dir: 'public' },
+    '@fab/plugin-render-html': { fallback: '/index.html' },
+    '@fab/plugin-rewire-assets': {},
+    './fab-plugins/hello-world': {},
+    './fab-plugins/add-bundle-id': {},
+  },
+  settings: { production: {} },
+  deploy: {},
+}

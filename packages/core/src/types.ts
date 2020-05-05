@@ -28,12 +28,13 @@ export interface FabConfig {
   deploy?: DeployConfig
 }
 
-export interface PluginMetadataContent {
+export interface PluginMetadataContent<T extends PluginArgs = {}> {
+  args: T
   [metadata_name: string]: any
 }
 
-export interface PluginMetadata {
-  [plugin_name: string]: PluginMetadataContent
+export interface PluginMetadata<T extends PluginArgs = {}> {
+  [plugin_name: string]: PluginMetadataContent<T>
 }
 
 /*
@@ -50,14 +51,6 @@ export type FabBuildStep<
   config_path: string,
   skip_cache?: boolean
 ) => Promise<void>
-
-/*
- * A FabPluginRuntime is a setup function that returns a FabRequestResponder.
- * */
-export type FabPluginRuntime<
-  T extends PluginArgs = PluginArgs,
-  U extends PluginMetadata = PluginMetadata
-> = (args: T, metadata: U) => FabRequestResponder
 
 export type FabResponderMutableContext = {
   [key: string]: any
@@ -76,6 +69,12 @@ export type FabResponderArgs = {
 export type FabRequestResponder = (
   context: FabResponderArgs
 ) => Promise<undefined | Request | Response | Directive>
+
+export type MatchParams = { [match_name: string]: string }
+
+export type FabRequestResponderWithParams = (
+  contextWithParams: FabResponderArgs & { params: MatchParams }
+) => ReturnType<FabRequestResponder>
 
 export type ResponseInterceptor = (response: Response) => Promise<Response>
 
@@ -96,6 +95,11 @@ export type FabFileMetadata = {
 export type FabMetadata = {
   file_metadata: FabFileMetadata
   plugin_metadata: PluginMetadata
+}
+
+// To be extended with host-specific capabilities
+export type FABServerContext = {
+  bundle_id: string
 }
 
 export type ServerConstructor = (filename: string, args: ServerArgs) => ServerType
@@ -126,11 +130,13 @@ export type FabSpecRender = (
 ) => Promise<Request | Response>
 export type FabSpecMetadata = {
   production_settings: FabSettings
+  fab_version: string
 }
 
 export type FabSpecExports = {
   render: FabSpecRender
   metadata: FabSpecMetadata
+  initialize: (server_context: FABServerContext) => void
 }
 
 export type FetchApi = (url: string | Request, init?: RequestInit) => Promise<Response>
