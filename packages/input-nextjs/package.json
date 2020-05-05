@@ -30,7 +30,9 @@
     "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
     "clean": "rm -rf esm lib package-lock.json",
     "prepack": "npm run clean && npm run build",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "@fab/cli": "0.2.3-alpha.0",
@@ -46,9 +48,11 @@
     "mock-express-response": "^0.2.2",
     "path-to-regexp": "^6.1.0",
     "prettier": "^1.19.1",
-    "webpack": "^4.41.5"
+    "webpack": "^4.41.5",
+    "snyk": "^1.319.0"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "snyk": true
 }
