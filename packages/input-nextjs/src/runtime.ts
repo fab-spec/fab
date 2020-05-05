@@ -34,6 +34,7 @@ async function invokeRenderer(
       headers: response._headers,
     })
   } catch (e) {
+    console.error(e)
     return new Response(`ERROR: NextJS renderer crashed\n${e}`, { status: 500 })
   }
 }
