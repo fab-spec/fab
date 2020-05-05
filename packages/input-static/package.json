@@ -28,17 +28,21 @@
     "build:watch": "run-p 'build:{cjs,esm} -- --watch --preserveWatchOutput'",
     "clean": "rm -rf esm lib package-lock.json",
     "prepack": "npm run clean && npm run build",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "@fab/cli": "0.2.3-alpha.0",
     "@fab/core": "0.2.3-alpha.0",
     "@types/node": "^12.12.14",
     "fs-extra": "^8.1.0",
-    "globby": "^10"
+    "globby": "^10",
+    "snyk": "^1.319.0"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "98ce34423f906c0a9f66f2f87643e64b841e359a"
+  "gitHead": "98ce34423f906c0a9f66f2f87643e64b841e359a",
+  "snyk": true
 }
