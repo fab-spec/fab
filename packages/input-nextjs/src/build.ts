@@ -115,6 +115,9 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
           global: false,
         },
         plugins: [
+          /* Cloudflare Workers will explode if it even _sees_ `eval` in a file,
+           * even if it's never called. Replacing it with this will bypasses that.
+           * (It'll still explode if it's called, nothing we can do about that.) */
           new webpack.DefinePlugin({
             eval: 'HERE_NO_EVAL',
           }),
