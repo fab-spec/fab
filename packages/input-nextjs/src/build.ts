@@ -107,6 +107,8 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
             fs: require.resolve('memfs'),
             path: path.join(shims_dir, 'path-with-posix'),
             '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
+            http: path.join(shims_dir, 'http'),
+            https: path.join(shims_dir, 'empty-object'),
           },
         },
         node: {
