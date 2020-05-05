@@ -73,7 +73,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   // moved out into a separate module or into the core compiler.
   const webpacked_output = path.join(cache_dir, `${WEBPACKED}.js`)
 
-  const shims_dir = path.join(__dirname, 'shims')
+  const shims_dir = path.resolve(__dirname, '../shims')
 
   const entry_point = `
     const renderers = require('${render_code_file}')
