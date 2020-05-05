@@ -32,6 +32,7 @@ describe('Create React App E2E Test', () => {
     // Expect that {cwd} has a package.json
     const { stdout: files } = await cmd(`ls -l`, { cwd })
     expect(files).toMatch('package.json')
+    await shell(`yarn add cross-fetch`, { cwd })
     // Add the FAB project's current commit SHA to index.js for debugging
     await shell(
       `echo "\\nconsole.log('[FAB CI] NextJS — Branch ${current_branch} (${current_sha})')" >> pages/index.js`,

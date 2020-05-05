@@ -73,7 +73,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   // moved out into a separate module or into the core compiler.
   const webpacked_output = path.join(cache_dir, `${WEBPACKED}.js`)
 
-  const shims_dir = path.join(__dirname, 'shims')
+  const shims_dir = path.resolve(__dirname, '../shims')
 
   const entry_point = `
     const renderers = require('${render_code_file}')
@@ -107,14 +107,19 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
             fs: require.resolve('memfs'),
             path: path.join(shims_dir, 'path-with-posix'),
             '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
+            http: path.join(shims_dir, 'http'),
+            https: path.join(shims_dir, 'empty-object'),
           },
         },
         node: {
           global: false,
         },
         plugins: [
+          /* Cloudflare Workers will explode if it even _sees_ `eval` in a file,
+           * even if it's never called. Replacing it with this will bypasses that.
+           * (It'll still explode if it's called, nothing we can do about that.) */
           new webpack.DefinePlugin({
-            eval: 'eeeeeevaaaaaaaal',
+            eval: 'HERE_NO_EVAL',
           }),
         ],
       },
@@ -131,12 +136,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   )
 
   const webpacked_src = await fs.readFile(webpacked_output, 'utf8')
-  const haxxed_src = webpacked_src.replace(
-    /function\s+wrapfunction\s*\(([\w_]+)([, \w_]*)\)\s*{/gm,
-    'function wrapfunction ($1$2) {\nreturn $1;'
-  )
-  await fs.writeFile(path.join(cache_dir, `haxxed.js`), haxxed_src)
-  proto_fab.hypotheticals[`${RENDERER}.js`] = haxxed_src
+  proto_fab.hypotheticals[`${RENDERER}.js`] = webpacked_src
 
   log(`Finding all static assets`)
   const asset_files = await globby([`**/*`], { cwd: static_dir })
