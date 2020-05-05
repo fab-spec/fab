@@ -39,7 +39,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
 ) => {
   const package_path = path.join(working_dir, 'cf-workers.js')
 
-  log(`Starting deploy...`)
+  log(`Starting 💛server💛 deploy...`)
 
   if (!assets_url) {
     throw new FabDeployError(

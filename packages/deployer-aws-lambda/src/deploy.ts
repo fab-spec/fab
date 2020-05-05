@@ -14,7 +14,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
 ) => {
   // TODO, hash the FAB, figure out if we actually need to do this
   const package_path = path.join(working_dir, 'aws-lambda.zip')
-  log(`Starting deploy...`)
+  log(`Starting 💛server💛 deploy...`)
 
   const { access_key, secret_key, region, cf_distribution_id, lambda_arn } = config
 
