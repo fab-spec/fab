@@ -97,7 +97,7 @@ export const _log = (full_prefix: string) => {
     log(`💎 💚${str}💚 💎`)
   }
   log.confirmAndRespond = (message: string, if_yes?: string, if_no?: string) =>
-    confirmAndRespond(log, `${prefix} ${message}`, if_yes, if_no)
+    confirmAndRespond(log, `\n${message}`, if_yes, if_no)
   return log
 }
 

@@ -96,16 +96,14 @@ export default class Initializer {
     if (this.yes) {
       log.info(`Proceeding...`)
     } else {
-      const confirmed = await log.confirmAndRespond(`
-        💚Ready to proceed.💚 This process will:
+      log(`💚Ready to proceed.💚 This process will:
         • Generate a 💛fab.config.json5💛 file for your project
         • Add 💛build:fab💛 and related scripts to your 💛package.json💛
         • Add 💛.fab💛 and 💛fab.zip💛 to your 💛.gitignore💛
         • Install 💛@fab/cli💛 and related dependencies using 💛${
           use_yarn ? 'yarn' : 'npm'
-        }💛
-
-        Good to go? [yN]`)
+        }💛`)
+      const confirmed = await log.confirmAndRespond(`Good to go? [y/N]`)
       if (!confirmed) return
     }
 
@@ -313,21 +311,24 @@ export default class Initializer {
     framework: FrameworkInfo,
     use_yarn: boolean
   ) {
-    const dependencies = [...DEFAULT_DEPS, ...Object.keys(framework.plugins)].map((dep) =>
-      version ? `${dep}@${version}` : dep
-    )
+    const versioned = (deps: string[]) =>
+      deps.map((dep) => (version ? `${dep}@${version}` : dep))
+    const core_deps = versioned(DEFAULT_DEPS)
+    const framework_deps = versioned(Object.keys(framework.plugins))
 
-    log(`💚Installing required development dependencies💚:
-      ${dependencies.join('\n  ')}
-      using 💛${use_yarn ? 'yarn' : 'npm'}💛`)
-    await installDependencies(use_yarn, dependencies, root_dir)
-    log(`
-      💚Done!💚
-
-      Now run 💛${
+    log.note(`Installing required 💛FAB core💛 dependencies:
+      ${core_deps.map((d) => `• ${d}`).join('\n  ')}`)
+    log(`and the following 💛project-specific💛 plugins:
+      ${framework_deps.map((d) => `• ${d}`).join('\n  ')}`)
+    log(`using 💛${use_yarn ? 'yarn' : 'npm'}...💛`)
+    await installDependencies(use_yarn, [...core_deps, ...framework_deps], root_dir)
+    log(`💚Done!💚`)
+    log(
+      `Now run 💛${
         use_yarn ? 'yarn' : 'npm run'
       } build:fab💛 to build your project and generate a FAB from it!
-    `)
+      or visit 💛https://fab.dev/guides/getting-started💛 for more info.`
+    )
   }
 
   private static async updateConfig(

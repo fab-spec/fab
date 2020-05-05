@@ -57,6 +57,7 @@ export default class JSON5Config implements JSON5ConfigI {
       file_path,
       prettier.format(jju.update(this.str_contents, this.data), {
         parser: 'json5',
+        singleQuote: true,
       })
     )
   }

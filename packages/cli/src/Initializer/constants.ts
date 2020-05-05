@@ -32,9 +32,10 @@ export const BASE_CONFIG: string = `// For more information, see https://fab.dev
   },
   deploy: {
     // For manual (command-line) deploys, add configuration here.
-    // • See https://fab.dev/kb/deploying for more info.
-    // For automatic deploys (triggered by git push), we recommend using Linc:
-    // • See https://linc.sh/docs/automatic-deploys for setup instructions.
+    // • See https://fab.dev/guides/deploying for more info.
+    // However, we recommend automatic deploys (triggered by git push)
+    // using a service such as Linc (https://linc.sh)
+    // • See https://fab.dev/kb/automatic-deploys for setup instructions.
   }
 }
 `
