@@ -8,7 +8,7 @@
       fallback: "/index.html"
     },
     "@fab/plugin-rewire-assets": {},
-    './fab-server/add-bundle-id.ts': {},
+    '@fab/plugin-add-fab-id': {},
     // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins
   },
   settings: {

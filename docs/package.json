@@ -31,5 +31,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/fab-spec/fab.git"
+  },
+  "dependencies": {
+    "@fab/plugin-add-fab-id": "^0.1.0"
   }
 }

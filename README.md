@@ -1,13 +1,13 @@
 <h3 align="center"><img width="461" alt="FAB Stencil Logo Wide" src="https://user-images.githubusercontent.com/23264/79783164-24618700-8338-11ea-9c64-39738f29003a.png"/>
 </h3>
 
-<h5 align="center"><small><a href="https://fab.dev">https://fab.dev </a> • <a href="https://github.com/fab-spec/fab">https://github.com/fab-spec/fab </a></small></h5>
+<h5 align="center"><small><a href="https://fab.dev">https://fab.dev </a> • <a href="https://github.com/fab-spec/fab">https://github.com/fab-spec/fab </a> • <a href="https://twitter.com/fab_spec">@fab_spec </a></small></h5>
 
-[![npm](https://img.shields.io/npm/v/@fab/cli)](https://www.npmjs.com/package/@fab/cli)
-[![GitHub last commit](https://img.shields.io/github/last-commit/fab-spec/fab)](https://github.com/fab-spec/fab)
+[![npm](https://img.shields.io/npm/v/@fab/plugin-add-fab-id?label=%F0%9F%93%A6%20npm)](https://www.npmjs.com/package/@fab/cli)
+[![Join discussion on Discord](https://img.shields.io/discord/308323056592486420?label=%F0%9F%92%AC%20discord%20)](https://discord.gg/Qvj3pJY)
+[![GitHub last commit](https://img.shields.io/github/last-commit/fab-spec/fab?label=%E2%9C%8F%EF%B8%8F%20last%20commit)](https://github.com/fab-spec/fab)
 [![GitHub Workflow Status](https://github.com/fab-spec/fab/workflows/FAB%20CI/badge.svg)](https://github.com/fab-spec/fab/actions)
-[![Join discussion on Discord](https://img.shields.io/discord/308323056592486420.svg)](https://discord.gg/Qvj3pJY)
-[![Financial Contributors on Open Collective](https://opencollective.com/fab/all/badge.svg?label=financial+contributors)](https://opencollective.com/fab)
+[![Financial Contributors on Open Collective](https://img.shields.io/opencollective/all/fab?label=%F0%9F%92%B0%20supporters)](https://opencollective.com/fab)
 
 Frontend Application Bundles (💎 FABs) are a **bundle format for frontend applications**.
 

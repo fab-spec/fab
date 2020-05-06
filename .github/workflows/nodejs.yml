@@ -1,10 +1,11 @@
 name: FAB CI
 
 on:
-  - pull_request
-  - push:
-      branches:
-        - master
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - master
 
 jobs:
   build:
