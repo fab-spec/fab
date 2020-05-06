@@ -2,6 +2,7 @@ name: FAB CI
 
 on:
   pull_request:
+    types: [opened, synchronize]
   push:
     branches:
       - master
