@@ -1069,6 +1069,15 @@
     mime-types "^2.1.25"
     path-to-regexp "^6.1.0"
 
+"@fab/core@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@fab/core/-/core-0.2.4.tgz#92c158babee07841e8953c37ce95213e4d33e1b1"
+  integrity sha512-4FpxeGJ0XRtr0/WAx0XHNH2jtdQMqERhcGlVUvRx0nTUt939R8BlVesdTK1/pA9TT0KjKjd27HobfiEf6kokhg==
+  dependencies:
+    "@types/node" "^12.12.14"
+    mime-types "^2.1.25"
+    path-to-regexp "^6.1.0"
+
 "@fab/input-static@^0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@fab/input-static/-/input-static-0.2.0.tgz#b3f8254b7c39cc4919fc230722dc2926447df4ab"
@@ -1079,6 +1088,13 @@
     "@types/node" "^12.12.14"
     fs-extra "^8.1.0"
     globby "^10"
+
+"@fab/plugin-add-fab-id@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@fab/plugin-add-fab-id/-/plugin-add-fab-id-0.1.0.tgz#2e44004cc928b9e1991308b3ac037ca597adcd11"
+  integrity sha512-C23Z9YdefnVwhUr6hH99qWQMpAzmTGyk/jugOc8a6nLGtoPOcGGMIwUGsbt1RxNDox44VJlx9O1lqpxFyGiY5w==
+  dependencies:
+    "@fab/core" "^0.2.4"
 
 "@fab/plugin-render-html@^0.2.0":
   version "0.2.0"
