@@ -1,6 +1,6 @@
 {
   "name": "@fab/deployer-aws-s3",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Uploads FAB assets to AWS S3",
   "keywords": [
     "aws",
@@ -32,8 +32,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/cli": "0.2.4",
-    "@fab/core": "0.2.4",
+    "@fab/cli": "0.2.5",
+    "@fab/core": "0.2.5",
     "@types/node": "^12.12.14",
     "aws-sdk": "^2.655.0",
     "fs-extra": "^9.0.0",
