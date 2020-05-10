@@ -146,6 +146,7 @@ describe('Create React App E2E Test', () => {
 
     it('should return a dynamic page', async () => {
       expect(await request('-I', '/dynamic', port)).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/api/time', port)).toContain(`HTTP/1.1 200 OK`)
 
       const dynamic_response = await request('', '/dynamic', port)
       expect(dynamic_response).toContain(`This page was rendered on the server`)
