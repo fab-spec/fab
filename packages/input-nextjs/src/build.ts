@@ -75,12 +75,11 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
 
   const shims_dir = path.resolve(__dirname, '../shims')
 
+  const mock_express_response_path = path.join(shims_dir, 'mock-express-response')
   const entry_point = `
-    const renderers = require('${render_code_file}')
-    const MockExpressResponse = require('${path.join(
-      shims_dir,
-      'mock-express-response'
-    )}')
+    const renderers = require(${JSON.stringify(render_code_file)});
+    const MockExpressResponse = require(${JSON.stringify(mock_express_response_path)});
+
     module.exports = { renderers, MockExpressResponse }
   `
   const entry_file = path.join(cache_dir, 'entry-point.js')
