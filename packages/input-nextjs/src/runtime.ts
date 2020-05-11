@@ -5,10 +5,13 @@ import { FABRuntime, NO_RESPONSE_STATUS_CODE } from '@fab/core'
 
 const { renderers, MockExpressResponse } = __generated
 
-type Renderer = () => {}
+type Renderer = {
+  render?: Function
+  default?: Function
+}
 
 async function invokeRenderer(
-  renderer: () => {},
+  renderer: Renderer,
   request: Request,
   route: string,
   protocol: string
@@ -25,8 +28,15 @@ async function invokeRenderer(
     const response = new MockExpressResponse({
       request: local_req,
     })
-    // @ts-ignore
-    await renderer.render(local_req, response)
+    console.log({ renderer })
+    if (typeof renderer.render === 'function') {
+      await renderer.render(local_req, response)
+    } else if (typeof renderer.default === 'function') {
+      await renderer.default(local_req, response)
+      console.log(response)
+    } else {
+      throw new Error(`NextJS renderer doesn't export 'render' or 'default'`)
+    }
     // @ts-ignore
     return new Response(response._getString(), {
       status: response.statusCode,
