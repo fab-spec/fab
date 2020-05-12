@@ -16,9 +16,9 @@ const TopBar = styled.div`
 
 export const Header = () => (
   <TopBar>
-    The FAB project is gearing up for a v1.0 release in the next few days. This
-    documentation may be in flux.
+    FAB v1.0 Release Candidate 1 has just been released!
     <br />
-    Follow <a href="https://twitter.com/fab_spec">@fab_spec</a> on Twitter for updates.
+    Please try it out, and follow <a href="https://twitter.com/fab_spec">@fab_spec</a> on
+    Twitter for updates.
   </TopBar>
 )
