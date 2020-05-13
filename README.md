@@ -25,10 +25,6 @@ They **unify static sites, single page applications (SPAs), server-side renderin
   </a>
 </h5>
 
-<h5 align="center">
-    <a href="https://youtu.be/yIiGBU10SH8">FABs explained in 11 minutes</a>
-</h5>
-
 <!-- VIDEO_END -->
 
 > 👉 **Want to get started?** Head to [fab.dev/guides/getting-started](https://fab.dev/guides/getting-started) to start building your own FABs, or read on for more information about the project.
