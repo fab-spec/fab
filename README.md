@@ -13,9 +13,19 @@ Frontend Application Bundles (💎 FABs) are a **bundle format for frontend appl
 
 They **unify static sites, single page applications (SPAs), server-side rendering (SSR) & server-side logic** in a single format, one that is universally compatible with and **easy to deploy to a wide range of hosting providers**, even your own infrastructure!
 
+<!-- VIDEO_START -->
+
+<h4 align="center">
+    <a href="https://youtu.be/yIiGBU10SH8">👉 WATCH: FABs explained in 11 minutes</a>
+</h4>
+
 <h5 align="center">
+  <a href="https://youtu.be/yIiGBU10SH8">
   <img width="600px" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/80478903-1ddd9b80-8946-11ea-8199-23468fb1f18f.png"/>
+  </a>
 </h5>
+
+<!-- VIDEO_END -->
 
 > 👉 **Want to get started?** Head to [fab.dev/guides/getting-started](https://fab.dev/guides/getting-started) to start building your own FABs, or read on for more information about the project.
 
