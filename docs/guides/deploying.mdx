@@ -6,36 +6,29 @@ menu: Guides
 
 # Deploying FABs
 
-## "Anywhere that can run JS"
+There are two ways to deploy FABs:
 
-Because FABs are pure JavaScript, not NodeJS, they have no dependencies on a filesystem or any other operating-system-level APIs (which is why they can be a bit complex to build!), but it means they're portable in a totally new way.
+* **Manually**, by adding a `deploy` section to your `fab.config.json5` and calling `fab deploy fab.zip` on the command line.
+* **Automatically**, by using a cloud-based service such as [Linc](https://linc.sh).
 
-This means they can be deployed to:
+> 👉 Read more about the [advantages of Automatic Deploys](/kb/automatic-deploys), or read on for manual configuration instructions.
 
-* Cloudflare Workers
-* Amazon Lambda/Lambda@Edge
-* Now.sh
-* Heroku
-* Any other "serverless" platform
-* Anywhere that can run Docker
-* Anywhere that can run NodeJS
+## Assets vs Server hosting
 
-But they cannot be deployed to popular static hosts like:
+FABs are [a combination of a server file and an assets directory](/kb/fab-structure), and while some hosts (like the NodeJS-based `@fab/server`) are capable of serving both, in practice it can be advantageous to have the stored separately.
 
-* Amazon S3
-* Netlify*
+For instance, you typically only have one "version" of your FAB deployed at once, i.e. one `server.js` file online at any one time, but assets from old releases may still need to be accessed. Also, since assets are guaranteed to be fingerprinted they can, and are, served with `cache-control: immutable`, meaning that they're readily cached at the edge using a CDN, meaning that the performance requirements of the hosting service itself is quite different.
 
-> \* Netlify is technically possible, but currently untested & performance may not be acceptable.
+With that in mind, these are the currently-supported hosting platforms:
 
-## Implementation status
+## AWS S3
 
-| Platform  | Proof-of-concept | [Linc.sh](https://linc.sh) deployer  | Open-source |
-| ------------- | ------------- | ------------- | ------------- |
-| Cloudflare Workers  | ✅  | ✅  | ✅  |
-| Amazon Lambda@Edge  | ✅  | ✅  | ❌  |
-| Amazon Lambda  | ✅  | ❌  | ❌  |
-| Now.sh  | ✅  | ❌  | ❌  |
-| Heroku  | ✅  | ❌  | ❌  |
-| Docker  | ✅  | ❌  | ❌  |
+AWS S3 is a perfect choice for your asset hosts, since it's virtually unlimited and extremely cost-effective, and can be set up for public, read-only access, with the FAB server sitting in front of it.
 
-At the moment, most focus has been on targeting [Cloudflare workers](https://workers.cloudflare.com/) as they're the most restrictive (i.e. if it works there, it'll work anywhere), but also extremely highly-performant at a low cost. For some platforms, [Linc](https://linc.sh), the FAB-native CI/CD+ pipeline & the primary sponsor of FAB development, can write a custom releaser for the platforms that their customers are using, which will then make their way to a full open-source release.
+> 👉 In fact, S3 is so good it's currently the _only_ asset hosting option, until [this issue](https://github.com/fab-spec/fab/pull/113) is resolved to use Cloudflare KV store for assets.
+
+## Cloudflare Workers
+
+
+
+## Lambda@Edge
