@@ -15,8 +15,14 @@ They **unify static sites, single page applications (SPAs), server-side renderin
 
 <!-- VIDEO_START -->
 
+<h4 align="center">
+    <a href="https://youtu.be/yIiGBU10SH8">👉 WATCH: FABs explained in 11 minutes</a>
+</h4>
+
 <h5 align="center">
+  <a href="https://youtu.be/yIiGBU10SH8">
   <img width="600px" alt="FAB Diagram" src="https://user-images.githubusercontent.com/23264/80478903-1ddd9b80-8946-11ea-8199-23468fb1f18f.png"/>
+  </a>
 </h5>
 
 <h5 align="center">
