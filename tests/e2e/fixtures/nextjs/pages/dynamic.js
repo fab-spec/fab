@@ -1,6 +1,5 @@
 import React from 'react'
 import Head from 'next/head'
-import fetch from 'cross-fetch'
 
 const Dynamic = (props) => (
   <div>
@@ -52,14 +51,12 @@ const Dynamic = (props) => (
 
 Dynamic.getInitialProps = async () => {
   const geo = { city: 'dunno', regionName: 'no idea', country: 'nup, not even that' }
-  try {
-    await Promise.race([
-      new Promise((res) => setTimeout(res, 1000)),
-      fetch('http://ip-api.com/json')
-        .then((r) => r.json())
-        .then((json) => Object.assign(geo, json)),
-    ])
-  } catch (e) {}
+  await Promise.race([
+    new Promise((res) => setTimeout(res, 1000)),
+    fetch('http://ip-api.com/json')
+      .then((r) => r.json())
+      .then((json) => Object.assign(geo, json)),
+  ])
   return { rando: Math.random(), ...geo }
 }
 
