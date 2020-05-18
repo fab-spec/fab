@@ -41,6 +41,10 @@ const Content = styled.div`
     }
   }
 
+  ol {
+    padding-left: 1.5rem;
+  }
+
   p,
   li {
     line-height: 1.5;
@@ -82,6 +86,10 @@ const Content = styled.div`
       width: 100%;
       height: 100%;
     }
+  }
+
+  hr {
+    margin: 2rem;
   }
 `
 

@@ -10,16 +10,16 @@ One of the best use-cases for FABs, once your project [can produce a working FAB
 
 > 👉 While some of these examples may be possible with "static" hosting providers, that always requires [vendor-specific configuration](#an-aside-static-hosting-isnt-really-static). FAB offers a different approach, since server-side JavaScript is always available, we can use **code over configuration**:
 
-## Proxying an API
+## Proxying a simple API
 
 It can be quite convenient to proxy your backend API behind a route on your frontend, e.g. wiring up `https://example.com/api` connecting behind-the-scenes to `https://api.example.com`. This can help with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) concerns or simply to allow your frontend to freely connect to different backends. We can achieve this by connecting to the FAB's (server-side) Router:
 
 ```js
 // proxy-api.js
 export default ({ Router }) => {
-  Router.on('/api/:route(.*)', ({ params }) =>
-    fetch(`https://api.example.com/${params.route}`)
-  )
+  Router.on('/api/:route(.*)', ({ params }) => {
+    return fetch(`https://api.example.com/${params.route}`)
+  })
 }
 ```
 
@@ -37,6 +37,44 @@ Adding this to your `fab.config.json5` to include it in your build:
 ```
 
 > 👉 Further examples on this page will omit this step, read the [Plugins](/kb/plugins) page for full details about configuring your `plugins` section of your configuration.
+
+## Proxying an authenticated GraphQL API
+
+The above example is great if your API mostly sends `GET` requests, without authentication, but for a real-world use case like a GraphQL endpoint you need to forward the incoming request's `method` of `POST`, as well as headers like `Authentication`. However, you can't simply forward _all_ the headers along, since headers like `host` must match the destination, not the FAB's public URL.
+
+This is all neatly captured by FAB's server-side API:
+
+```js
+export default function ({ Router }) {
+  // Match any URL starting with /graphql
+  Router.on('/graphql(.*)', ({ settings, url, request }) => {
+    // Clone the incoming request so we can edit it
+    const forwarded_request = new Request(request)
+    // Change the one header we need to in this case, reading from `settings`
+    forwarded_request.headers.set('host', settings.API_HOST);
+    // Build up our URL to proxy to using our API_HOST and our original request's pathname
+    const forwarded_url = `https://${settings.API_HOST}${url.pathname}`;
+    // Create a new Request with the new URL and our updated headers
+    return fetch(new Request(forwarded_url, forwarded_request));
+  });
+}
+```
+
+This makes use of FAB's in-built support for [Settings](/kb/settings), that let you centralise your config into your `fab.config.json5`:
+
+```json5
+{
+  // ...
+  settings: {
+    'production': {
+      API_HOST: 'api.example.com'
+      // ...
+    },
+    // ...
+  },
+  // ...
+}
+```
 
 ## Typescript Components
 
