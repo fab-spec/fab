@@ -83,6 +83,10 @@ As such, you're welcome to put as much code that you consider "backend" into you
 
 > This pattern is also called Backend for Frontend or [BFFs](https://samnewman.io/patterns/architectural/bff/), but I prefer considering it part of your frontend, just one that runs outside your client.
 
+So, in answer to the original question, **FABs are all about "frontend" code because _that's the bit that needs to go faster_**. If you have truly backend-related, model-driven code, you don't want it changing as fast as your frontend. If you try to put them together, your backend is just going to slow your frontend down.
+
+So build FABs, [preview every commit](https://linc.sh), and go fast!
+
 ### A thought experiment to finish
 
 > This is something I plan to implement as an example, and I'll replace this with a link to that once it's done, but for now a description will have to suffice.
