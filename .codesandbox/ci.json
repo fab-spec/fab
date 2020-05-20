@@ -5,7 +5,8 @@
     "packages/core",
     "packages/input-static",
     "packages/plugin-rewire-assets",
-    "packages/plugin-render-html"
+    "packages/plugin-render-html",
+    "packages/deployer-aws-lambda"
   ],
   "buildCommand": "build:codesandbox",
   "sandboxes": ["dazzling-cray-t0ru6"]
