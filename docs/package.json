@@ -33,6 +33,9 @@
     "url": "https://github.com/fab-spec/fab.git"
   },
   "dependencies": {
-    "@fab/plugin-add-fab-id": "^0.1.0"
+    "@fab/plugin-add-fab-id": "^0.1.0",
+    "@types/react-dom": "^16.9.8",
+    "nodemon": "^2.0.4",
+    "react-notion": "^0.5.4"
   }
 }

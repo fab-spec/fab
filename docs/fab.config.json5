@@ -4,7 +4,8 @@
     "@fab/input-static": {
       dir: ".docz/dist"
     },
-    './redirects.js': {},
+    './server/redirects.ts': {},
+    './server/blog.ts': {},
     "@fab/plugin-render-html": {
       fallback: "/index.html"
     },
