@@ -1,7 +1,7 @@
 let handleOutsideClick
 
 export default {
-  bind(el, binding, vnode) {
+  bind (el, binding, vnode) {
     // Here's the click/touchstart handler
     // (it is registered below)
     handleOutsideClick = (e) => {
@@ -38,10 +38,10 @@ export default {
     document.addEventListener('touchstart', handleOutsideClick)
   },
 
-  unbind() {
+  unbind () {
     // If the element that has v-closable is removed, then
     // unbind click/touchstart listeners from the whole page
     document.removeEventListener('click', handleOutsideClick)
     document.removeEventListener('touchstart', handleOutsideClick)
-  },
+  }
 }

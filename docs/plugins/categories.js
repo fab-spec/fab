@@ -1,4 +1,4 @@
-export default async function({ store, app }) {
+export default async function ({ store, app }) {
   if (process.server) {
     await store.dispatch('fetchCategories')
   }

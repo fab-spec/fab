@@ -1,10 +1,10 @@
 import Vue from 'vue'
 
 /*
- ** Import all components from `base/` and `icon/` directories
- ** Learn more on require.context() on https://webpack.js.org/guides/dependency-management/#requirecontext
- */
-function importComponents(r) {
+** Import all components from `base/` and `icon/` directories
+** Learn more on require.context() on https://webpack.js.org/guides/dependency-management/#requirecontext
+*/
+function importComponents (r) {
   r.keys().forEach((filename) => {
     let Component = r(filename)
 

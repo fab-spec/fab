@@ -1,13 +1,11 @@
 <template>
   <div class="flex flex-wrap-reverse suka">
-    <div
-      class="w-full xl:w-3/4 py-4 lg:pt-8 lg:pb-4 dark:border-gray-800"
-      :class="{ 'xl:border-r': doc.toc && doc.toc.length }">
-      <article class="lg:px-8">
+    <div class="w-full xl:w-3/4 py-4 md:pt-8 md:pb-4 dark:border-gray-800">
+      <article class="md:px-8">
         <nuxt-content :document="doc" />
       </article>
       <EditOnGithub :document="doc" />
-      <ArticlePrevNext :prev="prev" :next="next" class="lg:px-8 mt-4" />
+      <ArticlePrevNext :prev="prev" :next="next" class="md:px-8 mt-4" />
     </div>
     <ArticleToc
       class="hidden xl:block"
@@ -220,21 +218,20 @@ export default {
     }
   }
 
-
-& .inline-video {
-  @apply mt-8 mb-8;
-  width: 100%;
-  padding-top: 56.25%;
-  position: relative;
-
-  & > iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
+  & .inline-video {
+    @apply mt-8 mb-8;
     width: 100%;
-    height: 100%;
+    padding-top: 56.25%;
+    position: relative;
+
+    & > iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
   }
-}
 }
 
 .nuxt-content-highlight {

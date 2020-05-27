@@ -1,17 +1,17 @@
 <template>
   <div class="pt-16">
     <Navbar />
-    <main class="container mx-auto px-4 lg:px-8">
+    <main class="container mx-auto px-4 md:px-8">
       <div class="flex flex-wrap relative">
         <aside
-          class="h-screen w-full lg:w-1/5 fixed lg:sticky top-0 left-0 bottom-0 pt-16 lg:-mt-16 lg:block bg-white dark:bg-gray-900 lg:bg-transparent z-30 lg:border-r dark:border-gray-800"
+          class="h-screen w-full md:w-1/5 fixed md:sticky top-0 left-0 bottom-0 pt-16 md:-mt-16 md:block bg-white dark:bg-gray-900 md:bg-transparent z-30 md:border-r"
           :class="{ block: menu, hidden: !menu }">
           <div class="container mx-auto overflow-auto h-full">
             <div
-              class="lg:hidden flex-1 flex justify-center px-4 mt-8 mb-4 w-full">
+              class="md:hidden flex-1 flex justify-center px-4 mt-8 mb-4 w-full">
               <SearchInput />
             </div>
-            <ul class="lg:pl-0 p-4 lg:py-8 lg:pr-8">
+            <ul class="md:pl-0 p-4 md:py-8 md:pr-8">
               <li
                 v-for="(docs, category) in categories"
                 :key="category"
@@ -36,8 +36,8 @@
                 </template>
               </li>
             </ul>
-            <h3 class="lg:hidden aside-title px-4">More</h3>
-            <div class="lg:hidden flex items-center px-4">
+            <h3 class="md:hidden aside-title px-4">More</h3>
+            <div class="md:hidden flex items-center px-4">
               <a
                 href="https://twitter.com/nuxt_js"
                 target="_blank"
@@ -61,10 +61,9 @@
             </div>
           </div>
         </aside>
-        <Nuxt class="w-full lg:w-4/5" />
+        <Nuxt class="w-full md:w-4/5" />
       </div>
     </main>
-    <!--    <TheFooter />-->
   </div>
 </template>
 
@@ -82,7 +81,7 @@ export default {
   computed: {
     bodyClass() {
       return this.$store.state.menu.open
-        ? ['h-screen lg:h-auto overflow-y-hidden lg:overflow-y-auto']
+        ? ['h-screen md:h-auto overflow-y-hidden md:overflow-y-auto']
         : []
     },
     menu: {
@@ -99,12 +98,10 @@ export default {
   },
   methods: {
     toLink(slug) {
-      //console.log({slug})
-      //console.log(this.localePath({ name: 'slug', params: { slug } }))
       if (slug === 'index') {
-        return '/' //this.localePath('slug')
+        return '/'
       }
-      return '/' + slug //this.localePath({ name: 'slug', params: { slug } })
+      return '/' + slug
     },
   },
   head() {
@@ -130,7 +127,7 @@ export default {
 .dark-mode .aside-title {
   @apply text-gray-600;
 }
-@screen lg {
+@screen md {
   .aside-title {
     @apply mb-2 text-xs;
   }

@@ -35,12 +35,10 @@ export default {
   },
   methods: {
     toLink(slug) {
-      //console.log({slug})
-      //console.log(this.localePath({ name: 'slug', params: { slug } }))
       if (slug === 'index') {
-        return '/' //this.localePath('slug')
+        return '/'
       }
-      return '/' + slug //this.localePath({ name: 'slug', params: { slug } })
+      return '/' + slug
     },
   }
 }

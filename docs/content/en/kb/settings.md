@@ -16,7 +16,7 @@ The `settings` part of you [FAB config](/kb/configuration) is used to provide bo
     production: {
       API_URL: 'https://api.example.com/graphql',
       DEFAULT_LANG: 'en-GB',
-      _SECRET_KEY: 'abcd1234',
+      _SECRET_KEY: 'abcd1234'
     },
     staging: {
       API_URL: 'https://staging.example.com/graphql',

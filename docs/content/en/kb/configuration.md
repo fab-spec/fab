@@ -39,9 +39,9 @@ FAB builds use a `fab.config.json5` file:
   deploy: {
     'deploy-provider-name': {
       setting: 'value',
-      secret: '@ENV_VAR',
-    },
-  },
+      secret: '@ENV_VAR'
+    }
+  }
 }
 ```
 

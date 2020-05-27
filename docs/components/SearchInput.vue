@@ -6,7 +6,7 @@
       @keydown.up="decrement"
       @keydown.enter="go">
       <label for="search" class="sr-only">Search</label>
-      <div class="relative">
+      <div class="relative transition-all duration-100">
         <div
           class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <IconSearch class="h-5 w-5 text-gray-500" />
@@ -15,7 +15,7 @@
           id="search"
           ref="search"
           v-model="q"
-          class="block w-full pl-10 pr-3 py-2 truncate leading-5 placeholder-gray-500 border border-transparent text-gray-700 dark:text-white dark-focus:text-white focus:border-gray-300 dark-focus:border-gray-700 rounded-md focus:outline-none focus:bg-white dark-focus:bg-gray-900 bg-gray-200 dark:bg-gray-800"
+          class="block bg-opacity-50 hover:bg-opacity-100 transition-all duration-100 focus:bg-opacity-100 w-full pl-10 pr-3 py-2 truncate leading-5 placeholder-gray-100 border border-transparent text-gray-700 dark:text-white dark-focus:text-white focus:border-gray-300 rounded-md focus:outline-none focus:bg-white bg-gray-800"
           :class="{ 'rounded-b-none': focus && results.length }"
           :placeholder="$t('search.placeholder')"
           type="search"
@@ -26,7 +26,7 @@
     </div>
     <ul
       v-show="focus && (searching || results.length)"
-      class="z-10 absolute w-full flex-1 top-0 bg-white dark:bg-gray-900 rounded-md border border-gray-300 dark:border-gray-700 overflow-hidden"
+      class="z-10 absolute w-full flex-1 top-0 bg-white text-gray-700 rounded-md border border-gray-300 dark:border-gray-700 overflow-hidden"
       :class="{ 'rounded-t-none': focus && results.length }"
       style="margin-top: 37px">
       <li v-if="searching && !results.length" class="px-4 py-2">
@@ -38,14 +38,7 @@
         @mouseenter="focusIndex = index"
         @mousedown="go">
         <NuxtLink
-          :to="
-            localePath({
-              name: 'index-slug',
-              params: {
-                slug: result.slug !== 'index' ? result.slug : undefined,
-              },
-            })
-          "
+          :to="`/${result.slug !== 'index' ? result.slug : ''}`"
           class="flex px-4 py-2 items-center leading-5 transition ease-in-out duration-150"
           :class="{
             'text-blue-600 bg-gray-200 dark:bg-gray-800': focusIndex === index,
@@ -129,7 +122,7 @@ export default {
       this.$router.push(path)
       // Unfocus the input and reset the query.
       this.$refs.search.blur()
-      this.q = ''
+      //this.q = ''
     },
   },
 }
