@@ -52,6 +52,7 @@ export default {
     '@/plugins/vue-scrollactive',
     '@/plugins/components',
     '@/plugins/menu.client',
+    '@/plugins/analytics.client',
   ],
   /*
    ** Give routes to static generation
