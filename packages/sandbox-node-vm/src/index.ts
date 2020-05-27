@@ -1,6 +1,8 @@
 import vm from 'vm'
 import * as fetch from 'cross-fetch'
 import { FabSpecExports, FetchApi } from '@fab/core'
+// @ts-ignore
+import { ReadableStream } from 'web-streams-ponyfill'
 
 export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports> => {
   const sandbox = {
@@ -9,6 +11,7 @@ export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports>
     Response: fetch.Response,
     Headers: fetch.Headers,
     URL: URL,
+    ReadableStream,
     console: {
       log: console.log,
       error: console.error,
