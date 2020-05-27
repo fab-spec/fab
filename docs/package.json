@@ -1,38 +1,39 @@
 {
-  "name": "@fab/docs",
+  "name": "nuxt-content-docs",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "description": "Docs for @nuxt/content",
+  "author": "NuxtJS",
   "scripts": {
-    "build:fab": "npm run docz:build && npm run fab:build",
-    "clean": "rm -rf readmes",
-    "docz:build": "npm run clean && node scripts/build.js && docz build",
-    "docz:dev": "npm run clean && concurrently \"BROWSER=none docz dev --port=2999\" \"node scripts/watch.js\"",
-    "docz:serve": "docz build && docz serve",
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "build:fab": "npm run build && npm run export && npm run fab:build",
     "fab:build": "fab build",
     "fab:serve": "fab serve fab.zip",
-    "fab:deploy": "fab deploy fab.zip"
-  },
-  "devDependencies": {
-    "@fab/actions": "^0.2.0",
-    "@fab/cli": "^0.2.0",
-    "@fab/input-static": "^0.2.0",
-    "@fab/plugin-render-html": "^0.2.0",
-    "@fab/plugin-rewire-assets": "^0.2.0",
-    "@fab/server": "^0.2.0",
-    "chokidar": "^3.3.1",
-    "concurrently": "^5.0.2",
-    "docz": "^2.2.0",
-    "fast-glob": "^3.1.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-helmet-async": "^1.0.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/fab-spec/fab.git"
+    "start": "nuxt start",
+    "export": "nuxt export",
+    "serve": "nuxt serve"
   },
   "dependencies": {
-    "@fab/plugin-add-fab-id": "^0.1.0"
+    "@nuxt/content": "^1.0.0",
+    "@nuxtjs/pwa": "^3.0.0-beta.20",
+    "lodash.groupby": "^4.6.0",
+    "nuxt-edge": "^2.13.0-26500336.1e53e38f",
+    "nuxt-i18n": "^6.11.1",
+    "prettier": "https://github.com/adamJLev/prettier#a0cd45b4cbea2039941f5cea0dccacf506b0fd2e",
+    "prism-themes": "^1.4.0",
+    "tailwindcss": "^1.4.6",
+    "vue-scrollactive": "^0.9.3"
+  },
+  "devDependencies": {
+    "@fab/actions": "^1.0.0-rc.1",
+    "@fab/cli": "^1.0.0-rc.1",
+    "@fab/input-static": "^1.0.0-rc.1",
+    "@fab/plugin-render-html": "^1.0.0-rc.1",
+    "@fab/plugin-rewire-assets": "^1.0.0-rc.1",
+    "@fab/server": "^1.0.0-rc.1",
+    "@nuxtjs/color-mode": "^1.0.0",
+    "@nuxtjs/tailwindcss": "^2.0.0",
+    "tailwindcss-dark-mode": "^1.1.4",
+    "vue-multiselect": "^2.1.6"
   }
 }
