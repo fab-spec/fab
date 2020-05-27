@@ -38,6 +38,13 @@ export default {
       { hid: 'twitter:image:alt', name: 'twitter:image:alt', content: 'The FAB Project' },
     ],
     link: [{ rel: 'icon', type: 'image/png', href: '/favicon-32x32.png' }],
+    script: [
+      {
+        'data-goatcounter': 'https://fab.goatcounter.com/count',
+        async: true,
+        src: 'https://gc.zgo.at/count.js',
+      },
+    ],
   },
   /*
    ** Customize the progress-bar color
