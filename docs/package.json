@@ -1,14 +1,15 @@
 {
-  "name": "nuxt-content-docs",
+  "name": "@fab/docs",
   "version": "1.0.0",
-  "description": "Docs for @nuxt/content",
-  "author": "NuxtJS",
+  "description": "Docs for the FAB project",
+  "license": "MIT",
   "scripts": {
-    "dev": "nuxt",
+    "dev": "nuxt --port=2999",
     "build": "nuxt build",
     "build:fab": "npm run build && npm run export && npm run fab:build",
     "fab:build": "fab build",
     "fab:serve": "fab serve fab.zip",
+    "fab:deploy": "fab deploy fab.zip",
     "start": "nuxt start",
     "export": "nuxt export",
     "serve": "nuxt serve"
