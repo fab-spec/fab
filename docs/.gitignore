@@ -3,3 +3,5 @@ fab.zip
 
 /.fab
 .env
+.nuxt
+dist
