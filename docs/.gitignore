@@ -5,3 +5,4 @@ fab.zip
 .env
 .nuxt
 dist
+/static/sw.js
