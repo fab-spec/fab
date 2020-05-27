@@ -40,10 +40,10 @@ export const getDocs = async (that, filter_fn) => {
       if (subdir) {
         dir_docs.forEach((doc) => (doc.slug = `${subdir}/${doc.slug}`))
       }
-      console.log({ dir_docs })
+      //console.log({ dir_docs })
       docs.push(...dir_docs)
     })
   )
-  console.log({ docs })
+  //console.log({ docs })
   return docs
 }
