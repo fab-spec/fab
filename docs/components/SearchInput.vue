@@ -15,7 +15,7 @@
           id="search"
           ref="search"
           v-model="q"
-          class="block bg-opacity-50 hover:bg-opacity-100 transition-all duration-100 focus:bg-opacity-100 w-full pl-10 pr-3 py-2 truncate leading-5 placeholder-gray-100 border border-transparent text-gray-700 dark:text-white dark-focus:text-white focus:border-gray-300 rounded-md focus:outline-none focus:bg-white bg-gray-800"
+          class="search-input block md:bg-opacity-75 hover:bg-opacity-100 transition-all duration-100 focus:bg-opacity-100 w-full pl-10 pr-3 py-2 truncate leading-5 placeholder-gray-900 md:placeholder-gray-100 border border-transparent text-gray-700 focus:border-gray-300 rounded-md focus:outline-none focus:bg-white bg-gray-100 md:bg-gray-800"
           :class="{ 'rounded-b-none': focus && results.length }"
           :placeholder="$t('search.placeholder')"
           type="search"
@@ -127,3 +127,9 @@ export default {
   },
 }
 </script>
+
+<style type="postcss">
+.search-input:focus::placeholder {
+  @apply text-gray-900;
+}
+</style>

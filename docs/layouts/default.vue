@@ -27,7 +27,7 @@
                     <li v-for="doc of docs" :key="doc.slug">
                       <NuxtLink
                         :to="toLink(doc.slug)"
-                        class="px-2 rounded font-medium py-1 block text-gray-600 dark:text-gray-500 hover:text-gray-800 dark-hover:text-gray-100"
+                        class="leading-snug lg:px-2 text-sm lg:text-base rounded font-medium py-1 block text-gray-600 dark:text-gray-500 hover:text-gray-700 dark-hover:text-gray-100"
                         exact-active-class="text-blue-600 bg-blue-100 hover:text-blue-600 dark:text-green-200 dark:bg-green-900 dark-hover:text-green-200">
                         {{ doc.title }}
                       </NuxtLink>
@@ -36,7 +36,6 @@
                 </template>
               </li>
             </ul>
-            <h3 class="md:hidden aside-title px-4">More</h3>
             <div class="md:hidden flex items-center px-4">
               <a
                 href="https://twitter.com/nuxt_js"
@@ -57,7 +56,6 @@
                 class="hover:text-blue-600 mr-4">
                 <icon-github class="w-6 h-6" />
               </a>
-              <ColorSwitcher />
             </div>
           </div>
         </aside>
@@ -122,7 +120,7 @@ export default {
 
 <style type="postcss">
 .aside-title {
-  @apply mb-3 text-gray-500 uppercase tracking-wide font-bold text-sm;
+  @apply mb-3 text-gray-700 uppercase tracking-wide font-bold text-sm;
 }
 .dark-mode .aside-title {
   @apply text-gray-600;
@@ -130,6 +128,11 @@ export default {
 @screen md {
   .aside-title {
     @apply mb-2 text-xs;
+  }
+}
+@screen lg {
+  .aside-title {
+    @apply text-gray-500;
   }
 }
 </style>
