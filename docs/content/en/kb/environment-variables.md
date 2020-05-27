@@ -10,7 +10,7 @@ position: 311
 
 - **Different API URLs for staging/testing/production backends**
 - **API keys for third-party services might be different<br/>**
-(switching between testing/live payment integrations, for instance)
+  (switching between testing/live payment integrations, for instance)
 - **Features may be turned on or off depending on environment**
 
 To support this, every time your FAB is executed, the current environment variables are injected. This is the `render` method at the heart of a FAB:

@@ -28,7 +28,6 @@ They **unify static sites, single page applications (SPAs), server-side renderin
   <iframe src="https://www.youtube.com/embed/yIiGBU10SH8?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
   </iframe>
 </div>
-    
 
 <base-alert type="info">
 

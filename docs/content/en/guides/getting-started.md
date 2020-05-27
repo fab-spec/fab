@@ -19,8 +19,8 @@ npx fab init
 
 The following frameworks are supported:
 
-* Create React App
-* NextJS 9+
+- Create React App
+- NextJS 9+
 
 Anything else will be treated as a "static" build i.e. a project with no server-side component. It'll look for a command like `npm run build` to generate a directory like `build`, `dist` or `public`, which should cover everything from Angular to Vue to Gatsby. But as always, [leave an issue](https://github.com/fab-spec/fab/issues) if something you think _should_ happen _doesn't_ happen.
 
@@ -59,4 +59,3 @@ fab deploy
 ```
 
 Will prompt you for your Cloudflare workers & Amazon S3 info and deploy your FAB!
-

@@ -26,9 +26,9 @@ yarn docz:dev
 
 If you're looking to add any code/fix bugs in the core plugins, the most important thing is to _extend the E2E tests to cover them_. There's quite a few unit tests there, and they have definitely helped, but given the nature of the FAB project, it makes more sense to do exactly what a user would do:
 
-* Take a project
-* Configure it for FABs
-* Serve the FAB and expect some result
+- Take a project
+- Configure it for FABs
+- Serve the FAB and expect some result
 
 ### How to run them
 

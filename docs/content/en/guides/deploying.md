@@ -33,16 +33,16 @@ To configure S3 bucket creation & uploading, add the following section to your `
 ```json5
 {
   //...
-  "deploy": {
+  deploy: {
     //...
-    "aws-s3": {
-      access_key: "@S3_ACCESS_KEY",
-      secret_key: "@S3_SECRET_KEY",
-      region: "us-east-1",
-      bucket_name: "fab-assets-your-project-name"
-    }
+    'aws-s3': {
+      access_key: '@S3_ACCESS_KEY',
+      secret_key: '@S3_SECRET_KEY',
+      region: 'us-east-1',
+      bucket_name: 'fab-assets-your-project-name',
+    },
     //...
-  }
+  },
 }
 ```
 
@@ -50,20 +50,15 @@ The two values that you'll need are an `ACCESS KEY` and `SECRET KEY` for your AW
 
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "CreateFabAssetBuckets",
-            "Action": [
-                "s3:*"
-            ],
-            "Effect": "Allow",
-            "Resource": [
-                "arn:aws:s3:::fab-assets-*",
-                "arn:aws:s3:::fab-assets-*/*"
-            ]
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CreateFabAssetBuckets",
+      "Action": ["s3:*"],
+      "Effect": "Allow",
+      "Resource": ["arn:aws:s3:::fab-assets-*", "arn:aws:s3:::fab-assets-*/*"]
+    }
+  ]
 }
 ```
 
@@ -80,16 +75,16 @@ When you sign up for a Cloudflare account, you can reserve a namespace on the `.
 ```json5
 {
   //...
-  "deploy": {
+  deploy: {
     //...
-    "cf-workers": {
-      account_id: "@CF_WORKERS_ACCOUNT_ID",
-      api_token: "@CF_WORKERS_API_TOKEN",
+    'cf-workers': {
+      account_id: '@CF_WORKERS_ACCOUNT_ID',
+      api_token: '@CF_WORKERS_API_TOKEN',
       workers_dev: true,
-      script_name: "your-app-name"
+      script_name: 'your-app-name',
     },
     //...
-  }
+  },
 }
 ```
 
@@ -102,22 +97,22 @@ The only additional requirement is the `zone_id` for your domain, and to specify
 ```json5
 {
   //...
-  "deploy": {
+  deploy: {
     //...
-    "cf-workers": {
-      account_id: "@CF_WORKERS_ACCOUNT_ID",
-      api_token: "@CF_WORKERS_API_TOKEN",
+    'cf-workers': {
+      account_id: '@CF_WORKERS_ACCOUNT_ID',
+      api_token: '@CF_WORKERS_API_TOKEN',
       workers_dev: false,
-      script_name: "unused-but-still-must-be-unique",
-      zone_id: "@FAB_DEV_ZONE_ID",
-      route: "https://your.domain.com/*"
+      script_name: 'unused-but-still-must-be-unique',
+      zone_id: '@FAB_DEV_ZONE_ID',
+      route: 'https://your.domain.com/*',
     },
     //...
-  }
+  },
 }
 ```
 
-Your `zone_id` and `route` must match. For more information about gathering this data, see  https://linc.sh/docs/cloudflare-workers.
+Your `zone_id` and `route` must match. For more information about gathering this data, see https://linc.sh/docs/cloudflare-workers.
 
 ## Lambda@Edge
 
@@ -128,17 +123,17 @@ You require the following config:
 ```json5
 {
   //...
-  "deploy": {
+  deploy: {
     //...
     'aws-lambda-edge': {
       access_key: '@AWS_LAMBDA_ACCESS_KEY',
       cf_distribution_id: '@AWS_CF_DISTRIBUTION_ID',
       lambda_arn: '@AWS_LAMBDA_ARN',
       secret_key: '@AWS_LAMBDA_SECRET_KEY',
-      region: 'us-east-1'
+      region: 'us-east-1',
     },
     //...
-  }
+  },
 }
 ```
 

@@ -44,18 +44,18 @@ The above example is great if your API mostly sends `GET` requests, without auth
 This is all neatly captured by FAB's server-side API:
 
 ```js
-export default function ({ Router }) {
+export default function({ Router }) {
   // Match any URL starting with /graphql
   Router.on('/graphql(.*)', ({ settings, url, request }) => {
     // Clone the incoming request so we can edit it
     const forwarded_request = new Request(request)
     // Change the one header we need to in this case, reading from `settings`
-    forwarded_request.headers.set('host', settings.API_HOST);
+    forwarded_request.headers.set('host', settings.API_HOST)
     // Build up our URL to proxy to using our API_HOST and our original request's pathname
-    const forwarded_url = `https://${settings.API_HOST}${url.pathname}`;
+    const forwarded_url = `https://${settings.API_HOST}${url.pathname}`
     // Create a new Request with the new URL and our updated headers
-    return fetch(new Request(forwarded_url, forwarded_request));
-  });
+    return fetch(new Request(forwarded_url, forwarded_request))
+  })
 }
 ```
 
@@ -65,8 +65,8 @@ This makes use of FAB's in-built support for [Settings](/kb/settings), that let 
 {
   // ...
   settings: {
-    'production': {
-      API_HOST: 'api.example.com'
+    production: {
+      API_HOST: 'api.example.com',
       // ...
     },
     // ...

@@ -12,10 +12,10 @@ A FAB server component is a single JS file that is compiled using [Rollup](https
 
 Firstly, some background. Server-side JavaScript has been pretty much synonymous with NodeJS for its entire history (Node, after all, effectively invented the concept). As a result, many of the most popular server-side JavaScript _packages_ have many ingrained assumptions about _running in a full NodeJS environment_, for example:
 
-* Access to `fs` module for reading files off the filesystem, or creating new ones
-* Direct access to `http` for opening servers or making requests
-* Calling `require` programmatically
-* Using `eval`
+- Access to `fs` module for reading files off the filesystem, or creating new ones
+- Direct access to `http` for opening servers or making requests
+- Calling `require` programmatically
+- Using `eval`
 
 Due to FABs' run-time restrictions (see below), these need to be excluded or shimmed at compile time to make things work. This is an area of ongoing work, but the first positive confirmation that this approach bears fruit is in [`@fab/input-nextjs`](https://github.com/fab-spec/fab/tree/master/packages/input-nextjs).
 
