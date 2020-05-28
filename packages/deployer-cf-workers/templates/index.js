@@ -5,6 +5,26 @@ const server_context = globalThis.__server_context // inlined in packager
 
 const mutableResponse = (response) => new Response(response.body, response)
 
+class ReadableStream {
+  constructor({ start, cancel }) {
+    const { readable, writable } = new TransformStream()
+    console.log(readable)
+    this.readable = readable
+    this.writer = writable.getWriter()
+    this.encoder = new TextEncoder()
+
+    start(this)
+  }
+
+  enqueue(chunk) {
+    this.writer.write(this.encoder.encode(chunk))
+  }
+
+  close() {
+    this.writer.close()
+  }
+}
+
 globalThis.orig_fetch = globalThis.fetch
 globalThis.fetch = (request, init) => {
   const request_url = typeof request === 'string' ? request : request.url
@@ -24,6 +44,18 @@ globalThis.fetch = (request, init) => {
 if (typeof FAB.initialize === 'function') FAB.initialize(server_context)
 
 const handleRequest = async (request, within_loop = false) => {
+  return new Response(
+    new ReadableStream({
+      start(controller) {
+        controller.enqueue('hello there glenby\n')
+        setTimeout(() => {
+          controller.enqueue('me slow!!')
+          controller.close()
+        }, 1000)
+      },
+    }).readable
+  )
+
   console.log({ request })
   console.log(request.url)
   const url = new URL(request.url)
@@ -36,6 +68,7 @@ const handleRequest = async (request, within_loop = false) => {
       settings = await settings
     }
     const result = await FAB.render(request, settings)
+    console.log(result.constructor.name)
     if (result instanceof Request) {
       if (result.url.startsWith('/')) {
         if (!result.url.startsWith('/_assets/')) {
@@ -48,6 +81,13 @@ const handleRequest = async (request, within_loop = false) => {
       } else {
         return await globalThis.orig_fetch(request)
       }
+    }
+
+    console.log(result.body)
+    console.log(result.body && result.body.getReadable)
+    if (result.body && typeof result.body.getReadable === 'function') {
+      console.log('OMG SO CLOSE')
+      return new Response(result.body.getReadable(), result)
     }
     return result
   }
