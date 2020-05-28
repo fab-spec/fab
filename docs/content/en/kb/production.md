@@ -1,0 +1,23 @@
+---
+title: 'Production'
+category: Knowledge Base
+position: 304
+---
+
+# FABs in Production
+
+While FABs have plenty of uses for prototyping & feedback (e.g. https://linc.sh), they're fundamentally designed as a production artefact. This document talks a little about some of the ideas/decisions that have influenced their shape.
+
+## Content-addressable compilation
+
+A FAB can be built anywhere and produce an identical result—that is, for a given set of inputs, the `fab.zip` file that results is byte-for-byte identical no matter when, or on which machine, the compilation takes place. This includes using [deterministic-zip](https://npm.im/deterministic-zip) to strip modification timestamps out of files as they're zipped up, so `fab build` will produce consistent results.
+
+This means that if, after compiling a FAB, it has the same MD5/SHA hash as the currently-deployed FAB, **no new deployment is required**, as the contents are guaranteed to be the same. No more triggering re-deploys when all you've changed is the README.md or the end-to-end tests!
+
+## Production settings baked-in
+
+Following on from this, **anything that changes production must change the FAB**. We achieve this by compiling in the settings in the `settings: { production: {} }` part of the [config](/kb/configuration) into the FAB itself. Changes to other environments do not change the compiled FAB, but can be used at runtime to override the baked-in values. See [settings](/kb/settings) for more information.
+
+## Overrides without recompiling
+
+Any pre-production testing can be performed on a production-ready FAB by injecting overridden environment settings. This means **what you test is what you release**, rather than testing a staging bundle then throwing it away and releasing a production one. See [environments](/kb/environments) for more information.

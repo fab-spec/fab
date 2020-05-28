@@ -48,6 +48,7 @@ export async function putObject(
       Body: body_stream,
       ACL: 'public-read',
       ContentType: content_type,
+      CacheControl: 'public, max-age=31536000, immutable',
     })
     .promise()
 }

@@ -1,15 +1,14 @@
 // For more information, see https://fab.dev/kb/configuration
 {
   plugins: {
-    "@fab/input-static": {
-      dir: ".docz/dist"
+    '@fab/input-static': {
+      dir: 'dist'
     },
     './redirects.js': {},
-    "@fab/plugin-render-html": {
-      fallback: "/index.html"
+    '@fab/plugin-render-html': {
+      fallback: '/index.html'
     },
-    "@fab/plugin-rewire-assets": {},
-    '@fab/plugin-add-fab-id': {},
+    '@fab/plugin-rewire-assets': {}
     // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins
   },
   settings: {
