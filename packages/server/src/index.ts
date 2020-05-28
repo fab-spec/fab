@@ -136,9 +136,24 @@ class Server implements ServerType {
               const values = response_headers[header]
               res.set(header, values.length === 1 ? values[0] : values)
             })
-            const blob = await fetch_res.arrayBuffer()
-            // console.log({response: Buffer.from(blob).toString()})
-            res.send(Buffer.from(blob))
+
+            if (fetch_res.body) {
+              if (typeof fetch_res.body.getReader === 'function') {
+                const reader = fetch_res.body.getReader()
+                let x
+                while ((x = await reader.read())) {
+                  const { done, value } = x
+                  if (done) break
+                  if (value) res.write(value)
+                }
+                res.end()
+              } else {
+                const blob = await fetch_res.arrayBuffer()
+                res.send(Buffer.from(blob))
+              }
+            } else {
+              res.end()
+            }
           }
         } catch (e) {
           console.log('ERROR')
