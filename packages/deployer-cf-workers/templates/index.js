@@ -3,26 +3,29 @@ const ASSETS_URL = globalThis.__assets_url // inlined in packager
 const cache = caches.default
 const server_context = globalThis.__server_context // inlined in packager
 
-globalThis.orig_fetch = globalThis.fetch
-globalThis.fetch = (url, init) => {
-  const request_url = typeof url === 'string' ? url : url.url
-  console.log({ request_url })
+const mutableResponse = (response) => new Response(response.body, response)
 
-  const makeResponseMutable = (response) => new Response(response.body, response)
+globalThis.orig_fetch = globalThis.fetch
+globalThis.fetch = (request, init) => {
+  const request_url = typeof request === 'string' ? request : request.url
 
   if (request_url.startsWith('/')) {
     if (!request_url.startsWith('/_assets/')) {
-      throw new Error('Fetching relative URLs for non-assets is not permitted.')
+      const loopback_url = new Request(`https://loopback${request_url}`, init)
+      return handleRequest(loopback_url).then(mutableResponse)
+    } else {
+      return orig_fetch(`${ASSETS_URL}${request_url}`, init).then(mutableResponse)
     }
-    return orig_fetch(`${ASSETS_URL}${request_url}`, init).then(makeResponseMutable)
+  } else {
+    return orig_fetch(request, init).then(mutableResponse)
   }
-
-  return orig_fetch(url, init).then(makeResponseMutable)
 }
 
 if (typeof FAB.initialize === 'function') FAB.initialize(server_context)
 
-const handleRequest = async (request) => {
+const handleRequest = async (request, within_loop = false) => {
+  console.log({ request })
+  console.log(request.url)
   const url = new URL(request.url)
   if (url.pathname.startsWith('/_assets/')) {
     const asset_url = ASSETS_URL + url.pathname
@@ -36,10 +39,12 @@ const handleRequest = async (request) => {
     if (result instanceof Request) {
       if (result.url.startsWith('/')) {
         if (!result.url.startsWith('/_assets/')) {
-          throw new Error('Fetching relative URLs for non-assets is not permitted.')
+          if (within_loop) throw new Error('Loop detected!')
+          return await handleRequest(result, true)
+        } else {
+          const asset_url = ASSETS_URL + result.url
+          return await globalThis.orig_fetch(asset_url)
         }
-        const asset_url = ASSETS_URL + result.url
-        return await globalThis.orig_fetch(asset_url)
       } else {
         return await globalThis.orig_fetch(request)
       }
