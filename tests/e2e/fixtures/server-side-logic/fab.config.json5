@@ -5,6 +5,7 @@
     '@fab/plugin-rewire-assets': {},
     './fab-plugins/hello-world': {},
     './fab-plugins/add-bundle-id': {},
+    './fab-plugins/slowly': {},
   },
   settings: { production: {} },
   deploy: {},

@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@types/jest": "^24.0.23",
+    "concurrently": "^5.2.0",
     "dotenv": "^8.2.0",
     "file-to-sha512": "^0.0.1",
     "globby": "^11.0.0",

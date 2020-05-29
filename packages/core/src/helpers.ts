@@ -32,8 +32,9 @@ export function getCacheHeaders(immutable: boolean) {
 
 export function matchPath<T>(
   lookup_table: { [pathname: string]: T },
-  pathname: string
+  _pathname: string
 ): T | undefined {
+  const pathname = decodeURIComponent(_pathname)
   return (
     lookup_table[pathname] ||
     lookup_table[pathname + '.html'] ||
