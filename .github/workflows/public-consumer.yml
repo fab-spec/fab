@@ -48,3 +48,7 @@ jobs:
       run: |
         cd tests
         PUBLIC_PACKAGES=true yarn test nextjs
+    - name: 'E2E: Server-Side Logic'
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test server-side-logic

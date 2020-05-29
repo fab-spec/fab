@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'pat\h'
 import { buildFab, SERVER_SIDE_LOGIC_PORTS, getPorts, getWorkingDir } from './helpers'
 import fs from 'fs-extra'
 import { cmd, _shell, shell } from '../utils'
@@ -114,6 +114,8 @@ describe('Server-side logic tests', () => {
       expect(pa_time - des_time).toBeLessThan(900)
       expect(cito_time - pa_time).toBeGreaterThan(100)
       expect(cito_time - pa_time).toBeLessThan(900)
+      expect(cito_time - des_time).toBeGreaterThan(500)
+      expect(cito_time - des_time).toBeLessThan(1500)
     })
   })
 })
