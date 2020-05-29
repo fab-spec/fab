@@ -20,7 +20,10 @@ describe('Server-side logic tests', () => {
     const src_dir = path.join(cwd, 'public')
     await fs.ensureDir(src_dir)
     await fs.copy(`${__dirname}/fixtures/server-side-logic`, cwd)
-    await buildFab(cwd, !!process.env.PUBLIC_PACKAGES)
+    if (process.env.PUBLIC_PACKAGES) {
+      await cwd_shell(`yarn`)
+    }
+    await buildFab(cwd)
   })
 
   describe('server responses', () => {
