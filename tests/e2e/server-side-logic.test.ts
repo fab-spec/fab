@@ -90,5 +90,30 @@ describe('Server-side logic tests', () => {
       expect(hello_fab_response).not.toEqual(homepage_response)
       expect(hello_fab_response).toContain('HELLO FAB!')
     })
+
+    it('should hit a streaming endpoint', async () => {
+      const promise = cwd_shell(`curl -sN http://localhost:${port}/slowly`)
+
+      const lines_with_timestamps: { [line: string]: Date } = {}
+      promise.stdout!.on('data', (data) => {
+        data
+          .toString()
+          .split('\n')
+          .forEach((line: string) => {
+            lines_with_timestamps[line.trim()] = new Date()
+          })
+      })
+
+      await promise
+
+      const des_time = lines_with_timestamps['Des'].getTime()
+      const pa_time = lines_with_timestamps['pa'].getTime()
+      const cito_time = lines_with_timestamps['cito.'].getTime()
+
+      expect(pa_time - des_time).toBeGreaterThan(100)
+      expect(pa_time - des_time).toBeLessThan(900)
+      expect(cito_time - pa_time).toBeGreaterThan(100)
+      expect(cito_time - pa_time).toBeLessThan(900)
+    })
   })
 })
