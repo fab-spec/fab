@@ -13,19 +13,13 @@ position: 311
   (switching between testing/live payment integrations, for instance)
 - **Features may be turned on or off depending on environment**
 
-To support this, every time your FAB is executed, the current environment variables are injected. This is the `render` method at the heart of a FAB:
+To support this, every time your FAB is executed, the current environment variables are injected as the `settings` object:
 
-```jsx
-const render = async (request, settings) => {
-  // request: a fetch.Request object
-  // settings: your production settings plus any
-  //           environment-specific overrides
-
-  const { body, statusCode, headers } = await myApp.render(request, settings)
-
-  // return a fetch.Response object with the full data.
-  // Streaming responses not yet fully supported, but will be.
-  return new Response(body, { statusCode, headers })
+```js[proxy-api.js]
+export default ({ Router }) => {
+  Router.on('/api/:route(.*)', ({ params, settings }) => {
+    return fetch(`https://${settings.API_URL}/${params.route}`)
+  })
 }
 ```
 

@@ -193,7 +193,7 @@ export default {
   }
 
   & pre[class*='language-'] {
-    @apply rounded mt-0 mb-4 bg-gray-800 text-sm relative;
+    @apply rounded mt-0 mb-4 p-4 bg-gray-800 text-sm relative;
 
     > code {
       @apply bg-gray-800 relative;
@@ -238,7 +238,7 @@ export default {
   @apply relative;
 
   & > .filename {
-    @apply absolute right-0 text-gray-600 font-light z-10 mr-2 mt-1 text-sm;
+    @apply block text-gray-600 font-bold z-10 pb-2 text-sm text-center;
   }
 }
 </style>

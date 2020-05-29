@@ -44,7 +44,7 @@ const render = async (request, settings) => {
   const { body, statusCode, headers } = await myApp.render(request, settings)
 
   // return a fetch.Response object with the full data.
-  // Streaming responses not yet supported, but will be in future.
+  // For streaming responses, see https://fab.dev/kb/streaming
   return new Response(body, { statusCode, headers })
 }
 
