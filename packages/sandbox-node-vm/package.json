@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@fab/core": "1.0.0-rc.2.alpha.0",
-    "cross-fetch": "^3.0.4",
-    "web-streams-node": "^0.4.0"
+    "node-fetch": "^2.6.0",
+    "web-streams-ponyfill": "^1.4.2"
   },
   "publishConfig": {
     "access": "public"
