@@ -1,6 +1,31 @@
 import vm from 'vm'
-import * as fetch from 'cross-fetch'
-import { FabSpecExports, FetchApi } from '@fab/core'
+import * as fetch from 'node-fetch'
+import { FabSpecExports } from '@fab/core'
+// @ts-ignore
+import { ReadableStream } from 'web-streams-ponyfill'
+import Stream from 'stream'
+
+/*
+ * We're using node-fetch under the hood, which has a hard-coded check on the body:
+ *   response.body instanceof Stream
+ * this means that our Web Streams ReadableStream gets .toString()-ed, which breaks.
+ * This lets FAB users use ReadableStream as if it was on the web, but this Node VM
+ * (which will be replaced by the V8::Isolate-based VM) can trick node-fetch into
+ * doing what we want. See https://github.com/node-fetch/node-fetch/pull/848
+ *
+ * */
+function HybridReadableStream(...args: any[]) {
+  const readableStream = new ReadableStream(...args)
+  return new Proxy(readableStream, {
+    getPrototypeOf() {
+      return Stream.Readable.prototype
+    },
+    get(target, prop, receiver) {
+      if (prop === 'on') return () => {}
+      return Reflect.get(target, prop, receiver)
+    },
+  })
+}
 
 export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports> => {
   const sandbox = {
@@ -9,6 +34,7 @@ export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports>
     Response: fetch.Response,
     Headers: fetch.Headers,
     URL: URL,
+    ReadableStream: HybridReadableStream,
     console: {
       log: console.log,
       error: console.error,

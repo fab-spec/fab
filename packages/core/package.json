@@ -1,6 +1,6 @@
 {
   "name": "@fab/core",
-  "version": "1.0.0-rc.2.alpha.0",
+  "version": "1.0.0-rc.2",
   "private": false,
   "description": "Common code for all FAB projects",
   "keywords": [
@@ -35,5 +35,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "98ce34423f906c0a9f66f2f87643e64b841e359a"
+  "gitHead": "e0232b0579fb886d567c62ad793a128ff4ea34de"
 }

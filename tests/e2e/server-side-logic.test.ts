@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'pat\h'
 import { buildFab, SERVER_SIDE_LOGIC_PORTS, getPorts, getWorkingDir } from './helpers'
 import fs from 'fs-extra'
 import { cmd, _shell, shell } from '../utils'
@@ -20,6 +20,9 @@ describe('Server-side logic tests', () => {
     const src_dir = path.join(cwd, 'public')
     await fs.ensureDir(src_dir)
     await fs.copy(`${__dirname}/fixtures/server-side-logic`, cwd)
+    if (process.env.PUBLIC_PACKAGES) {
+      await cwd_shell(`yarn`)
+    }
     await buildFab(cwd)
   })
 
@@ -89,6 +92,33 @@ describe('Server-side logic tests', () => {
       const hello_fab_response = await request('', '/hello/fab', port)
       expect(hello_fab_response).not.toEqual(homepage_response)
       expect(hello_fab_response).toContain('HELLO FAB!')
+    })
+
+    it('should hit a streaming endpoint', async () => {
+      const promise = cwd_shell(`curl -sN http://localhost:${port}/slowly`)
+
+      const lines_with_timestamps: { [line: string]: Date } = {}
+      promise.stdout!.on('data', (data) => {
+        data
+          .toString()
+          .split('\n')
+          .forEach((line: string) => {
+            lines_with_timestamps[line.trim()] = new Date()
+          })
+      })
+
+      await promise
+
+      const des_time = lines_with_timestamps['Des'].getTime()
+      const pa_time = lines_with_timestamps['pa'].getTime()
+      const cito_time = lines_with_timestamps['cito.'].getTime()
+
+      expect(pa_time - des_time).toBeGreaterThan(100)
+      expect(pa_time - des_time).toBeLessThan(900)
+      expect(cito_time - pa_time).toBeGreaterThan(100)
+      expect(cito_time - pa_time).toBeLessThan(900)
+      expect(cito_time - des_time).toBeGreaterThan(500)
+      expect(cito_time - des_time).toBeLessThan(1500)
     })
   })
 })

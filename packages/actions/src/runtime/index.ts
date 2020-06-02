@@ -55,8 +55,8 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 
   let chained_request = request
 
-  for (const responders of Runtime.getPipeline()) {
-    const response = await responders({
+  for (const responder of Runtime.getPipeline()) {
+    const response = await responder({
       request: chained_request.clone(),
       settings,
       url,

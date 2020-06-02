@@ -13,8 +13,7 @@ One of the best use-cases for FABs, once your project [can produce a working FAB
 
 It can be quite convenient to proxy your backend API behind a route on your frontend, e.g. wiring up `https://example.com/api` connecting behind-the-scenes to `https://api.example.com`. This can help with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) concerns or simply to allow your frontend to freely connect to different backends. We can achieve this by connecting to the FAB's (server-side) Router:
 
-```js
-// proxy-api.js
+```js[proxy-api.js]
 export default ({ Router }) => {
   Router.on('/api/:route(.*)', ({ params }) => {
     return fetch(`https://api.example.com/${params.route}`)
@@ -81,8 +80,7 @@ Note, you can use Typescript without needing a separate compile step, so we reco
 
 > 👉 Even if you're not using Typescript for the rest of your project, your IDE may well have much better code completion & error-checking if you use it here.
 
-```ts
-// proxy-api.ts
+```ts[proxy-api.ts]
 import { FABRuntime } from '@fab/core'
 
 export default function({ Router }: FABRuntime) {
