@@ -10,34 +10,78 @@ import { FabDeployError, InvalidConfigError } from '@fab/cli'
 import { createPackage } from './createPackage'
 import path from 'path'
 import fs from 'fs-extra'
-
-const notImplemented = () => {
-  throw new Error(`Not implemented!
-  The CF releaser currently only supports the server component.
-  Please use @fab/deployer-aws-s3 to host assets instead.`)
-}
+import nanoid from 'nanoid'
+import { extract } from 'zip-lib'
 
 export const deployBoth: FabDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
-  package_path: string,
+  package_dir: string,
   config: ConfigTypes.CFWorkers,
   env_overrides: FabSettings
-) => notImplemented()
+) => {
+  const assets_url = await deployAssets(fab_path, package_dir, config)
+  return await deployServer(fab_path, package_dir, config, env_overrides, assets_url)
+}
 
 export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
-  package_path: string,
+  package_dir: string,
   config: ConfigTypes.CFWorkers
-) => notImplemented()
+) => {
+  log(`Starting 💛assets💛 deploy...`)
+
+  const { account_id, api_token, script_name } = config
+  const kv_namespace = `fab-assets--${script_name}`
+
+  const extracted_dir = path.join(package_dir, `cf-workers-${nanoid()}`)
+  await fs.ensureDir(extracted_dir)
+  log.tick(`Generated working dir in 💛${extracted_dir}💛.`)
+  await extract(fab_path, extracted_dir)
+  log.tick(`Unpacked FAB.`)
+
+  log(`Uploading assets to KV store...`)
+  const api = await getApi(api_token)
+  const list_namespaces_response = await api.get(
+    `/accounts/${account_id}/storage/kv/namespaces`
+  )
+  if (!list_namespaces_response.success) {
+    throw new FabDeployError(`Error listing namespaces for account 💛${account_id}💛:
+    ❤️${JSON.stringify(list_namespaces_response)}❤️`)
+  }
+  console.log(list_namespaces_response.result)
+
+  const existing_route = list_namespaces_response.result.find(
+    (r: any) => r.title === kv_namespace
+  )
+  if (existing_route) {
+    log.tick(`Reusing existing KV namespace 💛${kv_namespace}💛.`)
+  } else {
+    log(`Creating KV namespace 💛${kv_namespace}💛...`)
+    const create_namespace_response = await api.post(
+      `/accounts/${account_id}/storage/kv/namespaces`,
+      {
+        body: JSON.stringify({ title: kv_namespace }),
+      }
+    )
+    if (!create_namespace_response.success) {
+      throw new FabDeployError(`Error creating namespace 💛${account_id}💛:
+      ❤️${JSON.stringify(create_namespace_response)}❤️`)
+    }
+    log.tick(`Created.`)
+    console.log(create_namespace_response.result)
+  }
+
+  return `kv://${kv_namespace}/`
+}
 
 export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
-  working_dir: string,
+  package_dir: string,
   config: ConfigTypes.CFWorkers,
   env_overrides: FabSettings,
   assets_url: string
 ) => {
-  const package_path = path.join(working_dir, 'cf-workers.js')
+  const package_path = path.join(package_dir, 'cf-workers.js')
 
   log(`Starting 💛server💛 deploy...`)
 

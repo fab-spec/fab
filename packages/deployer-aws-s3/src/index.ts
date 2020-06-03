@@ -10,13 +10,13 @@ import { log } from './utils'
 
 export const deployAssets: FabAssetsDeployer<ConfigTypes.AwsS3> = async (
   fab_path: string,
-  working_dir: string,
+  package_dir: string,
   config: ConfigTypes.AwsS3
 ) => {
   const { bucket_name, access_key, secret_key, region = 'us-east-1' } = config
   if (!bucket_name) throw new Error('Need to specify a bucket name!')
 
-  const extracted_dir = path.join(working_dir, `cf-workers-${nanoid()}`)
+  const extracted_dir = path.join(package_dir, `aws-s3-${nanoid()}`)
   await fs.ensureDir(extracted_dir)
   log.tick(`Generated working dir in 💛${extracted_dir}💛.`)
   await extract(fab_path, extracted_dir)
