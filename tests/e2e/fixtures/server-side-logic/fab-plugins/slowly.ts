@@ -17,7 +17,7 @@ export default ({ Router }: FABRuntime) => {
 
     return new Response(stream, {
       headers: {
-        'Content-Type': 'text/plain',
+        'content-type': 'text/plain',
       },
     })
   })

@@ -10,8 +10,7 @@ export type CloudflareApiCall = (url: string, init?: RequestInit) => Promise<any
 export type CloudflareApi = {
   post: CloudflareApiCall
   get: CloudflareApiCall
-  putJS: CloudflareApiCall
-  putJSON: CloudflareApiCall
+  put: CloudflareApiCall
 }
 
 export const getCloudflareApi = async (api_token: string): Promise<CloudflareApi> => {
@@ -23,16 +22,15 @@ export const getCloudflareApi = async (api_token: string): Promise<CloudflareApi
       ...init,
       method,
       headers: {
+        authorization: `Bearer ${api_token}`,
+        'content-type': content_type,
         ...init?.headers,
-        Authorization: `Bearer ${api_token}`,
-        'Content-Type': content_type,
       },
     })
     return await response.json()
   }
   const get = go('get', 'application/json')
-  const putJS = go('put', 'application/javascript')
-  const putJSON = go('put', 'application/json')
+  const put = go('put', 'application/json')
   const post = go('post', 'application/json')
 
   const verify = await get(`/user/tokens/verify`)
@@ -42,5 +40,5 @@ export const getCloudflareApi = async (api_token: string): Promise<CloudflareApi
     ❤️${JSON.stringify(verify)}❤️`)
   }
 
-  return { get, putJS, putJSON, post }
+  return { get, put, post }
 }

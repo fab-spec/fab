@@ -3,6 +3,14 @@ const ASSETS_URL = globalThis.__assets_url // inlined in packager
 const cache = caches.default
 const server_context = globalThis.__server_context // inlined in packager
 
+const USES_KV_STORE = ASSETS_URL.startsWith('kv://')
+const KV_STORE = globalThis.KV_FAB_ASSETS
+if (USES_KV_STORE && !KV_STORE) {
+  throw new Error(
+    `Asset URL (${ASSETS_URL}) points at KV store but no binding (KV_FAB_ASSETS) found!`
+  )
+}
+
 const mutableResponse = (response) => new Response(response.body, response)
 
 function ReadableStream({ start, cancel }) {
@@ -23,6 +31,21 @@ function ReadableStream({ start, cancel }) {
 }
 
 globalThis.orig_fetch = globalThis.fetch
+
+const assetFetch = async (pathname, init) => {
+  if (USES_KV_STORE) {
+    const { value, metadata } = await KV_STORE.getWithMetadata(pathname, 'stream')
+    return new Response(value, {
+      headers: {
+        'content-type': metadata.content_type,
+        'cache-control': 'public, max-age=31536000, immutable',
+      },
+    })
+  } else {
+    return await orig_fetch(`${ASSETS_URL}${pathname}`, init)
+  }
+}
+
 globalThis.fetch = (request, init) => {
   const request_url = typeof request === 'string' ? request : request.url
 
@@ -31,7 +54,7 @@ globalThis.fetch = (request, init) => {
       const loopback_url = new Request(`https://loopback${request_url}`, init)
       return handleRequest(loopback_url).then(mutableResponse)
     } else {
-      return orig_fetch(`${ASSETS_URL}${request_url}`, init).then(mutableResponse)
+      return assetFetch(request_url).then(mutableResponse)
     }
   } else {
     return orig_fetch(request, init).then(mutableResponse)
@@ -41,37 +64,30 @@ globalThis.fetch = (request, init) => {
 if (typeof FAB.initialize === 'function') FAB.initialize(server_context)
 
 const handleRequest = async (request, within_loop = false) => {
-  console.log({ request })
-  console.log(request.url)
   const url = new URL(request.url)
   if (url.pathname.startsWith('/_assets/')) {
-    const asset_url = ASSETS_URL + url.pathname
-    return await globalThis.orig_fetch(asset_url)
+    return await assetFetch(url.pathname)
   } else {
     let settings = FAB.getProdSettings ? FAB.getProdSettings() : {}
     if (settings.then && typeof settings.then == 'function') {
       settings = await settings
     }
+
     const result = await FAB.render(request, settings)
-    console.log(result.constructor.name)
     if (result instanceof Request) {
       if (result.url.startsWith('/')) {
         if (!result.url.startsWith('/_assets/')) {
           if (within_loop) throw new Error('Loop detected!')
           return await handleRequest(result, true)
         } else {
-          const asset_url = ASSETS_URL + result.url
-          return await globalThis.orig_fetch(asset_url)
+          return await assetFetch(result.url)
         }
       } else {
         return await globalThis.orig_fetch(request)
       }
     }
 
-    console.log(result.body)
-    console.log(result.body && result.body.getReadable)
     if (result.body && typeof result.body.getReadable === 'function') {
-      console.log('OMG SO CLOSE')
       return new Response(result.body.getReadable(), result)
     }
     return result

@@ -2,8 +2,10 @@ export const DEFAULT_CONFIG_FILENAME = 'fab.config.json5'
 export const DEFAULT_MIME_TYPE = 'text/html; charset=utf-8'
 export const NO_RESPONSE_STATUS_CODE = 444
 
-export const IMMUTABLE_HEADERS = { 'Cache-Control': 'immutable' }
-export const NON_IMMUTABLE_HEADERS = { 'Cache-Control': 'no-cache' }
+export const IMMUTABLE_HEADERS = {
+  'cache-control': 'public, max-age=31536000, immutable',
+}
+export const NON_IMMUTABLE_HEADERS = { 'cache-control': 'no-cache' }
 
 export const REGEXP_VALUE_PATTERN = /^\/.*\/([gimy]*)$/
 export const ENV_VAR_SYNTAX = /^@([A-Z0-9_]+$)?/

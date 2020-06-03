@@ -4,40 +4,124 @@ import {
   FabDeployer,
   FabServerDeployer,
   FabSettings,
+  getContentType,
 } from '@fab/core'
 import { CloudflareApi, getCloudflareApi, log } from './utils'
 import { FabDeployError, InvalidConfigError } from '@fab/cli'
 import { createPackage } from './createPackage'
 import path from 'path'
 import fs from 'fs-extra'
-
-const notImplemented = () => {
-  throw new Error(`Not implemented!
-  The CF releaser currently only supports the server component.
-  Please use @fab/deployer-aws-s3 to host assets instead.`)
-}
+import nanoid from 'nanoid'
+import { extract } from 'zip-lib'
+import globby from 'globby'
+import pretty from 'pretty-bytes'
+import Multipart from 'form-data'
 
 export const deployBoth: FabDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
-  package_path: string,
+  package_dir: string,
   config: ConfigTypes.CFWorkers,
   env_overrides: FabSettings
-) => notImplemented()
+) => {
+  const assets_url = await deployAssets(fab_path, package_dir, config)
+  return await deployServer(fab_path, package_dir, config, env_overrides, assets_url)
+}
 
 export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
-  package_path: string,
+  package_dir: string,
   config: ConfigTypes.CFWorkers
-) => notImplemented()
+) => {
+  log(`Starting 💛assets💛 deploy...`)
+
+  const { account_id, api_token, script_name } = config
+  const kv_namespace = `FAB assets (${script_name})`
+
+  const extracted_dir = path.join(package_dir, `cf-workers-${nanoid()}`)
+  await fs.ensureDir(extracted_dir)
+  log.tick(`Generated working dir in 💛${extracted_dir}💛.`)
+  await extract(fab_path, extracted_dir)
+  log.tick(`Unpacked FAB.`)
+
+  log(`Uploading assets to KV store...`)
+  const api = await getApi(api_token)
+  const list_namespaces_response = await api.get(
+    `/accounts/${account_id}/storage/kv/namespaces`
+  )
+  if (!list_namespaces_response.success) {
+    throw new FabDeployError(`Error listing namespaces for account 💛${account_id}💛:
+    ❤️${JSON.stringify(list_namespaces_response)}❤️`)
+  }
+
+  const namespace = {
+    id: '',
+    existing_files: [],
+  }
+
+  const existing_namespace = list_namespaces_response.result.find(
+    (r: any) => r.title === kv_namespace
+  )
+  if (existing_namespace) {
+    log.tick(`Reusing existing KV namespace 💛${kv_namespace}💛.`)
+    namespace.id = existing_namespace.id
+
+    // log(`Fetching existing entries`)
+  } else {
+    log(`Creating KV namespace 💛${kv_namespace}💛...`)
+    const create_namespace_response = await api.post(
+      `/accounts/${account_id}/storage/kv/namespaces`,
+      {
+        body: JSON.stringify({ title: kv_namespace }),
+      }
+    )
+    if (!create_namespace_response.success) {
+      throw new FabDeployError(`Error creating namespace 💛${account_id}💛:
+      ❤️${JSON.stringify(create_namespace_response)}❤️`)
+    }
+    log.tick(`Created.`)
+    namespace.id = create_namespace_response.result.id
+  }
+
+  log(`Uploading files...`)
+  const files = await globby(['_assets/**/*'], { cwd: extracted_dir })
+  const uploads = files.map(async (file) => {
+    const content_type = getContentType(file)
+    const body_stream = fs.createReadStream(path.join(extracted_dir, file))
+
+    const body = new Multipart()
+    body.append('metadata', JSON.stringify({ content_type }), {
+      contentType: 'application/json',
+    })
+    body.append('value', body_stream)
+
+    await api.put(
+      `/accounts/${account_id}/storage/kv/namespaces/${
+        namespace.id
+      }/values/${encodeURIComponent(`/${file}`)}`,
+      {
+        body: (body as unknown) as FormData,
+        headers: body.getHeaders(),
+      }
+    )
+
+    log.continue(`🖤  ${file} (${pretty(body_stream.bytesRead)})🖤`)
+  })
+
+  log.tick(`Done.`)
+
+  await Promise.all(uploads)
+
+  return `kv://${namespace.id}`
+}
 
 export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
-  working_dir: string,
+  package_dir: string,
   config: ConfigTypes.CFWorkers,
   env_overrides: FabSettings,
   assets_url: string
 ) => {
-  const package_path = path.join(working_dir, 'cf-workers.js')
+  const package_path = path.join(package_dir, 'cf-workers.js')
 
   log(`Starting 💛server💛 deploy...`)
 
@@ -81,7 +165,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
         )
       } else {
         log(`Found existing route id 💛${id}💛, updating...`)
-        const update_route_response = await api.putJSON(
+        const update_route_response = await api.put(
           `/zones/${zone_id}/workers/routes/${id}`,
           {
             body: JSON.stringify({ pattern: route, script: script_name }),
@@ -183,8 +267,7 @@ function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
 
 async function getApi(api_token: string) {
   log.tick(`Config valid, checking API token...`)
-  const api = await getCloudflareApi(api_token)
-  return api
+  return await getCloudflareApi(api_token)
 }
 
 async function packageAndUpload(
@@ -199,14 +282,40 @@ async function packageAndUpload(
 ) {
   log.tick(`API token valid, packaging...`)
   await createPackage(fab_path, package_path, config, env_overrides, assets_url)
-
   log.time(`Uploading script...`)
-  const upload_response = await api.putJS(
+
+  const bindings = []
+
+  const assets_in_kv = assets_url.match(/kv:\/\/(\w+)/)
+  if (assets_in_kv) {
+    const [_, namespace_id] = assets_in_kv
+
+    bindings.push({
+      type: 'kv_namespace',
+      name: 'KV_FAB_ASSETS',
+      namespace_id,
+    })
+  }
+
+  const metadata = {
+    body_part: 'script',
+    bindings,
+  }
+
+  const body = new Multipart()
+  body.append('metadata', JSON.stringify(metadata))
+  body.append('script', await fs.readFile(package_path, 'utf8'), {
+    contentType: 'application/javascript',
+  })
+
+  const upload_response = await api.put(
     `/accounts/${account_id}/workers/scripts/${script_name}`,
     {
-      body: await fs.readFile(package_path, 'utf8'),
+      body: (body as unknown) as FormData,
+      headers: body.getHeaders(),
     }
   )
+
   if (!upload_response.success) {
     throw new FabDeployError(`Error uploading the script, got response:
     ❤️${JSON.stringify(upload_response)}❤️`)

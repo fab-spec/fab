@@ -36,7 +36,7 @@ export default function RenderHTMLRuntime({
       status: html === error_page ? 404 : 200,
       statusText: 'OK',
       headers: {
-        'Content-Type': 'text/html',
+        'content-type': 'text/html',
       },
     })
   }
