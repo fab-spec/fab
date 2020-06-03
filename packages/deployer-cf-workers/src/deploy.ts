@@ -15,6 +15,7 @@ import nanoid from 'nanoid'
 import { extract } from 'zip-lib'
 import globby from 'globby'
 import pretty from 'pretty-bytes'
+import Multipart from 'form-data'
 
 export const deployBoth: FabDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
@@ -34,7 +35,7 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   log(`Starting 💛assets💛 deploy...`)
 
   const { account_id, api_token, script_name } = config
-  const kv_namespace = `fab-assets--${script_name}`
+  const kv_namespace = `FAB assets (${script_name})`
 
   const extracted_dir = path.join(package_dir, `cf-workers-${nanoid()}`)
   await fs.ensureDir(extracted_dir)
@@ -94,7 +95,7 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
       }/values/${encodeURIComponent(`/${file}`)}`,
       {
         headers: {
-          'Content-Type': content_type,
+          'content-type': content_type,
         },
         body: (body_stream as unknown) as ReadableStream,
       }
@@ -107,7 +108,7 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
 
   await Promise.all(uploads)
 
-  return `kv://${kv_namespace}`
+  return `kv://${namespace.id}`
 }
 
 export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
@@ -278,14 +279,41 @@ async function packageAndUpload(
 ) {
   log.tick(`API token valid, packaging...`)
   await createPackage(fab_path, package_path, config, env_overrides, assets_url)
-
   log.time(`Uploading script...`)
-  const upload_response = await api.putJS(
+
+  const bindings = []
+
+  const assets_in_kv = assets_url.match(/kv:\/\/(\w+)/)
+  if (assets_in_kv) {
+    const [_, namespace_id] = assets_in_kv
+
+    bindings.push({
+      type: 'kv_namespace',
+      name: 'KV_FAB_ASSETS',
+      namespace_id,
+    })
+  }
+
+  const metadata = {
+    body_part: 'script',
+    bindings,
+  }
+  console.log(metadata)
+
+  const body = new Multipart()
+  body.append('metadata', JSON.stringify(metadata))
+  body.append('script', await fs.readFile(package_path, 'utf8'), {
+    contentType: 'application/javascript',
+  })
+
+  const upload_response = await api.put(
     `/accounts/${account_id}/workers/scripts/${script_name}`,
     {
-      body: await fs.readFile(package_path, 'utf8'),
+      body: (body as unknown) as FormData,
+      headers: body.getHeaders(),
     }
   )
+
   if (!upload_response.success) {
     throw new FabDeployError(`Error uploading the script, got response:
     ❤️${JSON.stringify(upload_response)}❤️`)

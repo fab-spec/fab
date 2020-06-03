@@ -110,7 +110,7 @@ export default class Deployer {
       return deployer.deployBoth!(
         file_path,
         package_dir,
-        this.resolveEnvVars(deploy[assets_provider]),
+        this.resolveEnvVars(deploy[assets_provider]!),
         env_overrides
       )
     }
