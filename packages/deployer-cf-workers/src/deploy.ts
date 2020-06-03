@@ -4,6 +4,7 @@ import {
   FabDeployer,
   FabServerDeployer,
   FabSettings,
+  getContentType,
 } from '@fab/core'
 import { CloudflareApi, getCloudflareApi, log } from './utils'
 import { FabDeployError, InvalidConfigError } from '@fab/cli'
@@ -12,6 +13,8 @@ import path from 'path'
 import fs from 'fs-extra'
 import nanoid from 'nanoid'
 import { extract } from 'zip-lib'
+import globby from 'globby'
+import pretty from 'pretty-bytes'
 
 export const deployBoth: FabDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
@@ -50,11 +53,19 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   }
   console.log(list_namespaces_response.result)
 
-  const existing_route = list_namespaces_response.result.find(
+  const namespace = {
+    id: '',
+    existing_files: [],
+  }
+
+  const existing_namespace = list_namespaces_response.result.find(
     (r: any) => r.title === kv_namespace
   )
-  if (existing_route) {
+  if (existing_namespace) {
     log.tick(`Reusing existing KV namespace 💛${kv_namespace}💛.`)
+    namespace.id = existing_namespace.id
+
+    // log(`Fetching existing entries`)
   } else {
     log(`Creating KV namespace 💛${kv_namespace}💛...`)
     const create_namespace_response = await api.post(
@@ -68,10 +79,35 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
       ❤️${JSON.stringify(create_namespace_response)}❤️`)
     }
     log.tick(`Created.`)
-    console.log(create_namespace_response.result)
+    namespace.id = create_namespace_response.result.id
   }
 
-  return `kv://${kv_namespace}/`
+  log(`Uploading files...`)
+  const files = await globby(['_assets/**/*'], { cwd: extracted_dir })
+  const uploads = files.map(async (file) => {
+    const content_type = getContentType(file)
+    const body_stream = fs.createReadStream(path.join(extracted_dir, file))
+
+    await api.put(
+      `/accounts/${account_id}/storage/kv/namespaces/${
+        namespace.id
+      }/values/${encodeURIComponent(`/${file}`)}`,
+      {
+        headers: {
+          'Content-Type': content_type,
+        },
+        body: (body_stream as unknown) as ReadableStream,
+      }
+    )
+
+    log.continue(`🖤  ${file} (${pretty(body_stream.bytesRead)})🖤`)
+  })
+
+  log.tick(`Done.`)
+
+  await Promise.all(uploads)
+
+  return `kv://${kv_namespace}`
 }
 
 export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
@@ -125,7 +161,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
         )
       } else {
         log(`Found existing route id 💛${id}💛, updating...`)
-        const update_route_response = await api.putJSON(
+        const update_route_response = await api.put(
           `/zones/${zone_id}/workers/routes/${id}`,
           {
             body: JSON.stringify({ pattern: route, script: script_name }),
@@ -227,8 +263,7 @@ function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
 
 async function getApi(api_token: string) {
   log.tick(`Config valid, checking API token...`)
-  const api = await getCloudflareApi(api_token)
-  return api
+  return await getCloudflareApi(api_token)
 }
 
 async function packageAndUpload(
