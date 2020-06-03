@@ -89,15 +89,19 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
     const content_type = getContentType(file)
     const body_stream = fs.createReadStream(path.join(extracted_dir, file))
 
+    const body = new Multipart()
+    body.append('metadata', JSON.stringify({ content_type }), {
+      contentType: 'application/json',
+    })
+    body.append('value', body_stream)
+
     await api.put(
       `/accounts/${account_id}/storage/kv/namespaces/${
         namespace.id
       }/values/${encodeURIComponent(`/${file}`)}`,
       {
-        headers: {
-          'content-type': content_type,
-        },
-        body: (body_stream as unknown) as ReadableStream,
+        body: (body as unknown) as FormData,
+        headers: body.getHeaders(),
       }
     )
 
@@ -298,7 +302,6 @@ async function packageAndUpload(
     body_part: 'script',
     bindings,
   }
-  console.log(metadata)
 
   const body = new Multipart()
   body.append('metadata', JSON.stringify(metadata))

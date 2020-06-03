@@ -9,7 +9,7 @@ export default ({ Router }: FABRuntime) => {
       `This request is being served from ${city} in ${regionName}, ${country}.`,
       {
         headers: {
-          'Content-Type': 'text/plain',
+          'content-type': 'text/plain',
         },
       }
     )
