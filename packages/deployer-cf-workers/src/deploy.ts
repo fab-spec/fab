@@ -52,7 +52,6 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
     throw new FabDeployError(`Error listing namespaces for account 💛${account_id}💛:
     ❤️${JSON.stringify(list_namespaces_response)}❤️`)
   }
-  console.log(list_namespaces_response.result)
 
   const namespace = {
     id: '',

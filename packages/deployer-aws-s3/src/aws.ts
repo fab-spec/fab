@@ -1,5 +1,6 @@
 import aws from 'aws-sdk'
 import { ReadStream } from 'fs'
+import { IMMUTABLE_HEADERS } from '@fab/core'
 
 export function authenticate(region: string, access_key: string, secret_key: string) {
   aws.config.update({
@@ -48,7 +49,7 @@ export async function putObject(
       Body: body_stream,
       ACL: 'public-read',
       ContentType: content_type,
-      CacheControl: 'public, max-age=31536000, immutable',
+      CacheControl: IMMUTABLE_HEADERS['cache-control'],
     })
     .promise()
 }

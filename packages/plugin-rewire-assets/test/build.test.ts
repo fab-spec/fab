@@ -120,6 +120,38 @@ describe('Build time', () => {
     })
   })
 
+  it('should allow bare hexadecimal paths', async () => {
+    const files = {
+      '/a1b2c3d4.html': EXAMPLES.HTML,
+      '/e5f6a7b8.css': EXAMPLES.CSS,
+    }
+    const proto_fab = new ProtoFab<RewireAssetsMetadata>(files)
+    await build(
+      {
+        'inline-threshold': EXAMPLES.CSS.length - 1,
+      },
+      proto_fab
+    )
+
+    expect(proto_fab._getEntries()).to.deep.equal([
+      [`/_assets/e5f6a7b8.css`, EXAMPLES.CSS],
+    ])
+    expect(proto_fab.metadata.rewire_assets.inlined_assets).to.deep.equal({
+      '/a1b2c3d4.html': {
+        contents: EXAMPLES.HTML,
+        content_type: 'text/html; charset=utf-8',
+        immutable: true,
+      },
+    })
+
+    expect(proto_fab.metadata.rewire_assets.renamed_assets).to.deep.equal({
+      '/e5f6a7b8.css': {
+        asset_path: `/_assets/e5f6a7b8.css`,
+        immutable: true,
+      },
+    })
+  })
+
   it('should handle files without any extension', async () => {
     const files = {
       '/_index': EXAMPLES.HTML,
