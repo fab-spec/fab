@@ -97,6 +97,8 @@ export type FabMetadata = {
   plugin_metadata: PluginMetadata
 }
 
+// export type EphemeralCache
+
 // To be extended with host-specific capabilities
 export type FABServerContext = {
   bundle_id: string

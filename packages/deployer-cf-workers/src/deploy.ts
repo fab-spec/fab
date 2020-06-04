@@ -35,6 +35,7 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   log(`Starting 💛assets💛 deploy...`)
 
   const { account_id, api_token, script_name } = config
+  log.tick(`Config valid, checking API token...`)
   const kv_namespace = `FAB assets (${script_name})`
 
   const extracted_dir = path.join(package_dir, `cf-workers-${nanoid()}`)
@@ -44,43 +45,15 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   log.tick(`Unpacked FAB.`)
 
   log(`Uploading assets to KV store...`)
-  const api = await getApi(api_token)
-  const list_namespaces_response = await api.get(
-    `/accounts/${account_id}/storage/kv/namespaces`
-  )
-  if (!list_namespaces_response.success) {
-    throw new FabDeployError(`Error listing namespaces for account 💛${account_id}💛:
-    ❤️${JSON.stringify(list_namespaces_response)}❤️`)
+  const api = await getCloudflareApi(api_token, account_id)
+  if (!api.account_supports_kv) {
+    throw new InvalidConfigError(`💛Cannot deploy assets💛 to Cloudflare Workers 💛without KV store access💛.
+    Use an alternate asset host e.g. AWS S3
+    🖤  (see https://fab.dev/guides/deploying for more info)🖤
+    or upgrade your Cloudflare account.`)
   }
 
-  const namespace = {
-    id: '',
-    existing_files: [],
-  }
-
-  const existing_namespace = list_namespaces_response.result.find(
-    (r: any) => r.title === kv_namespace
-  )
-  if (existing_namespace) {
-    log.tick(`Reusing existing KV namespace 💛${kv_namespace}💛.`)
-    namespace.id = existing_namespace.id
-
-    // log(`Fetching existing entries`)
-  } else {
-    log(`Creating KV namespace 💛${kv_namespace}💛...`)
-    const create_namespace_response = await api.post(
-      `/accounts/${account_id}/storage/kv/namespaces`,
-      {
-        body: JSON.stringify({ title: kv_namespace }),
-      }
-    )
-    if (!create_namespace_response.success) {
-      throw new FabDeployError(`Error creating namespace 💛${account_id}💛:
-      ❤️${JSON.stringify(create_namespace_response)}❤️`)
-    }
-    log.tick(`Created.`)
-    namespace.id = create_namespace_response.result.id
-  }
+  const namespace = await api.getOrCreateNamespace(kv_namespace)
 
   log(`Uploading files...`)
   const files = await globby(['_assets/**/*'], { cwd: extracted_dir })
@@ -136,7 +109,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
   if (!workers_dev) {
     checkValidityForZoneRoutes(config)
 
-    const api = await getApi(api_token)
+    const api = await getCloudflareApi(api_token, account_id)
     await packageAndUpload(
       fab_path,
       package_path,
@@ -195,7 +168,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
   } else {
     checkValidityForWorkersDev(config)
 
-    const api = await getApi(api_token)
+    const api = await getCloudflareApi(api_token, account_id)
     await packageAndUpload(
       fab_path,
       package_path,
@@ -248,6 +221,7 @@ function checkValidityForWorkersDev(config: ConfigTypes.CFWorkers) {
     log(`💚NOTE:💚 ignoring the following config as deploys with 💛workers_dev: true💛 don't need them:
       ${ignored_config.map((k) => `💛• ${k}: ${config[k]}💛`).join('\n')}`)
   }
+  log.tick(`Config valid.`)
 }
 
 function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
@@ -263,11 +237,7 @@ function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
     throw new InvalidConfigError(`Missing required keys for @fab/deploy-cf-workers (with 💛workers_dev: false💛):
     ${missing_config.map((k) => `💛• ${k}💛`).join('\n')}`)
   }
-}
-
-async function getApi(api_token: string) {
-  log.tick(`Config valid, checking API token...`)
-  return await getCloudflareApi(api_token)
+  log.tick(`Config valid.`)
 }
 
 async function packageAndUpload(
@@ -280,7 +250,6 @@ async function packageAndUpload(
   account_id: string,
   script_name: string
 ) {
-  log.tick(`API token valid, packaging...`)
   await createPackage(fab_path, package_path, config, env_overrides, assets_url)
   log.time(`Uploading script...`)
 
