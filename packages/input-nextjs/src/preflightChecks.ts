@@ -29,8 +29,9 @@ export async function preflightChecks(
   if (next_config.target !== 'serverless') {
     throw new BuildFailedError(`Not serverless build
       NextJS project needs to be set to ${chalk.yellow('target: serverless')}
-      You'll need to update your ${chalk.yellow('next.config.js')} file.
-    `) // Add a documentation page for this info and link it here.
+      You'll need to update your ${chalk.yellow('next.config.js')} file. 
+      (https://fab.dev/guides/known-project-types#nextjs-9-dynamic-serverless)
+    `)
   }
 
   const notBuilt = (reason: string) => {
