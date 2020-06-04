@@ -47,7 +47,7 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   log(`Uploading assets to KV store...`)
   const api = await getCloudflareApi(api_token, account_id)
   if (!api.account_supports_kv) {
-    throw new InvalidConfigError(`💛Cannot deploy assets💛 to Cloudflare Workers 💛without KV store access💛.
+    throw new InvalidConfigError(`Cannot deploy assets to Cloudflare Workers without KV store access.
     Use an alternate asset host e.g. AWS S3
     🖤  (see https://fab.dev/guides/deploying for more info)🖤
     or upgrade your Cloudflare account.`)

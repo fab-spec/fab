@@ -26,7 +26,7 @@
       account_id: "@CF_WORKERS_ACCOUNT_ID",
       api_token: "@CF_WORKERS_API_TOKEN",
       workers_dev: true,
-      script_name: "fab-dev-manual-deploy",
+      script_name: "fab-dev-manual-deploy-weak",
       zone_id: "@FAB_DEV_ZONE_ID",
       route: "https://next.fab.dev/*"
     },
