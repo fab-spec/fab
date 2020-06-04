@@ -6,10 +6,10 @@ import path from 'path'
 
 const getPort = getPorts(NEXTJS_PORTS)
 
-describe('Create React App E2E Test', () => {
+describe('Nextjs E2E Test', () => {
   let cwd: string
 
-  it('should create a new CRA project', async () => {
+  it('should create a new Next project', async () => {
     cwd = await getWorkingDir('nextjs-test', !process.env.FAB_E2E_SKIP_CREATE)
     const { stdout: current_sha } = await cmd(`git rev-parse --short HEAD`, { cwd })
     const { stdout: current_branch } = await cmd(`git rev-parse --abbrev-ref HEAD`, {
@@ -20,7 +20,7 @@ describe('Create React App E2E Test', () => {
       await shell(`git reset --hard`, { cwd })
       await shell(`git clean -df`, { cwd })
     } else {
-      // Create a new CRA project inside
+      // Create a new NEXT project inside
       await shell(`yarn create next-app . -e`, { cwd })
       // Skip git stuff on Github, it's only for rerunning locally
       if (!process.env.GITHUB_WORKSPACE) {
