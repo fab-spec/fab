@@ -1,5 +1,6 @@
 const URL = require('url').URL
 const node_fetch = require('./vendor/node-fetch.2.3.0')
+const NodeCache = require('node-cache')
 const fab = require('./server')
 const PACKAGED_CONFIG = require('./packaged_config')
 
@@ -20,6 +21,42 @@ const enhanced_fetch = (url, init) => {
   }
 
   return node_fetch(url, init)
+}
+
+// Currently copied from @fab/server. In the future, if the caching layer becomes
+// configurable for a deploy (e.g. ElastiCache), then this should be moved to a
+// @fab/cache-node-inmemory package alongside a @fab/cache-aws-elasticache one.
+
+class Cache {
+  constructor() {
+    this.cache = new NodeCache()
+  }
+  async set(key, value, ttl_seconds) {
+    // if (value.hasOwnProperty(Symbol.asyncIterator)) {
+    // todo: read the stream to completion then store it
+    // }
+    this.cache.set(key, value, ttl_seconds || 0 /* unlimited */)
+  }
+  async setJSON(key, value, ttl_seconds) {
+    await this.set(key, JSON.stringify(value), ttl_seconds)
+  }
+  async get(key) {
+    return this.cache.get(key)
+  }
+  async getJSON(key) {
+    const val = await this.get(key)
+    return val && JSON.parse(val)
+  }
+  async getArrayBuffer(key) {
+    return this.cache.get(key)
+  }
+  async getNumber(key) {
+    return this.cache.get(key)
+  }
+  async getStream(key) {
+    // todo: create a new stream from the stored object to stream it out
+    return this.cache.get(key)
+  }
 }
 
 global.fetch = enhanced_fetch
