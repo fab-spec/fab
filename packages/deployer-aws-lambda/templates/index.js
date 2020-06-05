@@ -1,10 +1,10 @@
 const URL = require('url').URL
 const node_fetch = require('./vendor/node-fetch.2.3.0')
 const NodeCache = require('./vendor/node-cache.5.1.0')
-const fab = require('./server')
+const FAB = require('./server')
 const PACKAGED_CONFIG = require('./packaged_config')
 
-const prodSettings = fab.getProdSettings ? fab.getProdSettings() : {}
+const prodSettings = FAB.getProdSettings ? FAB.getProdSettings() : {}
 const settings = Object.assign({}, prodSettings, PACKAGED_CONFIG.env_overrides)
 
 //Need to set this to work around a bug in a dependency of the webpack http(s) shim
@@ -58,6 +58,12 @@ class Cache {
     return this.cache.get(key)
   }
 }
+
+const server_context = {
+  bundle_id: PACKAGED_CONFIG.bundle_id,
+  cache: new Cache(),
+}
+if (typeof FAB.initialize === 'function') FAB.initialize(server_context)
 
 global.fetch = enhanced_fetch
 global.Request = node_fetch.Request
@@ -202,7 +208,7 @@ exports.handler = async (event) => {
       : { method, headers, body }
   const fetch_request = new global.Request(url, options)
 
-  const fetch_result = await fab.render(fetch_request, settings)
+  const fetch_result = await FAB.render(fetch_request, settings)
   if (fetch_result instanceof global.Request) {
     return await handleRequest(fetch_result, cf_request)
   } else if (fetch_result instanceof global.Response) {
