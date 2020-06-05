@@ -88,11 +88,13 @@ export class FABRouter {
 }
 
 class NoopCache implements FabCache {
+  set = async () => {}
+  setJSON = async () => {}
   get = async () => undefined
+  getJSON = async () => undefined
   getArrayBuffer = async () => undefined
   getNumber = async () => undefined
   getStream = async () => undefined
-  set = async () => {}
 }
 
 export class FABRuntime<T extends PluginMetadata = PluginMetadata> {

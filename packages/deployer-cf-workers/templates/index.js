@@ -30,6 +30,34 @@ function ReadableStream({ start, cancel }) {
   return readable
 }
 
+class Cache {
+  async set(key, value, ttl_seconds) {
+    KV_FAB_CACHE.put(key, value, ttl_seconds ? { expirationTtl: ttl_seconds } : undefined)
+  }
+  async setJSON(key, value, ttl_seconds) {
+    await this.set(key, JSON.stringify(value), ttl_seconds)
+  }
+  async get(key) {
+    return KV_FAB_CACHE.get(key)
+  }
+  async getJSON(key) {
+    return KV_FAB_CACHE.get(key, 'json')
+  }
+  async getArrayBuffer(key) {
+    return KV_FAB_CACHE.get(key, 'arrayBuffer')
+  }
+  async getNumber(key) {
+    return KV_FAB_CACHE.get(key, 'json')
+  }
+  async getStream(key) {
+    return KV_FAB_CACHE.get(key, 'stream')
+  }
+}
+
+const HAS_KV_CACHE = typeof globalThis.KV_FAB_CACHE !== 'undefined'
+console.log({ KV_FAB_CACHE: globalThis.KV_FAB_CACHE })
+if (HAS_KV_CACHE) server_context.cache = new Cache()
+
 globalThis.orig_fetch = globalThis.fetch
 
 const assetFetch = async (pathname, init) => {

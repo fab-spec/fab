@@ -15,8 +15,17 @@ export class Cache implements FabCache {
     this.cache.set(key, value, ttl_seconds || 0 /* unlimited */)
   }
 
+  async setJSON(key: string, value: any, ttl_seconds?: number) {
+    await this.set(key, JSON.stringify(value), ttl_seconds)
+  }
+
   async get(key: string) {
     return this.cache.get<string>(key)
+  }
+
+  async getJSON(key: string) {
+    const val = await this.get(key)
+    return val && JSON.parse(val)
   }
 
   async getArrayBuffer(key: string) {
