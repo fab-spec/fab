@@ -19,7 +19,7 @@
     },
     indexOf = [].indexOf
 
-  clone = require('clone')
+  clone = require('./clone.2.1.2')
 
   EventEmitter = require('events').EventEmitter
 
