@@ -40,7 +40,6 @@
     "deterministic-zip": "^1.1.0",
     "fs-extra": "^8.1.0",
     "nanoid": "^2.1.11",
-    "node-cache": "^5.1.0",
     "zip-lib": "^0.5.0"
   },
   "publishConfig": {
