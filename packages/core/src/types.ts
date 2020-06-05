@@ -109,7 +109,7 @@ export type FabCache = {
 // To be extended with host-specific capabilities
 export type FABServerContext = {
   bundle_id: string
-  cache: FabCache
+  cache?: FabCache
 }
 
 export type ServerConstructor = (filename: string, args: ServerArgs) => ServerType

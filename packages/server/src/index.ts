@@ -12,6 +12,7 @@ import {
 import { _log, InvalidConfigError, JSON5Config } from '@fab/cli'
 import { readFilesFromZip } from './utils'
 import v8_sandbox from './sandboxes/v8-isolate'
+import { Cache } from './cache'
 import node_vm_sandbox from '@fab/sandbox-node-vm'
 import url from 'url'
 import http from 'http'
@@ -80,8 +81,10 @@ class Server implements ServerType {
         : await node_vm_sandbox(src, enhanced_fetch)
 
     const bundle_id = (await pathToSHA512(this.filename)).slice(0, 32)
+    const cache = new Cache()
     // Support pre v0.2 FABs
-    if (typeof renderer.initialize === 'function') renderer.initialize({ bundle_id })
+    if (typeof renderer.initialize === 'function')
+      renderer.initialize({ bundle_id, cache })
 
     log.tick(`Done. Booting VM...`)
 
