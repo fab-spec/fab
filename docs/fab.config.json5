@@ -5,9 +5,7 @@
       dir: 'dist'
     },
     './redirects.ts': {},
-    '@fab/plugin-render-html': {
-      fallback: '/index.html'
-    },
+    '@fab/plugin-render-html': {},
     '@fab/plugin-rewire-assets': {}
     // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins
   },
@@ -25,8 +23,8 @@
     "cf-workers": {
       account_id: "@CF_WORKERS_ACCOUNT_ID",
       api_token: "@CF_WORKERS_API_TOKEN",
-      workers_dev: true,
-      script_name: "fab-dev-manual-deploy-weak",
+      workers_dev: false,
+      script_name: "fab-dev-manual-deploy",
       zone_id: "@FAB_DEV_ZONE_ID",
       route: "https://next.fab.dev/*"
     },
