@@ -120,5 +120,32 @@ describe('Server-side logic tests', () => {
       expect(cito_time - des_time).toBeGreaterThan(500)
       expect(cito_time - des_time).toBeLessThan(1500)
     })
+
+    it('should hit an endpoint that caches the stream and responds once it is done', async () => {
+      const starting_time = new Date().getTime()
+
+      const promise = cwd_shell(`curl -sN http://localhost:${port}/cache-slowly`)
+
+      const lines_with_timestamps: { [line: string]: Date } = {}
+      promise.stdout!.on('data', (data) => {
+        data
+          .toString()
+          .split('\n')
+          .forEach((line: string) => {
+            lines_with_timestamps[line.trim()] = new Date()
+          })
+      })
+
+      await promise
+
+      const des_time = lines_with_timestamps['Des'].getTime()
+      const pa_time = lines_with_timestamps['pa'].getTime()
+      const cito_time = lines_with_timestamps['cito.'].getTime()
+
+      // Assert that the response takes a while to arrive, but then arrives all at once.
+      expect(des_time - starting_time).toBeGreaterThan(1000)
+      expect(pa_time - des_time).toBeLessThan(10)
+      expect(cito_time - pa_time).toBeLessThan(10)
+    })
   })
 })
