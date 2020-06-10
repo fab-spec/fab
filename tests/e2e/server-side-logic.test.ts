@@ -121,7 +121,11 @@ describe('Server-side logic tests', () => {
       expect(cito_time - des_time).toBeLessThan(1500)
     })
 
-    it('should hit an endpoint that caches the stream and responds once it is done', async () => {
+    describe('should hit endpoints with different caching/streaming timings', async () => {
+      const cases = [
+        { endpoint: '/fetch-stream-through', initial_delay: 0, line_delay: 500 },
+        { endpoint: '/fetch-cache-serve', initial_delay: 1000, line_delay: 0 },
+      ]
       const starting_time = new Date().getTime()
 
       const promise = cwd_shell(`curl -sN http://localhost:${port}/cache-slowly`)

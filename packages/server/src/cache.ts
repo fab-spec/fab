@@ -1,5 +1,7 @@
 import { FabCache, FabCacheValue } from '@fab/core'
 import NodeCache from 'node-cache'
+import Stream from 'stream'
+
 export class Cache implements FabCache {
   private cache: NodeCache
 
@@ -8,7 +10,14 @@ export class Cache implements FabCache {
   }
 
   async set(key: string, value: FabCacheValue, ttl_seconds?: number) {
-    console.log()
+    this.cache.set(
+      key,
+      await this.readAllIfStream(value),
+      ttl_seconds || 0 /* unlimited */
+    )
+  }
+
+  private async readAllIfStream(value: FabCacheValue) {
     if (typeof (value as ReadableStream).getReader === 'function') {
       const reader = (value as ReadableStream<string>).getReader()
 
@@ -20,10 +29,16 @@ export class Cache implements FabCache {
         buffer = Buffer.concat([buffer, enc.encode(chunk.value)])
         chunk = await reader.read()
       }
-      this.cache.set(key, buffer, ttl_seconds || 0 /* unlimited */)
-    } else {
-      this.cache.set(key, value, ttl_seconds || 0 /* unlimited */)
+      return buffer
+    } else if (value instanceof Stream) {
+      const chunks: Uint8Array[] = []
+      return await new Promise((resolve, reject) => {
+        value.on('data', (chunk) => chunks.push(chunk))
+        value.on('error', reject)
+        value.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
+      })
     }
+    return value
   }
 
   async setJSON(key: string, value: any, ttl_seconds?: number) {

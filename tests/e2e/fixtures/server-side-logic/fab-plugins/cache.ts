@@ -3,7 +3,7 @@ import { FABRuntime } from '@fab/core'
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 export default ({ Router, Cache }: FABRuntime) => {
-  Router.on('/respond-slowly', async ({ url }) => {
+  Router.on('/fetch-stream-through', async ({ url }) => {
     const response = await fetch(`${url.origin}/slowly`)
     return new Response(response.body, {
       headers: {
@@ -12,7 +12,7 @@ export default ({ Router, Cache }: FABRuntime) => {
     })
   })
 
-  Router.on('/cache-slowly', async ({ url }) => {
+  Router.on('/stream-into-cache', async ({ url }) => {
     const stream = new ReadableStream({
       async start(controller) {
         controller.enqueue('Des\n')
@@ -23,8 +23,19 @@ export default ({ Router, Cache }: FABRuntime) => {
         controller.close()
       },
     })
-    await Cache.set('cache-slow-response', stream)
-    const cached_stream = await Cache.getStream('cache-slow-response')
+    await Cache.set('stream-into-cache', stream)
+    const cached_stream = await Cache.getStream('stream-into-cache')
+    return new Response(cached_stream, {
+      headers: {
+        'content-type': 'text/plain',
+      },
+    })
+  })
+
+  Router.on('/fetch-cache-serve', async ({ url }) => {
+    const response = await fetch(`${url.origin}/slowly`)
+    await Cache.set('fetch-cache-serve', response.body!)
+    const cached_stream = await Cache.getStream('fetch-cache-serve')
     return new Response(cached_stream, {
       headers: {
         'content-type': 'text/plain',

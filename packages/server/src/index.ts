@@ -20,6 +20,7 @@ import express from 'express'
 import concat from 'concat-stream'
 import fetch, { Request as NodeFetchRequest } from 'cross-fetch'
 import { pathToSHA512 } from 'file-to-sha512'
+import Stream from 'stream'
 
 function isRequest(fetch_res: Request | Response): fetch_res is Request {
   return (
@@ -140,15 +141,23 @@ class Server implements ServerType {
               res.set(header, values.length === 1 ? values[0] : values)
             })
 
-            if (fetch_res.body) {
-              if (typeof fetch_res.body.getReader === 'function') {
-                const reader = fetch_res.body.getReader()
+            const body = fetch_res.body
+            if (body) {
+              if (typeof body.getReader === 'function') {
+                const reader = body.getReader()
                 let x
                 while ((x = await reader.read())) {
                   const { done, value } = x
                   if (done) break
                   if (value) res.write(value)
                 }
+                res.end()
+              } else if (body instanceof Stream) {
+                await new Promise((resolve, reject) => {
+                  body.on('data', (chunk) => res.write(chunk))
+                  body.on('error', reject)
+                  body.on('end', resolve)
+                })
                 res.end()
               } else {
                 const blob = await fetch_res.arrayBuffer()
