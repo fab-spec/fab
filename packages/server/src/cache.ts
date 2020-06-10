@@ -1,6 +1,5 @@
 import { FabCache, FabCacheValue } from '@fab/core'
 import NodeCache from 'node-cache'
-
 export class Cache implements FabCache {
   private cache: NodeCache
 
@@ -9,10 +8,22 @@ export class Cache implements FabCache {
   }
 
   async set(key: string, value: FabCacheValue, ttl_seconds?: number) {
-    // if (value.hasOwnProperty(Symbol.asyncIterator)) {
-    // todo: read the stream to completion then store it
-    // }
-    this.cache.set(key, value, ttl_seconds || 0 /* unlimited */)
+    console.log()
+    if (typeof (value as ReadableStream).getReader === 'function') {
+      const reader = (value as ReadableStream<string>).getReader()
+
+      let chunk = await reader.read()
+      let buffer = Buffer.from([])
+      const enc = new TextEncoder()
+
+      while (!chunk.done) {
+        buffer = Buffer.concat([buffer, enc.encode(chunk.value)])
+        chunk = await reader.read()
+      }
+      this.cache.set(key, buffer, ttl_seconds || 0 /* unlimited */)
+    } else {
+      this.cache.set(key, value, ttl_seconds || 0 /* unlimited */)
+    }
   }
 
   async setJSON(key: string, value: any, ttl_seconds?: number) {
