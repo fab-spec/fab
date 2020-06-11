@@ -62,6 +62,8 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
       url,
       context,
     })
+    console.log('RUNTIME INDEX')
+    console.log({ response })
     if (!response) continue
 
     if (response instanceof Request) {

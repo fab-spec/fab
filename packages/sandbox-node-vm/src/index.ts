@@ -1,9 +1,10 @@
 import vm from 'vm'
 import * as fetch from 'node-fetch'
 import { FabSpecExports } from '@fab/core'
-// @ts-ignore
-import { ReadableStream } from 'web-streams-ponyfill'
 import Stream from 'stream'
+// @ts-ignore
+import { ReadableStream as _RS } from 'web-streams-ponyfill'
+const WebReadableStream: typeof ReadableStream = _RS
 
 /*
  * We're using node-fetch under the hood, which has a hard-coded check on the body:
@@ -14,8 +15,8 @@ import Stream from 'stream'
  * doing what we want. See https://github.com/node-fetch/node-fetch/pull/848
  *
  * */
-function HybridReadableStream(...args: any[]) {
-  const readableStream = new ReadableStream(...args)
+export function HybridReadableStream(...args: any[]) {
+  const readableStream = new WebReadableStream(...args)
   return new Proxy(readableStream, {
     getPrototypeOf() {
       return Stream.Readable.prototype

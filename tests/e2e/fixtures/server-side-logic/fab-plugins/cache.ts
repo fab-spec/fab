@@ -38,7 +38,9 @@ export default ({ Router, Cache }: FABRuntime) => {
 
   Router.on('/cache-stream-return-stream', async () => {
     await streamIntoCache('cache-stream-return-stream')
-    return new Response(await Cache.getStream('cache-stream-return-stream'))
+    const body = await Cache.getStream('cache-stream-return-stream')
+    console.log({ body })
+    return new Response(body)
   })
 
   Router.on('/fetch-cache-serve', async ({ url }) => {

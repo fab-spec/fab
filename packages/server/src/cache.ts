@@ -1,9 +1,11 @@
 import { FabCache, FabCacheValue } from '@fab/core'
 import NodeCache from 'node-cache'
 import Stream from 'stream'
+
+/* We need something that node-fetch Response treats as a stream */
+import { HybridReadableStream as _HRS } from '@fab/sandbox-node-vm'
 // @ts-ignore
-import { ReadableStream as _RS } from 'web-streams-ponyfill'
-const WebReadableStream: typeof ReadableStream = _RS
+const HybridReadableStream: typeof ReadableStream = _HRS
 
 export class Cache implements FabCache {
   private cache: NodeCache
@@ -47,7 +49,7 @@ export class Cache implements FabCache {
 
     console.log(buffer.toString('utf8'))
 
-    const webReadableStream = new WebReadableStream({
+    const webReadableStream = new HybridReadableStream({
       async pull(controller) {
         controller.enqueue(buffer)
         controller.close()

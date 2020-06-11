@@ -1,7 +1,7 @@
 {
   plugins: {
     '@fab/input-static': { dir: 'public' },
-    '@fab/plugin-render-html': { fallback: '/index.html' },
+    '@fab/plugin-render-html': { fallback: false },
     '@fab/plugin-rewire-assets': {},
     './fab-plugins/hello-world': {},
     './fab-plugins/add-bundle-id': {},
