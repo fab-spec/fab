@@ -43,17 +43,24 @@ export default ({ Router, Cache }: FABRuntime) => {
     return new Response(body)
   })
 
-  Router.on('/fetch-cache-serve', async ({ url }) => {
+  Router.on('/fetch-cache-return-buffer', async ({ url }) => {
     const response = await fetch(`${url.origin}/slowly`)
-    await Cache.set('fetch-cache-serve', response.body!)
-    const cached_stream = await Cache.getStream('fetch-cache-serve')
+    await Cache.set('fetch-cache-return-buffer', response.body!)
+    const cached_stream = await Cache.getArrayBuffer('fetch-cache-return-buffer')
     return new Response(cached_stream)
   })
 
-  Router.on('/fetch-cache-accum-send', async ({ url }) => {
+  Router.on('/fetch-cache-return-stream', async ({ url }) => {
     const response = await fetch(`${url.origin}/slowly`)
-    await Cache.set('fetch-cache-stream', response.body!)
-    const cached_stream = await Cache.getStream('fetch-cache-stream')
+    await Cache.set('fetch-cache-return-stream', response.body!)
+    const cached_stream = await Cache.getStream('fetch-cache-return-stream')
+    return new Response(cached_stream)
+  })
+
+  Router.on('/fetch-cache-accum-return', async ({ url }) => {
+    const response = await fetch(`${url.origin}/slowly`)
+    await Cache.set('fetch-cache-accum-return', response.body!)
+    const cached_stream = await Cache.getStream('fetch-cache-accum-return')
 
     const reader = cached_stream!.getReader()
 

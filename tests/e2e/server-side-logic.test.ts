@@ -130,9 +130,9 @@ describe('Server-side logic tests', () => {
         { endpoint: '/fetch-await-body', initial_delay: 1000, line_delay: 0 },
         { endpoint: '/cache-stream-return-buffer', initial_delay: 1000, line_delay: 0 },
         { endpoint: '/cache-stream-return-stream', initial_delay: 1000, line_delay: 0 },
-        // { endpoint: '/stream-into-cache', initial_delay: 1000, line_delay: 0 },
-        // { endpoint: '/fetch-cache-serve', initial_delay: 1000, line_delay: 0 },
-        // { endpoint: '/fetch-cache-accum-send', initial_delay: 1000, line_delay: 0 },
+        { endpoint: '/fetch-cache-return-buffer', initial_delay: 1000, line_delay: 0 },
+        { endpoint: '/fetch-cache-return-stream', initial_delay: 1000, line_delay: 0 },
+        { endpoint: '/fetch-cache-accum-return', initial_delay: 1000, line_delay: 0 },
       ]
       cases.forEach(({ endpoint, initial_delay, line_delay }) => {
         it(`should observe the correct timings on ${endpoint}`, async () => {
