@@ -42,15 +42,20 @@ export class Cache implements FabCache {
   }
 
   async getStream(key: string) {
-    const buffer = this.cache.get<ArrayBuffer>(key)
+    const buffer = this.cache.get<Buffer>(key)
     if (!buffer) return undefined
 
-    return new WebReadableStream({
+    console.log(buffer.toString('utf8'))
+
+    const webReadableStream = new WebReadableStream({
       async pull(controller) {
         controller.enqueue(buffer)
         controller.close()
       },
     })
+    console.log({ webReadableStream })
+    console.log(webReadableStream.getReader)
+    return webReadableStream
   }
 
   private async readAllIfStream(value: FabCacheValue) {
@@ -62,16 +67,20 @@ export class Cache implements FabCache {
       const enc = new TextEncoder()
 
       while (!chunk.done) {
+        console.log({ chunk })
+        console.log(enc.encode(chunk.value))
         buffer = Buffer.concat([buffer, enc.encode(chunk.value)])
         chunk = await reader.read()
       }
+      console.log({ buffer })
+      console.log(buffer.toString('utf8'))
       return buffer
     } else if (value instanceof Stream) {
       const chunks: Uint8Array[] = []
       return await new Promise((resolve, reject) => {
         value.on('data', (chunk) => chunks.push(chunk))
         value.on('error', reject)
-        value.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
+        value.on('end', () => resolve(Buffer.concat(chunks)))
       })
     }
     return value

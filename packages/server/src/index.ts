@@ -142,8 +142,10 @@ class Server implements ServerType {
             })
 
             const body = fetch_res.body
+            console.log({ body })
             if (body) {
               if (typeof body.getReader === 'function') {
+                console.log('dis one')
                 const reader = body.getReader()
                 let x
                 while ((x = await reader.read())) {
@@ -153,6 +155,7 @@ class Server implements ServerType {
                 }
                 res.end()
               } else if (body instanceof Stream) {
+                console.log('no dis')
                 await new Promise((resolve, reject) => {
                   body.on('data', (chunk) => res.write(chunk))
                   body.on('error', reject)
@@ -160,6 +163,7 @@ class Server implements ServerType {
                 })
                 res.end()
               } else {
+                console.log('no diss')
                 const blob = await fetch_res.arrayBuffer()
                 res.send(Buffer.from(blob))
               }

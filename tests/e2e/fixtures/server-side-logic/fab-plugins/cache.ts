@@ -3,9 +3,18 @@ import { FABRuntime } from '@fab/core'
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 export default ({ Router, Cache }: FABRuntime) => {
-  Router.on('/fetch-stream-through', async ({ url }) => {
+  Router.on('/return-fetch', async ({ url }) => {
+    return await fetch(`${url.origin}/slowly`)
+  })
+
+  Router.on('/fetch-return-body', async ({ url }) => {
     const response = await fetch(`${url.origin}/slowly`)
     return new Response(response.body)
+  })
+
+  Router.on('/fetch-await-body', async ({ url }) => {
+    const response = await fetch(`${url.origin}/slowly`)
+    return new Response(await response.text())
   })
 
   Router.on('/stream-into-cache', async ({ url }) => {
@@ -20,7 +29,7 @@ export default ({ Router, Cache }: FABRuntime) => {
       },
     })
     await Cache.set('stream-into-cache', stream)
-    const cached_stream = await Cache.getStream('stream-into-cache')
+    const cached_stream = await Cache.getArrayBuffer('stream-into-cache')
     return new Response(cached_stream)
   })
 
