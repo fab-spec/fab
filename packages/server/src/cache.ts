@@ -1,6 +1,9 @@
 import { FabCache, FabCacheValue } from '@fab/core'
 import NodeCache from 'node-cache'
 import Stream from 'stream'
+// @ts-ignore
+import { ReadableStream as _RS } from 'web-streams-ponyfill'
+const WebReadableStream: typeof ReadableStream = _RS
 
 export class Cache implements FabCache {
   private cache: NodeCache
@@ -15,30 +18,6 @@ export class Cache implements FabCache {
       await this.readAllIfStream(value),
       ttl_seconds || 0 /* unlimited */
     )
-  }
-
-  private async readAllIfStream(value: FabCacheValue) {
-    if (typeof (value as ReadableStream).getReader === 'function') {
-      const reader = (value as ReadableStream<string>).getReader()
-
-      let chunk = await reader.read()
-      let buffer = Buffer.from([])
-      const enc = new TextEncoder()
-
-      while (!chunk.done) {
-        buffer = Buffer.concat([buffer, enc.encode(chunk.value)])
-        chunk = await reader.read()
-      }
-      return buffer
-    } else if (value instanceof Stream) {
-      const chunks: Uint8Array[] = []
-      return await new Promise((resolve, reject) => {
-        value.on('data', (chunk) => chunks.push(chunk))
-        value.on('error', reject)
-        value.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
-      })
-    }
-    return value
   }
 
   async setJSON(key: string, value: any, ttl_seconds?: number) {
@@ -63,7 +42,38 @@ export class Cache implements FabCache {
   }
 
   async getStream(key: string) {
-    // todo: create a new stream from the stored object to stream it out
-    return this.cache.get<ReadableStream>(key)
+    const buffer = this.cache.get<ArrayBuffer>(key)
+    if (!buffer) return undefined
+
+    return new WebReadableStream({
+      async pull(controller) {
+        controller.enqueue(buffer)
+        controller.close()
+      },
+    })
+  }
+
+  private async readAllIfStream(value: FabCacheValue) {
+    if (typeof (value as ReadableStream).getReader === 'function') {
+      const reader = (value as ReadableStream<string>).getReader()
+
+      let chunk = await reader.read()
+      let buffer = Buffer.from([])
+      const enc = new TextEncoder()
+
+      while (!chunk.done) {
+        buffer = Buffer.concat([buffer, enc.encode(chunk.value)])
+        chunk = await reader.read()
+      }
+      return buffer
+    } else if (value instanceof Stream) {
+      const chunks: Uint8Array[] = []
+      return await new Promise((resolve, reject) => {
+        value.on('data', (chunk) => chunks.push(chunk))
+        value.on('error', reject)
+        value.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
+      })
+    }
+    return value
   }
 }
