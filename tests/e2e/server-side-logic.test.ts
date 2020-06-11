@@ -120,5 +120,51 @@ describe('Server-side logic tests', () => {
       expect(cito_time - des_time).toBeGreaterThan(500)
       expect(cito_time - des_time).toBeLessThan(1500)
     })
+
+    /* Generic version of the previous test case, testing different interplays
+     * between streams and caches. */
+    describe('should hit endpoints with different caching/streaming timings', () => {
+      const cases = [
+        { endpoint: '/return-fetch', initial_delay: 0, line_delay: 500 },
+        { endpoint: '/fetch-return-body', initial_delay: 0, line_delay: 500 },
+        { endpoint: '/fetch-await-body', initial_delay: 1000, line_delay: 0 },
+        { endpoint: '/cache-stream-return-buffer', initial_delay: 1000, line_delay: 0 },
+        { endpoint: '/cache-stream-return-stream', initial_delay: 1000, line_delay: 0 },
+        { endpoint: '/fetch-cache-return-buffer', initial_delay: 1000, line_delay: 0 },
+        { endpoint: '/fetch-cache-return-stream', initial_delay: 1000, line_delay: 0 },
+        { endpoint: '/fetch-cache-accum-return', initial_delay: 1000, line_delay: 0 },
+      ]
+      cases.forEach(({ endpoint, initial_delay, line_delay }) => {
+        it(`should observe the correct timings on ${endpoint}`, async () => {
+          const starting_time = new Date().getTime()
+
+          const promise = cwd_shell(`curl -sN http://localhost:${port}${endpoint}`)
+          let stdout = ''
+
+          const lines_with_timestamps: { [line: string]: Date } = {}
+          promise.stdout!.on('data', (data) => {
+            const chunk = data.toString()
+            stdout += chunk
+            chunk.split('\n').forEach((line: string) => {
+              lines_with_timestamps[line.trim()] = new Date()
+            })
+          })
+
+          await promise
+
+          expect(stdout).toContain('Des\npa\ncito')
+
+          const des_time = lines_with_timestamps['Des'].getTime()
+          const pa_time = lines_with_timestamps['pa'].getTime()
+          const cito_time = lines_with_timestamps['cito.'].getTime()
+
+          // Assert that the response takes a while to arrive, but then arrives all at once.
+          expect(des_time - starting_time).toBeCloseTo(initial_delay, -2)
+          expect(pa_time - des_time).toBeCloseTo(line_delay, -2)
+          expect(cito_time - pa_time).toBeCloseTo(line_delay, -2)
+          expect(cito_time - des_time).toBeCloseTo(line_delay * 2, -2)
+        })
+      })
+    })
   })
 })

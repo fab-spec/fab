@@ -124,7 +124,7 @@ export const updateCloudFront = async (
 
     log.tick(`Done.`)
   } catch (e) {
-    log(`❌ Invalidation failed. Could be a permissions issue?`)
+    log.cross(`Invalidation failed. Could be a permissions issue?`)
   }
   log(`Updated the following domain names:
     ${domains.map((d) => `💛  ${d}💛`).join('\n')}

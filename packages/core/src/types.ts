@@ -97,9 +97,21 @@ export type FabMetadata = {
   plugin_metadata: PluginMetadata
 }
 
+export type FabCacheValue = string | number | ArrayBuffer | ReadableStream
+export type FabCache = {
+  set: (key: string, value: FabCacheValue, ttl_seconds?: number) => Promise<void>
+  setJSON: (key: string, value: any, ttl_seconds?: number) => Promise<void>
+  get: (key: string) => Promise<string | undefined>
+  getJSON: (key: string) => Promise<any | undefined>
+  getNumber: (key: string) => Promise<number | undefined>
+  getArrayBuffer: (key: string) => Promise<ArrayBuffer | undefined>
+  getStream: (key: string) => Promise<ReadableStream | undefined>
+}
+
 // To be extended with host-specific capabilities
 export type FABServerContext = {
   bundle_id: string
+  cache?: FabCache
 }
 
 export type ServerConstructor = (filename: string, args: ServerArgs) => ServerType

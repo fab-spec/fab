@@ -4,6 +4,7 @@ import path from 'path'
 import nanoid from 'nanoid'
 import { Zip, extract } from 'zip-lib'
 import { log } from './utils'
+import { pathToSHA512 } from 'file-to-sha512'
 
 export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   fab_path: string,
@@ -19,6 +20,9 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   log.tick(`Generated working dir in 💛${work_dir}💛`)
   await extract(fab_path, work_dir)
   log.tick(`Unpacked FAB`)
+
+  const bundle_id = (await pathToSHA512(fab_path)).slice(0, 32)
+
   await fs.copy(path.join(__dirname, '../templates'), work_dir)
   log.tick(`Copied AWS Lambda shim`)
 
@@ -28,6 +32,7 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
     assets_url: stripTrailingSlash(assets_url),
     assets_domain: parsed.hostname,
     assets_path_prefix: stripTrailingSlash(parsed.pathname),
+    bundle_id,
   }
 
   await fs.writeFile(

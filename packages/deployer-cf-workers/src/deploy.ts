@@ -35,7 +35,8 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   log(`Starting 💛assets💛 deploy...`)
 
   const { account_id, api_token, script_name } = config
-  const kv_namespace = `FAB assets (${script_name})`
+  log.tick(`Config valid, checking API token...`)
+  const asset_namespace = `FAB assets (${script_name})`
 
   const extracted_dir = path.join(package_dir, `cf-workers-${nanoid()}`)
   await fs.ensureDir(extracted_dir)
@@ -44,43 +45,15 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   log.tick(`Unpacked FAB.`)
 
   log(`Uploading assets to KV store...`)
-  const api = await getApi(api_token)
-  const list_namespaces_response = await api.get(
-    `/accounts/${account_id}/storage/kv/namespaces`
-  )
-  if (!list_namespaces_response.success) {
-    throw new FabDeployError(`Error listing namespaces for account 💛${account_id}💛:
-    ❤️${JSON.stringify(list_namespaces_response)}❤️`)
+  const api = await getCloudflareApi(api_token, account_id)
+  if (!api.account_supports_kv) {
+    throw new InvalidConfigError(`Cannot deploy assets to Cloudflare Workers without KV store access.
+    Use an alternate asset host e.g. AWS S3
+    🖤  (see https://fab.dev/guides/deploying for more info)🖤
+    or upgrade your Cloudflare account.`)
   }
 
-  const namespace = {
-    id: '',
-    existing_files: [],
-  }
-
-  const existing_namespace = list_namespaces_response.result.find(
-    (r: any) => r.title === kv_namespace
-  )
-  if (existing_namespace) {
-    log.tick(`Reusing existing KV namespace 💛${kv_namespace}💛.`)
-    namespace.id = existing_namespace.id
-
-    // log(`Fetching existing entries`)
-  } else {
-    log(`Creating KV namespace 💛${kv_namespace}💛...`)
-    const create_namespace_response = await api.post(
-      `/accounts/${account_id}/storage/kv/namespaces`,
-      {
-        body: JSON.stringify({ title: kv_namespace }),
-      }
-    )
-    if (!create_namespace_response.success) {
-      throw new FabDeployError(`Error creating namespace 💛${account_id}💛:
-      ❤️${JSON.stringify(create_namespace_response)}❤️`)
-    }
-    log.tick(`Created.`)
-    namespace.id = create_namespace_response.result.id
-  }
+  const namespace = await api.getOrCreateNamespace(asset_namespace)
 
   log(`Uploading files...`)
   const files = await globby(['_assets/**/*'], { cwd: extracted_dir })
@@ -133,101 +106,28 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
 
   const { account_id, zone_id, route, api_token, workers_dev, script_name } = config
 
-  if (!workers_dev) {
-    checkValidityForZoneRoutes(config)
-
-    const api = await getApi(api_token)
-    await packageAndUpload(
-      fab_path,
-      package_path,
-      config,
-      env_overrides,
-      assets_url,
-      api,
-      account_id,
-      script_name
-    )
-
-    const list_routes_response = await api.get(`/zones/${zone_id}/workers/routes`)
-    if (!list_routes_response.success) {
-      throw new FabDeployError(`Error listing routes on zone 💛${zone_id}💛:
-      ❤️${JSON.stringify(list_routes_response)}❤️`)
-    }
-
-    const existing_route = list_routes_response.result.find(
-      (r: any) => r.pattern === route
-    )
-    if (existing_route) {
-      const { id, script } = existing_route
-      if (script === script_name) {
-        log(
-          `💚Route already exists!💚: pattern 💛${route}💛 already points at script 💛${script_name}💛`
-        )
-      } else {
-        log(`Found existing route id 💛${id}💛, updating...`)
-        const update_route_response = await api.put(
-          `/zones/${zone_id}/workers/routes/${id}`,
-          {
-            body: JSON.stringify({ pattern: route, script: script_name }),
-          }
-        )
-        if (!update_route_response.success) {
-          throw new FabDeployError(`Error publishing to route 💛${route}💛 on zone 💛${zone_id}💛:
-        ❤️${JSON.stringify(update_route_response)}❤️`)
-        }
-      }
-    } else {
-      log(
-        `No existing route found for 💛${route}💛, creating one to point to script 💛${script_name}💛`
-      )
-      const create_route_response = await api.post(`/zones/${zone_id}/workers/routes`, {
-        body: JSON.stringify({ pattern: route, script: script_name }),
-      })
-      if (!create_route_response.success) {
-        throw new FabDeployError(`Error publishing to route 💛${route}💛 on zone 💛${zone_id}💛:
-      ❤️${JSON.stringify(create_route_response)}❤️`)
-      }
-    }
-    log.tick(`Done.`)
-    log.time((d) => `Deployed in ${d}.`)
-
-    return new URL(route).origin
-  } else {
+  if (workers_dev) {
     checkValidityForWorkersDev(config)
+  } else {
+    checkValidityForZoneRoutes(config)
+  }
+  const api = await getCloudflareApi(api_token, account_id)
 
-    const api = await getApi(api_token)
-    await packageAndUpload(
-      fab_path,
-      package_path,
-      config,
-      env_overrides,
-      assets_url,
-      api,
-      account_id,
-      script_name
-    )
+  await packageAndUpload(
+    fab_path,
+    package_path,
+    config,
+    env_overrides,
+    assets_url,
+    api,
+    account_id,
+    script_name
+  )
 
-    const subdomain_response = await api.get(`/accounts/${account_id}/workers/subdomain`)
-    if (!subdomain_response.success) {
-      throw new FabDeployError(`Error getting your workers.dev subdomain:
-      ❤️${JSON.stringify(subdomain_response)}❤️`)
-    }
-    const { subdomain } = subdomain_response.result
-
-    const publish_response = await api.post(
-      `/accounts/${account_id}/workers/scripts/${script_name}/subdomain`,
-      {
-        body: JSON.stringify({ enabled: true }),
-      }
-    )
-    if (!publish_response.success) {
-      throw new FabDeployError(`Error publishing the script on a workers.dev subdomain, got response:
-      ❤️${JSON.stringify(publish_response)}❤️`)
-    }
-    log.tick(`Done.`)
-    log.time((d) => `Deployed in ${d}.`)
-
-    return `https://${script_name}.${subdomain}.workers.dev`
+  if (workers_dev) {
+    return await publishOnWorkersDev(api, account_id, script_name)
+  } else {
+    return await publishOnZoneRoute(api, zone_id, route, script_name)
   }
 }
 
@@ -248,6 +148,7 @@ function checkValidityForWorkersDev(config: ConfigTypes.CFWorkers) {
     log(`💚NOTE:💚 ignoring the following config as deploys with 💛workers_dev: true💛 don't need them:
       ${ignored_config.map((k) => `💛• ${k}: ${config[k]}💛`).join('\n')}`)
   }
+  log.tick(`Config valid.`)
 }
 
 function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
@@ -263,11 +164,7 @@ function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
     throw new InvalidConfigError(`Missing required keys for @fab/deploy-cf-workers (with 💛workers_dev: false💛):
     ${missing_config.map((k) => `💛• ${k}💛`).join('\n')}`)
   }
-}
-
-async function getApi(api_token: string) {
-  log.tick(`Config valid, checking API token...`)
-  return await getCloudflareApi(api_token)
+  log.tick(`Config valid.`)
 }
 
 async function packageAndUpload(
@@ -280,12 +177,24 @@ async function packageAndUpload(
   account_id: string,
   script_name: string
 ) {
-  log.tick(`API token valid, packaging...`)
   await createPackage(fab_path, package_path, config, env_overrides, assets_url)
-  log.time(`Uploading script...`)
-
   const bindings = []
 
+  if (api.account_supports_kv) {
+    const cache_namespace = `FAB cache (${script_name})`
+    const namespace = await api.getOrCreateNamespace(cache_namespace)
+    bindings.push({
+      type: 'kv_namespace',
+      name: 'KV_FAB_CACHE',
+      namespace_id: namespace.id,
+    })
+  } else {
+    log.note(`Cloudflare KV support required for caching.
+    Your FAB will not break but no caching will be possible between requests.
+    See 🖤https://fab.dev/kb/caching🖤 for more information.`)
+  }
+
+  log.time(`Uploading script...`)
   const assets_in_kv = assets_url.match(/kv:\/\/(\w+)/)
   if (assets_in_kv) {
     const [_, namespace_id] = assets_in_kv
@@ -321,4 +230,82 @@ async function packageAndUpload(
     ❤️${JSON.stringify(upload_response)}❤️`)
   }
   log.tick(`Uploaded, publishing...`)
+}
+
+async function publishOnWorkersDev(
+  api: CloudflareApi,
+  account_id: string,
+  script_name: string
+) {
+  const subdomain_response = await api.get(`/accounts/${account_id}/workers/subdomain`)
+  if (!subdomain_response.success) {
+    throw new FabDeployError(`Error getting your workers.dev subdomain:
+      ❤️${JSON.stringify(subdomain_response)}❤️`)
+  }
+  const { subdomain } = subdomain_response.result
+
+  const publish_response = await api.post(
+    `/accounts/${account_id}/workers/scripts/${script_name}/subdomain`,
+    {
+      body: JSON.stringify({ enabled: true }),
+    }
+  )
+  if (!publish_response.success) {
+    throw new FabDeployError(`Error publishing the script on a workers.dev subdomain, got response:
+      ❤️${JSON.stringify(publish_response)}❤️`)
+  }
+  log.tick(`Done.`)
+  log.time((d) => `Deployed in ${d}.`)
+
+  return `https://${script_name}.${subdomain}.workers.dev`
+}
+
+async function publishOnZoneRoute(
+  api: CloudflareApi,
+  zone_id: string,
+  route: string,
+  script_name: string
+) {
+  const list_routes_response = await api.get(`/zones/${zone_id}/workers/routes`)
+  if (!list_routes_response.success) {
+    throw new FabDeployError(`Error listing routes on zone 💛${zone_id}💛:
+      ❤️${JSON.stringify(list_routes_response)}❤️`)
+  }
+
+  const existing_route = list_routes_response.result.find((r: any) => r.pattern === route)
+  if (existing_route) {
+    const { id, script } = existing_route
+    if (script === script_name) {
+      log(
+        `💚Route already exists!💚: pattern 💛${route}💛 already points at script 💛${script_name}💛`
+      )
+    } else {
+      log(`Found existing route id 💛${id}💛, updating...`)
+      const update_route_response = await api.put(
+        `/zones/${zone_id}/workers/routes/${id}`,
+        {
+          body: JSON.stringify({ pattern: route, script: script_name }),
+        }
+      )
+      if (!update_route_response.success) {
+        throw new FabDeployError(`Error publishing to route 💛${route}💛 on zone 💛${zone_id}💛:
+        ❤️${JSON.stringify(update_route_response)}❤️`)
+      }
+    }
+  } else {
+    log(
+      `No existing route found for 💛${route}💛, creating one to point to script 💛${script_name}💛`
+    )
+    const create_route_response = await api.post(`/zones/${zone_id}/workers/routes`, {
+      body: JSON.stringify({ pattern: route, script: script_name }),
+    })
+    if (!create_route_response.success) {
+      throw new FabDeployError(`Error publishing to route 💛${route}💛 on zone 💛${zone_id}💛:
+      ❤️${JSON.stringify(create_route_response)}❤️`)
+    }
+  }
+  log.tick(`Done.`)
+  log.time((d) => `Deployed in ${d}.`)
+
+  return new URL(route).origin
 }

@@ -4,10 +4,8 @@
     '@fab/input-static': {
       dir: 'dist'
     },
-    './redirects.js': {},
-    '@fab/plugin-render-html': {
-      fallback: '/index.html'
-    },
+    './redirects.ts': {},
+    '@fab/plugin-render-html': {},
     '@fab/plugin-rewire-assets': {}
     // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins
   },

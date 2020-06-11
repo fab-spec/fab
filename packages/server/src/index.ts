@@ -12,6 +12,7 @@ import {
 import { _log, InvalidConfigError, JSON5Config } from '@fab/cli'
 import { readFilesFromZip } from './utils'
 import v8_sandbox from './sandboxes/v8-isolate'
+import { Cache } from './cache'
 import node_vm_sandbox from '@fab/sandbox-node-vm'
 import url from 'url'
 import http from 'http'
@@ -19,6 +20,7 @@ import express from 'express'
 import concat from 'concat-stream'
 import fetch, { Request as NodeFetchRequest } from 'cross-fetch'
 import { pathToSHA512 } from 'file-to-sha512'
+import Stream from 'stream'
 
 function isRequest(fetch_res: Request | Response): fetch_res is Request {
   return (
@@ -80,8 +82,10 @@ class Server implements ServerType {
         : await node_vm_sandbox(src, enhanced_fetch)
 
     const bundle_id = (await pathToSHA512(this.filename)).slice(0, 32)
+    const cache = new Cache()
     // Support pre v0.2 FABs
-    if (typeof renderer.initialize === 'function') renderer.initialize({ bundle_id })
+    if (typeof renderer.initialize === 'function')
+      renderer.initialize({ bundle_id, cache })
 
     log.tick(`Done. Booting VM...`)
 
@@ -137,15 +141,23 @@ class Server implements ServerType {
               res.set(header, values.length === 1 ? values[0] : values)
             })
 
-            if (fetch_res.body) {
-              if (typeof fetch_res.body.getReader === 'function') {
-                const reader = fetch_res.body.getReader()
+            const body = fetch_res.body
+            if (body) {
+              if (typeof body.getReader === 'function') {
+                const reader = body.getReader()
                 let x
                 while ((x = await reader.read())) {
                   const { done, value } = x
                   if (done) break
                   if (value) res.write(value)
                 }
+                res.end()
+              } else if (body instanceof Stream) {
+                await new Promise((resolve, reject) => {
+                  body.on('data', (chunk) => res.write(chunk))
+                  body.on('error', reject)
+                  body.on('end', resolve)
+                })
                 res.end()
               } else {
                 const blob = await fetch_res.arrayBuffer()
