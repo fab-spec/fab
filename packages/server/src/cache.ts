@@ -1,7 +1,6 @@
 import { FabCache, FabCacheValue } from '@fab/core'
 import NodeCache from 'node-cache'
 import Stream from 'stream'
-
 /* We need something that node-fetch Response treats as a stream */
 import { HybridReadableStream as _HRS } from '@fab/sandbox-node-vm'
 // @ts-ignore
@@ -47,17 +46,12 @@ export class Cache implements FabCache {
     const buffer = this.cache.get<Buffer>(key)
     if (!buffer) return undefined
 
-    console.log(buffer.toString('utf8'))
-
-    const webReadableStream = new HybridReadableStream({
+    return new HybridReadableStream({
       async pull(controller) {
         controller.enqueue(buffer)
         controller.close()
       },
     })
-    console.log({ webReadableStream })
-    console.log(webReadableStream.getReader)
-    return webReadableStream
   }
 
   private async readAllIfStream(value: FabCacheValue) {
@@ -69,13 +63,9 @@ export class Cache implements FabCache {
       const enc = new TextEncoder()
 
       while (!chunk.done) {
-        console.log({ chunk })
-        console.log(enc.encode(chunk.value))
         buffer = Buffer.concat([buffer, enc.encode(chunk.value)])
         chunk = await reader.read()
       }
-      console.log({ buffer })
-      console.log(buffer.toString('utf8'))
       return buffer
     } else if (value instanceof Stream) {
       const chunks: Uint8Array[] = []

@@ -45,7 +45,6 @@
     "fs-extra": "^8.1.0",
     "get-stream": "^5.1.0",
     "node-cache": "^5.1.0",
-    "web-streams-ponyfill": "^1.4.2",
     "yauzl": "^2.10.0"
   },
   "publishConfig": {

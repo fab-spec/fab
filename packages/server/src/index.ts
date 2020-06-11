@@ -125,7 +125,6 @@ class Server implements ServerType {
               fetch_req as Request,
               Object.assign({}, production_settings, settings_overrides)
             )
-            console.log({ fetch_res })
             if (isRequest(fetch_res)) {
               fetch_res = await enhanced_fetch(fetch_res)
             }
@@ -143,9 +142,7 @@ class Server implements ServerType {
             })
 
             const body = fetch_res.body
-            console.log({ body })
             if (body) {
-              console.log(body.getReader)
               if (typeof body.getReader === 'function') {
                 const reader = body.getReader()
                 let x

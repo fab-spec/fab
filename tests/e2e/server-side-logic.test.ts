@@ -77,7 +77,7 @@ describe('Server-side logic tests', () => {
 
       const homepage_headers = await request('-I', '/', port)
       expect(homepage_headers).toContain(`HTTP/1.1 200 OK`)
-      // expect(homepage_headers).toContain(`X-FAB-ID: ${bundle_id}`)
+      expect(homepage_headers).toContain(`X-FAB-ID: ${bundle_id}`)
       expect(await request('-I', '/hello', port)).toContain(`HTTP/1.1 200 OK`)
 
       const homepage_response = await request('', '/', port)
