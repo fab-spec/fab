@@ -17,7 +17,7 @@ export default ({ Router, Cache }: FABRuntime) => {
     return new Response(await response.text())
   })
 
-  Router.on('/stream-into-cache', async ({ url }) => {
+  async function streamIntoCache(key: string) {
     const stream = new ReadableStream({
       async start(controller) {
         controller.enqueue('Des\n')
@@ -28,9 +28,17 @@ export default ({ Router, Cache }: FABRuntime) => {
         controller.close()
       },
     })
-    await Cache.set('stream-into-cache', stream)
-    const cached_stream = await Cache.getArrayBuffer('stream-into-cache')
-    return new Response(cached_stream)
+    await Cache.set(key, stream)
+  }
+
+  Router.on('/cache-stream-return-buffer', async () => {
+    await streamIntoCache('cache-stream-return-buffer')
+    return new Response(await Cache.getArrayBuffer('cache-stream-return-buffer'))
+  })
+
+  Router.on('/cache-stream-return-stream', async () => {
+    await streamIntoCache('cache-stream-return-stream')
+    return new Response(await Cache.getStream('cache-stream-return-stream'))
   })
 
   Router.on('/fetch-cache-serve', async ({ url }) => {
