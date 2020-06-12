@@ -30,6 +30,7 @@ const AWS_S3_CONFIG = {
   secret_key: '',
   region: '',
   bucket_name: '',
+  endpoint: ''
 }
 
 export namespace ConfigTypes {
