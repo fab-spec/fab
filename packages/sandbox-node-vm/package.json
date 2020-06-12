@@ -1,6 +1,6 @@
 {
   "name": "@fab/sandbox-node-vm",
-  "version": "1.0.0-rc.3-beta.1",
+  "version": "1.0.0-rc.3",
   "description": "FAB runtime sandbox using Node's 'vm'",
   "keywords": [
     "fab",
@@ -29,7 +29,7 @@
     "prepack": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@fab/core": "1.0.0-rc.3-beta.1",
+    "@fab/core": "1.0.0-rc.3",
     "node-fetch": "^2.6.0",
     "web-streams-ponyfill": "^1.4.2"
   },
