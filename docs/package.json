@@ -9,7 +9,7 @@
     "build:fab": "npm run build && npm run export && npm run fab:build",
     "fab:build": "fab build",
     "fab:serve": "fab serve fab.zip",
-    "fab:deploy": "fab deploy fab.zip",
+    "deploy": "fab deploy fab.zip",
     "start": "nuxt start",
     "export": "nuxt export",
     "serve": "nuxt serve"
