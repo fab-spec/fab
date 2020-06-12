@@ -2,13 +2,18 @@ import aws from 'aws-sdk'
 import { ReadStream } from 'fs'
 import { IMMUTABLE_HEADERS } from '@fab/core'
 
-export function authenticate(region: string, access_key: string, secret_key: string) {
+export function authenticate(
+  region: string,
+  access_key: string,
+  secret_key: string,
+  endpoint?: string
+) {
   aws.config.update({
     region,
     accessKeyId: access_key,
     secretAccessKey: secret_key,
   })
-  return new aws.S3()
+  return new aws.S3({ endpoint })
 }
 
 export async function createBucket(s3: aws.S3, bucket_name: string) {

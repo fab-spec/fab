@@ -13,7 +13,7 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.AwsS3> = async (
   package_dir: string,
   config: ConfigTypes.AwsS3
 ) => {
-  const { bucket_name, access_key, secret_key, region = 'us-east-1' } = config
+  const { bucket_name, access_key, secret_key, region = 'us-east-1', endpoint } = config
   if (!bucket_name) throw new Error('Need to specify a bucket name!')
 
   const extracted_dir = path.join(package_dir, `aws-s3-${nanoid()}`)
@@ -22,7 +22,14 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.AwsS3> = async (
   await extract(fab_path, extracted_dir)
   log.tick(`Unpacked FAB.`)
 
-  return await doUpload(access_key, secret_key, region, bucket_name, extracted_dir)
+  return await doUpload(
+    access_key,
+    secret_key,
+    region,
+    bucket_name,
+    extracted_dir,
+    endpoint
+  )
 }
 
 const doUpload = async (
@@ -30,7 +37,8 @@ const doUpload = async (
   secret_key: string,
   region: string,
   bucket_name: string,
-  extracted_dir: string
+  extracted_dir: string,
+  endpoint?: string
 ) => {
   const assets_host = `https://${bucket_name}.s3.${region}.amazonaws.com`
 
