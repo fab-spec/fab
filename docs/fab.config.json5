@@ -4,6 +4,7 @@
     '@fab/input-static': {
       dir: 'dist',
     },
+    '@fab/plugin-add-fab-id': {},
     './redirects.ts': {},
     '@fab/plugin-render-html': {},
     '@fab/plugin-rewire-assets': {},
