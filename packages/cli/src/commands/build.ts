@@ -17,14 +17,18 @@ export default class Build extends Command {
     'skip-cache': flags.boolean({
       description: 'Skip any caching of intermediate build artifacts',
     }),
+    watch: flags.string({
+      multiple: true,
+    }),
   }
 
   static args = []
 
   async run() {
     const { args, flags } = this.parse(Build)
+    console.log(flags.watch)
     const config = await JSON5Config.readFrom(flags.config!)
     const { Builder } = require('@fab/actions').default as FabActionsExports
-    await Builder.build(flags.config, config.data, flags['skip-cache'])
+    // await Builder.build(flags.config, config.data, flags['skip-cache'])
   }
 }
