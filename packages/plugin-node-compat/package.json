@@ -31,7 +31,9 @@
   "dependencies": {
     "@fab/cli": "1.0.0-rc.4",
     "@fab/core": "1.0.0-rc.4",
-    "@types/node": "^12.12.14"
+    "@types/node": "^12.12.14",
+    "memfs": "^3.0.4",
+    "webpack": "^4.41.5"
   },
   "publishConfig": {
     "access": "public"
