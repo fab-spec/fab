@@ -55,13 +55,13 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   log.tick(`Found 💛${html_files.length} static html pages💛.`)
 
   const cache_dir = path.join(config_dir, '.fab', '.cache')
-  const render_code_file = path.join(
+  const renderer_path = path.join(
     cache_dir,
     `${RENDERER}.${pages_dir_hash.slice(0, 7)}.js`
   )
 
   const render_code_src = await getRenderCode(
-    render_code_file,
+    renderer_path,
     pages_dir,
     cache_dir,
     skip_cache
@@ -77,7 +77,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
 
   const mock_express_response_path = path.join(shims_dir, 'mock-express-response')
   const entry_point = `
-    const renderers = require(${JSON.stringify(render_code_file)});
+    const renderers = require(${JSON.stringify(renderer_path)});
     const MockExpressResponse = require(${JSON.stringify(mock_express_response_path)});
 
     module.exports = { renderers, MockExpressResponse }
@@ -163,18 +163,20 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
 }
 
 async function getRenderCode(
-  renderer_cache: string,
+  renderer_path: string,
   pages_dir: string,
   cache_dir: string,
   skip_cache: boolean
 ) {
-  if (await fs.pathExists(renderer_cache)) {
-    const relative_path = path.relative(process.cwd(), renderer_cache)
+  /* Renderer path is fingerprinted with hash of the contents, so if it exists,
+   * we can reuse it unless we want to --skip-cache*/
+  if (await fs.pathExists(renderer_path)) {
+    const relative_path = path.relative(process.cwd(), renderer_path)
     if (skip_cache) {
       log.note(`Skipping cached renderer, regenerating 💛${relative_path}💛`)
     } else {
       log(`Reusing NextJS renderer cache 💛${relative_path}💛`)
-      return await fs.readFile(renderer_cache, 'utf8')
+      return await fs.readFile(renderer_path, 'utf8')
     }
   }
 
@@ -190,7 +192,7 @@ async function getRenderCode(
   await Promise.all(
     previous_caches.map((cache) => fs.remove(path.join(cache_dir, cache)))
   )
-  await fs.writeFile(renderer_cache, render_code)
-  log.tick(`Wrote 💛${renderer_cache}💛`)
+  await fs.writeFile(renderer_path, render_code)
+  log.tick(`Wrote 💛${renderer_path}💛`)
   return render_code
 }
