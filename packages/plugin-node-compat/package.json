@@ -16,7 +16,6 @@
     "lib",
     "esm",
     "src",
-    "runtime.js",
     "build.js"
   ],
   "types": "esm/index.d.ts",
