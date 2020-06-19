@@ -58,16 +58,23 @@ export default class Serve extends Command {
   async run() {
     const { args, flags } = this.parse(Serve)
 
-    let { file } = args
-    if (!file) {
-      if (!(await fs.pathExists('fab.zip'))) {
-        log.error(
-          'ERROR: You must provide a FAB filename to serve, if fab.zip is not present in the current directory.\n'
-        )
+    const { file: specified_file } = args
+    const default_file = 'fab.zip'
+
+    if (specified_file) {
+      if (!(await fs.pathExists(specified_file))) {
+        log.error(`ERROR: Cannot file find file '${specified_file}'.\n`)
         this._help()
       }
-      file = 'fab.zip'
+    } else if (!(await fs.pathExists(default_file))) {
+      log.error(
+        `ERROR: You must provide a FAB filename to serve, if '${default_file}' is not present in the current directory.\n`
+      )
+      this._help()
     }
+
+    const file = specified_file || default_file
+
     log.announce(`fab serve`)
     const server_pkg = (
       await loadOrInstallModule(log, '@fab/server', flags['auto-install'])
