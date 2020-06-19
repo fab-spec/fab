@@ -6,7 +6,11 @@ import { watcher } from '../helpers/watcher'
 export default class Build extends Command {
   static description = 'Generate a FAB given the config (usually in fab.config.json5)'
 
-  static examples = [`$ fab build`, `$ fab build --config=fab.config.json5`]
+  static examples = [
+    `$ fab build`,
+    `$ fab build --config=fab.config.json5`,
+    `$ fab build --watch dist --watch fab.config.json5`,
+  ]
 
   static flags = {
     help: flags.help({ char: 'h' }),
@@ -20,6 +24,8 @@ export default class Build extends Command {
     }),
     watch: flags.string({
       multiple: true,
+      description:
+        'Re-run the builder if any of the listed files change. Pass this argument multiple times to watch multiple files/directories.',
     }),
   }
 
