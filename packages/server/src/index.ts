@@ -9,7 +9,7 @@ import {
   ServerConstructor,
   ServerType,
 } from '@fab/core'
-import { _log, InvalidConfigError, JSON5Config } from '@fab/cli'
+import { _log, InvalidConfigError, FabServerError, JSON5Config } from '@fab/cli'
 import { readFilesFromZip } from './utils'
 import v8_sandbox from './sandboxes/v8-isolate'
 import { Cache } from './cache'
@@ -50,7 +50,7 @@ class Server implements ServerType {
 
   async serve(runtimeType: SandboxType) {
     if (!(await fs.pathExists(this.filename))) {
-      throw new InvalidConfigError(`Could not find file '${this.filename}'`)
+      throw new FabServerError(`Could not find file '${this.filename}'`)
     }
     log(`Reading 💛${this.filename}💛...`)
 
@@ -62,7 +62,7 @@ class Server implements ServerType {
 
     const src_buffer = files['/server.js']
     if (!src_buffer) {
-      throw new InvalidConfigError('Malformed FAB. Missing /server.js')
+      throw new FabServerError('Malformed FAB. Missing /server.js')
     }
     const src = src_buffer.toString('utf8')
 
