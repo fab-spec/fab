@@ -5,7 +5,9 @@
       dir: 'dist',
     },
     '@fab/plugin-add-fab-id': {},
-    './redirects.ts': {},
+    '@fab/plugin-node-compat': {
+      './redirects.ts': {},
+    },
     '@fab/plugin-render-html': {},
     '@fab/plugin-rewire-assets': {},
     // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins

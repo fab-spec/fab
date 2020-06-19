@@ -7,4 +7,6 @@ const log = _log('@fab/plugin-node-compat')
 export async function build(
   args: NodeCompatArgs,
   proto_fab: ProtoFab<NodeCompatMetadata>
-) {}
+) {
+  return Object.keys(args)
+}

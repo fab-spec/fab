@@ -19,6 +19,7 @@ describe('Builder', () => {
     const { build_plugins, runtime_plugins } = result
 
     expect(
+      // @ts-ignore
       build_plugins.map(({ plugin_name, plugin_args }) => [plugin_name, plugin_args])
     ).to.deep.equal([
       ['./plugins/build-and-render', { first: 'plugin' }],

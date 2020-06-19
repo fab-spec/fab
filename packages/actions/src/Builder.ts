@@ -34,8 +34,8 @@ type BuildPlugin = {
   plugin_args: PluginArgs
 }
 type Plugins = {
-  build_plugins: BuildPlugin[]
-  runtime_plugins: string[]
+  build_plugins: Array<BuildPlugin | undefined>
+  runtime_plugins: Array<string | undefined>
 }
 
 export default class Builder {
@@ -44,11 +44,19 @@ export default class Builder {
     log(`Reading plugins from config.`)
     const { build_plugins, runtime_plugins } = await this.getPlugins(config_path, config)
 
+    const runtime_and_dynamic_plugins: string[][] = runtime_plugins.map((plugin) =>
+      plugin ? [plugin] : []
+    )
+
     log.time(`Proceeding with build phase.`)
 
     const proto_fab = new ProtoFab()
 
-    for (const { plugin_name, builder, plugin_args } of build_plugins) {
+    for (let i = 0; i < build_plugins.length; i++) {
+      const plugin = build_plugins[i]
+      if (!plugin) continue
+
+      const { plugin_name, builder, plugin_args } = plugin
       log(`Building 💛${plugin_name}💛:`)
 
       const dynamic_runtimes = await builder(
@@ -59,24 +67,34 @@ export default class Builder {
       )
 
       if (Array.isArray(dynamic_runtimes)) {
-        log(
-          `Registering additional runtime plugin${
-            dynamic_runtimes.length === 1 ? '' : 's'
-          } 💛${dynamic_runtimes.join(' ')}💛`
-        )
-        runtime_plugins.push(...dynamic_runtimes)
+        for (const dynamic_runtime of dynamic_runtimes) {
+          log(`Registering additional runtime plugin 💛${dynamic_runtime}💛`)
+          const path = safeResolve(
+            relativeToConfig(config_path, dynamic_runtime),
+            config_path
+          )
+          if (!path) {
+            log.error(`WARNING: cannot resolve ${dynamic_runtime}! Skipping!`)
+          } else {
+            runtime_and_dynamic_plugins[i].push(path)
+          }
+        }
       }
     }
 
     log.time((d) => `Build plugins completed in ${d}.`)
 
-    await Compiler.compile(config, proto_fab, runtime_plugins)
+    await Compiler.compile(
+      config,
+      proto_fab,
+      runtime_and_dynamic_plugins.flatMap((x) => x)
+    )
     await Generator.generate(proto_fab)
   }
 
   static async getPlugins(config_path: string, config: FabConfig): Promise<Plugins> {
-    const build_plugins: BuildPlugin[] = []
-    const runtime_plugins: string[] = []
+    const build_plugins: Array<BuildPlugin | undefined> = []
+    const runtime_plugins: Array<string | undefined> = []
 
     for (const [plugin_name, plugin_args] of Object.entries(config.plugins)) {
       const is_relative = isRelative(plugin_name)
@@ -156,14 +174,20 @@ export default class Builder {
         }
       }
 
-      if (runtime_plugin) runtime_plugins.push(runtime_plugin)
-      if (build_plugin) build_plugins.push(build_plugin)
+      runtime_plugins.push(runtime_plugin)
+      build_plugins.push(build_plugin)
     }
 
     log(`Found the following 💛build-time💛 plugins:
-    🖤${build_plugins.map((b) => b.plugin_name).join('\n')}🖤`)
+    🖤${build_plugins
+      .filter(Boolean)
+      .map((b) => b!.plugin_name)
+      .join('\n')}🖤`)
     log(`and the following 💛runtime💛 plugins:
-    🖤${runtime_plugins.map((b) => path.relative(process.cwd(), b)).join('\n')}🖤`)
+    🖤${runtime_plugins
+      .filter(Boolean)
+      .map((b) => path.relative(process.cwd(), b!))
+      .join('\n')}🖤`)
 
     return { build_plugins, runtime_plugins }
   }

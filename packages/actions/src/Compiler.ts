@@ -6,6 +6,7 @@ const log = _log(`Compiler`)
 
 export class Compiler {
   static async compile(config: FabConfig, proto_fab: ProtoFab, render_plugins: string[]) {
+    console.log({ render_plugins })
     log.time(() => `Compiling your 💛server.js💛:`)
 
     const warnings: string[] = []
