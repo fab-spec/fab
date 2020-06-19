@@ -51,6 +51,10 @@ export default class Serve extends Command {
       description:
         'If you need dependent packages (e.g. @fab/serve), install them without prompting',
     }),
+    watch: flags.boolean({
+      description:
+        'EXPERIMENTAL: Watches all plugins referenced in fab.config.json5 and rebuilds the runtime component when any of them change.',
+    }),
   }
 
   static args = [{ name: 'file' }]
