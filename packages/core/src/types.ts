@@ -50,7 +50,7 @@ export type FabBuildStep<
   proto_fab: ProtoFab<U>,
   config_path: string,
   skip_cache?: boolean
-) => Promise<void>
+) => Promise<void | string[]>
 
 export type FabResponderMutableContext = {
   [key: string]: any
