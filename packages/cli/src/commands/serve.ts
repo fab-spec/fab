@@ -6,6 +6,7 @@ import {
   FabServerExports,
 } from '@fab/core'
 import { loadOrInstallModule, _log } from '../helpers'
+import fs from 'fs-extra'
 const log = _log(`Server`)
 
 export default class Serve extends Command {
@@ -57,10 +58,15 @@ export default class Serve extends Command {
   async run() {
     const { args, flags } = this.parse(Serve)
 
-    const { file } = args
+    let { file } = args
     if (!file) {
-      log.error('ERROR: You must provide a FAB filename to serve.\n')
-      this._help()
+      if (!(await fs.pathExists('fab.zip'))) {
+        log.error(
+          'ERROR: You must provide a FAB filename to serve, if fab.zip is not present in the current directory.\n'
+        )
+        this._help()
+      }
+      file = 'fab.zip'
     }
     log.announce(`fab serve`)
     const server_pkg = (
