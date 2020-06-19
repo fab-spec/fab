@@ -53,7 +53,7 @@ export default class Serve extends Command {
     }),
     watch: flags.boolean({
       description:
-        'EXPERIMENTAL: Watches all plugins referenced in fab.config.json5 and rebuilds the runtime component when any of them change.',
+        'EXPERIMENTAL: Watches fab.zip and restarts the server when it changes.',
     }),
   }
 
@@ -85,7 +85,8 @@ export default class Serve extends Command {
     ).default as FabServerExports
     const server = server_pkg.createServer(file, flags as ServerArgs)
     await server.serve(
-      flags['experimental-v8-sandbox'] ? SandboxType.v8isolate : SandboxType.nodeVm
+      flags['experimental-v8-sandbox'] ? SandboxType.v8isolate : SandboxType.nodeVm,
+      flags.watch
     )
   }
 }

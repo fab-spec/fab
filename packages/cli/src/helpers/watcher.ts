@@ -1,6 +1,10 @@
-import chokidar from 'chokidar'
+import chokidar, { WatchOptions } from 'chokidar'
 
-export const watcher = async (dirs: string[] | undefined, fn: () => Promise<void>) => {
+export const watcher = async (
+  dirs: string[] | undefined,
+  fn: () => Promise<void>,
+  options?: WatchOptions
+) => {
   if (dirs && dirs.length > 0) {
     let building = false
 
@@ -17,7 +21,7 @@ export const watcher = async (dirs: string[] | undefined, fn: () => Promise<void
     run_fn_once_at_a_time(`Watching paths: ${dirs.join(' ')}`)
 
     chokidar.watch(dirs).on('ready', () => {
-      chokidar.watch(dirs).on('all', (event, path) => {
+      chokidar.watch(dirs, options).on('all', (event, path) => {
         run_fn_once_at_a_time(`${path} changed`)
       })
     })
