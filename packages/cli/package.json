@@ -46,6 +46,7 @@
     "@types/prettier": "^1.19.0",
     "@types/semver": "^6.2.0",
     "chalk": "^3.0.0",
+    "chokidar": "^3.4.0",
     "cli-ux": "^5.4.5",
     "dotenv": "^8.2.0",
     "execa": "^4.0.0",

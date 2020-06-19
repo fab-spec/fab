@@ -116,7 +116,7 @@ export type FABServerContext = {
 
 export type ServerConstructor = (filename: string, args: ServerArgs) => ServerType
 export interface ServerType {
-  serve(runtimeType: SandboxType): Promise<void>
+  serve(runtimeType: SandboxType, watch: boolean): Promise<void>
 }
 export type ServerArgs = {
   port: string

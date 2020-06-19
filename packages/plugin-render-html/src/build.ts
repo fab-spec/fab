@@ -14,7 +14,7 @@ export async function build(
   const {
     'match-html': match_html = /\.html$/i,
     injections = DEFAULT_INJECTIONS,
-    fallback = true,
+    fallback,
   } = args
 
   const htmls: CompiledHTMLs = {}

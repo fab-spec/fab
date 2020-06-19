@@ -4,6 +4,7 @@ import { IPromptOptions } from 'cli-ux/lib/prompt'
 
 export * from './paths'
 export * from './modules'
+export * from './watcher'
 
 export const confirmAndRespond = async (
   log: Logger,
