@@ -2,7 +2,7 @@ import vm from 'vm'
 import * as fetch from 'node-fetch'
 import { FabSpecExports } from '@fab/core'
 import Stream from 'stream'
-import { ReadableStream as WebReadableStream } from 'web-streams-polyfill/ponyfill'
+import { ReadableStream as WebReadableStream } from 'web-streams-polyfill/ponyfill/es2018'
 
 /*
  * We're using node-fetch under the hood, which has a hard-coded check on the body:

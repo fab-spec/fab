@@ -153,7 +153,13 @@ class Server implements ServerType {
                   while ((x = await reader.read())) {
                     const { done, value } = x
                     if (done) break
-                    if (value) res.write(value)
+                    if (value) {
+                      if (typeof value === 'string') {
+                        res.write(value)
+                      } else {
+                        res.write(Buffer.from(value))
+                      }
+                    }
                   }
                   res.end()
                 } else if (body instanceof Stream) {
@@ -174,7 +180,9 @@ class Server implements ServerType {
           } catch (e) {
             console.log('ERROR')
             console.log(e)
-            res.writeHead(500, 'Internal Error')
+            if (!res.headersSent) {
+              res.writeHead(500, 'Internal Error')
+            }
             res.end()
           }
 
