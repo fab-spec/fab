@@ -2,9 +2,7 @@ import vm from 'vm'
 import * as fetch from 'node-fetch'
 import { FabSpecExports } from '@fab/core'
 import Stream from 'stream'
-// @ts-ignore
-import { ReadableStream as _RS } from 'web-streams-ponyfill'
-const WebReadableStream: typeof ReadableStream = _RS
+import { ReadableStream as WebReadableStream } from 'web-streams-polyfill/ponyfill'
 
 /*
  * We're using node-fetch under the hood, which has a hard-coded check on the body:
