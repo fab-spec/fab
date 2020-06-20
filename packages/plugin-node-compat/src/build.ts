@@ -62,6 +62,7 @@ export const build: FabBuildStep<NodeCompatArgs, NodeCompatMetadata> = async (
         node: {
           global: false,
         },
+        // @ts-ignore
         plugins: [
           /* Cloudflare Workers will explode if it even _sees_ `eval` in a file,
            * even if it's never called. Replacing it with this will bypasses that.
