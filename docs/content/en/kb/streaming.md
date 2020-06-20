@@ -51,7 +51,6 @@ const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
 export default ({ Router }: FABRuntime) => {
   Router.on('/alphabet', async () => {
     const stream = new ReadableStream({
-      type: 'bytes',
       async start(controller) {
         // ASCII codes for 'ABC\n'
         controller.enqueue(new Uint8Array([65, 66, 67, 10]))
