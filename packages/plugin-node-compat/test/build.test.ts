@@ -2,6 +2,7 @@ import { expect } from 'chai'
 import { ProtoFab } from '@fab/core'
 import { build } from '../src/build'
 import { NodeCompatMetadata } from '../src/types'
+import path from 'path'
 
 describe('Build time', () => {
   it('should be a function', () => {
@@ -14,7 +15,8 @@ describe('Build time', () => {
       {
         './needs-compiling.ts': {},
       },
-      proto_fab
+      proto_fab,
+      path.join(__dirname, 'fixtures')
     )
   })
 })
