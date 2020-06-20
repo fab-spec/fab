@@ -13,14 +13,20 @@ if (USES_KV_STORE && !KV_STORE) {
 
 const mutableResponse = (response) => new Response(response.body, response)
 
-function ReadableStream({ start, cancel }) {
+function ReadableStream({ type, start, cancel }) {
   const { readable, writable } = new TransformStream()
   const writer = writable.getWriter()
   const encoder = new TextEncoder()
 
   start({
     enqueue(chunk) {
-      writer.write(encoder.encode(chunk))
+      if (typeof chunk === 'string') {
+        writer.write(encoder.encode(chunk))
+      } else if (ArrayBuffer.isView(chunk)) {
+        writer.write(new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength))
+      } else {
+        writer.write(chunk)
+      }
     },
     close() {
       writer.close()
