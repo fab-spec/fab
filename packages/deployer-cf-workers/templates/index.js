@@ -13,7 +13,7 @@ if (USES_KV_STORE && !KV_STORE) {
 
 const mutableResponse = (response) => new Response(response.body, response)
 
-function ReadableStream({ type, start, cancel }) {
+function ReadableStream({ start, cancel }) {
   const { readable, writable } = new TransformStream()
   const writer = writable.getWriter()
   const encoder = new TextEncoder()
