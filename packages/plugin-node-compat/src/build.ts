@@ -59,6 +59,19 @@ export const build: FabBuildStep<NodeCompatArgs, NodeCompatMetadata> = async (
             // https: path.join(shims_dir, 'empty-object'),
           },
         },
+        module: {
+          rules: [
+            {
+              test: /\.(js|jsx|ts|tsx)$/,
+              use: {
+                loader: '@sucrase/webpack-loader',
+                options: {
+                  transforms: ['jsx', 'typescript', 'imports'],
+                },
+              },
+            },
+          ],
+        },
         node: {
           global: false,
         },
@@ -75,7 +88,6 @@ export const build: FabBuildStep<NodeCompatArgs, NodeCompatMetadata> = async (
       config
     )
 
-    console.log(options.plugins[0])
     await new Promise((resolve, reject) =>
       webpack(options, (err, stats) => {
         if (err || stats.hasErrors()) {
