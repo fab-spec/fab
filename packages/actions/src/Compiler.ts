@@ -16,7 +16,7 @@ export class Compiler {
       { format: 'umd', exports: 'named', name: '__fab' },
       {
         ...proto_fab.hypotheticals,
-        'user-defined-pipeline': generatePipelineJs(plugins),
+        'fab-runtimes': generateRuntimeImports(plugins),
         'fab-metadata': generateFabMetadataJs(proto_fab),
         'production-settings': generateProductionSettings(config),
       },
@@ -50,7 +50,7 @@ export class Compiler {
   }
 }
 
-function generatePipelineJs(plugin_runtimes: LoadedPlugin[]) {
+function generateRuntimeImports(plugin_runtimes: LoadedPlugin[]) {
   let plugin_index = 0
   const plugin_aliases = plugin_runtimes.flatMap((plugin) =>
     plugin.runtimes.map((r) => ({

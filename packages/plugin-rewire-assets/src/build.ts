@@ -84,7 +84,7 @@ export async function build(
   }
   log.tick(`Done.`)
 
-  proto_fab.metadata.rewire_assets = { args, inlined_assets, renamed_assets }
+  proto_fab.metadata.rewire_assets = { inlined_assets, renamed_assets }
 }
 
 const getFingerprintedName = (contents: Buffer, filename: string) => {

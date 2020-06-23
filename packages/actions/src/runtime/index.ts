@@ -14,7 +14,7 @@ import {
 
 import final_responder from './final_responder'
 // @ts-ignore
-import { runtimes } from 'user-defined-pipeline'
+import { runtimes } from 'fab-runtimes'
 // @ts-ignore
 import { fab_metadata } from 'fab-metadata'
 // @ts-ignore
