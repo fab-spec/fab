@@ -1,4 +1,4 @@
-import { FabConfig, ProtoFab, LoadedPlugin } from '@fab/core'
+import { FabConfig, ProtoFab, LoadedPlugin, RuntimeImports } from '@fab/core'
 import { _log, BuildFailedError } from '@fab/cli'
 import { rollupCompile } from './rollup'
 
@@ -16,7 +16,7 @@ export class Compiler {
       { format: 'umd', exports: 'named', name: '__fab' },
       {
         ...proto_fab.hypotheticals,
-        'fab-runtimes': generateRuntimeImports(plugins),
+        'fab-runtime-imports': generateRuntimeImports(plugins),
         'fab-metadata': generateFabMetadataJs(proto_fab),
         'production-settings': generateProductionSettings(config),
       },
@@ -62,12 +62,20 @@ function generateRuntimeImports(plugin_runtimes: LoadedPlugin[]) {
 
   console.log(plugin_aliases)
 
-  return `
-    ${plugin_aliases
-      .map(({ alias, import_path }) => `import ${alias} from '${import_path}'`)
-      .join('\n')};
+  const import_statements = plugin_aliases
+    .map(({ alias, import_path }) => `import ${alias} from '${import_path}'`)
+    .join('\n')
 
-    export const runtimes = ${JSON.stringify(plugin_aliases)};
+  return `
+    ${import_statements};
+
+    export const runtimes = [
+      ${plugin_aliases
+        .map(({ alias, args }) => {
+          return `{ plugin: ${alias}, args: ${JSON.stringify(args)} }`
+        })
+        .join(',\n')}
+    ];
   `
 }
 

@@ -2,7 +2,6 @@
 
 import {
   Directive,
-  FabPluginRuntime,
   FABRuntime,
   FabSettings,
   FabSpecMetadata,
@@ -10,11 +9,12 @@ import {
   NO_RESPONSE_STATUS_CODE,
   ResponseInterceptor,
   FABServerContext,
+  RuntimeImports,
 } from '@fab/core'
 
 import final_responder from './final_responder'
 // @ts-ignore
-import { runtimes } from 'fab-runtimes'
+import { runtimes } from 'fab-runtime-imports'
 // @ts-ignore
 import { fab_metadata } from 'fab-metadata'
 // @ts-ignore
@@ -24,7 +24,13 @@ let Runtime: FABRuntime | undefined = undefined
 export const initialize = (server_context: FABServerContext) => {
   Runtime = FABRuntime.initialize(
     fab_metadata,
-    [...(runtimes as FabPluginRuntime[]), final_responder],
+    [
+      ...(runtimes as RuntimeImports),
+      {
+        plugin: final_responder,
+        args: {},
+      },
+    ],
     server_context
   )
 }
