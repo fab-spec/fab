@@ -21,6 +21,7 @@ export interface RenderHtmlArgs extends PluginArgs {
 export type CompiledHTMLs = {
   [path: string]: ITokens
 }
+
 export interface RenderHtmlMetadata extends PluginMetadata {
   render_html: {
     htmls: CompiledHTMLs

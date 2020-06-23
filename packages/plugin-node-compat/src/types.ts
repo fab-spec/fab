@@ -6,4 +6,4 @@ export interface NodeCompatArgs extends PluginArgs {
   [path: string]: WebpackArgs
 }
 
-export interface NodeCompatMetadata extends PluginMetadata<NodeCompatArgs> {}
+export interface NodeCompatMetadata extends PluginMetadata {}
