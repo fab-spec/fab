@@ -163,8 +163,8 @@ export default class Builder {
 
     log(`Found the following 💛build-time💛 plugins:
     🖤${plugins
+      .filter((p) => p.builder)
       .map((p) => p.plugin_name)
-      .filter(Boolean)
       .join('\n')}🖤`)
     log(`and the following 💛runtime💛 plugins:
     🖤${plugins
