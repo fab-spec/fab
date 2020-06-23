@@ -37,11 +37,14 @@ export default class Builder {
     log.time(`Proceeding with build phase.`)
 
     const proto_fab = new ProtoFab()
+    console.log(plugins)
 
     for (const { plugin_name, builder, runtimes, plugin_args } of plugins) {
+      console.log({ plugin_name, builder, runtimes, plugin_args })
       if (!builder) return
 
       log(`Building 💛${plugin_name}💛:`)
+      console.log('WAT')
 
       const dynamic_runtimes = await builder(
         plugin_args,
@@ -49,6 +52,8 @@ export default class Builder {
         config_path,
         skip_cache
       )
+      console.log('WEN')
+      console.log({ dynamic_runtimes })
 
       if (Array.isArray(dynamic_runtimes)) {
         for (const dynamic_runtime of dynamic_runtimes) {
@@ -65,6 +70,8 @@ export default class Builder {
         }
       }
     }
+
+    console.log('OPK HERE NOW')
 
     log.time((d) => `Build plugins completed in ${d}.`)
 
