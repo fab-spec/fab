@@ -37,6 +37,13 @@ export interface PluginMetadata<T extends PluginArgs = {}> {
   [plugin_name: string]: PluginMetadataContent<T>
 }
 
+export type LoadedPlugin = {
+  plugin_name: string
+  plugin_args: PluginArgs
+  builder: FabBuildStep | undefined
+  runtimes: string[]
+}
+
 /*
  * A FabBuildStep is an async function that takes a ProtoFab
  * and manipulates it in some way, perhaps setting metadata

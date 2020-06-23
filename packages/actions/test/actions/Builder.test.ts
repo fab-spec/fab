@@ -16,8 +16,6 @@ describe('Builder', () => {
         )
     )
 
-    const { build_plugins, runtime_plugins } = result
-
     expect(
       // @ts-ignore
       build_plugins.map(({ plugin_name, plugin_args }) => [plugin_name, plugin_args])
@@ -26,7 +24,7 @@ describe('Builder', () => {
       ['./plugins/build-only', { then: 'this one' }],
       ['./plugins/typescript-example', { the_time_is: 'NOW!' }],
     ])
-    expect(runtime_plugins).to.deep.equal([
+    expect(result.map((p) => p.runtimes)).to.deep.equal([
       path.resolve(`${__dirname}/../fixtures/plugins/build-and-render/runtime.js`),
       path.resolve(`${__dirname}/../fixtures/plugins/runtime-only.js`),
       path.resolve(`${__dirname}/../fixtures/plugins/typescript-example/runtime.ts`),

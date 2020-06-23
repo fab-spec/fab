@@ -1,4 +1,4 @@
-import { FabBuildStep, FabConfig, PluginArgs, ProtoFab } from '@fab/core'
+import { LoadedPlugin, FabConfig, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import {
@@ -28,35 +28,19 @@ const safeRequire = async (path: string) => {
   }
 }
 
-type BuildPlugin = {
-  plugin_name: string
-  builder: FabBuildStep
-  plugin_args: PluginArgs
-}
-type Plugins = {
-  build_plugins: Array<BuildPlugin | undefined>
-  runtime_plugins: Array<string | undefined>
-}
-
 export default class Builder {
   static async build(config_path: string, config: FabConfig, skip_cache: boolean) {
     log.announce(`fab build`)
     log(`Reading plugins from config.`)
-    const { build_plugins, runtime_plugins } = await this.getPlugins(config_path, config)
-
-    const runtime_and_dynamic_plugins: string[][] = runtime_plugins.map((plugin) =>
-      plugin ? [plugin] : []
-    )
+    const plugins = await this.getPlugins(config_path, config)
 
     log.time(`Proceeding with build phase.`)
 
     const proto_fab = new ProtoFab()
 
-    for (let i = 0; i < build_plugins.length; i++) {
-      const plugin = build_plugins[i]
-      if (!plugin) continue
+    for (const { plugin_name, builder, runtimes, plugin_args } of plugins) {
+      if (!builder) return
 
-      const { plugin_name, builder, plugin_args } = plugin
       log(`Building 💛${plugin_name}💛:`)
 
       const dynamic_runtimes = await builder(
@@ -76,7 +60,7 @@ export default class Builder {
           if (!path) {
             log.error(`WARNING: cannot resolve ${dynamic_runtime}! Skipping!`)
           } else {
-            runtime_and_dynamic_plugins[i].push(path)
+            runtimes.push(path)
           }
         }
       }
@@ -84,17 +68,15 @@ export default class Builder {
 
     log.time((d) => `Build plugins completed in ${d}.`)
 
-    await Compiler.compile(
-      config,
-      proto_fab,
-      runtime_and_dynamic_plugins.flatMap((x) => x)
-    )
+    await Compiler.compile(config, proto_fab, plugins)
     await Generator.generate(proto_fab)
   }
 
-  static async getPlugins(config_path: string, config: FabConfig): Promise<Plugins> {
-    const build_plugins: Array<BuildPlugin | undefined> = []
-    const runtime_plugins: Array<string | undefined> = []
+  static async getPlugins(
+    config_path: string,
+    config: FabConfig
+  ): Promise<LoadedPlugin[]> {
+    const plugins: LoadedPlugin[] = []
 
     for (const [plugin_name, plugin_args] of Object.entries(config.plugins)) {
       const is_relative = isRelative(plugin_name)
@@ -107,7 +89,12 @@ export default class Builder {
 
       // console.log({ is_relative, plugin_path, relative_path, path_slash_require })
 
-      let runtime_plugin, build_plugin
+      const plugin: LoadedPlugin = {
+        plugin_name,
+        plugin_args,
+        builder: undefined,
+        runtimes: [],
+      }
 
       if (path_slash_build || path_slash_require) {
         if (plugin_path) {
@@ -135,16 +122,12 @@ export default class Builder {
               `Module ${path_slash_build} didn't export a 'build' function!`
             )
           } else {
-            build_plugin = {
-              plugin_name,
-              builder: module.build,
-              plugin_args,
-            }
+            plugin.builder = module.build
           }
         }
 
         if (path_slash_require) {
-          runtime_plugin = path_slash_require
+          plugin.runtimes.push(path_slash_require)
         }
       } else {
         if (!plugin_path) {
@@ -164,31 +147,31 @@ export default class Builder {
           // This can happen if the plugin is runtime-only and uses non-CJS syntax,
           // so just pass it through as a runtime plugin.
           // Relevant issue: https://github.com/fab-spec/fab/issues/67
-          runtime_plugin = plugin_path
+
+          plugin.runtimes.push(plugin_path)
         } else {
           if (typeof module.default === 'function') {
-            runtime_plugin = plugin_path
+            plugin.runtimes.push(plugin_path)
           } else {
             log.warn(`Plugin ${plugin_name} doesn't have a default export, ignoring it.`)
           }
         }
       }
 
-      runtime_plugins.push(runtime_plugin)
-      build_plugins.push(build_plugin)
+      plugins.push(plugin)
     }
 
     log(`Found the following 💛build-time💛 plugins:
-    🖤${build_plugins
+    🖤${plugins
+      .map((p) => p.plugin_name)
       .filter(Boolean)
-      .map((b) => b!.plugin_name)
       .join('\n')}🖤`)
     log(`and the following 💛runtime💛 plugins:
-    🖤${runtime_plugins
+    🖤${plugins
+      .flatMap((p) => p.runtimes.map((r) => path.relative(process.cwd(), r!)))
       .filter(Boolean)
-      .map((b) => path.relative(process.cwd(), b!))
       .join('\n')}🖤`)
 
-    return { build_plugins, runtime_plugins }
+    return plugins
   }
 }

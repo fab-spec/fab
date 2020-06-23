@@ -37,6 +37,7 @@ export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports>
     console: {
       log: console.log,
       error: console.error,
+      warn: console.warn,
     },
     NODE_ENV: 'server',
     process: {
