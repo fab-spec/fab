@@ -39,7 +39,7 @@ export default class Builder {
     const proto_fab = new ProtoFab()
 
     for (const { plugin_name, builder, runtimes, plugin_args } of plugins) {
-      if (!builder) return
+      if (!builder) continue
 
       log(`Building 💛${plugin_name}💛:`)
 
