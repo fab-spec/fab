@@ -50,9 +50,10 @@ export class Compiler {
   }
 }
 
-function generateRuntimeImports(plugin_runtimes: LoadedPlugin[]) {
+function generateRuntimeImports(plugins: LoadedPlugin[]) {
   let plugin_index = 0
-  const plugin_aliases = plugin_runtimes.flatMap((plugin) =>
+
+  const plugin_aliases = plugins.flatMap((plugin) =>
     plugin.runtimes.map((r) => ({
       alias: `runtime_${plugin_index++}`,
       import_path: r,
