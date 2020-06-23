@@ -61,8 +61,6 @@ function generateRuntimeImports(plugins: LoadedPlugin[]) {
     }))
   )
 
-  console.log(plugin_aliases)
-
   const import_statements = plugin_aliases
     .map(({ alias, import_path }) => `import ${alias} from '${import_path}'`)
     .join('\n')

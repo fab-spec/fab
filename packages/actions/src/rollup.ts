@@ -39,10 +39,7 @@ export async function rollupCompile(
         commonjs(),
         typescript({
           tsconfig: false,
-          // include: [
-          //   '/**/*.ts',
-          //   '/**/*.tsx'
-          // ],
+          include: ['/**/*.ts', '/**/*.tsx'],
         }),
         json(),
       ],
