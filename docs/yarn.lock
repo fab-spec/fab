@@ -881,6 +881,15 @@
     mime-types "^2.1.25"
     path-to-regexp "^6.1.0"
 
+"@fab/core@^1.0.0-rc.4":
+  version "1.0.0-rc.4"
+  resolved "https://registry.yarnpkg.com/@fab/core/-/core-1.0.0-rc.4.tgz#cdc1808e0c5c7395317c469d5ed48786b70edb78"
+  integrity sha512-1WxcmexQx+UI0fub25ZHIr6NCBp3lygCT1j4JPY0K4sXpqAXioQc3TMDG7bYXObf0MMM5exQJNyMoZbj/p/rXg==
+  dependencies:
+    "@types/node" "^12.12.14"
+    mime-types "^2.1.25"
+    path-to-regexp "^6.1.0"
+
 "@fab/input-static@^1.0.0-rc.3":
   version "1.0.0-rc.3"
   resolved "https://registry.yarnpkg.com/@fab/input-static/-/input-static-1.0.0-rc.3.tgz#de0e008dcb3891e8773cee2a1c66674221d901f9"
@@ -892,12 +901,19 @@
     fs-extra "^8.1.0"
     globby "^10"
 
-"@fab/plugin-add-fab-id@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@fab/plugin-add-fab-id/-/plugin-add-fab-id-1.0.0.tgz#0f9128c06c52f9748c31e94d100833e8d74b21a0"
-  integrity sha512-dUAV1epk7tH+GjJnY7QcqQgPmX3ug15qB2wTLCGpv4imMa2JS+9V0r3xDhsfNyzXOWx1uurbfmOtOSxhlwywYw==
+"@fab/plugin-add-fab-id@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@fab/plugin-add-fab-id/-/plugin-add-fab-id-1.1.0.tgz#87252b5146fdf4b678f537fd8770b4b52ab67aa4"
+  integrity sha512-is0BZOgz/vjQKDmmFFK8yfJk6P6FClZnYki9AuGQ5n2VwG5q0GW7VRRWOEbspr/EJ/svlTePt5FDy/O2eZt/pA==
   dependencies:
     "@fab/core" "^0.2.4"
+
+"@fab/plugin-dev-proxy@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@fab/plugin-dev-proxy/-/plugin-dev-proxy-0.1.0.tgz#9fec258a19f2ee70d689f21499ee99e42622e314"
+  integrity sha512-Smf/RU882ceVVs2l1wcuDxUwDfnj0mOq2jKqucSpmWbnITvVJX/QwEbXrtqnhWRWwrW95lkEasM4R2AJOp+y3w==
+  dependencies:
+    "@fab/core" "^1.0.0-rc.4"
 
 "@fab/plugin-render-html@^1.0.0-rc.3":
   version "1.0.0-rc.3"

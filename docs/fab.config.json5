@@ -3,9 +3,9 @@
   plugins: {
     '@fab/plugin-add-fab-id': {},
     './redirects.ts': {},
-    './dev-proxy.ts': {
+    '@fab/plugin-dev-proxy': {
       port: 2999,
-      env_flag: 'DEV_PROXY'
+      enabled: 'DEV_PROXY_ENABLED'
     },
     '@fab/input-static': {
       dir: 'dist',
@@ -24,7 +24,7 @@
       // API_URL: 'https://api.example.com/graphql'
     },
     live: {
-      DEV_PROXY: true
+      DEV_PROXY_ENABLED: true
     }
   },
   deploy: {
