@@ -81,6 +81,12 @@ export default {
    ** Nuxt.js modules
    */
   modules: ['nuxt-i18n', '@nuxtjs/pwa', '@nuxt/content'],
+
+  pwa: {
+    workbox: {
+      autoRegister: false,
+    },
+  },
   /*
    ** Components auto import
    ** See https://github.com/nuxt/components
