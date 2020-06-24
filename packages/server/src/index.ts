@@ -206,7 +206,8 @@ class Server implements ServerType {
     if (watching) {
       await watcher([this.filename], bootServer, {
         awaitWriteFinish: {
-          stabilityThreshold: 500,
+          stabilityThreshold: 200,
+          pollInterval: 50,
         },
       })
     } else {
