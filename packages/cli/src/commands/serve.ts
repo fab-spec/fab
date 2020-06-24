@@ -55,6 +55,9 @@ export default class Serve extends Command {
       description:
         'EXPERIMENTAL: Watches fab.zip and restarts the server when it changes.',
     }),
+    'proxy-ws': flags.string({
+      description: 'EXPERIMENTAL: Proxy websocket requests to a different port',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -86,7 +89,8 @@ export default class Serve extends Command {
     const server = server_pkg.createServer(file, flags as ServerArgs)
     await server.serve(
       flags['experimental-v8-sandbox'] ? SandboxType.v8isolate : SandboxType.nodeVm,
-      flags.watch
+      flags.watch,
+      flags['proxy-ws']
     )
   }
 }

@@ -1,11 +1,14 @@
 // For more information, see https://fab.dev/kb/configuration
 {
   plugins: {
+    '@fab/plugin-add-fab-id': {},
+    './redirects.ts': {},
+    './dev-proxy.ts': {
+      port: 2999
+    },
     '@fab/input-static': {
       dir: 'dist',
     },
-    '@fab/plugin-add-fab-id': {},
-    './redirects.ts': {},
     '@fab/plugin-render-html': {},
     '@fab/plugin-rewire-assets': {},
     // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins

@@ -22,6 +22,7 @@ import fetch, { Request as NodeFetchRequest } from 'cross-fetch'
 import { pathToSHA512 } from 'file-to-sha512'
 import Stream from 'stream'
 import { watcher } from '@fab/cli'
+import httpProxy from 'http-proxy'
 
 function isRequest(fetch_res: Request | Response): fetch_res is Request {
   return (
@@ -49,12 +50,17 @@ class Server implements ServerType {
     this.env = args.env
   }
 
-  async serve(runtimeType: SandboxType, watching: boolean = false) {
+  async serve(
+    runtimeType: SandboxType,
+    watching: boolean = false,
+    proxyWs: string | undefined
+  ) {
     if (!(await fs.pathExists(this.filename))) {
       throw new FabServerError(`Could not find file '${this.filename}'`)
     }
 
     let app: Express
+    let proxy: any
     let server: ReturnType<typeof http.createServer>
 
     const bootServer = async () => {
@@ -192,7 +198,21 @@ class Server implements ServerType {
         if (!server) {
           if (watching) log.note(`Watching 💛${this.filename}💛 for changes...`)
           server = http.createServer((req, res) => app(req, res))
-          //   ? https.createServer({ key: this.key, cert: this.cert }, app)
+
+          if (proxyWs) {
+            if (!proxy) {
+              proxy = httpProxy.createProxyServer({
+                target: `ws://localhost:${proxyWs}`,
+                ws: true,
+              })
+            }
+            //   ? https.createServer({ key: this.key, cert: this.cert }, app)
+
+            server.on('upgrade', (req, socket, head) => {
+              proxy.ws(req, socket, head)
+            })
+          }
+
           server.listen(this.port, resolve)
         } else {
           resolve()
