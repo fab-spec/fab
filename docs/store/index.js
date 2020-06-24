@@ -28,7 +28,7 @@ export const actions = {
   },
 }
 
-export const DIRECTORIES = ['', 'guides', 'kb', 'blog']
+export const DIRECTORIES = ['', 'guides', 'plugins', 'kb', 'blog']
 
 /* This is only needed cause Content can't handle nested directories, as far as I can see */
 export const getDocs = async (that, filter_fn) => {
