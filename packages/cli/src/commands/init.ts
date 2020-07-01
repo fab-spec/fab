@@ -28,6 +28,9 @@ export default class Init extends Command {
     'skip-framework-detection': flags.boolean({
       description: "Don't try to auto-detect framework, set up manually.",
     }),
+    'empty': flags.boolean({
+      description: "Install the packages and create an empty fab.config.json5 (implies -y)"
+    })
   }
 
   static args = []
@@ -39,7 +42,8 @@ export default class Init extends Command {
       flags.yes,
       flags['skip-install'],
       flags.version,
-      flags['skip-framework-detection']
+      flags['skip-framework-detection'],
+      flags.empty
     )
   }
 }
