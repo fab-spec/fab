@@ -92,9 +92,10 @@ export async function installDependencies(
   dependencies: string[],
   root_dir: string
 ) {
-  if (use_yarn) {
-    await execa('yarn', ['add', '--dev', ...dependencies], { cwd: root_dir })
-  } else {
-    await execa('npm', ['i', '--save-dev', ...dependencies], { cwd: root_dir })
-  }
+  const install_process = use_yarn
+    ? execa('yarn', ['add', '--dev', ...dependencies], { cwd: root_dir })
+    : execa('npm', ['i', '--save-dev', ...dependencies], { cwd: root_dir })
+  install_process.stdout?.pipe(process.stdout)
+  install_process.stderr?.pipe(process.stderr)
+  await install_process
 }
