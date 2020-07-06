@@ -1,6 +1,8 @@
 import { _log } from '@fab/cli'
 import execa from 'execa'
 import path from 'path'
+import tmp from 'tmp-promise'
+import fs from 'fs-extra'
 
 const log = _log('Typecheck')
 
@@ -24,7 +26,32 @@ export class Typecheck {
 
   constructor(cwd: string, plugins: string[]) {
     log(`Typechecking ${plugins.length} plugins (in background)...`)
-    this.promise = execa('tsc', ['--pretty', '--noEmit', ...plugins], { cwd })
+
+    this.promise = (async () => {
+      const dir = await tmp.dir()
+      const tsconfig_path = path.join(dir.path, 'fab-tsconfig.json')
+      const tsconfig = {
+        compilerOptions: {
+          target: 'es2020',
+          module: 'commonjs',
+          lib: ['es2020', 'dom'],
+          declaration: false,
+          sourceMap: false,
+          strict: true,
+          noImplicitReturns: false,
+          noFallthroughCasesInSwitch: true,
+          moduleResolution: 'node',
+          baseUrl: './',
+          paths: {},
+          esModuleInterop: true,
+          forceConsistentCasingInFileNames: true,
+        },
+        include: plugins,
+        exclude: [],
+      }
+      await fs.writeFile(tsconfig_path, JSON.stringify(tsconfig, null, 2))
+      return execa('tsc', ['--pretty', '--noEmit', '-p', tsconfig_path], { cwd })
+    })()
   }
 
   async waitForResults() {
