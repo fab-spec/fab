@@ -5,7 +5,7 @@ import { captureStdout } from '../helpers'
 import { ProtoFab } from '@fab/core'
 
 describe('Compiler', () => {
-  it('should compile the fixtures directory', async () => {
+  it.skip('should compile the fixtures directory', async () => {
     const local_plugins = `${__dirname}/../fixtures/fab.local-plugins.json5`
 
     const proto_fab = new ProtoFab()
