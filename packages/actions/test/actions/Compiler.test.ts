@@ -4,8 +4,10 @@ import { JSON5Config } from '@fab/cli'
 import { captureStdout } from '../helpers'
 import { ProtoFab } from '@fab/core'
 
-describe('Compiler', () => {
-  it.skip('should compile the fixtures directory', async () => {
+describe('Compiler', function() {
+  this.timeout(10000)
+
+  it('should compile the fixtures directory', async () => {
     const local_plugins = `${__dirname}/../fixtures/fab.local-plugins.json5`
 
     const proto_fab = new ProtoFab()
