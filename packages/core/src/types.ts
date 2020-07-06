@@ -226,7 +226,8 @@ export type DeployFn = (
 export type BuildFn = (
   config_path: string,
   config: FabConfig,
-  skip_cache: boolean
+  skip_cache: boolean,
+  skip_typecheck: boolean
 ) => Promise<void>
 
 export type FabActionsExports = {

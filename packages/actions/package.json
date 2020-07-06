@@ -45,6 +45,7 @@
     "@types/webpack": "^4.41.5",
     "buffer": "^5.4.3",
     "deterministic-zip": "^1.1.0",
+    "execa": "^4.0.2",
     "fs-extra": "^8.1.0",
     "memfs": "^3.0.4",
     "path-browserify": "^1.0.0",

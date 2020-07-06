@@ -9,8 +9,6 @@ import alias from '@rollup/plugin-alias'
 // @ts-ignore
 import hypothetical from 'rollup-plugin-hypothetical'
 
-import tscPlugin from './tsc-plugin'
-
 export async function rollupCompile(
   input: string,
   generate_opts: OutputOptions,
@@ -26,7 +24,6 @@ export async function rollupCompile(
   const bundle = await rollup({
     input,
     plugins: [
-      tscPlugin(),
       hypothetical({
         files: hypothetical_files,
         allowFallthrough: true,
