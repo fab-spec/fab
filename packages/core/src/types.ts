@@ -55,11 +55,15 @@ export type FabBuildStep<
 export type FabResponderMutableContext = {
   [key: string]: any
 }
+export type Cookies = {
+  [key: string]: string
+}
 export type FabResponderArgs = {
   request: Request
   settings: FabSettings
   url: URL
   context: FabResponderMutableContext
+  cookies: Cookies
 }
 /*
  * A FabRequestResponder is an async function that optionally returns
