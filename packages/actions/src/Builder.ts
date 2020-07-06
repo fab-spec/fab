@@ -60,7 +60,11 @@ export default class Builder {
 
     log.time((d) => `Build plugins completed in ${d}.`)
 
-    const typecheck = Typecheck.startTypecheck(runtime_plugins, skip_typecheck)
+    const typecheck = Typecheck.startTypecheck(
+      config_path,
+      runtime_plugins,
+      skip_typecheck
+    )
     await Compiler.compile(config, proto_fab, runtime_plugins)
     await typecheck.waitForResults()
     await Generator.generate(proto_fab)
