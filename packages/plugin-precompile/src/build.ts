@@ -7,7 +7,7 @@ import path from 'path'
 import filenamify from 'filenamify'
 import merge from 'webpack-merge'
 
-const log = _log('@fab/plugin-node-compat')
+const log = _log('@fab/plugin-precompile')
 
 export const build: FabBuildStep<NodeCompatArgs, NodeCompatMetadata> = async (
   args: NodeCompatArgs,
@@ -24,7 +24,7 @@ export const build: FabBuildStep<NodeCompatArgs, NodeCompatMetadata> = async (
    *
    * */
   const config_dir = path.dirname(path.resolve(config_path))
-  const cache_dir = path.join(config_dir, '.fab', '.cache', 'node-compat')
+  const cache_dir = path.join(config_dir, '.fab', '.cache', 'precompile')
   await fs.ensureDir(cache_dir)
 
   const output_files: string[] = []
