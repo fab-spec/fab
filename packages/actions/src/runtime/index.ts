@@ -3,7 +3,7 @@
 import {
   Directive,
   Cookies,
-  FabPluginRuntime,
+  FabResponderMutableContext,
   FABRuntime,
   FABServerContext,
   FabSettings,
@@ -53,12 +53,10 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
     // If we still don't have Runtime, we have to bail here.
     if (!Runtime) throw new Error('Initialise called but no Runtime created!')
   }
-  const url = new URL(request.url)
-
   // If no middleware catches the 444 No Response, render a very generic 404 page
   const final_interceptor = async (response: Response) =>
     response.status === NO_RESPONSE_STATUS_CODE
-      ? new Response(`No resource found at ${url.pathname}\n`, {
+      ? new Response(`No resource found at ${request.url}\n`, {
           status: 404,
           statusText: 'Not Found',
           headers: {},
@@ -66,23 +64,22 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
       : response
 
   const response_interceptors: ResponseInterceptor[] = [final_interceptor]
-  const context: { [key: string]: any } = {}
-  const cookies = parseCookies(request)
+  const context: FabResponderMutableContext = {}
 
-  const request_context = {
-    request,
-    settings,
-    url,
-    context,
-    cookies,
-  }
+  let chained_request = request
+  let cookies = parseCookies(request)
 
   for (const responder of Runtime.getPipeline()) {
     // Always take a copy of request & url so a middleware doesn't accidentally modify it.
     // Passing data between middlewares is what 'context' is for.
     // Modifying requests is what 'replaceRequest' is for.
-    request_context.request = request_context.request.clone()
-    request_context.url = new URL(request_context.url.href)
+    const request_context = {
+      request: chained_request.clone(),
+      url: new URL(chained_request.url),
+      settings,
+      context: context,
+      cookies,
+    }
 
     const response = await responder(request_context)
     if (!response) continue
@@ -109,10 +106,9 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
       response_interceptors.unshift(directive.interceptResponse)
     }
     if (directive.replaceRequest instanceof Request) {
-      const new_request = directive.replaceRequest
-      request_context.request = new_request
-      request_context.url = new URL(new_request.url)
-      request_context.cookies = parseCookies(new_request)
+      // Reevaluate the dependant values of the request
+      chained_request = directive.replaceRequest
+      cookies = parseCookies(chained_request)
     }
   }
 

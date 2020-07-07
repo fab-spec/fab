@@ -17,4 +17,13 @@ export default ({ Router }: FABRuntime) => {
     },
     Priority.FIRST
   )
+
+  Router.on(
+    '/mutate-url-doesnt-work',
+    async ({ url }) => {
+      url.pathname = '/alternative.html'
+      return undefined
+    },
+    Priority.FIRST
+  )
 }

@@ -101,6 +101,9 @@ describe('Server-side logic tests', () => {
 
       const alt_sub_response = await request('', '/alt/fab', port)
       expect(alt_sub_response).toEqual(alt_response)
+
+      const wrong_mutation_response = await request('', '/mutate-url-doesnt-work', port)
+      expect(wrong_mutation_response).toEqual(homepage_response)
     })
 
     it('should hit a streaming endpoint', async () => {
