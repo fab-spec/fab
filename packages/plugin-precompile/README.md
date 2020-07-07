@@ -1,12 +1,12 @@
 # @fab/plugin-precompile
 
-A plugin for serving static HTML files with FAB_SETTINGS injected
+A plugin for pre-compiling plugins using Webpack
 
-## Rationale
+## Why?
 
-Static HTML is a big part of modern frontend applications—whether you're serving all routes as a single page application to a single `index.html` or pre-rendering dozens or hundreds of routes, generating static HTML gives you a bulletproof deploy artifact.
+FAB's [plugins](https://fab.dev/kb/plugins) give you a simple way to add server-side logic to a FAB, but sometimes you have an existing codebase that you'd like to repurpose. As FAB plugins are designed to be written by hand, we've chosen to keep the Rollup config extremely simple and forward-looking (ES modules, Typescript support) without requiring transpilation. But that means anything that expects a NodeJS infrastructure will not work out-of-the-box.
 
-In the FAB ecosystem, however, we want the ability for a compiled FAB to be linked against multiple [environments](https://fab.dev/kb/environment-variables), and so a build-time static HTML file isn't going to work. This module solves that.
+`@fab/plugin-precompile` is designed to give you a flexible Webpack step that isolates your Node code & all the shims away from the modern FAB runtime plugin compiler.
 
 ## Usage
 
@@ -15,52 +15,146 @@ In the FAB ecosystem, however, we want the ability for a compiled FAB to be link
   plugins: {
     // ...
     '@fab/plugin-precompile': {
-      // Can be left blank. See below for config options
+      './your-file.js': {
+        // Options, see below
+      },
+      './another-file.js': {},
     },
     // ...
   },
 }
 ```
 
-## How it works
+This config will set up Webpack compilations with `./your-file.js` and `./another-file.js` as entry points, expecting them to generate a [FAB Runtime Plugin](https://fab.dev/guides/adding-server-side-logic) api.
 
-`@fab/plugin-precompile` works by compiling your HTML files into a template (atm we use Mustache but not for any particular reason, it just works), which means that the static HTML files can be dynamically enriched on the server.
+## Options
 
-Most commonly, this will inject the following `<script>` tag into any HTML response as it's being streamed to the client:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <script type="text/javascript">
-      window.FAB_SETTINGS = {
-        ENV_VAR_NAME: 'env var value',
-      }
-    </script>
-    <!-- ... -->
-  </head>
-  <!-- ... -->
-</html>
-```
-
-Your client-side JS can then import the global `FAB_SETTINGS` object to rewire API requests, etc.
-
-## Configuration
-
-By default, this module has the following options:
+Like normal plugins, any key/value pairs you pass through will be available as the second argument to the plugin export:
 
 ```json5
 {
-  'match-html': '/.html$/i', // path to match for HTML files
-  injections: {
-    // if not specified, injects only the following module
-    env: {
-      name: 'FAB_SETTINGS', // which global variable to use?
+  plugins: {
+    '@fab/plugin-precompile': {
+      './your-file.js': {
+        key: 'value',
+      },
     },
   },
 }
 ```
 
-Other `injections` are coming, but for the moment this is all.
+```js
+// your-file.js
+export default ({ Router }, args) => {
+  // args is {"key":"value"}
 
-Need something else customised? [Open an issue](https://github.com/fab-spec/fab/issues)!
+  Router.on(/* ... */)
+}
+```
+
+## Webpack Configuration
+
+There is a special argument `_config`, however, that allows you to specify a file to customise the Webpack build as it runs, in a manner reminiscent of [react-app-rewired](https://github.com/timarney/react-app-rewired#extended-configuration-options):
+
+```json5
+{
+  plugins: {
+    '@fab/plugin-precompile': {
+      './your-file.js': {
+        _config: './plugin-overrides.js',
+      },
+    },
+  },
+}
+```
+
+```js
+// plugin-overrides.js
+
+// Note, no ES modules here, native NodeJS syntax only
+module.exports = {
+  // The most common use-case is just adding another shim library
+  alias: (existing_aliases) => ({
+    ...existing_aliases,
+    'some-nodey-module': require.resolve('@some/shim-library'),
+  }),
+  webpack: (webpack_config) => {
+    // You can do anything with the config here, but you must also return it
+    webpack_config.plugins.push(new webpack.SomeOtherPlugin(/* ... */))
+    return webpack_config
+  },
+}
+```
+
+## Example
+
+Reproduced here from the [the E2E test file `modify-plugin-config.js`](https://github.com/fab-spec/fab/blob/c0decea3e2d8974c76aac67f26838e5995c9664b/tests/e2e/fixtures/server-side-logic/modify-plugin-config.js):
+
+```js
+// modify-plugin-config.js
+const webpack = require('webpack')
+
+module.exports = {
+  webpack: (config) => {
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        replace_me: '"WITH_ME"',
+      })
+    )
+    return config
+  },
+  alias: (alias) => ({
+    ...alias,
+    'no-existo': require.resolve('@fab/plugin-precompile/shims/empty-object'),
+  }),
+}
+```
+
+```json5
+{
+  plugins: {
+    '@fab/plugin-precompile': {
+      './fab-plugins/needs-webpack.js': {
+        _config: './modify-plugin-config.js',
+        other_data: 'passed through as normal',
+      },
+    },
+  },
+}
+```
+
+```js
+import shim from 'no-existo'
+import fs from 'fs'
+
+export default ({ Router }, args) => {
+  fs.mkdirSync('/tmp')
+  const tmpfile = '/tmp/something'
+  fs.writeFileSync(tmpfile, 'FILESYSTEM LOOKS LIKE IT WORKS')
+
+  Router.on('/webpack-plugin-test', async () => {
+    return new Response(
+      [
+        `Testing 'fs' shim: ${fs.readFileSync(tmpfile, 'utf8')}`,
+        `Testing 'alias' override: ${JSON.stringify(shim)}`,
+        `Testing 'webpack' DefinePlugin: ${JSON.stringify({ replace_me: replace_me })}`,
+        `Testing 'args' wiring up: ${JSON.stringify(args)}`,
+        ``,
+      ].join('\n'),
+      {
+        headers: {
+          'content-type': 'text-plain',
+        },
+      }
+    )
+  })
+}
+```
+
+```
+> curl localhost:3000/webpack-plugin-test
+Testing 'fs' shim: FILESYSTEM LOOKS LIKE IT WORKS
+Testing 'alias' override: {}
+Testing 'webpack' DefinePlugin: {"replace_me":"WITH_ME"}
+Testing 'args' wiring up: {"other_data":"passed through as normal"}
+```
