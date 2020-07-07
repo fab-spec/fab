@@ -4,7 +4,7 @@ module.exports = {
   webpack: (config) => {
     config.plugins.push(
       new webpack.DefinePlugin({
-        replace_me: 'WITH_ME',
+        replace_me: '"WITH_ME"',
       })
     )
     return config
