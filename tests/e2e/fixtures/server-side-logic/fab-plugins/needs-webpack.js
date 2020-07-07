@@ -1,7 +1,7 @@
 import shim from 'no-existo'
 import fs from 'fs'
 
-export default ({ Router }) => {
+export default ({ Router }, args) => {
   fs.mkdirSync('/tmp')
   const tmpfile = '/tmp/something'
   fs.writeFileSync(tmpfile, 'FILESYSTEM LOOKS LIKE IT WORKS')
@@ -12,6 +12,7 @@ export default ({ Router }) => {
         `Testing 'fs' shim: ${fs.readFileSync(tmpfile, 'utf8')}`,
         `Testing 'alias' override: ${JSON.stringify(shim)}`,
         `Testing 'webpack' DefinePlugin: ${JSON.stringify({ replace_me: replace_me })}`,
+        `Testing 'args' wiring up: ${JSON.stringify(args)}`,
         ``,
       ].join('\n'),
       {

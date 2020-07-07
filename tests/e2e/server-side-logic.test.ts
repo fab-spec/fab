@@ -115,6 +115,9 @@ describe('Server-side logic tests', () => {
       expect(webpack_response).toContain(
         `Testing 'webpack' DefinePlugin: {"replace_me":"WITH_ME"}`
       )
+      expect(webpack_response).toContain(
+        `Testing 'args' wiring up: {"other_data":"passed through as normal"}`
+      )
     })
 
     it('should hit a streaming endpoint', async () => {
