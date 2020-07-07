@@ -14,7 +14,7 @@ export class Typecheck {
     }
 
     const ts_plugins = plugins.filter((str) => str.match(/\.tsx?$/))
-    if (plugins.length === 0) {
+    if (ts_plugins.length === 0) {
       log(`🖤No Typescript plugins detected. Skipping.🖤`)
       return Typecheck.Noop
     }
