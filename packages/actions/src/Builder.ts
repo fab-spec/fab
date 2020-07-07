@@ -1,4 +1,4 @@
-import { LoadedPlugin, FabConfig, ProtoFab } from '@fab/core'
+import { LoadedPlugin, RuntimePlugin, FabConfig, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { Typecheck } from './Typecheck'
@@ -44,9 +44,13 @@ export default class Builder {
 
     const proto_fab = new ProtoFab()
 
-    for (const { plugin_name, builder, runtimes, plugin_args } of plugins) {
-      if (!builder) continue
+    const runtime_plugins: RuntimePlugin[] = []
+    for (const plugin of plugins) {
+      const { plugin_name, builder, runtime, plugin_args } = plugin
+      // @ts-ignore this guard isn't narrowing the type properly
+      if (runtime) runtime_plugins.push(plugin)
 
+      if (!builder) continue
       log(`Building 💛${plugin_name}💛:`)
 
       const dynamic_runtimes = await builder(
@@ -57,16 +61,22 @@ export default class Builder {
       )
 
       if (Array.isArray(dynamic_runtimes)) {
+        log(
+          `Registering additional runtime plugin(s):💛${dynamic_runtimes
+            .map((p) => p.runtime)
+            .filter(Boolean)
+            .join('\n')}💛`
+        )
+
         for (const dynamic_runtime of dynamic_runtimes) {
-          log(`Registering additional runtime plugin 💛${dynamic_runtime}💛`)
           const path = safeResolve(
-            relativeToConfig(config_path, dynamic_runtime),
+            relativeToConfig(config_path, dynamic_runtime.runtime),
             config_path
           )
           if (!path) {
-            log.error(`WARNING: cannot resolve ${dynamic_runtime}! Skipping!`)
+            log.error(`WARNING: cannot resolve ${dynamic_runtime.runtime}! Skipping!`)
           } else {
-            runtimes.push(path)
+            runtime_plugins.push(dynamic_runtime)
           }
         }
       }
@@ -74,8 +84,12 @@ export default class Builder {
 
     log.time((d) => `Build plugins completed in ${d}.`)
 
-    const typecheck = Typecheck.startTypecheck(config_path, plugins, skip_typecheck)
-    await Compiler.compile(config, proto_fab, plugins)
+    const typecheck = Typecheck.startTypecheck(
+      config_path,
+      runtime_plugins,
+      skip_typecheck
+    )
+    await Compiler.compile(config, proto_fab, runtime_plugins)
     await typecheck.waitForResults()
     await Generator.generate(proto_fab)
   }
@@ -101,7 +115,7 @@ export default class Builder {
         plugin_name,
         plugin_args,
         builder: undefined,
-        runtimes: [],
+        runtime: undefined,
       }
 
       if (path_slash_build || path_slash_require) {
@@ -135,7 +149,7 @@ export default class Builder {
         }
 
         if (path_slash_require) {
-          plugin.runtimes.push(path_slash_require)
+          plugin.runtime = path_slash_require
         }
       } else {
         if (!plugin_path) {
@@ -156,10 +170,10 @@ export default class Builder {
           // so just pass it through as a runtime plugin.
           // Relevant issue: https://github.com/fab-spec/fab/issues/67
 
-          plugin.runtimes.push(plugin_path)
+          plugin.runtime = plugin_path
         } else {
           if (typeof module.default === 'function') {
-            plugin.runtimes.push(plugin_path)
+            plugin.runtime = plugin_path
           } else {
             log.warn(`Plugin ${plugin_name} doesn't have a default export, ignoring it.`)
           }
@@ -176,8 +190,8 @@ export default class Builder {
       .join('\n')}🖤`)
     log(`and the following 💛runtime💛 plugins:
     🖤${plugins
-      .flatMap((p) => p.runtimes.map((r) => path.relative(process.cwd(), r!)))
-      .filter(Boolean)
+      .filter((p) => p.runtime)
+      .map((p) => path.relative(process.cwd(), p.runtime!))
       .join('\n')}🖤`)
 
     return plugins

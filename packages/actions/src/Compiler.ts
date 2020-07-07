@@ -1,11 +1,11 @@
-import { FabConfig, ProtoFab, LoadedPlugin, RuntimeImports } from '@fab/core'
+import { FabConfig, ProtoFab, LoadedPlugin, RuntimePlugin } from '@fab/core'
 import { _log, BuildFailedError } from '@fab/cli'
 import { rollupCompile } from './rollup'
 
 const log = _log(`Compiler`)
 
 export class Compiler {
-  static async compile(config: FabConfig, proto_fab: ProtoFab, plugins: LoadedPlugin[]) {
+  static async compile(config: FabConfig, proto_fab: ProtoFab, plugins: RuntimePlugin[]) {
     log.time(() => `Compiling your 💛server.js💛:`)
 
     const warnings: string[] = []
@@ -50,16 +50,14 @@ export class Compiler {
   }
 }
 
-function generateRuntimeImports(plugins: LoadedPlugin[]) {
+function generateRuntimeImports(plugins: RuntimePlugin[]) {
   let plugin_index = 0
 
-  const plugin_aliases = plugins.flatMap((plugin) =>
-    plugin.runtimes.map((r) => ({
-      alias: `runtime_${plugin_index++}`,
-      import_path: r,
-      args: plugin.plugin_args,
-    }))
-  )
+  const plugin_aliases = plugins.map(({ runtime, plugin_args }, i) => ({
+    alias: `runtime_${i + 1}`,
+    import_path: runtime,
+    args: plugin_args,
+  }))
 
   const import_statements = plugin_aliases
     .map(({ alias, import_path }) => `import ${alias} from '${import_path}'`)

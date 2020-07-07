@@ -1,4 +1,4 @@
-import { FabBuildStep, ProtoFab } from '@fab/core'
+import { FabBuildStep, ProtoFab, RuntimePlugin } from '@fab/core'
 import { PrecompileArgs, PrecompileMetadata } from './types'
 import { _log } from '@fab/cli'
 import webpack from 'webpack'
@@ -26,7 +26,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
   const cache_dir = path.join(config_dir, '.fab', '.cache', 'precompile')
   await fs.ensureDir(cache_dir)
 
-  const output_files: string[] = []
+  const output_files: RuntimePlugin[] = []
 
   for (const [file, config] of Object.entries(args)) {
     const webpacked_output = path.join(
@@ -34,6 +34,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
       `${filenamify(file, { replacement: '-' })}.js`
     )
     const entry = path.resolve(file)
+    const { _config: plugin_config_file, ...plugin_args } = config
 
     const options: webpack.Configuration = {
       stats: 'verbose',
@@ -96,7 +97,10 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
         resolve()
       })
     )
-    output_files.push(webpacked_output)
+    output_files.push({
+      runtime: webpacked_output,
+      plugin_args,
+    })
   }
 
   return output_files

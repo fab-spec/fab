@@ -17,11 +17,11 @@ describe('Builder', () => {
     )
 
     expect(
-      result.map(({ plugin_name, builder, plugin_args, runtimes }) => [
+      result.map(({ plugin_name, builder, plugin_args, runtime }) => [
         plugin_name,
         plugin_args,
         !!builder,
-        runtimes.length > 0,
+        !!runtime,
       ])
     ).to.deep.equal([
       ['./plugins/build-and-render', { first: 'plugin' }, true, true],
@@ -30,7 +30,7 @@ describe('Builder', () => {
       ['./plugins/empty', { set: 'it up' }, false, false],
       ['./plugins/typescript-example', { the_time_is: 'NOW!' }, true, true],
     ])
-    expect(result.flatMap((p) => p.runtimes)).to.deep.equal([
+    expect(result.flatMap((p) => p.runtime || [])).to.deep.equal([
       path.resolve(`${__dirname}/../fixtures/plugins/build-and-render/runtime.js`),
       path.resolve(`${__dirname}/../fixtures/plugins/runtime-only.js`),
       path.resolve(`${__dirname}/../fixtures/plugins/typescript-example/runtime.ts`),

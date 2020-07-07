@@ -40,7 +40,11 @@ export type LoadedPlugin = {
   plugin_name: string
   plugin_args: PluginArgs
   builder: FabBuildStep | undefined
-  runtimes: string[]
+  runtime: string | undefined
+}
+export type RuntimePlugin = {
+  plugin_args: PluginArgs
+  runtime: string
 }
 
 /*
@@ -56,7 +60,7 @@ export type FabBuildStep<
   proto_fab: ProtoFab<U>,
   config_path: string,
   skip_cache?: boolean
-) => Promise<void | string[]>
+) => Promise<void | RuntimePlugin[]>
 
 export type FabResponderMutableContext = {
   [key: string]: any
