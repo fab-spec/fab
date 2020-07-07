@@ -81,8 +81,8 @@ describe('Server-side logic tests', () => {
       expect(await request('-I', '/hello', port)).toContain(`HTTP/1.1 200 OK`)
 
       const homepage_response = await request('', '/', port)
-      expect(homepage_response).toContain(`<title>HULLO</title>`)
-      expect(homepage_response).toContain(`<h1>HAI</h1>`)
+      expect(homepage_response).toContain(`<title>INDEX HTML</title>`)
+      expect(homepage_response).toContain(`<h1>This is the default fallback.</h1>`)
       expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
 
       const hello_response = await request('', '/hello', port)
