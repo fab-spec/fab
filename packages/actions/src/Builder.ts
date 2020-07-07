@@ -62,8 +62,9 @@ export default class Builder {
 
       if (Array.isArray(dynamic_runtimes)) {
         log(
-          `Registering additional runtime plugin(s):💛${dynamic_runtimes
-            .map((p) => p.runtime)
+          `Registering additional runtime plugin(s):
+          💛${dynamic_runtimes
+            .map((p) => path.relative(path.dirname(config_path), p.runtime))
             .filter(Boolean)
             .join('\n')}💛`
         )
