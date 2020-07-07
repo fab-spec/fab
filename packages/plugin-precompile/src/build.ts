@@ -42,6 +42,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
     const { _config: plugin_config_file, ...plugin_args } = config
 
     const { customise_aliases, customise_webpack } = await getPluginOverrides(
+      config_dir,
       plugin_config_file
     )
 
@@ -117,6 +118,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
 }
 
 async function getPluginOverrides(
+  config_dir: string,
   plugin_config_file: string | undefined
 ): Promise<ConfigOverrides> {
   if (!plugin_config_file) {
@@ -126,7 +128,10 @@ async function getPluginOverrides(
     }
   }
 
-  const plugin_overrides = require(plugin_config_file) as PluginOverrides
+  const plugin_overrides = require(path.resolve(
+    config_dir,
+    plugin_config_file
+  )) as PluginOverrides
   return {
     customise_webpack: plugin_overrides.webpack || ((x) => x),
     customise_aliases: plugin_overrides.alias || ((x) => x),

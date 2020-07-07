@@ -16,6 +16,7 @@
     "lib",
     "esm",
     "src",
+    "shims",
     "build.js"
   ],
   "types": "esm/index.d.ts",
