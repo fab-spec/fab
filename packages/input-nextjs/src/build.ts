@@ -79,8 +79,9 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   const entry_point = `
     const renderers = require(${JSON.stringify(renderer_path)});
     const MockExpressResponse = require(${JSON.stringify(mock_express_response_path)});
+    const MockReq = require('mock-express-request');
 
-    module.exports = { renderers, MockExpressResponse }
+    module.exports = { renderers, MockExpressResponse, MockReq }
   `
   const entry_file = path.join(cache_dir, 'entry-point.js')
   await fs.writeFile(entry_file, entry_point)
@@ -107,6 +108,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
             path: path.join(shims_dir, 'path-with-posix'),
             '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
             http: path.join(shims_dir, 'http'),
+            net: path.join(shims_dir, 'net'),
             https: path.join(shims_dir, 'empty-object'),
           },
         },
