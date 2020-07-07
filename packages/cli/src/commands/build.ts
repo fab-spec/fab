@@ -27,6 +27,10 @@ export default class Build extends Command {
       description:
         'Re-run the builder if any of the listed files change. Pass this argument multiple times to watch multiple files/directories.',
     }),
+    'skip-typecheck': flags.boolean({
+      description:
+        "Skip the background typechecking of your FAB plugins if it's slow or flaky.",
+    }),
   }
 
   static args = []
@@ -37,7 +41,12 @@ export default class Build extends Command {
 
     await watcher(flags.watch, async () => {
       const config = await JSON5Config.readFrom(flags.config!)
-      await Builder.build(flags.config, config.data, flags['skip-cache'])
+      await Builder.build(
+        flags.config,
+        config.data,
+        flags['skip-cache'],
+        flags['skip-typecheck']
+      )
     })
   }
 }
