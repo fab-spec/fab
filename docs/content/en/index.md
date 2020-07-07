@@ -92,7 +92,7 @@ A FAB is a special ZIP file with two components, a single server-side JavaScript
 
 <h5 align="center">
   <img
-    width="350px"
+    width="400px"
     max-width="100%"
     alt="FAB Structure"
     src="https://user-images.githubusercontent.com/23264/64143562-f9333180-ce53-11e9-9058-4d1d961a1d35.png"

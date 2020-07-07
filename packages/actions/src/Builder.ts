@@ -1,6 +1,7 @@
 import { LoadedPlugin, FabConfig, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
+import { Typecheck } from './Typecheck'
 import {
   _log,
   BuildFailedError,
@@ -29,7 +30,12 @@ const safeRequire = async (path: string) => {
 }
 
 export default class Builder {
-  static async build(config_path: string, config: FabConfig, skip_cache: boolean) {
+  static async build(
+    config_path: string,
+    config: FabConfig,
+    skip_cache: boolean,
+    skip_typecheck: boolean
+  ) {
     log.announce(`fab build`)
     log(`Reading plugins from config.`)
     const plugins = await this.getPlugins(config_path, config)
@@ -68,7 +74,9 @@ export default class Builder {
 
     log.time((d) => `Build plugins completed in ${d}.`)
 
+    const typecheck = Typecheck.startTypecheck(config_path, plugins, skip_typecheck)
     await Compiler.compile(config, proto_fab, plugins)
+    await typecheck.waitForResults()
     await Generator.generate(proto_fab)
   }
 

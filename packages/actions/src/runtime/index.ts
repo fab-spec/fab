@@ -1,14 +1,15 @@
 /* Outermost FAB server, imports the plugin chain and responds to requests */
 
 import {
+  Cookies,
   Directive,
   FABRuntime,
+  FABServerContext,
   FabSettings,
   FabSpecMetadata,
   FabSpecRender,
   NO_RESPONSE_STATUS_CODE,
   ResponseInterceptor,
-  FABServerContext,
   RuntimeImports,
 } from '@fab/core'
 
@@ -19,6 +20,20 @@ import { runtimes } from 'fab-runtime-imports'
 import { fab_metadata } from 'fab-metadata'
 // @ts-ignore
 import { production_settings } from 'production-settings'
+
+function parseCookies(request: Request) {
+  const cookies: Cookies = {}
+
+  const cookies_header = request.headers.get('Cookie')
+  if (cookies_header) {
+    cookies_header.split(';').forEach((cookie) => {
+      const [key, value] = cookie.split('=').map((s) => s.trim())
+      cookies[key] = value
+    })
+  }
+
+  return cookies
+}
 
 let Runtime: FABRuntime | undefined = undefined
 export const initialize = (server_context: FABServerContext) => {
@@ -58,6 +73,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
 
   const response_interceptors: ResponseInterceptor[] = [final_interceptor]
   const context: { [key: string]: any } = {}
+  const cookies = parseCookies(request)
 
   let chained_request = request
 
@@ -67,6 +83,7 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
       settings,
       url,
       context,
+      cookies,
     })
     if (!response) continue
 

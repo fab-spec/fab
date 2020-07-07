@@ -161,6 +161,11 @@ describe('Nextjs E2E Test', () => {
       expect(parseFloat(other_number)).toBeLessThan(1)
     })
 
+    it('should hit an API endpoint', async () => {
+      expect(await request('-I', '/api/hello', port)).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/api/time', port)).toContain(`HTTP/1.1 200 OK`)
+    })
+
     it('should render a page with a parameter in the url', async () => {
       expect(await request('-I', '/background/300', port)).toContain(`HTTP/1.1 200 OK`)
       expect(await request('-I', '/background/400', port)).toContain(`HTTP/1.1 200 OK`)
