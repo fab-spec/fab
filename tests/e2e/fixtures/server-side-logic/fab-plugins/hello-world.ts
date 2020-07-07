@@ -7,4 +7,10 @@ export default ({ Router }: FABRuntime) => {
       status: 200,
     })
   })
+
+  Router.on('/alt(/.*)?', async ({ request }) => {
+    return {
+      replaceRequest: new Request('/index.html'),
+    }
+  })
 }

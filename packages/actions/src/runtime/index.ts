@@ -39,7 +39,7 @@ let Runtime: FABRuntime | undefined = undefined
 export const initialize = (server_context: FABServerContext) => {
   Runtime = FABRuntime.initialize(
     fab_metadata,
-    [...(runtimes as FabPluginRuntime[]), final_responder],
+    [...runtimes, final_responder],
     server_context
   )
 }
