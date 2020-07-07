@@ -41,6 +41,45 @@ Note, the `start` method on a `ReadableStream` isn't actually an `async` method 
 
 </base-alert>
 
+## Binary streams
+
+```ts[alphabet.ts]
+import { FABRuntime } from '@fab/core'
+
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
+
+export default ({ Router }: FABRuntime) => {
+  Router.on('/alphabet', async () => {
+    const stream = new ReadableStream({
+      async start(controller) {
+        // ASCII codes for 'ABC\n'
+        controller.enqueue(new Uint8Array([65, 66, 67, 10]))
+        await sleep(500)
+        // ASCII codes for 'DEF\n'
+        controller.enqueue(new Uint8Array([68, 69, 70, 10]))
+        await sleep(500)
+        // ASCII codes for 'GHI\n'
+        controller.enqueue(new Uint8Array([71, 72, 73, 10]))
+        controller.close()
+      },
+    })
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    })
+  })
+}
+```
+
+```sh
+> curl http://localhost:3000/alphabet
+ABC
+DEF
+GHI
+```
+
 ## Working example:
 
 Streaming responses are part of any solution that offers the best possible performance out of an endpoint: you can flush the HTTP Headers and the first initial chunk of body content as soon as it's ready, then leave the connection open and send the remainder when it's ready. Given the web's birth during a time of extremely limited bandwidth, browsers will faithfully render what they have as soon as they get it.

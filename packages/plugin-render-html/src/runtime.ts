@@ -1,4 +1,4 @@
-import { RenderHtmlMetadata } from './types'
+import { RenderHtmlArgs, RenderHtmlMetadata } from './types'
 import {
   FABRuntime,
   FabSettings,
@@ -18,11 +18,11 @@ const getNonce = () => {
     .slice(2)
 }
 
-export default function RenderHTMLRuntime({
-  Router,
-  Metadata,
-}: FABRuntime<RenderHtmlMetadata>) {
-  const { htmls, resolved_fallback, args } = Metadata.render_html
+export default function RenderHTMLRuntime(
+  { Router, Metadata }: FABRuntime<RenderHtmlMetadata>,
+  args: RenderHtmlArgs
+) {
+  const { htmls, resolved_fallback } = Metadata.render_html
   const { injections = DEFAULT_INJECTIONS } = args
   const error_page = matchPath(htmls, '/404')
 

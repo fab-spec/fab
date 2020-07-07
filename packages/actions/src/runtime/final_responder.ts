@@ -1,6 +1,11 @@
-import { FABRuntime, NO_RESPONSE_STATUS_CODE, Priority } from '@fab/core'
+import {
+  FABRuntime,
+  FabPluginRuntime,
+  NO_RESPONSE_STATUS_CODE,
+  Priority,
+} from '@fab/core'
 
-export default function FinalResponder({ Router }: FABRuntime) {
+const FinalResponder: FabPluginRuntime = ({ Router }: FABRuntime) => {
   Router.onAll(async ({ url }) => {
     // We're the last middleware to be called, and so we:
     //   a) always respond
@@ -15,3 +20,5 @@ export default function FinalResponder({ Router }: FABRuntime) {
     })
   }, Priority.LAST)
 }
+
+export default FinalResponder

@@ -1,8 +1,8 @@
 /* Outermost FAB server, imports the plugin chain and responds to requests */
 
 import {
-  Directive,
   Cookies,
+  Directive,
   FabResponderMutableContext,
   FABRuntime,
   FABServerContext,
@@ -11,11 +11,12 @@ import {
   FabSpecRender,
   NO_RESPONSE_STATUS_CODE,
   ResponseInterceptor,
+  RuntimeImports,
 } from '@fab/core'
 
 import final_responder from './final_responder'
 // @ts-ignore
-import { runtimes } from 'user-defined-pipeline'
+import { runtimes } from 'fab-runtime-imports'
 // @ts-ignore
 import { fab_metadata } from 'fab-metadata'
 // @ts-ignore
@@ -39,7 +40,13 @@ let Runtime: FABRuntime | undefined = undefined
 export const initialize = (server_context: FABServerContext) => {
   Runtime = FABRuntime.initialize(
     fab_metadata,
-    [...runtimes, final_responder],
+    [
+      ...(runtimes as RuntimeImports),
+      {
+        plugin: final_responder,
+        args: {},
+      },
+    ],
     server_context
   )
 }

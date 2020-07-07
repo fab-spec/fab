@@ -1,7 +1,7 @@
 ---
-title: 'Plugins'
-category: Knowledge Base
-position: 303
+title: 'Introduction'
+category: Plugins
+position: 290
 ---
 
 # Plugins

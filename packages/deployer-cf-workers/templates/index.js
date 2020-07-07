@@ -20,7 +20,13 @@ function ReadableStream({ start, cancel }) {
 
   start({
     enqueue(chunk) {
-      writer.write(encoder.encode(chunk))
+      if (typeof chunk === 'string') {
+        writer.write(encoder.encode(chunk))
+      } else if (ArrayBuffer.isView(chunk)) {
+        writer.write(new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength))
+      } else {
+        writer.write(chunk)
+      }
     },
     close() {
       writer.close()

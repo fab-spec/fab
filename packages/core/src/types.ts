@@ -28,13 +28,23 @@ export interface FabConfig {
   deploy?: DeployConfig
 }
 
-export interface PluginMetadataContent<T extends PluginArgs = {}> {
-  args: T
+export interface PluginMetadataContent {
   [metadata_name: string]: any
 }
 
-export interface PluginMetadata<T extends PluginArgs = {}> {
-  [plugin_name: string]: PluginMetadataContent<T>
+export interface PluginMetadata {
+  [plugin_name: string]: PluginMetadataContent
+}
+
+export type LoadedPlugin = {
+  plugin_name: string
+  plugin_args: PluginArgs
+  builder: FabBuildStep | undefined
+  runtime: string | undefined
+}
+export type RuntimePlugin = {
+  plugin_args: PluginArgs
+  runtime: string
 }
 
 /*
@@ -50,7 +60,7 @@ export type FabBuildStep<
   proto_fab: ProtoFab<U>,
   config_path: string,
   skip_cache?: boolean
-) => Promise<void>
+) => Promise<void | RuntimePlugin[]>
 
 export type FabResponderMutableContext = {
   [key: string]: any
@@ -120,7 +130,11 @@ export type FABServerContext = {
 
 export type ServerConstructor = (filename: string, args: ServerArgs) => ServerType
 export interface ServerType {
-  serve(runtimeType: SandboxType, watch: boolean): Promise<void>
+  serve(
+    runtimeType: SandboxType,
+    watch: boolean,
+    proxyWs: string | undefined
+  ): Promise<void>
 }
 export type ServerArgs = {
   port: string

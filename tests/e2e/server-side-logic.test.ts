@@ -106,6 +106,20 @@ describe('Server-side logic tests', () => {
       expect(wrong_mutation_response).toEqual(homepage_response)
     })
 
+    it('should hit a complex plugin precompiled with Webpack', async () => {
+      const webpack_response = await request('', '/webpack-plugin-test', port)
+      expect(webpack_response).toContain(
+        `Testing 'fs' shim: FILESYSTEM LOOKS LIKE IT WORKS`
+      )
+      expect(webpack_response).toContain(`Testing 'alias' override: {}`)
+      expect(webpack_response).toContain(
+        `Testing 'webpack' DefinePlugin: {"replace_me":"WITH_ME"}`
+      )
+      expect(webpack_response).toContain(
+        `Testing 'args' wiring up: {"other_data":"passed through as normal"}`
+      )
+    })
+
     it('should hit a streaming endpoint', async () => {
       const promise = cwd_shell(`curl -sN http://localhost:${port}/slowly`)
 

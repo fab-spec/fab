@@ -22,6 +22,7 @@ import {
 } from './constants'
 import { FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic } from './frameworks'
 import { mergeScriptsAfterBuild } from './utils'
+import { BuildConfig } from '@fab/core'
 
 const log = _log('Initializer')
 
@@ -52,9 +53,10 @@ export default class Initializer {
     yes: boolean,
     skip_install: boolean,
     version: string | undefined,
-    skip_framework_detection: boolean
+    skip_framework_detection: boolean,
+    empty: boolean
   ) {
-    this.yes = yes
+    this.yes = yes || empty
     log.announce(`fab init — ${this.description}`)
 
     /* First, figure out the nearest package.json */
@@ -84,44 +86,52 @@ export default class Initializer {
 
     /* Then, figure out what kind of project we are */
     const package_json = await this.getPackageJson(package_json_path)
-    const framework = await this.getFramework(
-      package_json,
-      root_dir,
-      skip_framework_detection
-    )
-    if (!framework) return
-
     const use_yarn = await useYarn(root_dir)
+    const additional_dependencies = []
 
-    if (this.yes) {
-      log.info(`Proceeding...`)
+    if (empty) {
+      /* Generate/update the FAB config file */
+      await this.updateConfig(root_dir, config_filename, {}, true)
     } else {
-      log(`💚Ready to proceed.💚 This process will:
+      const framework = await this.getFramework(
+        package_json,
+        root_dir,
+        skip_framework_detection
+      )
+      if (!framework) return
+
+      if (this.yes) {
+        log.info(`Proceeding...`)
+      } else {
+        log(`💚Ready to proceed.💚 This process will:
         • Generate a 💛fab.config.json5💛 file for your project
         • Add 💛build:fab💛 and related scripts to your 💛package.json💛
         • Add 💛.fab💛 and 💛fab.zip💛 to your 💛.gitignore💛
         • Install 💛@fab/cli💛 and related dependencies using 💛${
           use_yarn ? 'yarn' : 'npm'
         }💛`)
-      const confirmed = await log.confirmAndRespond(`Good to go? [y/N]`)
-      if (!confirmed) return
+        const confirmed = await log.confirmAndRespond(`Good to go? [y/N]`)
+        if (!confirmed) return
+      }
+
+      /* Next, generate/update the FAB config file */
+      await this.updateConfig(root_dir, config_filename, framework.plugins)
+
+      /* Then, update the package.json to add a build:fab script */
+      await this.addBuildFabScript(package_json_path, package_json, framework)
+
+      /* Add any framework-specific config required */
+      if (framework.customConfig) await framework.customConfig(root_dir)
+
+      additional_dependencies.push(...Object.keys(framework.plugins))
     }
-
-    /* Next, generate/update the FAB config file */
-    await this.updateConfig(root_dir, config_filename, framework)
-
-    /* Then, update the package.json to add a build:fab script */
-    await this.addBuildFabScript(package_json_path, package_json, framework)
 
     /* Update the .gitignore file (if it exists) to add .fab and fab.zip */
     await this.addGitIgnores(root_dir)
 
-    /* Add any framework-specific config required */
-    if (framework.customConfig) await framework.customConfig(root_dir)
-
     /* Finally, install the dependencies */
     if (!skip_install) {
-      await this.installDependencies(root_dir, version, framework, use_yarn)
+      await this.installDependencies(root_dir, version, use_yarn, additional_dependencies)
     }
 
     await this.finalChecks(root_dir, package_json)
@@ -308,13 +318,13 @@ export default class Initializer {
   private static async installDependencies(
     root_dir: string,
     version: string | undefined,
-    framework: FrameworkInfo,
-    use_yarn: boolean
+    use_yarn: boolean,
+    plugin_deps: string[]
   ) {
     const versioned = (deps: string[]) =>
       deps.map((dep) => (version ? `${dep}@${version}` : dep))
     const core_deps = versioned(DEFAULT_DEPS)
-    const framework_deps = versioned(Object.keys(framework.plugins))
+    const framework_deps = versioned(plugin_deps)
 
     log.note(`Installing required 💛FAB core💛 dependencies:
       ${core_deps.map((d) => `• ${d}`).join('\n  ')}`)
@@ -334,11 +344,13 @@ export default class Initializer {
   private static async updateConfig(
     root_dir: string,
     config_filename: string,
-    framework: FrameworkInfo
+    plugins: BuildConfig,
+    auto_skip_if_exists: boolean = false
   ) {
     const config_path = path.resolve(root_dir, config_filename)
     const config = await this.readExistingConfig(config_path)
     if (Object.keys(config.data.plugins).length > 0) {
+      if (auto_skip_if_exists) return
       log.warn(`Existing config has a "plugins" section.`)
       const confirmed =
         (this.yes && log(`Overwriting since -y is set.`)) ||
@@ -349,7 +361,7 @@ export default class Initializer {
         ))
       if (!confirmed) return
     }
-    config.data.plugins = framework.plugins
+    config.data.plugins = plugins
     await config.write(config_filename)
   }
 

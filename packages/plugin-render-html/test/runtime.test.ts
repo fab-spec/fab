@@ -40,7 +40,7 @@ describe('Runtime', () => {
     const proto_fab = await doBuild(files, args)
     const Runtime = new FABRuntime(proto_fab.metadata, {}, { bundle_id: '' })
     // @ts-ignore
-    runtime(Runtime)
+    runtime(Runtime, args)
     const renderer = Runtime.getPipeline()[0]
     const response = (await renderer(
       requestObj('/', { SOME_VAR: 'some value', _SECRET_VAR: 'secret_value' })
@@ -65,7 +65,7 @@ describe('Runtime', () => {
     const proto_fab = await doBuild(files, args)
     const Runtime = new FABRuntime(proto_fab.metadata, {}, { bundle_id: '' })
     // @ts-ignore
-    runtime(Runtime)
+    runtime(Runtime, args)
     const renderer = Runtime.getPipeline()[0]
     const response = (await renderer(
       requestObj('/', { SOME_VAR: 'some value' })
@@ -89,7 +89,7 @@ describe('Runtime', () => {
     const proto_fab = await doBuild(files, args)
     const Runtime = new FABRuntime(proto_fab.metadata, {}, { bundle_id: '' })
     // @ts-ignore
-    runtime(Runtime)
+    runtime(Runtime, args)
     const renderer = Runtime.getPipeline()[0]
     const response = (await renderer(
       requestObj('/', { SOME_VAR: 'some value' })

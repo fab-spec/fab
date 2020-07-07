@@ -5,6 +5,8 @@ category: Guides
 position: 204
 ---
 
+# Adding Server-Side Logic
+
 One of the best use-cases for FABs, once your project [can produce a working FAB](/guides/getting-started), is to add small amounts of server-side logic to a mostly-static build, _without needing to change how you package & deploy your application_. This guide shows you how.
 
 > 👉 While some of these examples may be possible with "static" hosting providers, that always requires [vendor-specific configuration](#an-aside-static-hosting-isnt-really-static). FAB offers a different approach, since server-side JavaScript is always available, we can use **code over configuration**:

@@ -31,7 +31,7 @@ $ npm install -g @fab/cli
 $ fab COMMAND
 running command...
 $ fab (-v|--version|version)
-@fab/cli/1.0.0-rc.3 darwin-x64 node-v13.12.0
+@fab/cli/1.0.0-rc.5 darwin-x64 node-v13.12.0
 $ fab --help [COMMAND]
 USAGE
   $ fab COMMAND
@@ -63,13 +63,18 @@ OPTIONS
   -c, --config=config  [default: fab.config.json5] Path to config file
   -h, --help           show CLI help
   --skip-cache         Skip any caching of intermediate build artifacts
+  --skip-typecheck     Skip the background typechecking of your FAB plugins if it's slow or flaky.
+
+  --watch=watch        Re-run the builder if any of the listed files change. Pass this argument multiple times to watch
+                       multiple files/directories.
 
 EXAMPLES
   $ fab build
   $ fab build --config=fab.config.json5
+  $ fab build --watch dist --watch fab.config.json5
 ```
 
-_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v1.0.0-rc.3/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/fab-spec/fab/blob/v1.0.0-rc.5/lib/commands/build.js)_
 
 ## `fab deploy [FILE]`
 
@@ -106,7 +111,7 @@ EXAMPLE
   $ fab deploy fab.zip
 ```
 
-_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v1.0.0-rc.3/lib/commands/deploy.js)_
+_See code: [lib/commands/deploy.js](https://github.com/fab-spec/fab/blob/v1.0.0-rc.5/lib/commands/deploy.js)_
 
 ## `fab help [COMMAND]`
 
@@ -137,6 +142,7 @@ OPTIONS
   -c, --config=config         [default: fab.config.json5] Config filename
   -h, --help                  show CLI help
   -y, --yes                   Assume yes to all prompts (must be in the root directory of a project)
+  --empty                     Install the packages and create an empty fab.config.json5 (implies -y)
   --skip-framework-detection  Don't try to auto-detect framework, set up manually.
   --skip-install              Do not attempt to npm install anything
   --version=version           What NPM version or dist-tag to use for installing FAB packages
@@ -146,7 +152,7 @@ EXAMPLES
   $ fab init --config=fab.config.json5
 ```
 
-_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v1.0.0-rc.3/lib/commands/init.js)_
+_See code: [lib/commands/init.js](https://github.com/fab-spec/fab/blob/v1.0.0-rc.5/lib/commands/init.js)_
 
 ## `fab package [FILE]`
 
@@ -175,7 +181,7 @@ EXAMPLE
   $ fab package --target=aws-lambda-edge fab.zip
 ```
 
-_See code: [lib/commands/package.js](https://github.com/fab-spec/fab/blob/v1.0.0-rc.3/lib/commands/package.js)_
+_See code: [lib/commands/package.js](https://github.com/fab-spec/fab/blob/v1.0.0-rc.5/lib/commands/package.js)_
 
 ## `fab serve [FILE]`
 
@@ -203,6 +209,10 @@ OPTIONS
 
   --port=port                (required) [default: 3000] Port to use
 
+  --proxy-ws=proxy-ws        EXPERIMENTAL: Proxy websocket requests to a different port
+
+  --watch                    EXPERIMENTAL: Watches fab.zip and restarts the server when it changes.
+
 EXAMPLES
   $ fab serve fab.zip
   $ fab serve --port=3001 fab.zip
@@ -210,6 +220,6 @@ EXAMPLES
   $ fab serve --env=staging fab.zip
 ```
 
-_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v1.0.0-rc.3/lib/commands/serve.js)_
+_See code: [lib/commands/serve.js](https://github.com/fab-spec/fab/blob/v1.0.0-rc.5/lib/commands/serve.js)_
 
 <!-- commandsstop -->

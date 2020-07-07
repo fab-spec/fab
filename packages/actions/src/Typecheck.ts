@@ -3,17 +3,23 @@ import execa from 'execa'
 import path from 'path'
 import tmp from 'tmp-promise'
 import fs from 'fs-extra'
+import { RuntimePlugin } from '@fab/core'
 
 const log = _log('Typecheck')
 
 export class Typecheck {
-  static startTypecheck(config_path: string, plugins: string[], skip_typecheck: boolean) {
+  static startTypecheck(
+    config_path: string,
+    plugins: RuntimePlugin[],
+    skip_typecheck: boolean
+  ) {
     if (skip_typecheck) {
       log(`🖤Skipping.🖤`)
       return Typecheck.Noop
     }
 
-    const ts_plugins = plugins.filter((str) => str.match(/\.tsx?$/))
+    const ts_plugins = plugins.map((p) => p.runtime).filter((r) => r.match(/\.tsx?$/))
+
     if (ts_plugins.length === 0) {
       log(`🖤No Typescript plugins detected. Skipping.🖤`)
       return Typecheck.Noop

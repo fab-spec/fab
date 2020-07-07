@@ -6,9 +6,12 @@ import {
   FabMetadata,
   FabRequestResponderWithParams,
   MatchParams,
+  FabCache,
+  FABServerContext,
+  PluginArgs,
+  ResponseInterceptor,
 } from '@fab/core'
 import { Key, pathToRegexp } from 'path-to-regexp'
-import { FabCache, FABServerContext, ResponseInterceptor } from './types'
 
 export enum Priority {
   LAST,
@@ -18,7 +21,13 @@ export enum Priority {
   FIRST,
 }
 
-export type FabPluginRuntime = (Runtime: FABRuntime) => void
+export type FabPluginRuntime = (Runtime: FABRuntime, args: PluginArgs) => void
+
+/* This is the type of the 'fab-runtime-imports' alias in the build */
+export type RuntimeImports = Array<{
+  plugin: FabPluginRuntime
+  args: PluginArgs
+}>
 
 export class FABRouter {
   private pipeline: { [order in Priority]: FabRequestResponder[] }
@@ -114,7 +123,7 @@ export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
 
   static initialize(
     metadata: FabMetadata,
-    plugins: FabPluginRuntime[],
+    plugins: RuntimeImports,
     context: FABServerContext
   ) {
     const instance = new FABRuntime(
@@ -122,7 +131,7 @@ export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
       metadata.file_metadata,
       context
     )
-    plugins.forEach((plugin) => plugin(instance))
+    plugins.forEach(({ plugin, args }) => plugin(instance, args))
     return instance
   }
 

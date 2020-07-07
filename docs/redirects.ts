@@ -1,16 +1,23 @@
 import { FABRuntime } from '@fab/core'
 
+const redirects = {
+  '/kb/plugins': '/plugins/introduction',
+  '/guides/18-05-2020-why-frontend-bundles': '/blog/18-05-2020-why-frontend-bundles',
+}
+
 export default ({ Router, Cache }: FABRuntime) => {
-  Router.on(
-    '/guides/18-05-2020-why-frontend-bundles',
-    async () =>
-      new Response(null, {
-        status: 301,
-        headers: {
-          Location: '/blog/18-05-2020-why-frontend-bundles',
-        },
-      })
-  )
+  for (const [from, to] of Object.entries(redirects)) {
+    Router.on(
+      from,
+      async () =>
+        new Response(null, {
+          status: 301,
+          headers: {
+            Location: to,
+          },
+        })
+    )
+  }
 
   Router.on('/cache-test', async () => {
     const n = (await Cache.getNumber('cache-test')) || 0

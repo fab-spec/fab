@@ -14,3 +14,7 @@ lerna-debug.log
 /build/esm
 .DS_Store
 .idea
+
+# Handy to work on these in one workspace
+# but these are published separately
+/wip-plugins

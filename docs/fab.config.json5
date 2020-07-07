@@ -1,11 +1,15 @@
 // For more information, see https://fab.dev/kb/configuration
 {
   plugins: {
+    '@fab/plugin-add-fab-id': {},
+    './redirects.ts': {},
+    '@fab/plugin-dev-proxy': {
+      port: 2999,
+      enabled: 'DEV_PROXY_ENABLED'
+    },
     '@fab/input-static': {
       dir: 'dist',
     },
-    '@fab/plugin-add-fab-id': {},
-    './redirects.ts': {},
     '@fab/plugin-render-html': {},
     '@fab/plugin-rewire-assets': {},
     // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins
@@ -19,6 +23,9 @@
       // Example setting:
       // API_URL: 'https://api.example.com/graphql'
     },
+    live: {
+      DEV_PROXY_ENABLED: true
+    }
   },
   deploy: {
     'cf-workers': {

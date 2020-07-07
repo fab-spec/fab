@@ -1,12 +1,9 @@
 {
-  "name": "@fab/deployer-aws-lambda",
+  "name": "@fab/plugin-precompile",
   "version": "1.0.0-rc.5",
-  "description": "Packages and deploys FABs to AWS Lambda@Edge",
+  "description": "Module to render static HTML files with FAB injections",
   "keywords": [
-    "aws",
-    "deploy",
-    "fab",
-    "lambda"
+    "fab"
   ],
   "homepage": "https://github.com/fab-spec/fab#readme",
   "bugs": {
@@ -18,10 +15,10 @@
   "files": [
     "lib",
     "esm",
-    "/templates"
+    "src",
+    "shims",
+    "build.js"
   ],
-  "main": "lib/index.js",
-  "module": "esm/index.js",
   "types": "esm/index.d.ts",
   "scripts": {
     "build": "yarn build:cjs && yarn build:esm",
@@ -35,13 +32,14 @@
   "dependencies": {
     "@fab/cli": "1.0.0-rc.5",
     "@fab/core": "1.0.0-rc.5",
-    "@types/nanoid": "^2.1.0",
+    "@sucrase/webpack-loader": "^2.0.0",
     "@types/node": "^12.12.14",
-    "deterministic-zip": "^1.1.0",
-    "file-to-sha512": "^0.0.1",
+    "@types/webpack-merge": "^4.1.5",
+    "filenamify": "^4.1.0",
     "fs-extra": "^8.1.0",
-    "nanoid": "^2.1.11",
-    "zip-lib": "^0.5.0"
+    "memfs": "^3.0.4",
+    "sucrase": "^3.15.0",
+    "webpack": "^4.41.5"
   },
   "publishConfig": {
     "access": "public"

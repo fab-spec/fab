@@ -1,11 +1,11 @@
-import { FabConfig, ProtoFab } from '@fab/core'
+import { FabConfig, ProtoFab, LoadedPlugin, RuntimePlugin } from '@fab/core'
 import { _log, BuildFailedError } from '@fab/cli'
 import { rollupCompile } from './rollup'
 
 const log = _log(`Compiler`)
 
 export class Compiler {
-  static async compile(config: FabConfig, proto_fab: ProtoFab, render_plugins: string[]) {
+  static async compile(config: FabConfig, proto_fab: ProtoFab, plugins: RuntimePlugin[]) {
     log.time(() => `Compiling your 💛server.js💛:`)
 
     const warnings: string[] = []
@@ -16,7 +16,7 @@ export class Compiler {
       { format: 'umd', exports: 'named', name: '__fab' },
       {
         ...proto_fab.hypotheticals,
-        'user-defined-pipeline': generatePipelineJs(render_plugins),
+        'fab-runtime-imports': generateRuntimeImports(plugins),
         'fab-metadata': generateFabMetadataJs(proto_fab),
         'production-settings': generateProductionSettings(config),
       },
@@ -50,15 +50,29 @@ export class Compiler {
   }
 }
 
-function generatePipelineJs(plugin_runtimes: string[]) {
+function generateRuntimeImports(plugins: RuntimePlugin[]) {
+  let plugin_index = 0
+
+  const plugin_aliases = plugins.map(({ runtime, plugin_args }, i) => ({
+    alias: `runtime_${i + 1}`,
+    import_path: runtime,
+    args: plugin_args,
+  }))
+
+  const import_statements = plugin_aliases
+    .map(({ alias, import_path }) => `import ${alias} from '${import_path}'`)
+    .join('\n')
+
   return `
-    ${plugin_runtimes
-      .map((plugin, i) => `import runtime_${i} from '${plugin}'`)
-      .join('\n')}
+    ${import_statements};
 
     export const runtimes = [
-      ${plugin_runtimes.map((plugin, i) => `runtime_${i}`).join(',')}
-    ]
+      ${plugin_aliases
+        .map(({ alias, args }) => {
+          return `{ plugin: ${alias}, args: ${JSON.stringify(args)} }`
+        })
+        .join(',\n')}
+    ];
   `
 }
 

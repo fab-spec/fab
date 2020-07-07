@@ -1,4 +1,4 @@
-import { FabBuildStep, FabConfig, PluginArgs, ProtoFab } from '@fab/core'
+import { LoadedPlugin, RuntimePlugin, FabConfig, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { Typecheck } from './Typecheck'
@@ -29,16 +29,6 @@ const safeRequire = async (path: string) => {
   }
 }
 
-type BuildPlugin = {
-  plugin_name: string
-  builder: FabBuildStep
-  plugin_args: PluginArgs
-}
-type Plugins = {
-  build_plugins: BuildPlugin[]
-  runtime_plugins: string[]
-}
-
 export default class Builder {
   static async build(
     config_path: string,
@@ -48,14 +38,49 @@ export default class Builder {
   ) {
     log.announce(`fab build`)
     log(`Reading plugins from config.`)
-    const { build_plugins, runtime_plugins } = await this.getPlugins(config_path, config)
+    const plugins = await this.getPlugins(config_path, config)
 
     log.time(`Proceeding with build phase.`)
 
     const proto_fab = new ProtoFab()
-    for (const { plugin_name, builder, plugin_args } of build_plugins) {
+
+    const runtime_plugins: RuntimePlugin[] = []
+    for (const plugin of plugins) {
+      const { plugin_name, builder, runtime, plugin_args } = plugin
+      // @ts-ignore this guard isn't narrowing the type properly
+      if (runtime) runtime_plugins.push(plugin)
+
+      if (!builder) continue
       log(`Building 💛${plugin_name}💛:`)
-      await builder(plugin_args, proto_fab, config_path, skip_cache)
+
+      const dynamic_runtimes = await builder(
+        plugin_args,
+        proto_fab,
+        config_path,
+        skip_cache
+      )
+
+      if (Array.isArray(dynamic_runtimes)) {
+        log(
+          `Registering additional runtime plugin(s):
+          💛${dynamic_runtimes
+            .map((p) => path.relative(path.dirname(config_path), p.runtime))
+            .filter(Boolean)
+            .join('\n')}💛`
+        )
+
+        for (const dynamic_runtime of dynamic_runtimes) {
+          const path = safeResolve(
+            relativeToConfig(config_path, dynamic_runtime.runtime),
+            config_path
+          )
+          if (!path) {
+            log.error(`WARNING: cannot resolve ${dynamic_runtime.runtime}! Skipping!`)
+          } else {
+            runtime_plugins.push(dynamic_runtime)
+          }
+        }
+      }
     }
 
     log.time((d) => `Build plugins completed in ${d}.`)
@@ -70,9 +95,11 @@ export default class Builder {
     await Generator.generate(proto_fab)
   }
 
-  static async getPlugins(config_path: string, config: FabConfig): Promise<Plugins> {
-    const build_plugins: BuildPlugin[] = []
-    const runtime_plugins: string[] = []
+  static async getPlugins(
+    config_path: string,
+    config: FabConfig
+  ): Promise<LoadedPlugin[]> {
+    const plugins: LoadedPlugin[] = []
 
     for (const [plugin_name, plugin_args] of Object.entries(config.plugins)) {
       const is_relative = isRelative(plugin_name)
@@ -85,7 +112,12 @@ export default class Builder {
 
       // console.log({ is_relative, plugin_path, relative_path, path_slash_require })
 
-      let runtime_plugin, build_plugin
+      const plugin: LoadedPlugin = {
+        plugin_name,
+        plugin_args,
+        builder: undefined,
+        runtime: undefined,
+      }
 
       if (path_slash_build || path_slash_require) {
         if (plugin_path) {
@@ -113,16 +145,12 @@ export default class Builder {
               `Module ${path_slash_build} didn't export a 'build' function!`
             )
           } else {
-            build_plugin = {
-              plugin_name,
-              builder: module.build,
-              plugin_args,
-            }
+            plugin.builder = module.build
           }
         }
 
         if (path_slash_require) {
-          runtime_plugin = path_slash_require
+          plugin.runtime = path_slash_require
         }
       } else {
         if (!plugin_path) {
@@ -142,25 +170,31 @@ export default class Builder {
           // This can happen if the plugin is runtime-only and uses non-CJS syntax,
           // so just pass it through as a runtime plugin.
           // Relevant issue: https://github.com/fab-spec/fab/issues/67
-          runtime_plugin = plugin_path
+
+          plugin.runtime = plugin_path
         } else {
           if (typeof module.default === 'function') {
-            runtime_plugin = plugin_path
+            plugin.runtime = plugin_path
           } else {
             log.warn(`Plugin ${plugin_name} doesn't have a default export, ignoring it.`)
           }
         }
       }
 
-      if (runtime_plugin) runtime_plugins.push(runtime_plugin)
-      if (build_plugin) build_plugins.push(build_plugin)
+      plugins.push(plugin)
     }
 
     log(`Found the following 💛build-time💛 plugins:
-    🖤${build_plugins.map((b) => b.plugin_name).join('\n')}🖤`)
+    🖤${plugins
+      .filter((p) => p.builder)
+      .map((p) => p.plugin_name)
+      .join('\n')}🖤`)
     log(`and the following 💛runtime💛 plugins:
-    🖤${runtime_plugins.map((b) => path.relative(process.cwd(), b)).join('\n')}🖤`)
+    🖤${plugins
+      .filter((p) => p.runtime)
+      .map((p) => path.relative(process.cwd(), p.runtime!))
+      .join('\n')}🖤`)
 
-    return { build_plugins, runtime_plugins }
+    return plugins
   }
 }

@@ -2,9 +2,7 @@ import vm from 'vm'
 import * as fetch from 'node-fetch'
 import { FabSpecExports } from '@fab/core'
 import Stream from 'stream'
-// @ts-ignore
-import { ReadableStream as _RS } from 'web-streams-ponyfill'
-const WebReadableStream: typeof ReadableStream = _RS
+import { ReadableStream as WebReadableStream } from 'web-streams-polyfill/ponyfill/es2018'
 
 /*
  * We're using node-fetch under the hood, which has a hard-coded check on the body:
@@ -39,6 +37,7 @@ export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports>
     console: {
       log: console.log,
       error: console.error,
+      warn: console.warn,
     },
     NODE_ENV: 'server',
     process: {

@@ -77,6 +77,5 @@ export async function build(
   proto_fab.metadata.render_html = {
     htmls,
     resolved_fallback,
-    args,
   }
 }
