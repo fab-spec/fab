@@ -1,5 +1,11 @@
 import { RewireAssetsMetadata } from './types'
-import { FABRuntime, getCacheHeaders, matchPath, NON_IMMUTABLE_HEADERS } from '@fab/core'
+import {
+  FABRuntime,
+  getCacheHeaders,
+  matchPath,
+  NON_IMMUTABLE_HEADERS,
+  Priority,
+} from '@fab/core'
 
 export default function RewireAssetsRuntime({
   Router,
@@ -37,5 +43,5 @@ export default function RewireAssetsRuntime({
     }
 
     return undefined
-  })
+  }, Priority.LAST)
 }

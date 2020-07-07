@@ -72,7 +72,7 @@ describe('Server-side logic tests', () => {
       cancelServer()
     })
 
-    it('should hit Hello World', async () => {
+    it('should hit the Hello World plugin', async () => {
       const bundle_id = (await pathToSHA512(`${cwd}/fab.zip`)).slice(0, 32)
 
       const homepage_headers = await request('-I', '/', port)
@@ -81,8 +81,8 @@ describe('Server-side logic tests', () => {
       expect(await request('-I', '/hello', port)).toContain(`HTTP/1.1 200 OK`)
 
       const homepage_response = await request('', '/', port)
-      expect(homepage_response).toContain(`<title>HULLO</title>`)
-      expect(homepage_response).toContain(`<h1>HAI</h1>`)
+      expect(homepage_response).toContain(`<title>INDEX HTML</title>`)
+      expect(homepage_response).toContain(`<h1>This is the default fallback.</h1>`)
       expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
 
       const hello_response = await request('', '/hello', port)
@@ -92,6 +92,18 @@ describe('Server-side logic tests', () => {
       const hello_fab_response = await request('', '/hello/fab', port)
       expect(hello_fab_response).not.toEqual(homepage_response)
       expect(hello_fab_response).toContain('HELLO FAB!')
+
+      const alt_response = await request('', '/alt', port)
+      expect(alt_response).not.toEqual(homepage_response)
+      expect(alt_response).toContain(`<title>ALTERNATIVE HTML</title>`)
+      expect(alt_response).toContain(`<h1>This should be served under /alt URLs.</h1>`)
+      expect(alt_response).toContain(`window.FAB_SETTINGS={}`)
+
+      const alt_sub_response = await request('', '/alt/fab', port)
+      expect(alt_sub_response).toEqual(alt_response)
+
+      const wrong_mutation_response = await request('', '/mutate-url-doesnt-work', port)
+      expect(wrong_mutation_response).toEqual(homepage_response)
     })
 
     it('should hit a streaming endpoint', async () => {
