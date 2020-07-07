@@ -1,5 +1,11 @@
 import { RenderHtmlArgs, RenderHtmlMetadata } from './types'
-import { FABRuntime, FabSettings, matchPath, NO_RESPONSE_STATUS_CODE } from '@fab/core'
+import {
+  FABRuntime,
+  FabSettings,
+  matchPath,
+  NO_RESPONSE_STATUS_CODE,
+  Priority,
+} from '@fab/core'
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
 import { ITokens } from 'micromustache'
@@ -81,5 +87,5 @@ export default function RenderHTMLRuntime(
       }
 
     return undefined
-  })
+  }, Priority.LATER)
 }
