@@ -1,4 +1,4 @@
-import { FABRuntime } from '@fab/core'
+import { FABRuntime, Priority } from '@fab/core'
 
 export default ({ Router }: FABRuntime) => {
   Router.on('/hello/:whom?', async ({ params }) => {
@@ -8,9 +8,13 @@ export default ({ Router }: FABRuntime) => {
     })
   })
 
-  Router.on('/alt(/.*)?', async ({ request }) => {
-    return {
-      replaceRequest: new Request('/alternative.html', request),
-    }
-  })
+  Router.on(
+    '/alt(/.*)?',
+    async ({ url, request }) => {
+      return {
+        replaceRequest: new Request(`${url.origin}/alternative.html`, request),
+      }
+    },
+    Priority.FIRST
+  )
 }

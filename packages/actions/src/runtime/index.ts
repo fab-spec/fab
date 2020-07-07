@@ -69,16 +69,22 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
   const context: { [key: string]: any } = {}
   const cookies = parseCookies(request)
 
-  let chained_request = request
+  const request_context = {
+    request,
+    settings,
+    url,
+    context,
+    cookies,
+  }
 
   for (const responder of Runtime.getPipeline()) {
-    const response = await responder({
-      request: chained_request.clone(),
-      settings,
-      url,
-      context,
-      cookies,
-    })
+    // Always take a copy of request & url so a middleware doesn't accidentally modify it.
+    // Passing data between middlewares is what 'context' is for.
+    // Modifying requests is what 'replaceRequest' is for.
+    request_context.request = request_context.request.clone()
+    request_context.url = new URL(request_context.url.href)
+
+    const response = await responder(request_context)
     if (!response) continue
 
     if (response instanceof Request) {
@@ -103,7 +109,10 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
       response_interceptors.unshift(directive.interceptResponse)
     }
     if (directive.replaceRequest instanceof Request) {
-      chained_request = directive.replaceRequest
+      const new_request = directive.replaceRequest
+      request_context.request = new_request
+      request_context.url = new URL(new_request.url)
+      request_context.cookies = parseCookies(new_request)
     }
   }
 

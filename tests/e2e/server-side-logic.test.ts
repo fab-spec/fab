@@ -95,14 +95,12 @@ describe('Server-side logic tests', () => {
 
       const alt_response = await request('', '/alt', port)
       expect(alt_response).not.toEqual(homepage_response)
-      expect(homepage_response).toContain(`<title>ALTERNATIVE HTML</title>`)
-      expect(homepage_response).toContain(
-        `<h1>This should be served under /alt URLs.</h1>`
-      )
-      expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
+      expect(alt_response).toContain(`<title>ALTERNATIVE HTML</title>`)
+      expect(alt_response).toContain(`<h1>This should be served under /alt URLs.</h1>`)
+      expect(alt_response).toContain(`window.FAB_SETTINGS={}`)
 
       const alt_sub_response = await request('', '/alt/fab', port)
-      expect(alt_sub_response).not.toEqual(alt_response)
+      expect(alt_sub_response).toEqual(alt_response)
     })
 
     it('should hit a streaming endpoint', async () => {
