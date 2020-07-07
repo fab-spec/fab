@@ -1,5 +1,10 @@
 import { FabBuildStep, ProtoFab, RuntimePlugin } from '@fab/core'
-import { PrecompileArgs, PrecompileMetadata } from './types'
+import {
+  PrecompileArgs,
+  PrecompileMetadata,
+  ConfigOverrides,
+  PluginOverrides,
+} from './types'
 import { _log } from '@fab/cli'
 import webpack from 'webpack'
 import fs from 'fs-extra'
@@ -36,7 +41,11 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
     const entry = path.resolve(file)
     const { _config: plugin_config_file, ...plugin_args } = config
 
-    const options: webpack.Configuration = {
+    const { customise_aliases, customise_webpack } = await getPluginOverrides(
+      plugin_config_file
+    )
+
+    const options: webpack.Configuration = customise_webpack({
       stats: 'verbose',
       mode: 'production',
       target: 'webworker',
@@ -51,13 +60,13 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
         libraryTarget: 'commonjs2',
       },
       resolve: {
-        alias: {
+        alias: customise_aliases({
           fs: require.resolve('memfs'),
           // path: path.join(shims_dir, 'path-with-posix'),
           // '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
           // http: path.join(shims_dir, 'http'),
           // https: path.join(shims_dir, 'empty-object'),
-        },
+        }),
       },
       module: {
         rules: [
@@ -84,7 +93,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
           eval: 'HERE_NO_EVAL',
         }),
       ],
-    }
+    })
 
     await new Promise((resolve, reject) =>
       webpack(options, (err, stats) => {
@@ -97,6 +106,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
         resolve()
       })
     )
+
     output_files.push({
       runtime: webpacked_output,
       plugin_args,
@@ -104,4 +114,21 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
   }
 
   return output_files
+}
+
+async function getPluginOverrides(
+  plugin_config_file: string | undefined
+): Promise<ConfigOverrides> {
+  if (!plugin_config_file) {
+    return {
+      customise_webpack: (x) => x,
+      customise_aliases: (x) => x,
+    }
+  }
+
+  const plugin_overrides = require(plugin_config_file) as PluginOverrides
+  return {
+    customise_webpack: plugin_overrides.webpack || ((x) => x),
+    customise_aliases: plugin_overrides.alias || ((x) => x),
+  }
 }
