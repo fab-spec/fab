@@ -34,9 +34,9 @@ export default function RenderHTMLRuntime({
 
     return new Response(rendered, {
       status: html === error_page ? 404 : 200,
-      statusText: 'OK',
+      statusText: html === error_page ? 'Not found' : 'Ok',
       headers: {
-        'Content-Type': 'text/html',
+        'content-type': 'text/html',
       },
     })
   }

@@ -1,6 +1,6 @@
 {
   "name": "@fab/input-nextjs",
-  "version": "0.2.5",
+  "version": "1.0.0-rc.3",
   "description": "Module to kick off a FAB build from a NextJS project",
   "keywords": [
     "aws",
@@ -34,8 +34,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/cli": "0.2.5",
-    "@fab/core": "0.2.5",
+    "@fab/cli": "1.0.0-rc.3",
+    "@fab/core": "1.0.0-rc.3",
     "@types/node": "^12.12.14",
     "@types/path-to-regexp": "^1.7.0",
     "acorn": "^7.1.0",
@@ -51,5 +51,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "e0232b0579fb886d567c62ad793a128ff4ea34de"
 }

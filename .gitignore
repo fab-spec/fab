@@ -12,3 +12,5 @@ lerna-debug.log
 
 /build/lib
 /build/esm
+.DS_Store
+.idea

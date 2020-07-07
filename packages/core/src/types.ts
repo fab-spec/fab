@@ -55,11 +55,15 @@ export type FabBuildStep<
 export type FabResponderMutableContext = {
   [key: string]: any
 }
+export type Cookies = {
+  [key: string]: string
+}
 export type FabResponderArgs = {
   request: Request
   settings: FabSettings
   url: URL
   context: FabResponderMutableContext
+  cookies: Cookies
 }
 /*
  * A FabRequestResponder is an async function that optionally returns
@@ -97,14 +101,26 @@ export type FabMetadata = {
   plugin_metadata: PluginMetadata
 }
 
+export type FabCacheValue = string | number | ArrayBuffer | ReadableStream
+export type FabCache = {
+  set: (key: string, value: FabCacheValue, ttl_seconds?: number) => Promise<void>
+  setJSON: (key: string, value: any, ttl_seconds?: number) => Promise<void>
+  get: (key: string) => Promise<string | undefined>
+  getJSON: (key: string) => Promise<any | undefined>
+  getNumber: (key: string) => Promise<number | undefined>
+  getArrayBuffer: (key: string) => Promise<ArrayBuffer | undefined>
+  getStream: (key: string) => Promise<ReadableStream | undefined>
+}
+
 // To be extended with host-specific capabilities
 export type FABServerContext = {
   bundle_id: string
+  cache?: FabCache
 }
 
 export type ServerConstructor = (filename: string, args: ServerArgs) => ServerType
 export interface ServerType {
-  serve(runtimeType: SandboxType): Promise<void>
+  serve(runtimeType: SandboxType, watch: boolean): Promise<void>
 }
 export type ServerArgs = {
   port: string
@@ -210,7 +226,8 @@ export type DeployFn = (
 export type BuildFn = (
   config_path: string,
   config: FabConfig,
-  skip_cache: boolean
+  skip_cache: boolean,
+  skip_typecheck: boolean
 ) => Promise<void>
 
 export type FabActionsExports = {

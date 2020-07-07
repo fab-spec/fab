@@ -17,7 +17,7 @@ export default function RewireAssetsRuntime({
         status: 200,
         statusText: 'OK',
         headers: {
-          'Content-Type': content_type,
+          'content-type': content_type,
           ...getCacheHeaders(inlined.immutable),
         },
       })

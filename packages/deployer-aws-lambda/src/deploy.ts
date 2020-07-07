@@ -19,8 +19,6 @@ export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
   const { access_key, secret_key, region, cf_distribution_id, lambda_arn } = config
 
   const required_keys: Array<keyof ConfigTypes.AwsLambda> = [
-    'access_key',
-    'secret_key',
     'region',
     'cf_distribution_id',
     'lambda_arn',

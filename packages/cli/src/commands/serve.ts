@@ -6,6 +6,7 @@ import {
   FabServerExports,
 } from '@fab/core'
 import { loadOrInstallModule, _log } from '../helpers'
+import fs from 'fs-extra'
 const log = _log(`Server`)
 
 export default class Serve extends Command {
@@ -50,6 +51,10 @@ export default class Serve extends Command {
       description:
         'If you need dependent packages (e.g. @fab/serve), install them without prompting',
     }),
+    watch: flags.boolean({
+      description:
+        'EXPERIMENTAL: Watches fab.zip and restarts the server when it changes.',
+    }),
   }
 
   static args = [{ name: 'file' }]
@@ -57,18 +62,31 @@ export default class Serve extends Command {
   async run() {
     const { args, flags } = this.parse(Serve)
 
-    const { file } = args
-    if (!file) {
-      log.error('ERROR: You must provide a FAB filename to serve.\n')
+    const { file: specified_file } = args
+    const default_file = 'fab.zip'
+
+    if (specified_file) {
+      if (!(await fs.pathExists(specified_file))) {
+        log.error(`ERROR: Cannot file find file '${specified_file}'.\n`)
+        this._help()
+      }
+    } else if (!(await fs.pathExists(default_file))) {
+      log.error(
+        `ERROR: You must provide a FAB filename to serve, if '${default_file}' is not present in the current directory.\n`
+      )
       this._help()
     }
+
+    const file = specified_file || default_file
+
     log.announce(`fab serve`)
     const server_pkg = (
       await loadOrInstallModule(log, '@fab/server', flags['auto-install'])
     ).default as FabServerExports
     const server = server_pkg.createServer(file, flags as ServerArgs)
     await server.serve(
-      flags['experimental-v8-sandbox'] ? SandboxType.v8isolate : SandboxType.nodeVm
+      flags['experimental-v8-sandbox'] ? SandboxType.v8isolate : SandboxType.nodeVm,
+      flags.watch
     )
   }
 }

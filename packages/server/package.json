@@ -1,6 +1,6 @@
 {
   "name": "@fab/server",
-  "version": "0.2.5",
+  "version": "1.0.0-rc.3",
   "description": "NodeJS FAB Server",
   "keywords": [
     "fab",
@@ -30,22 +30,25 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/cli": "0.2.5",
-    "@fab/core": "0.2.5",
-    "@fab/sandbox-node-vm": "0.2.5",
+    "@fab/cli": "1.0.0-rc.3",
+    "@fab/core": "1.0.0-rc.3",
+    "@fab/sandbox-node-vm": "1.0.0-rc.3",
     "@fly/v8env": "^0.54.0",
     "@types/concat-stream": "^1.6.0",
     "@types/express": "^4.17.2",
     "@types/node": "^12.12.14",
     "@types/yauzl": "^2.9.1",
+    "concat-stream": "^2.0.0",
     "cross-fetch": "^3.0.4",
     "express": "^4.17.1",
     "file-to-sha512": "^0.0.1",
     "fs-extra": "^8.1.0",
     "get-stream": "^5.1.0",
+    "node-cache": "^5.1.0",
     "yauzl": "^2.10.0"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "e0232b0579fb886d567c62ad793a128ff4ea34de"
 }

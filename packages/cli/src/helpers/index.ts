@@ -4,6 +4,7 @@ import { IPromptOptions } from 'cli-ux/lib/prompt'
 
 export * from './paths'
 export * from './modules'
+export * from './watcher'
 
 export const confirmAndRespond = async (
   log: Logger,
@@ -92,6 +93,9 @@ export const _log = (full_prefix: string) => {
   }
   log.tick = (str: string, indent: number = 0) => {
     log(`💚${' '.repeat(indent)}✔💚 ${str}`)
+  }
+  log.cross = (str: string, indent: number = 0) => {
+    log(`${' '.repeat(indent)}❌ ${str}`)
   }
   log.announce = (str: string) => {
     log(`💎 💚${str}💚 💎`)

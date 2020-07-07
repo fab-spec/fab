@@ -3,3 +3,6 @@ fab.zip
 
 /.fab
 .env
+.nuxt
+dist
+/static/sw.js

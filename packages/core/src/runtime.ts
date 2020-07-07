@@ -8,7 +8,7 @@ import {
   MatchParams,
 } from '@fab/core'
 import { Key, pathToRegexp } from 'path-to-regexp'
-import { FABServerContext, ResponseInterceptor } from './types'
+import { FabCache, FABServerContext, ResponseInterceptor } from './types'
 
 export enum Priority {
   LAST,
@@ -87,16 +87,28 @@ export class FABRouter {
   }
 }
 
+class NoopCache implements FabCache {
+  set = async () => {}
+  setJSON = async () => {}
+  get = async () => undefined
+  getJSON = async () => undefined
+  getArrayBuffer = async () => undefined
+  getNumber = async () => undefined
+  getStream = async () => undefined
+}
+
 export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
   Metadata: T
   FileMetadata: FabFileMetadata
   Router: FABRouter
+  Cache: FabCache
   ServerContext: FABServerContext
 
   constructor(metadata: T, file_metadata: FabFileMetadata, context: FABServerContext) {
     this.Metadata = metadata
     this.FileMetadata = file_metadata
     this.Router = new FABRouter()
+    this.Cache = context.cache || new NoopCache()
     this.ServerContext = context
   }
 
