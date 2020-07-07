@@ -1,9 +1,9 @@
 import { PluginArgs, PluginMetadata } from '@fab/core'
 
-export type WebpackArgs = {}
-
-export interface NodeCompatArgs extends PluginArgs {
-  [path: string]: WebpackArgs
+export interface PrecompileArgs extends PluginArgs {
+  [path: string]: PluginArgs & {
+    _config?: string
+  }
 }
 
-export interface NodeCompatMetadata extends PluginMetadata {}
+export interface PrecompileMetadata extends PluginMetadata {}

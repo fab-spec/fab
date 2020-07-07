@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import { ProtoFab } from '@fab/core'
 import { build } from '../src/build'
-import { NodeCompatMetadata } from '../src/types'
+import { PrecompileMetadata } from '../src/types'
 import path from 'path'
 
 describe('Build time', () => {

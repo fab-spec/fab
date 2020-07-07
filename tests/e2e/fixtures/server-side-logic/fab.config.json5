@@ -7,6 +7,12 @@
     './fab-plugins/add-bundle-id': {},
     './fab-plugins/slowly': {},
     './fab-plugins/cache': {},
+    '@fab/plugin-precompile': {
+      './fab-plugins/needs-webpack.js': {
+        _config: './modify-plugin-config.js',
+        other_data: 'passed through as normal',
+      },
+    },
   },
   settings: { production: {} },
   deploy: {},
