@@ -12,7 +12,7 @@ var util = require('util')
 var send = require('send')
 var mime = send.mime
 var STATUS_CODES = require('http').STATUS_CODES
-var deprecate = require('depd')('mock-express-response')
+var deprecate = () => {}
 var setCharset = Utils.setCharset
 var normalizeType = Utils.normalizeType
 var normalizeTypes = Utils.normalizeTypes

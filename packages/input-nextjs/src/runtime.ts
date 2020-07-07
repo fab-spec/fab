@@ -3,7 +3,7 @@ import __generated from 'generated-nextjs-renderers.js'
 import { pathToRegexp } from 'path-to-regexp'
 import { FABRuntime, NO_RESPONSE_STATUS_CODE } from '@fab/core'
 
-const { renderers, MockExpressResponse } = __generated
+const { renderers, MockExpressResponse, MockReq } = __generated
 
 type Renderer = {
   render?: Function
@@ -17,14 +17,15 @@ async function invokeRenderer(
   protocol: string
 ) {
   try {
-    const local_req = {
+    const local_req = new MockReq({
       url: route,
       method: request.method,
       headers: request.headers,
       connection: {
         encrypted: protocol === 'https',
       },
-    }
+      body: request.body,
+    })
     const response = new MockExpressResponse({
       request: local_req,
     })
@@ -33,7 +34,7 @@ async function invokeRenderer(
       await renderer.render(local_req, response)
     } else if (typeof renderer.default === 'function') {
       await renderer.default(local_req, response)
-      console.log(response)
+      // console.log(response)
     } else {
       throw new Error(`NextJS renderer doesn't export 'render' or 'default'`)
     }
