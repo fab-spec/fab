@@ -1,8 +1,7 @@
 const URL = 'https://fab.dev'
 
 export default {
-  target: 'static',
-  ssr: true, // similar to mode: 'universal'
+  mode: 'universal',
   /*
    ** Headers of the page
    */
