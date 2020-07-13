@@ -17,10 +17,10 @@
   "dependencies": {
     "@fab/plugin-add-fab-id": "^1.1.0",
     "@fab/plugin-dev-proxy": "^0.1.0",
-    "@nuxt/content": "^1.0.0",
+    "@nuxt/content": "^1.4.1",
     "@nuxtjs/pwa": "^3.0.0-beta.20",
     "lodash.groupby": "^4.6.0",
-    "nuxt-edge": "^2.13.0-26500336.1e53e38f",
+    "nuxt": "^2.12.2",
     "nuxt-i18n": "^6.11.1",
     "prettier": "https://github.com/adamJLev/prettier#a0cd45b4cbea2039941f5cea0dccacf506b0fd2e",
     "prism-themes": "^1.4.0",
