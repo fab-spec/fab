@@ -45,6 +45,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
       config_dir,
       plugin_config_file
     )
+    const shims_dir = path.resolve(__dirname, '../shims')
 
     const options: webpack.Configuration = customise_webpack({
       stats: 'verbose',
@@ -63,6 +64,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
       resolve: {
         alias: customise_aliases({
           fs: require.resolve('memfs'),
+          'node-fetch': path.join(shims_dir, 'node-fetch'),
           // path: path.join(shims_dir, 'path-with-posix'),
           // '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
           // http: path.join(shims_dir, 'http'),
