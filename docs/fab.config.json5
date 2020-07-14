@@ -1,17 +1,22 @@
 // For more information, see https://fab.dev/kb/configuration
 {
   plugins: {
-    '@fab/plugin-add-fab-id': {},
-    './redirects.ts': {},
-    '@fab/plugin-dev-proxy': {
-      port: 2999,
-      enabled: 'DEV_PROXY_ENABLED'
+    '@fab/plugin-precompile': {
+      './server': {
+        _config: './server/config.js'
+      }
     },
-    '@fab/input-static': {
-      dir: 'dist',
-    },
-    '@fab/plugin-render-html': {},
-    '@fab/plugin-rewire-assets': {},
+//    '@fab/plugin-add-fab-id': {},
+//    './redirects.ts': {},
+//    '@fab/plugin-dev-proxy': {
+//      port: 2999,
+//      enabled: 'DEV_PROXY_ENABLED'
+//    },
+//    '@fab/input-static': {
+//      dir: 'dist',
+//    },
+//    '@fab/plugin-render-html': {},
+//    '@fab/plugin-rewire-assets': {},
     // This section defines your build & runtime toolchains. See https://fab.dev/kb/plugins
   },
   settings: {
