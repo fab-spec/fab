@@ -19,14 +19,6 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
   config_path,
   skip_cache = false
 ) => {
-  /*
-   * TODO
-   *
-   * Port the @fab/input-nextjs stuff across, shimming out pieces as needed.
-   * Make each file a new "runtime", that's compiled using webpack, with a bunch
-   * of good defaults but the args for each section are all the overrides.
-   *
-   * */
   const config_dir = path.dirname(path.resolve(config_path))
   const cache_dir = path.join(config_dir, '.fab', '.cache', 'precompile')
   await fs.ensureDir(cache_dir)

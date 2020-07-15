@@ -1,10 +1,12 @@
 import x from './load-pages'
 import nuxt_server from '../.nuxt/dist/server/server.js'
 import vue_renderer from './nuxt-vue-renderer'
+import content_constructor from '@nuxt/content'
 
 export default ({ Router }) => {
   console.log({ vue_renderer })
   console.log({ x })
+  content_constructor({})
 
   Router.on('*', async ({ url }) => {
     const route = await nuxt_server({
