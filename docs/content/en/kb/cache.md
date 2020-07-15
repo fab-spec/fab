@@ -1,7 +1,7 @@
 ---
 title: 'Cache layer'
 category: Knowledge Base
-position: 302
+position: 306
 ---
 
 # Cache layer
