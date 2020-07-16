@@ -9,8 +9,6 @@ position: 206
 
 ## Documentation
 
-These docs are _definitely_ in need of improving. Anything you haven't understood/needs clarifying/etc, anywhere you had to read the source code, try to write it down!
-
 If you can, edit the docs that are there already & send a PR or add a new docs page with your info in it, but if you're not sure where to put it or even if it's relevant to anyone else, simply jot some thoughts/bullet points down in the `docs/wip` directory and send a PR. I'll find a place for it!
 
 ### Previewing docs
