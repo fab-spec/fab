@@ -4,6 +4,8 @@ category: Knowledge Base
 position: 306
 ---
 
+# TEST 1
+
 # Cache layer
 
 A FAB uses a totally [stateless request-response model](https://acloud.guru/forums/aws-certified-solutions-architect-associate/discussion/-KIbOMbOWAdrGAHG0xFh/stateful-stateless-web-service?answer=-KIbiH9anmti9bwC3TDK), but the hosts that execute them often have a way to preserve state between requests. Rather than leave this up to the runtime, FABs provide a `Cache` object on the runtime to permit access to this storage (if it exists):
