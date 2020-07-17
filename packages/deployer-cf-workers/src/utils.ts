@@ -62,7 +62,10 @@ export const getCloudflareApi = async (
   const account_supports_kv = list_namespaces_response.success
   if (!account_supports_kv) {
     const errors = list_namespaces_response.errors
-    if (errors && errors.length === 1 && errors[0].code === 10026) {
+    if (
+      (errors && errors.length === 1 && errors[0].code === 10026) ||
+      errors[0].code === 10000
+    ) {
       log.cross(`The provided Cloudflare Account ID 💛${account_id}💛 does not have KV access.
       See 🖤https://dash.cloudflare.com/${account_id}/workers/kv/namespaces🖤 for more information.`)
     } else {
