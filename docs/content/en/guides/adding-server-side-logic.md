@@ -36,45 +36,9 @@ Adding this to your `fab.config.json5` to include it in your build:
 }
 ```
 
+For a more sophisticated example with `POST` requests & headers, see the [full GraphQL proxy below](#proxying-an-authenticated-graphql-api).
+
 > 👉 Further examples on this page will omit this step, read the [Plugins](/kb/plugins) page for full details about configuring your `plugins` section of your configuration.
-
-## Proxying an authenticated GraphQL API
-
-The above example is great if your API mostly sends `GET` requests, without authentication, but for a real-world use case like a GraphQL endpoint you need to forward the incoming request's `method` of `POST`, as well as headers like `Authentication`. However, you can't simply forward _all_ the headers along, since headers like `host` must match the destination, not the FAB's public URL.
-
-This is all neatly captured by FAB's server-side API:
-
-```js
-export default function({ Router }) {
-  // Match any URL starting with /graphql
-  Router.on('/graphql(.*)', ({ settings, url, request }) => {
-    // Clone the incoming request so we can edit it
-    const forwarded_request = new Request(request)
-    // Change the one header we need to in this case, reading from `settings`
-    forwarded_request.headers.set('host', settings.API_HOST)
-    // Build up our URL to proxy to using our API_HOST and our original request's pathname
-    const forwarded_url = `https://${settings.API_HOST}${url.pathname}`
-    // Create a new Request with the new URL and our updated headers
-    return fetch(new Request(forwarded_url, forwarded_request))
-  })
-}
-```
-
-This makes use of FAB's in-built support for [Settings](/kb/settings), that let you centralise your config into your `fab.config.json5`:
-
-```json5
-{
-  // ...
-  settings: {
-    production: {
-      API_HOST: 'api.example.com',
-      // ...
-    },
-    // ...
-  },
-  // ...
-}
-```
 
 ## Typescript Components
 
@@ -167,6 +131,45 @@ export default ({ Router }: FABRuntime) => {
   }, Priority.FIRST)
 }
 ```
+
+## Proxying an authenticated GraphQL API
+
+The [earlier example](#proxying-a-simple-api) is great if your API mostly sends `GET` requests, without authentication, but for a real-world use case like a GraphQL endpoint you need to forward the incoming request's `method` of `POST`, as well as headers like `Authentication`. However, you can't simply forward _all_ the headers along, since headers like `host` must match the destination, not the FAB's public URL.
+
+This is all neatly captured by FAB's server-side API:
+
+```js
+export default function({ Router }) {
+  // Match any URL starting with /graphql
+  Router.on('/graphql(.*)', ({ settings, url, request }) => {
+    // Clone the incoming request so we can edit it
+    const forwarded_request = new Request(request)
+    // Change the one header we need to in this case, reading from `settings`
+    forwarded_request.headers.set('host', settings.API_HOST)
+    // Build up our URL to proxy to using our API_HOST and our original request's pathname
+    const forwarded_url = `https://${settings.API_HOST}${url.pathname}`
+    // Create a new Request with the new URL and our updated headers
+    return fetch(new Request(forwarded_url, forwarded_request))
+  })
+}
+```
+
+This makes use of FAB's in-built support for [Settings](/kb/settings), that let you centralise your config into your `fab.config.json5`:
+
+```json5
+{
+  // ...
+  settings: {
+    production: {
+      API_HOST: 'api.example.com',
+      // ...
+    },
+    // ...
+  },
+  // ...
+}
+```
+
 
 ### An aside: "Static" hosting isn't really static
 
