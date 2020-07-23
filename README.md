@@ -111,7 +111,7 @@ And while deploying frontend apps to backend-centric hosts works reasonably well
 
 As such, static site hosting has grown in popularity among the frontend application community, and static site generators along with them. But there are many reasons why it's preferable or even essential to include a server-side component in your application, which these projects can't take advantage of without fundamentally changing how they build & deliver their app.
 
-_**Frontend Application Bundles**_ are the container format that work equally well for fully-static through to full server-rendered frontend apps, making your choice of _technology_ independent from your choice of _hosting_.
+_**Frontend Application Bundles**_ are the container format that work equally well for fully-static through to full server-rendered frontend apps, meaning you're free to choose your _technology_ independent from your _preferred hosting_.
 
 ## Contributors
 
