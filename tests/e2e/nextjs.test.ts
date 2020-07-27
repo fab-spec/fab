@@ -3,6 +3,7 @@ import { shell, cmd } from '../utils'
 import { ExecaChildProcess } from 'execa'
 import { buildFab, getPorts, getWorkingDir, NEXTJS_PORTS } from './helpers'
 import path from 'path'
+import globby from 'globby'
 
 const getPort = getPorts(NEXTJS_PORTS)
 
@@ -126,9 +127,13 @@ describe('Nextjs E2E Test', () => {
     })
 
     it('should return a correct cache headers on assets', async () => {
-      const build_id = await fs.readFile(path.join(cwd, '.next', 'BUILD_ID'), 'utf8')
-      expect(build_id).toBeDefined()
-      const index_js = `/_next/static/${build_id}/pages/index.js`
+      const index_paths = await globby('static/chunks/pages/index-*.js', {
+        cwd: path.join(cwd, '.next'),
+      })
+      if (index_paths.length === 0) {
+        throw new Error('NextJS might have changed where it outputs static chunks')
+      }
+      const index_js = `/_next/${index_paths[0]}`
 
       const main_js_headers = await request('-I', index_js, port)
       expect(main_js_headers).toContain(`HTTP/1.1 200 OK`)
