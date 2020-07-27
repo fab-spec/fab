@@ -22,7 +22,6 @@ type LazyHtmlTokens = { tokens: Promise<ITokens> | null; asset_path?: string }
 
 async function fetchTokens(path: string): Promise<ITokens> {
   const response = await fetch(path)
-  console.log({ response })
   return await response.json()
 }
 
