@@ -39,10 +39,10 @@ export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports>
       error: console.error,
       warn: console.warn,
     },
-    NODE_ENV: 'server',
+    NODE_ENV: 'production',
     process: {
       env: {
-        NODE_ENV: 'server',
+        NODE_ENV: 'production',
       },
     },
     setTimeout,

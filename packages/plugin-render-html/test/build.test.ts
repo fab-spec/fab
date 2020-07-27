@@ -26,6 +26,25 @@ describe('Build time', () => {
     expect(proto_fab._getEntries()).to.deep.equal([])
   })
 
+  it('should not inline anything if no fallback given', async () => {
+    const files = {
+      '/index.html': '<html>here</html>',
+    }
+    const proto_fab = new ProtoFab<RenderHtmlMetadata>(files)
+    await build({ fallback: false }, proto_fab)
+    expect([...proto_fab.files.keys()]).to.deep.equal(['/_assets/_html/index.html.json'])
+  })
+
+  it('should inline everything if specified', async () => {
+    const files = {
+      '/foo.html': '<html>here</html>',
+      '/bar.html': '<html>also</html>',
+    }
+    const proto_fab = new ProtoFab<RenderHtmlMetadata>(files)
+    await build({ fallback: false, inline: true }, proto_fab)
+    expect([...proto_fab.files.keys()]).to.deep.equal([])
+  })
+
   it('should compile the HTML files into a template', async () => {
     const files = {
       '/index.html':
@@ -33,7 +52,7 @@ describe('Build time', () => {
     }
     const proto_fab = new ProtoFab<RenderHtmlMetadata>(files)
     await build({}, proto_fab)
-    const htmls = proto_fab.metadata.render_html.htmls
+    const htmls = proto_fab.metadata.render_html.inlined_htmls
     expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
     expect(htmls['/index.html']).to.deep.equal({
       strings: [
@@ -56,7 +75,7 @@ describe('Build time', () => {
       },
       proto_fab
     )
-    const htmls = proto_fab.metadata.render_html.htmls
+    const htmls = proto_fab.metadata.render_html.inlined_htmls
     expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
 
     expect(htmls['/index.html']).to.deep.equal({

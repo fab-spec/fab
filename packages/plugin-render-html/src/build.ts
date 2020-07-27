@@ -1,5 +1,5 @@
 import { ProtoFab } from '@fab/core'
-import { RenderHtmlArgs, RenderHtmlMetadata, CompiledHTMLs } from './types'
+import { RenderHtmlArgs, RenderHtmlMetadata, CompiledHTMLs, AssetHTMLs } from './types'
 import cheerio from 'cheerio'
 import { tokenize } from 'micromustache'
 import { DEFAULT_INJECTIONS } from './constants'
@@ -14,7 +14,8 @@ export async function build(
   const {
     'match-html': match_html = /\.html$/i,
     injections = DEFAULT_INJECTIONS,
-    fallback,
+    fallback = true,
+    inline = 'fallback-only',
   } = args
 
   const htmls: CompiledHTMLs = {}
@@ -43,7 +44,7 @@ export async function build(
       // console.log(filename)
       // console.log(htmls[filename].strings.map(str => str.slice(0, 100)))
       // console.log(htmls[filename].varNames)
-      log.tick(`🖤${filename}🖤`, 2)
+      // log.tick(`🖤${filename}🖤`, 2)
       // await new Promise((res) => setTimeout(res, 200))
     }
   }
@@ -74,8 +75,29 @@ export async function build(
     log(`No fallback injected.`)
   }
 
+  const inlined_htmls: CompiledHTMLs = inline === true ? htmls : {}
+  const asset_html_paths: AssetHTMLs = {}
+
+  if (inline !== true) {
+    for (const [path, tokens] of Object.entries(htmls)) {
+      const should_be_inlined =
+        inline === false
+          ? false
+          : inline === 'fallback-only' && path === resolved_fallback
+
+      if (should_be_inlined) {
+        inlined_htmls[path] = tokens
+      } else {
+        const asset_path = `/_assets/_html${path}.json`
+        asset_html_paths[path] = asset_path
+        proto_fab.files.set(asset_path, Buffer.from(JSON.stringify(tokens)))
+      }
+    }
+  }
+
   proto_fab.metadata.render_html = {
-    htmls,
+    inlined_htmls,
     resolved_fallback,
+    asset_html_paths,
   }
 }

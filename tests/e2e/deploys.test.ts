@@ -23,7 +23,7 @@ describe('Deploy tests', () => {
         s3_access_key: 'AKIAWIORJFSCPZGQ4K6U',
         s3_bucket: 'fab-ci-assets-create-react-app-cf-workers',
         script_name: 'fab-ci-create-react-app',
-        cf_account_id: 'cd3d2f25fb7dfdd4e8be7f187b2cbad1',
+        cf_account_id: '2e39fe49d1e04e295900f31a54e98586',
       },
       aws_lambda_edge: {
         required_env_vars: {
@@ -50,7 +50,7 @@ describe('Deploy tests', () => {
         s3_access_key: 'AKIAWIORJFSCPZGQ4K6U',
         s3_bucket: 'fab-ci-assets-nextjs-cf-workers',
         script_name: 'fab-ci-nextjs',
-        cf_account_id: 'cd3d2f25fb7dfdd4e8be7f187b2cbad1',
+        cf_account_id: '2e39fe49d1e04e295900f31a54e98586',
       },
       aws_lambda_edge: {
         required_env_vars: {
