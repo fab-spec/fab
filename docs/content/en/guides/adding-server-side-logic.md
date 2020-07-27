@@ -22,12 +22,12 @@ export default ({ Router }) => {
     return new Request(`https://api.example.com/${params.route}`)
   })
   
-  // Or you can use `await fetch` here, which allows you to transform the response
+  // Or you can use `await fetch` here, so you can transform the response
   Router.on('/needs-transforming/:route(.*)', async ({ params }) => {
     const response = await fetch(`https://api.example.com/${params.route}`)
     const json = await response.json()
     delete json._sekret_sekret
-    return new Response(json, response)
+    return new Response(JSON.stringify(json), response)
   })
 }
 ```
