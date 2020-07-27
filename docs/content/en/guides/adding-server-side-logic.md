@@ -18,7 +18,7 @@ It can be quite convenient to proxy your backend API behind a route on your fron
 ```js[proxy-api.js]
 export default ({ Router }) => {
   Router.on('/api/:route(.*)', ({ params }) => {
-    return fetch(`https://api.example.com/${params.route}`)
+    return new Request(`https://api.example.com/${params.route}`)
   })
 }
 ```
@@ -150,7 +150,7 @@ export default function({ Router }) {
     // Build up our URL to proxy to using our API_HOST and our original request's pathname
     const forwarded_url = `https://${settings.API_HOST}${url.pathname}`
     // Create a new Request with the new URL and our updated headers
-    return fetch(new Request(forwarded_url, forwarded_request))
+    return new Request(forwarded_url, forwarded_request)
   })
 }
 ```
