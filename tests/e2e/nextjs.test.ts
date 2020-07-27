@@ -21,7 +21,7 @@ describe('Nextjs E2E Test', () => {
       await shell(`git clean -df`, { cwd })
     } else {
       // Create a new NEXT project inside
-      await shell(`yarn create next-app . -e`, { cwd })
+      await shell(`yarn create next-app .`, { cwd })
       // Skip git stuff on Github, it's only for rerunning locally
       if (!process.env.GITHUB_WORKSPACE) {
         await shell(`git init`, { cwd })
