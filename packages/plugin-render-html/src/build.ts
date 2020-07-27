@@ -44,7 +44,7 @@ export async function build(
       // console.log(filename)
       // console.log(htmls[filename].strings.map(str => str.slice(0, 100)))
       // console.log(htmls[filename].varNames)
-      log.tick(`🖤${filename}🖤`, 2)
+      // log.tick(`🖤${filename}🖤`, 2)
       // await new Promise((res) => setTimeout(res, 200))
     }
   }
@@ -82,7 +82,7 @@ export async function build(
     for (const [path, tokens] of Object.entries(htmls)) {
       if (
         inline === false ||
-        (inline === 'fallback-only' && path === resolved_fallback)
+        (inline === 'fallback-only' && path !== resolved_fallback)
       ) {
         const asset_path = `/_assets/_html${path}.json`
         asset_html_paths[path] = asset_path
