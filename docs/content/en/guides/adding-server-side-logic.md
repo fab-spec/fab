@@ -17,8 +17,17 @@ It can be quite convenient to proxy your backend API behind a route on your fron
 
 ```js[proxy-api.js]
 export default ({ Router }) => {
-  Router.on('/api/:route(.*)', ({ params }) => {
+  // If you don't need to transform the result, you can return a Request
+  Router.on('/api/:route(.*)', async ({ params }) => {
     return new Request(`https://api.example.com/${params.route}`)
+  })
+  
+  // Or you can use `await fetch` here, which allows you to transform the response
+  Router.on('/needs-transforming/:route(.*)', async ({ params }) => {
+    const response = await fetch(`https://api.example.com/${params.route}`)
+    const json = await response.json()
+    delete json._sekret_sekret
+    return new Response(json, response)
   })
 }
 ```
