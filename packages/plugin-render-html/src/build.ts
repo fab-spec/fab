@@ -17,7 +17,6 @@ export async function build(
     fallback = true,
     inline = 'fallback-only',
   } = args
-  console.log(args)
 
   const htmls: CompiledHTMLs = {}
   let html_count = 0
@@ -58,7 +57,6 @@ export async function build(
       : fallback === true
       ? '/index.html'
       : undefined
-  console.log({ fallback, resolved_fallback })
 
   if (resolved_fallback) {
     if (!htmls[resolved_fallback]) {
@@ -87,7 +85,6 @@ export async function build(
           ? false
           : inline === 'fallback-only' && path === resolved_fallback
 
-      console.log({ inline, path, resolved_fallback, should_be_inlined })
       if (should_be_inlined) {
         inlined_htmls[path] = tokens
       } else {
