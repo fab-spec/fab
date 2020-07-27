@@ -57,7 +57,7 @@ export const getCloudflareApi = async (
   log.tick(`API token OK. Checking KV access...`)
 
   const list_namespaces_response = await get(
-    `/accounts/${account_id}/storage/kv/namespaces`
+    `/accounts/${account_id}/storage/kv/namespaces?per_page=100`
   )
   const account_supports_kv = list_namespaces_response.success
   if (!account_supports_kv) {
