@@ -110,24 +110,25 @@ export default ({ Router, ServerContext }: FABRuntime) => {
 
 ## Checking a cookie before allowing a request to proceed
 
-```js
+```ts
 // check-cookie.ts
 import { FABRuntime, Priority } from '@fab/core'
 import { checkValidity } from 'somewhere'
 
 export default ({ Router }: FABRuntime) => {
   // Could also use Router.on('*') here
-  Router.onAll(async ({ request }) => {
-    const cookie = request.cookies['My-Auth']
+  Router.onAll(async ({ request, cookies }) => {
+    const cookie = cookies['My-Auth']
     if (!cookie || !checkValidity(cookie)) {
-      // Allow the rest of the handlers to proceed
-      return undefined
-    } else {
       return new Response(null, {
         status: 401,
         statusText: 'Unauthorized',
       })
+    } else {
+      // Allow the rest of the handlers to proceed
+      return undefined
     }
+    // Run this middleware before any of the others
   }, Priority.FIRST)
 }
 ```
@@ -169,7 +170,6 @@ This makes use of FAB's in-built support for [Settings](/kb/settings), that let 
   // ...
 }
 ```
-
 
 ### An aside: "Static" hosting isn't really static
 
