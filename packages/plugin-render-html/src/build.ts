@@ -14,9 +14,10 @@ export async function build(
   const {
     'match-html': match_html = /\.html$/i,
     injections = DEFAULT_INJECTIONS,
-    fallback,
+    fallback = true,
     inline = 'fallback-only',
   } = args
+  console.log(args)
 
   const htmls: CompiledHTMLs = {}
   let html_count = 0
@@ -57,6 +58,7 @@ export async function build(
       : fallback === true
       ? '/index.html'
       : undefined
+  console.log({ fallback, resolved_fallback })
 
   if (resolved_fallback) {
     if (!htmls[resolved_fallback]) {
@@ -80,15 +82,18 @@ export async function build(
 
   if (inline !== true) {
     for (const [path, tokens] of Object.entries(htmls)) {
-      if (
-        inline === false ||
-        (inline === 'fallback-only' && path !== resolved_fallback)
-      ) {
+      const should_be_inlined =
+        inline === false
+          ? false
+          : inline === 'fallback-only' && path === resolved_fallback
+
+      console.log({ inline, path, resolved_fallback, should_be_inlined })
+      if (should_be_inlined) {
+        inlined_htmls[path] = tokens
+      } else {
         const asset_path = `/_assets/_html${path}.json`
         asset_html_paths[path] = asset_path
         proto_fab.files.set(asset_path, Buffer.from(JSON.stringify(tokens)))
-      } else {
-        inlined_htmls[path] = tokens
       }
     }
   }
