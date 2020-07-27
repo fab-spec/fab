@@ -18,15 +18,37 @@ const getNonce = () => {
     .slice(2)
 }
 
+type LazyHtmlTokens = { tokens: Promise<ITokens> | null; asset_path?: string }
+
+async function fetchTokens(path: string): Promise<ITokens> {
+  const response = await fetch(path)
+  const json = await response.json()
+  return JSON.parse(json)
+}
+
 export default function RenderHTMLRuntime(
   { Router, Metadata }: FABRuntime<RenderHtmlMetadata>,
   args: RenderHtmlArgs
 ) {
-  const { htmls, resolved_fallback } = Metadata.render_html
-  const { injections = DEFAULT_INJECTIONS } = args
-  const error_page = matchPath(htmls, '/404')
+  const { inlined_htmls, resolved_fallback, asset_html_paths } = Metadata.render_html
 
-  function render(html: ITokens, settings: FabSettings) {
+  const all_htmls: { [path: string]: LazyHtmlTokens } = {}
+  for (const [path, tokens] of Object.entries(inlined_htmls)) {
+    all_htmls[path] = { tokens: Promise.resolve(tokens) }
+  }
+  for (const [url_path, asset_path] of Object.entries(asset_html_paths)) {
+    all_htmls[url_path] = { tokens: null, asset_path }
+  }
+
+  const { injections = DEFAULT_INJECTIONS } = args
+  const error_page = matchPath(all_htmls, '/404')
+
+  async function render(html: LazyHtmlTokens, settings: FabSettings) {
+    if (!html.tokens) {
+      html.tokens = fetchTokens(html.asset_path!)
+    }
+    const tokens = await html.tokens
+
     const replacements: { [token: string]: string } = {
       OPEN_TRIPLE: '{{{',
       OPEN_DOUBLE: '{{',
@@ -36,7 +58,7 @@ export default function RenderHTMLRuntime(
       Object.assign(replacements, generateReplacements(injections.env, settings))
     }
 
-    const rendered = stringify(html, replacements)
+    const rendered = stringify(tokens, replacements)
 
     return new Response(rendered, {
       status: html === error_page ? 404 : 200,
@@ -63,16 +85,16 @@ export default function RenderHTMLRuntime(
   Router.onAll(async ({ url, settings }) => {
     const { pathname } = url
 
-    const html = matchPath(htmls, pathname)
+    const html = matchPath(all_htmls, pathname)
     if (html) {
-      return render(html, settings)
+      return await render(html, settings)
     }
 
     if (resolved_fallback)
       return {
         async interceptResponse(response: Response) {
           return response.status === NO_RESPONSE_STATUS_CODE
-            ? render(htmls[resolved_fallback], settings)
+            ? await render(all_htmls[resolved_fallback], settings)
             : response
         },
       }
@@ -81,7 +103,7 @@ export default function RenderHTMLRuntime(
       return {
         async interceptResponse(response: Response) {
           return response.status === NO_RESPONSE_STATUS_CODE
-            ? render(error_page, settings)
+            ? await render(error_page, settings)
             : response
         },
       }

@@ -33,7 +33,7 @@ describe('Build time', () => {
     }
     const proto_fab = new ProtoFab<RenderHtmlMetadata>(files)
     await build({}, proto_fab)
-    const htmls = proto_fab.metadata.render_html.htmls
+    const htmls = proto_fab.metadata.render_html.inlined_htmls
     expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
     expect(htmls['/index.html']).to.deep.equal({
       strings: [
@@ -56,7 +56,7 @@ describe('Build time', () => {
       },
       proto_fab
     )
-    const htmls = proto_fab.metadata.render_html.htmls
+    const htmls = proto_fab.metadata.render_html.inlined_htmls
     expect(Object.keys(htmls)).to.deep.equal(['/index.html'])
 
     expect(htmls['/index.html']).to.deep.equal({
