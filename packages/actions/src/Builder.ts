@@ -105,10 +105,14 @@ export default class Builder {
       const is_relative = isRelative(plugin_name)
       const relative_path = relativeToConfig(config_path, plugin_name)
       const relative_slash_build = relative_path + '/build'
-      const relative_slash_require = relative_path + '/runtime'
-      const plugin_path = safeResolve(relative_path, config_path)
+      const relative_slash_runtime = relative_path + '/runtime'
+      const plugin_path =
+        safeResolve(relative_path, config_path) ||
+        safeResolve(relative_path + '.ts', config_path)
       const path_slash_build = safeResolve(relative_slash_build, config_path)
-      const path_slash_require = safeResolve(relative_slash_require, config_path)
+      const path_slash_runtime =
+        safeResolve(relative_slash_runtime, config_path) ||
+        safeResolve(relative_slash_runtime + '.ts', config_path)
 
       // console.log({ is_relative, plugin_path, relative_path, path_slash_require })
 
@@ -119,9 +123,9 @@ export default class Builder {
         runtime: undefined,
       }
 
-      if (path_slash_build || path_slash_require) {
+      if (path_slash_build || path_slash_runtime) {
         if (plugin_path) {
-          const found_paths = [path_slash_build, path_slash_require].filter((x) => x)
+          const found_paths = [path_slash_build, path_slash_runtime].filter((x) => x)
           log.warn(
             `For plugin '${plugin_name}', we found ${found_paths.join(
               ' & '
@@ -149,15 +153,15 @@ export default class Builder {
           }
         }
 
-        if (path_slash_require) {
-          plugin.runtime = path_slash_require
+        if (path_slash_runtime) {
+          plugin.runtime = path_slash_runtime
         }
       } else {
         if (!plugin_path) {
           throw is_relative
             ? new InvalidConfigError(
                 `The plugin '${plugin_name}' could not be found!\n` +
-                  `Looked for ${relative_slash_build}, ${relative_slash_require} & ${relative_path}`
+                  `Looked for ${relative_slash_build}, ${relative_slash_runtime} & ${relative_path}`
               )
             : new InvalidConfigError(
                 `Cannot find module '${plugin_name}', which was referenced in the 'plugins' config.\nAre you sure it's installed?`
