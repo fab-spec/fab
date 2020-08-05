@@ -1,6 +1,6 @@
 {
   "name": "@fab/server",
-  "version": "1.0.0-rc.6",
+  "version": "1.0.0-rc.6.p1",
   "description": "NodeJS FAB Server",
   "keywords": [
     "fab",
