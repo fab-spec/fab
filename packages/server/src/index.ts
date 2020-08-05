@@ -154,6 +154,9 @@ class Server implements ServerType {
               const body = fetch_res.body
               if (body) {
                 if (typeof body.getReader === 'function') {
+                  if (!response_headers['transfer-encoding'])
+                    res.set('transfer-encoding', 'chunked')
+
                   const reader = body.getReader()
                   let x
                   while ((x = await reader.read())) {
@@ -169,6 +172,9 @@ class Server implements ServerType {
                   }
                   res.end()
                 } else if (body instanceof Stream) {
+                  if (!response_headers['transfer-encoding'])
+                    res.set('transfer-encoding', 'chunked')
+
                   await new Promise((resolve, reject) => {
                     body.on('data', (chunk) => res.write(chunk))
                     body.on('error', reject)
