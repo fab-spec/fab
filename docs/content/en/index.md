@@ -35,7 +35,7 @@ They **unify static sites, single page applications (SPAs), server-side renderin
 
 </base-alert>
 
-## What can I can use FABs for?
+## What can I use FABs for?
 
 Because FABs include [server-side JavaScript](/kb/fab-structure) capabilities but deploy [with a single command](/guides/deploying), you can start to add server-side logic without the complexity of managing servers. Making it easy to do things like:
 
