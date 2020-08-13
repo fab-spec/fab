@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "next": "^9.5.2",
-    "react-scripts": "^3.4.2"
+    "react-scripts": "^3.4.3"
   }
 }
