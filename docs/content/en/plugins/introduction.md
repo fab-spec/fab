@@ -101,7 +101,7 @@ To include this in our FAB build, we edit `fab.config.json5` to reference our ne
 }
 ```
 
-**Note**: the ordering is important here—our plugin must come _after_ `@fab/input-static` (otherwise the HTML files won't be on `proto_fab.files` yet) and _before_ `@fab/render-html`, since it [compiles HTML files into Markdown templates](https://github.com/fab-spec/fab/tree/master/packages/plugin-render-html) for efficient rendering, which removes them from `proto_fab.files`. These considerations would not apply if we were sourcing the list of article URLs from some other source, for example making a HTTP request to a CMS for the current list.
+**Note**: the ordering is important here—our plugin must come _after_ `@fab/input-static` (otherwise the HTML files won't be on `proto_fab.files` yet) and _before_ `@fab/render-html`, since it [compiles HTML files into Mustache templates](https://github.com/fab-spec/fab/tree/master/packages/plugin-render-html) for efficient rendering, which removes them from `proto_fab.files`. These considerations would not apply if we were sourcing the list of article URLs from some other source, for example making a HTTP request to a CMS for the current list.
 
 ## Execution environments of Build vs Runtime files
 
