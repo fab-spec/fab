@@ -8,7 +8,7 @@ position: 292
 
 FAB plugins are different to other JS web tooling due to one important fact: **plugins are invoked during _both_ compile time _and_ at runtime**. This means a plugin can read/manipulate a FAB as it's being constructed, and _also inject the server-side code_ needed at runtime.
 
-For a lot of common use cases, runtime-only plugins will be all you need, and the [Adding Server-Side Logic](/guides/adding-server-side-logic) guide has a bunch of examples there. Here, we'll talk about the more advanced use-cases.
+> 👉 For a lot of common use cases, runtime-only plugins will be all you need, and the [Adding Server-Side Logic](/guides/adding-server-side-logic) guide has a bunch of examples there. On this page, we'll talk about the more advanced use-cases.
 
 The best way to understand how this works is with an example:
 
