@@ -9,7 +9,8 @@ export type InlineAssets = {
   [filename: string]: { contents: string; content_type: string; immutable: boolean }
 }
 export type RenamedAssets = {
-  [filename: string]: { asset_path: string; immutable: boolean }
+  // [filename: string]: { asset_path: string; immutable: boolean }
+  [filename: string]: { chunks_paths: string[]; immutable: boolean }
 }
 
 export interface RewireAssetsMetadata extends PluginMetadata {

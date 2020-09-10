@@ -19,6 +19,7 @@ export async function build(
 ) {
   const {
     'inline-threshold': inline_threshold = 8192,
+    'chunk-threshold': chunk_threshold,
     'treat-as-immutable': immutable_regexp = DEFAULT_IMMUTABILITY_CHECK,
   } = args
 
@@ -71,15 +72,23 @@ export async function build(
     const fingerprinted_name = immutable
       ? filename
       : getFingerprintedName(contents, filename)
-    const asset_path = `/_assets${fingerprinted_name}`
+    // TODO: For now there's only one chunk and we ignore chunk-threshold
+    const chunks = [
+      {
+        path: `/_assets${fingerprinted_name}`,
+        contents: contents,
+      },
+    ]
 
     renamed_assets[filename] = {
-      asset_path,
+      chunks_paths: chunks.map((chunk) => chunk.path),
       immutable,
     }
 
     // "Move" the file by changing its key
-    proto_fab.files.set(asset_path, contents)
+    for (const chunk of chunks) {
+      proto_fab.files.set(chunk.path, chunk.contents)
+    }
     proto_fab.files.delete(filename)
   }
   log.tick(`Done.`)
