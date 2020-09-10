@@ -65,7 +65,7 @@ This is available to our runtime component under `Runtime.metadata`, allowing us
 // that lets us declare route handlers
 export default function BlogRedirectRuntime(Runtime) {
   // Register a handler to match the old posts
-  Runtime.on('/posts/:id', async ({ params, request, settings, url }) => {
+  Runtime.Router.on('/posts/:id', async ({ params, request, settings, url }) => {
     // grab the :id off the URL params and look it up in the metadata
     const { id } = params
     const new_article_url = Runtime.metadata.article_urls[id]

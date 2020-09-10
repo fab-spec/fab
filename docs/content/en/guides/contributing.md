@@ -17,7 +17,7 @@ If you can, edit the docs that are there already & send a PR or add a new docs p
 # in the FAB project root
 cd docs
 yarn
-yarn docz:dev
+yarn dev
 ```
 
 ## E2E Tests
