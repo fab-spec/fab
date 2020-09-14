@@ -19,12 +19,20 @@ export async function build(
 ) {
   const {
     'inline-threshold': inline_threshold = 8192,
-    'chunk-threshold': chunk_threshold,
+    'chunk-threshold': chunk_threshold = undefined,
     'treat-as-immutable': immutable_regexp = DEFAULT_IMMUTABILITY_CHECK,
   } = args
 
   if (Number.isNaN(inline_threshold)) {
     throw new InvalidConfigError(`'inline-threshold' value must be a number!`)
+  }
+  if (
+    !(
+      typeof chunk_threshold === 'undefined' ||
+      (Number.isSafeInteger(chunk_threshold) && chunk_threshold > 0)
+    )
+  ) {
+    throw new InvalidConfigError(`'chunk-threshold' value must be a positive integer!`)
   }
   if (!(immutable_regexp instanceof RegExp)) {
     throw new InvalidConfigError(
@@ -37,7 +45,7 @@ export async function build(
   for (const [filename, contents] of proto_fab.files.entries()) {
     if (filenameOutsideFabLocations(filename)) {
       if (
-        contents.length > inline_threshold ||
+        contents.byteLength > inline_threshold ||
         (await isBinaryPromise(filename, contents))
       ) {
         to_rename.push(filename)
@@ -72,13 +80,12 @@ export async function build(
     const fingerprinted_name = immutable
       ? filename
       : getFingerprintedName(contents, filename)
-    // TODO: For now there's only one chunk and we ignore chunk-threshold
-    const chunks = [
-      {
-        path: `/_assets${fingerprinted_name}`,
-        contents: contents,
-      },
-    ]
+
+    const chunks = splitInChunks(
+      contents,
+      `/_assets${fingerprinted_name}`,
+      chunk_threshold
+    )
 
     renamed_assets[filename] = {
       chunks_paths: chunks.map((chunk) => chunk.path),
@@ -102,4 +109,37 @@ const getFingerprintedName = (contents: Buffer, filename: string) => {
   return extname
     ? `${filename.slice(0, -1 * extname.length)}.${hash}${extname}`
     : `${filename}_${hash}`
+}
+
+interface Chunk {
+  path: string
+  contents: Buffer
+}
+
+function splitInChunks(
+  contents: Buffer,
+  filename: string,
+  chunk_threshold: number | undefined
+): Chunk[] {
+  if (!chunk_threshold || contents.byteLength <= chunk_threshold) {
+    return [{ path: filename, contents }]
+  } else {
+    const chunks: Chunk[] = []
+    let remaining_number_of_bytes = contents.byteLength
+    while (remaining_number_of_bytes > 0) {
+      const chunk_size = Math.min(remaining_number_of_bytes, chunk_threshold)
+      chunks.push({
+        path: `${filename}~${chunks.length + 1}`,
+        // Rebuilding a buffer from the underlying ArrayBuffer allows for
+        // zero-copy chunking.
+        contents: Buffer.from(
+          contents.buffer,
+          contents.byteOffset + chunks.length * chunk_threshold,
+          chunk_size
+        ),
+      })
+      remaining_number_of_bytes -= chunk_size
+    }
+    return chunks
+  }
 }
