@@ -10,6 +10,10 @@ import { _log, FabPackageError, loadModule } from '@fab/cli'
 
 const log = _log(`Packager`)
 
+function isFabPackagerExports(p: any): p is FabPackagerExports<ConfigTypes.Union> {
+  return p.createPackage
+}
+
 export default class Packager {
   static package: PackageFn = async (
     file_path: string,
@@ -31,21 +35,25 @@ export default class Packager {
 
     const { package_name } = provider
     log(`Loading packager code from ${package_name}`)
-    const packager = loadModule(log, package_name) as FabPackagerExports<
-      ConfigTypes.Union
-    >
+    const packager = loadModule(log, package_name)
     log.tick(`Done.`)
 
-    if (env) throw new Error('Not implemented ENV support yet')
-    const env_overrides = {}
+    if (isFabPackagerExports(packager)) {
+      if (env) throw new Error('Not implemented ENV support yet')
+      const env_overrides = {}
 
-    const deploy_config = config.deploy![target] as ConfigTypes.Union
-    await packager.createPackage(
-      file_path,
-      output_path,
-      deploy_config,
-      env_overrides,
-      assets_url
-    )
+      const deploy_config = config.deploy![target] as ConfigTypes.Union
+      await packager.createPackage(
+        file_path,
+        output_path,
+        deploy_config,
+        env_overrides,
+        assets_url
+      )
+    } else {
+      log.error(
+        `module ${package_name} can't create a package. This is most likely because you are trying to package up static assets.\nStatic assets are inside the fab file under the /_assets directory.\n*NOTE* You can not deploy a FAB with only a static assets, you always need a server component.`
+      )
+    }
   }
 }
