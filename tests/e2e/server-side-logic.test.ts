@@ -151,7 +151,7 @@ describe('Server-side logic tests', () => {
      * between streams and caches. */
     describe('should hit endpoints with different caching/streaming timings', () => {
       const cases = [
-        // { endpoint: '/return-fetch', initial_delay: 0, line_delay: 500 },
+        { endpoint: '/return-fetch', initial_delay: 0, line_delay: 500 },
         { endpoint: '/fetch-return-body', initial_delay: 0, line_delay: 500 },
         { endpoint: '/fetch-await-body', initial_delay: 1000, line_delay: 0 },
         { endpoint: '/cache-stream-return-buffer', initial_delay: 1000, line_delay: 0 },
@@ -185,14 +185,10 @@ describe('Server-side logic tests', () => {
           const cito_time = lines_with_timestamps['cito.'].getTime()
 
           // Assert that the response takes a while to arrive, but then arrives all at once.
-          expect(des_time - starting_time).toBeGreaterThan(initial_delay - 100)
-          expect(des_time - starting_time).toBeLessThan(initial_delay + 100)
-          expect(pa_time - des_time).toBeGreaterThan(line_delay - 100)
-          expect(pa_time - des_time).toBeLessThan(line_delay + 100)
-          expect(cito_time - pa_time).toBeGreaterThan(line_delay - 100)
-          expect(cito_time - pa_time).toBeLessThan(line_delay + 100)
-          expect(cito_time - des_time).toBeGreaterThan(line_delay * 2 - 100)
-          expect(cito_time - des_time).toBeLessThan(line_delay * 2 + 100)
+          expect(des_time - starting_time).toBeCloseTo(initial_delay, -2)
+          expect(pa_time - des_time).toBeCloseTo(line_delay, -2)
+          expect(cito_time - pa_time).toBeCloseTo(line_delay, -2)
+          expect(cito_time - des_time).toBeCloseTo(line_delay * 2, -2)
         })
       })
     })
