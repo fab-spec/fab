@@ -126,7 +126,7 @@ describe('Nextjs E2E Test', () => {
       expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
     })
 
-    it('should return a correct cache headers on assets', async () => {
+    it.skip('should return a correct cache headers on assets', async () => {
       const index_paths = await globby('static/chunks/pages/index-*.js', {
         cwd: path.join(cwd, '.next'),
       })
