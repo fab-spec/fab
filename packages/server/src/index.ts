@@ -23,6 +23,7 @@ import { pathToSHA512 } from 'file-to-sha512'
 import Stream from 'stream'
 import { watcher } from '@fab/cli'
 import httpProxy from 'http-proxy'
+import { ReadableStream as WebReadableStream } from 'web-streams-polyfill/ponyfill/es2018'
 
 function isRequest(fetch_res: Request | Response): fetch_res is Request {
   return (
@@ -103,12 +104,16 @@ class Server implements ServerType {
         app = express()
 
         app.use((req, res, next) => {
-          req.pipe(
-            concat((data: any) => {
-              req.body = data.toString()
-              next()
-            })
-          )
+          // Convert the Reqest (extends <Stream.Readable>) into a
+          // WHATWG Web Standard ReadableStream
+          req.body = new WebReadableStream({
+            start: (controller) => {
+              req.on('data', controller.enqueue)
+              req.on('close', controller.close)
+              req.on('error', controller.error)
+            },
+          })
+          next()
         })
 
         app.all('*', async (req, res) => {

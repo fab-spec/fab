@@ -54,27 +54,30 @@ export class Cache implements FabCache {
     })
   }
 
-  private async readAllIfStream(value: FabCacheValue) {
-    if (typeof (value as ReadableStream).getReader === 'function') {
-      const reader = (value as ReadableStream<string>).getReader()
+  private async readAllIfStream(cacheValue: FabCacheValue) {
+    if (typeof (cacheValue as ReadableStream).getReader === 'function') {
+      const stream = cacheValue as ReadableStream
+      const reader = stream.getReader()
 
-      let chunk = await reader.read()
       let buffer = Buffer.from([])
-      const enc = new TextEncoder()
 
-      while (!chunk.done) {
-        buffer = Buffer.concat([buffer, enc.encode(chunk.value)])
-        chunk = await reader.read()
+      let { done, value } = await reader.read()
+
+      while (!done) {
+        buffer = Buffer.concat([buffer, value])
+        const result = await reader.read()
+        done = result.done
+        value = result.value
       }
       return buffer
-    } else if (value instanceof Stream) {
+    } else if (cacheValue instanceof Stream) {
       const chunks: Uint8Array[] = []
       return await new Promise((resolve, reject) => {
-        value.on('data', (chunk) => chunks.push(chunk))
-        value.on('error', reject)
-        value.on('end', () => resolve(Buffer.concat(chunks)))
+        cacheValue.on('data', (chunk) => chunks.push(chunk))
+        cacheValue.on('error', reject)
+        cacheValue.on('end', () => resolve(Buffer.concat(chunks)))
       })
     }
-    return value
+    return cacheValue
   }
 }
