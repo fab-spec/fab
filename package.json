@@ -62,6 +62,7 @@
   "resolutions": {
     "**/levelup/bl": ">=0.9.5",
     "kind-of": ">=6.0.3",
-    "minimist": ">=0.2.1"
+    "minimist": ">=0.2.1",
+    "node-fetch": "2.6.0"
   }
 }

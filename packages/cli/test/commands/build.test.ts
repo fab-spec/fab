@@ -33,9 +33,26 @@ describe('build', () => {
     .catch((err) => {
       expect(err.message).to.contain('Config file contains errors!')
     })
-    .it('should report that the specified config file is empty', (ctx) => {
+    .it('should report that the specified config file is not valid JSON5', (ctx) => {
       expect(ctx.stdout).to.contain(
         `Could not parse file at '${empty_config}'. Check that it is valid JSON5.`
+      )
+      expect(ctx.stdout).to.contain('SyntaxError: No data, empty input')
+    })
+
+  const invalid_config = `${__dirname}/../fixtures/fab.invalid-config.json5`
+  test
+    .stdout()
+    .command(['build', '--config', invalid_config])
+    .catch((err) => {
+      expect(err.message).to.contain('Config file contains errors!')
+    })
+    .it('should report that the specified config file is invalid', (ctx) => {
+      expect(ctx.stdout).to.contain(
+        `Could not parse file at '${invalid_config}'. Check that it is valid JSON5.`
+      )
+      expect(ctx.stdout).to.contain(
+        `SyntaxError: Unexpected token \'-\' at 2:7\nplug-ins:`
       )
     })
 
