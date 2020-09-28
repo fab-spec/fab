@@ -38,7 +38,11 @@ export default function RewireAssetsRuntime({
         Object.entries(NON_IMMUTABLE_HEADERS).forEach(([k, v]) =>
           response.headers.set(k, v)
         )
-        return response
+        // The following lines ought to be removed, but something is causing a failure
+        // with NextJS and this. I have a feeling it is related to the recent node-fetch
+        // security update but haven't tracked it down yet.
+        const body = await response.body
+        return new Response(body, response)
       }
     }
 

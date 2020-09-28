@@ -1,6 +1,6 @@
 {
   "name": "@fab/plugin-rewire-assets",
-  "version": "1.0.0-rc.6",
+  "version": "1.0.0-rc.6.p1",
   "description": "Module to handle files outside _assets",
   "keywords": [
     "assets",

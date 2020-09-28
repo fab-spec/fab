@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - prerelease
 
 jobs:
   public_package_build:
