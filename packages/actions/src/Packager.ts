@@ -38,22 +38,25 @@ export default class Packager {
     const packager = loadModule(log, package_name)
     log.tick(`Done.`)
 
-    if (isFabPackagerExports(packager)) {
-      if (env) throw new Error('Not implemented ENV support yet')
-      const env_overrides = {}
-
-      const deploy_config = config.deploy![target] as ConfigTypes.Union
-      await packager.createPackage(
-        file_path,
-        output_path,
-        deploy_config,
-        env_overrides,
-        assets_url
-      )
-    } else {
-      log.error(
-        `module ${package_name} can't create a package. This is most likely because you are trying to package up static assets.\nStatic assets are inside the fab file under the /_assets directory.\n*NOTE* You can not deploy a FAB with only a static assets, you always need a server component.`
+    if (!isFabPackagerExports(packager)) {
+      throw new FabPackageError(
+        `Error: module 💛${package_name}💛 can't create a package.
+        This could be because this module is only for deploying static assets, not server components.
+        Packaging is only relevant to the server component.
+        See 🖤https://fab.dev/kb/deploying🖤 for more information.`
       )
     }
+
+    if (env) throw new Error('Not implemented ENV support yet')
+    const env_overrides = {}
+
+    const deploy_config = config.deploy![target] as ConfigTypes.Union
+    await packager.createPackage(
+      file_path,
+      output_path,
+      deploy_config,
+      env_overrides,
+      assets_url
+    )
   }
 }
