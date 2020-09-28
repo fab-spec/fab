@@ -21,20 +21,20 @@ export const confirmAndRespond = async (
   return response
 }
 
+const HEART_GROUPS_REGEXP = /💛([\s\S]*?)💛|❤️([\s\S]*?)❤️|💚([\s\S]*?)💚|🖤([\s\S]*?)🖤/gm
+const HEART_REGEXP = /[💛❤️💚🖤]/gm
+
 function format(str: string, indent = 0, first_line_indent = 0) {
   return (
     ' '.repeat(first_line_indent) +
     str
-      .replace(
-        /💛([\s\S]*?)💛|❤️([\s\S]*?)❤️|💚([\s\S]*?)💚|🖤([\s\S]*?)🖤/gm,
-        (susbstr, y, r, g, b) => {
-          if (y) return chalk.yellow(y)
-          if (r) return chalk.red(r)
-          if (g) return chalk.green(g)
-          if (b) return chalk.grey(b)
-          return ''
-        }
-      )
+      .replace(HEART_GROUPS_REGEXP, (susbstr, y, r, g, b) => {
+        if (y) return chalk.yellow(y)
+        if (r) return chalk.red(r)
+        if (g) return chalk.green(g)
+        if (b) return chalk.grey(b)
+        return ''
+      })
       .replace(/\.{3}/g, '…')
       .split('\n')
       .map((line) => line.trim())
@@ -102,6 +102,7 @@ export const _log = (full_prefix: string) => {
   }
   log.confirmAndRespond = (message: string, if_yes?: string, if_no?: string) =>
     confirmAndRespond(log, `\n${message}`, if_yes, if_no)
+  log.strip = (str: string): string => str.replace(HEART_REGEXP, '')
   return log
 }
 
