@@ -21,9 +21,9 @@ export default class JSON5Config implements JSON5ConfigI {
 
     const data = s_sume(
       () => jju.parse(str_contents),
-      () =>
+      (e) =>
         new InvalidConfigError(
-          `Could not parse file at '${file_path}'. Check that it is valid JSON5.`
+          `Could not parse file at '${file_path}'. Check that it is valid JSON5.\n${e}`
         )
     )
 
