@@ -31,6 +31,9 @@ export default class Build extends Command {
       description:
         "Skip the background typechecking of your FAB plugins if it's slow or flaky.",
     }),
+    minify: flags.boolean({
+      description: 'Minify the generated server.js file.',
+    }),
   }
 
   static args = []
@@ -45,7 +48,8 @@ export default class Build extends Command {
         flags.config,
         config.data,
         flags['skip-cache'],
-        flags['skip-typecheck']
+        flags['skip-typecheck'],
+        flags['minify']
       )
     })
   }
