@@ -5,22 +5,27 @@ import { rollupCompile } from './rollup'
 const log = _log(`Compiler`)
 
 export class Compiler {
-  static async compile(config: FabConfig, proto_fab: ProtoFab, plugins: RuntimePlugin[]) {
+  static async compile(
+    config: FabConfig,
+    proto_fab: ProtoFab,
+    plugins: RuntimePlugin[],
+    minify: boolean = false
+  ) {
     log.time(() => `Compiling your 💛server.js💛:`)
 
     const warnings: string[] = []
     const {
       output: [output, ...chunks],
-    } = await rollupCompile(
-      require.resolve('@fab/actions/esm/runtime'),
-      { format: 'umd', exports: 'named', name: '__fab' },
-      {
+    } = await rollupCompile(require.resolve('@fab/actions/esm/runtime'), {
+      minify,
+      output: { format: 'umd', exports: 'named', name: '__fab' },
+      hypotheticals: {
         ...proto_fab.hypotheticals,
         'fab-runtime-imports': generateRuntimeImports(plugins),
         'fab-metadata': generateFabMetadataJs(proto_fab),
         'production-settings': generateProductionSettings(config),
       },
-      {
+      additional: {
         onwarn(warning, handler) {
           if (warning.code === 'UNRESOLVED_IMPORT') {
             warnings.push(
@@ -30,8 +35,8 @@ export class Compiler {
             handler(warning)
           }
         },
-      }
-    )
+      },
+    })
 
     if (warnings.length > 0) {
       throw new BuildFailedError(
