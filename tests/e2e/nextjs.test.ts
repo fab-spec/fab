@@ -139,12 +139,12 @@ describe('Nextjs E2E Test', () => {
       expect(main_js_headers).toContain(`HTTP/1.1 200 OK`)
       expect(main_js_headers).toMatch(/Cache-Control:.*immutable/i)
       expect(main_js_headers).toMatch(/Content-Type:.*application\/javascript/i)
-      expect(main_js_headers).toContain(`ETag`)
+      // expect(main_js_headers).toContain(`ETag`)
 
-      const favicon_headers = await request('-I', `/favicon.ico`, port)
+      const favicon_headers = await request('-I', `/vercel.svg`, port)
       expect(favicon_headers).toContain(`HTTP/1.1 200 OK`)
       expect(favicon_headers).toMatch(/Cache-Control:.*no-cache/i)
-      expect(favicon_headers).toMatch(/Content-Type:.*image\/vnd\.microsoft\.icon/i)
+      expect(favicon_headers).toMatch(/Content-Type:.*image\/svg\+xml/i)
       // expect(favicon_headers).toContain(`ETag`)
     })
 
