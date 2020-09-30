@@ -108,7 +108,7 @@ describe('Nextjs E2E Test', () => {
     }
 
     const request = async (args: string, path: string, port: number) => {
-      const curl_cmd = `curl ${args} --retry 5 --retry-connrefused http://localhost:${port}`
+      const curl_cmd = `curl -s ${args} --retry 5 --retry-connrefused http://localhost:${port}`
       const { stdout } = await shell(curl_cmd + path, { cwd })
       return stdout
     }
@@ -126,7 +126,7 @@ describe('Nextjs E2E Test', () => {
       expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
     })
 
-    it('should return a correct cache headers on assets', async () => {
+    it('should return a correct cache headers on immutable assets', async () => {
       const index_paths = await globby('static/chunks/pages/**/*.js', {
         cwd: path.join(cwd, '.next'),
       })
@@ -141,11 +141,20 @@ describe('Nextjs E2E Test', () => {
         expect(static_chunk_path).toMatch(/Content-Type:.*application\/javascript/i)
         // expect(main_js_headers).toContain(`ETag`)
       }
+    })
 
-      const favicon_headers = await request('-I', `/vercel.svg`, port)
-      expect(favicon_headers).toContain(`HTTP/1.1 200 OK`)
-      expect(favicon_headers).toMatch(/Cache-Control:.*no-cache/i)
-      // expect(favicon_headers).toContain(`ETag`)
+    it('should return a correct cache headers on mutable assets', async () => {
+      const public_paths = await globby('*', { cwd: path.join(cwd, 'public') })
+      if (public_paths.length === 0) {
+        throw new Error('Expecting some non-fingerprinted files to live in /public')
+      }
+      for (const path of public_paths) {
+        console.log({ path })
+        const mutable_asset = await request('-I', `/${path}`, port)
+        expect(mutable_asset).toContain(`HTTP/1.1 200 OK`)
+        expect(mutable_asset).toMatch(/Cache-Control:.*no-cache/i)
+        // expect(favicon_headers).toContain(`ETag`)
+      }
     })
 
     it('should return a dynamic page', async () => {
