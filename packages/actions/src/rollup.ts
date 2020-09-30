@@ -48,7 +48,7 @@ export async function rollupCompile(
           include: ['/**/*.ts', '/**/*.tsx'],
         }),
         json(),
-        ...[minify ? terser : []],
+        ...[minify ? terser() : []],
       ],
       ...additional,
     })
