@@ -149,7 +149,6 @@ describe('Nextjs E2E Test', () => {
         throw new Error('Expecting some non-fingerprinted files to live in /public')
       }
       for (const path of public_paths) {
-        console.log({ path })
         const mutable_asset = await request('-I', `/${path}`, port)
         expect(mutable_asset).toContain(`HTTP/1.1 200 OK`)
         expect(mutable_asset).toMatch(/Cache-Control:.*no-cache/i)
