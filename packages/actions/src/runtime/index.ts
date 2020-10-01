@@ -89,7 +89,6 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
     }
 
     const response = await responder(request_context)
-    console.log({ response })
     if (!response) continue
 
     if (response instanceof Request) {
