@@ -79,7 +79,7 @@ class Server implements ServerType {
       const enhanced_fetch: FetchApi = async (url, init?) => {
         const request_url = typeof url === 'string' ? url : url.url
         if (request_url.startsWith('/')) {
-          // Need a smarter wau to re-enter the FAB, eventually...
+          // Need a smarter way to re-enter the FAB, eventually...
           return fetch(`http://localhost:${this.port}${request_url}`, init)
         }
 
@@ -129,14 +129,32 @@ class Server implements ServerType {
               })
 
               const production_settings = renderer.metadata?.production_settings
-              // console.log({production_settings})
-              let fetch_res = await renderer.render(
-                // @ts-ignore
-                fetch_req as Request,
-                Object.assign({}, production_settings, settings_overrides)
-              )
-              if (isRequest(fetch_res)) {
-                fetch_res = await enhanced_fetch(fetch_res)
+              let fetch_res
+              try {
+                fetch_res = await renderer.render(
+                  // @ts-ignore
+                  fetch_req as Request,
+                  Object.assign({}, production_settings, settings_overrides)
+                )
+              } catch (err) {
+                const msg = `An error occurded calling the render method on the FAB: \nError: \n${err}`
+                console.error(msg)
+                return res.status(500).send(msg)
+              }
+              try {
+                if (fetch_res && isRequest(fetch_res)) {
+                  fetch_res = await enhanced_fetch(fetch_res)
+                }
+              } catch (err) {
+                const msg = `An error occurded proxying a request returned from the FAB: \nError:\n${err}\nRequest:\n${fetch_res}`
+                console.error(msg)
+                return res.status(500).send(msg)
+              }
+
+              if (!fetch_res) {
+                const msg = `Nothing was returned from the FAB renderer.`
+                console.error(msg)
+                return res.status(500).send(msg)
               }
               res.status(fetch_res.status)
               // This is a NodeFetch response, which has this method, but
