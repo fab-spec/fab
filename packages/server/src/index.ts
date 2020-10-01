@@ -77,8 +77,6 @@ class Server implements ServerType {
       const src = src_buffer.toString('utf8')
 
       const enhanced_fetch: FetchApi = async (url, init?) => {
-        console.log('FETCHYBOI')
-        console.log({ url, init })
         const request_url = typeof url === 'string' ? url : url.url
         if (request_url.startsWith('/')) {
           // Need a smarter wau to re-enter the FAB, eventually...
