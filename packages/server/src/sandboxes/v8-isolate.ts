@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import { FabSpecExports, FabSettings } from '@fab/core'
-import { Response as NodeFetchResponse } from 'node-fetch'
+import { Response as NodeFetchResponse } from 'cross-fetch'
 
 export default async (src: string): Promise<FabSpecExports> => {
   const ivm = require('isolated-vm')

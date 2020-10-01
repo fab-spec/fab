@@ -94,11 +94,13 @@ export const mergeWebpacks = (files: FabFilesObject) => {
     const { webpack_modules } = extracted_info[path]
 
     webpack_modules.forEach((module) => {
-      if (seen_keys.has(module.key.value)) return
+      const module_key =
+        module.key.type === 'Literal' ? module.key.value : module.key.name
+      if (seen_keys.has(module_key)) return
       sanitise(module)
 
       webpack_content.properties.push(module)
-      seen_keys.add(module.key.value)
+      seen_keys.add(module_key)
     })
   })
 
