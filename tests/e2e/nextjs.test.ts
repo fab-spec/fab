@@ -1,11 +1,8 @@
 import fs from 'fs-extra'
 import { cmd, shell } from '../utils'
-import { ExecaChildProcess } from 'execa'
-import { buildFab, getPorts, getWorkingDir, NEXTJS_PORTS } from './helpers'
+import { buildFab, cancelServer, createServer, getWorkingDir, request } from './helpers'
 import path from 'path'
 import globby from 'globby'
-
-const getPort = getPorts(NEXTJS_PORTS)
 
 describe('Nextjs E2E Test', () => {
   let cwd: string
@@ -72,56 +69,19 @@ describe('Nextjs E2E Test', () => {
   })
 
   describe('fab build tests', () => {
-    let server_process: ExecaChildProcess | null = null
-    let port: number
-
-    const cancelServer = () => {
-      // console.log('CANCELLING')
-      // console.log({ server_process: server_process?.constructor?.name })
-      if (server_process) {
-        try {
-          server_process.cancel()
-        } catch (e) {
-          // console.log('CANCELLED')
-        }
-        server_process = null
-      }
-    }
-
-    const createServer = async (port: number) => {
-      cancelServer()
+    beforeAll(async () => {
       // Test that global builds work too
       if (process.env.PUBLIC_PACKAGES) {
         await buildFab(cwd, true)
       }
       await buildFab(cwd)
-
-      const auto_install = process.env.PUBLIC_PACKAGES ? '--auto-install' : ''
-      server_process = cmd(`yarn fab:serve ${auto_install} --port=${port}`, {
-        cwd,
-      })
-      // See if `server_process` explodes in the first 1 second (e.g. if the port is in use)
-      await Promise.race([
-        server_process,
-        new Promise((resolve) => setTimeout(resolve, 1000)),
-      ])
-    }
-
-    const request = async (args: string, path: string, port: number) => {
-      const curl_cmd = `curl -s ${args} --retry 5 --retry-connrefused http://localhost:${port}`
-      const { stdout } = await shell(curl_cmd + path, { cwd })
-      return stdout
-    }
-
-    beforeAll(async () => {
-      port = getPort()
-      await createServer(port)
+      await createServer(cwd)
     })
 
     it('should return a static page', async () => {
-      expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/')).toContain(`HTTP/1.1 200 OK`)
 
-      const homepage_response = await request('', '/', port)
+      const homepage_response = await request('', '/')
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
       expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
     })
@@ -135,7 +95,7 @@ describe('Nextjs E2E Test', () => {
       }
 
       for (const path of index_paths) {
-        const static_chunk_path = await request('-I', `/_next/${path}`, port)
+        const static_chunk_path = await request('-I', `/_next/${path}`)
         expect(static_chunk_path).toContain(`HTTP/1.1 200 OK`)
         expect(static_chunk_path).toMatch(/Cache-Control:.*immutable/i)
         expect(static_chunk_path).toMatch(/Content-Type:.*application\/javascript/i)
@@ -149,7 +109,7 @@ describe('Nextjs E2E Test', () => {
         throw new Error('Expecting some non-fingerprinted files to live in /public')
       }
       for (const path of public_paths) {
-        const mutable_asset = await request('-I', `/${path}`, port)
+        const mutable_asset = await request('-I', `/${path}`)
         expect(mutable_asset).toContain(`HTTP/1.1 200 OK`)
         expect(mutable_asset).toMatch(/Cache-Control:.*no-cache/i)
         // expect(favicon_headers).toContain(`ETag`)
@@ -157,15 +117,15 @@ describe('Nextjs E2E Test', () => {
     })
 
     it('should return a dynamic page', async () => {
-      expect(await request('-I', '/dynamic', port)).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/dynamic')).toContain(`HTTP/1.1 200 OK`)
 
-      const dynamic_response = await request('', '/dynamic', port)
+      const dynamic_response = await request('', '/dynamic')
       expect(dynamic_response).toContain(`This page was rendered on the server`)
       const [_, number] = dynamic_response.match(/random number of[ <!\->]*(\d\.\d+)/)!
       expect(parseFloat(number)).toBeGreaterThanOrEqual(0)
       expect(parseFloat(number)).toBeLessThan(1)
 
-      const second_response = await request('', '/dynamic', port)
+      const second_response = await request('', '/dynamic')
       const [__, other_number] = second_response.match(
         /random number of[ <!\->]*(\d\.\d+)/
       )!
@@ -175,25 +135,25 @@ describe('Nextjs E2E Test', () => {
     })
 
     it('should hit an API endpoint', async () => {
-      expect(await request('-I', '/api/hello', port)).toContain(`HTTP/1.1 200 OK`)
-      expect(await request('-I', '/api/time', port)).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/api/hello')).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/api/time')).toContain(`HTTP/1.1 200 OK`)
     })
 
     it('should render a page with a parameter in the url', async () => {
-      expect(await request('-I', '/background/300', port)).toContain(`HTTP/1.1 200 OK`)
-      expect(await request('-I', '/background/400', port)).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/background/300')).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/background/400')).toContain(`HTTP/1.1 200 OK`)
 
-      const response_300 = await request('', '/background/300', port)
+      const response_300 = await request('', '/background/300')
       expect(response_300).toContain(`Rendered with a background of size 300`)
 
-      const response_400 = await request('', '/background/400', port)
+      const response_400 = await request('', '/background/400')
       expect(response_400).toContain(`Rendered with a background of size 400`)
     })
 
     it('should render the NextJS error page', async () => {
-      expect(await request('-I', '/lol', port)).toContain(`404`)
+      expect(await request('-I', '/lol')).toContain(`404`)
 
-      const error_page = await request('', '/lol', port)
+      const error_page = await request('', '/lol')
       expect(error_page).toContain(`This page could not be found`)
     })
 
