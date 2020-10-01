@@ -42,7 +42,6 @@
     "@types/chai": "^4.2.5",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.14",
-    "@types/node-fetch": "^2.5.4",
     "chai": "^4.2.0",
     "chokidar": "^3.3.1",
     "cross-fetch": "^3.0.4",
