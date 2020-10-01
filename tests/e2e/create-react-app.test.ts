@@ -224,6 +224,32 @@ describe('Create React App E2E Test', () => {
       expect(response_two).toContain('This page has been called 2 times.')
     })
 
+    it('should be able to chunk large assets', async () => {
+      await fs.ensureDir(`${cwd}/build`)
+
+      const big_file = new Array(2000)
+        .fill(null)
+        .map(() => Math.random())
+        .join('\n')
+
+      await fs.writeFile(`${cwd}/build/bigfile.mutable`, big_file)
+      await fs.writeFile(`${cwd}/build/bigfile.a1b2c3d4e5.immutable`, big_file)
+
+      const config = jju.parse(await fs.readFile(`${cwd}/fab.config.json5`, 'utf8'))
+      config.plugins['@fab/plugin-rewire-assets']['chunk-threshold'] = Math.floor(
+        big_file.length / 2.5
+      )
+      await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
+
+      await buildFab(cwd)
+      await createServer(cwd)
+
+      expect(await request('-I', '/bigfile.mutable')).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/bigfile.a1b2c3d4e5.immutable')).toContain(
+        `HTTP/1.1 200 OK`
+      )
+    })
+
     afterAll(async () => {
       await cancelServer()
     })
