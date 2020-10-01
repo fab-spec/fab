@@ -7,7 +7,7 @@ import path from 'path'
 import jju from 'jju'
 import { pathToSHA512 } from 'file-to-sha512'
 
-const getPort = getPorts(CRA_PORTS)
+const getPort = () => CRA_PORTS
 
 describe('Create React App E2E Test', () => {
   let cwd: string
