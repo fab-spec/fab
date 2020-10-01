@@ -3,6 +3,7 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import typescript from '@rollup/plugin-typescript'
+import { terser } from 'rollup-plugin-terser'
 
 // @ts-ignore
 import alias from '@rollup/plugin-alias'
@@ -14,10 +15,15 @@ const log = _log(`rollup`)
 
 export async function rollupCompile(
   input: string,
-  generate_opts: OutputOptions,
-  hypothetical_files = {},
-  options: RollupOptions = {}
+  options: {
+    output?: OutputOptions
+    hypotheticals?: {}
+    minify?: boolean
+    additional?: RollupOptions
+  } = {}
 ) {
+  const { output = {}, hypotheticals = {}, minify = false, additional = {} } = options
+
   const empty = require.resolve(__dirname + '/empty')
   const entries = {
     path: require.resolve('path-browserify'),
@@ -29,7 +35,7 @@ export async function rollupCompile(
       input,
       plugins: [
         hypothetical({
-          files: hypothetical_files,
+          files: hypotheticals,
           allowFallthrough: true,
         }),
         alias({ entries }),
@@ -42,10 +48,11 @@ export async function rollupCompile(
           include: ['/**/*.ts', '/**/*.tsx'],
         }),
         json(),
+        ...[minify ? terser() : []],
       ],
-      ...options,
+      ...additional,
     })
-    return bundle.generate(generate_opts)
+    return bundle.generate(output)
   } catch (e) {
     if (e.code) {
       log.error(`Error: ${e.code}`)

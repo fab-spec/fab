@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import { shell, cmd } from '../utils'
+import { cmd, shell } from '../utils'
 import { ExecaChildProcess } from 'execa'
 import { buildFab, getPorts, getWorkingDir, NEXTJS_PORTS } from './helpers'
 import path from 'path'
@@ -108,7 +108,7 @@ describe('Nextjs E2E Test', () => {
     }
 
     const request = async (args: string, path: string, port: number) => {
-      const curl_cmd = `curl ${args} --retry 5 --retry-connrefused http://localhost:${port}`
+      const curl_cmd = `curl -s ${args} --retry 5 --retry-connrefused http://localhost:${port}`
       const { stdout } = await shell(curl_cmd + path, { cwd })
       return stdout
     }
@@ -126,26 +126,34 @@ describe('Nextjs E2E Test', () => {
       expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
     })
 
-    it('should return a correct cache headers on assets', async () => {
-      const index_paths = await globby('static/chunks/pages/index-*.js', {
+    it('should return a correct cache headers on immutable assets', async () => {
+      const index_paths = await globby('static/chunks/pages/**/*.js', {
         cwd: path.join(cwd, '.next'),
       })
       if (index_paths.length === 0) {
         throw new Error('NextJS might have changed where it outputs static chunks')
       }
-      const index_js = `/_next/${index_paths[0]}`
 
-      const main_js_headers = await request('-I', index_js, port)
-      expect(main_js_headers).toContain(`HTTP/1.1 200 OK`)
-      expect(main_js_headers).toMatch(/Cache-Control:.*immutable/i)
-      expect(main_js_headers).toMatch(/Content-Type:.*application\/javascript/i)
-      expect(main_js_headers).toContain(`ETag`)
+      for (const path of index_paths) {
+        const static_chunk_path = await request('-I', `/_next/${path}`, port)
+        expect(static_chunk_path).toContain(`HTTP/1.1 200 OK`)
+        expect(static_chunk_path).toMatch(/Cache-Control:.*immutable/i)
+        expect(static_chunk_path).toMatch(/Content-Type:.*application\/javascript/i)
+        // expect(main_js_headers).toContain(`ETag`)
+      }
+    })
 
-      const favicon_headers = await request('-I', `/favicon.ico`, port)
-      expect(favicon_headers).toContain(`HTTP/1.1 200 OK`)
-      expect(favicon_headers).toMatch(/Cache-Control:.*no-cache/i)
-      expect(favicon_headers).toMatch(/Content-Type:.*image\/vnd\.microsoft\.icon/i)
-      // expect(favicon_headers).toContain(`ETag`)
+    it('should return a correct cache headers on mutable assets', async () => {
+      const public_paths = await globby('*', { cwd: path.join(cwd, 'public') })
+      if (public_paths.length === 0) {
+        throw new Error('Expecting some non-fingerprinted files to live in /public')
+      }
+      for (const path of public_paths) {
+        const mutable_asset = await request('-I', `/${path}`, port)
+        expect(mutable_asset).toContain(`HTTP/1.1 200 OK`)
+        expect(mutable_asset).toMatch(/Cache-Control:.*no-cache/i)
+        // expect(favicon_headers).toContain(`ETag`)
+      }
     })
 
     it('should return a dynamic page', async () => {

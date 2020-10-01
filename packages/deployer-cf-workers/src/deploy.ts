@@ -67,7 +67,7 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
     })
     body.append('value', body_stream)
 
-    await api.put(
+    const response = await api.put(
       `/accounts/${account_id}/storage/kv/namespaces/${
         namespace.id
       }/values/${encodeURIComponent(`/${file}`)}`,
@@ -76,6 +76,13 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
         headers: body.getHeaders(),
       }
     )
+    if (!response.success) {
+      throw new FabDeployError(`❤️Error uploading file❤️ 💛${file}💛:
+        ${response.errors
+          .map((err: any) => `🖤[error ${err.code}]🖤 ❤️${err.message}❤️`)
+          .join('\n')}
+      `)
+    }
 
     log.continue(`🖤  ${file} (${pretty(body_stream.bytesRead)})🖤`)
   })
