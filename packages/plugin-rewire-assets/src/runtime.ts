@@ -38,7 +38,7 @@ export default function RewireAssetsRuntime({
         Object.entries(NON_IMMUTABLE_HEADERS).forEach(([k, v]) =>
           response.headers.set(k, v)
         )
-        return new Response(response.body, response)
+        return response
       }
     }
 
