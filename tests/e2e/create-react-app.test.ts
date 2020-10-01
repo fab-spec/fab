@@ -51,12 +51,11 @@ describe('Create React App E2E Test', () => {
     await shell(`cat .env`, { cwd })
     await shell(
       process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
-      {
-        cwd,
-      }
+      { cwd }
     )
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
+    await shell(`cp fab.config.json5 backup.config.json5`, { cwd })
 
     const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
     package_json.scripts = {
@@ -73,25 +72,24 @@ describe('Create React App E2E Test', () => {
   describe('fab build tests', () => {
     let server_process: ExecaChildProcess | null = null
 
-    const cancelServer = () => {
+    const cancelServer = async () => {
       // console.log('CANCELLING')
       // console.log({ server_process: server_process?.constructor?.name })
       if (server_process) {
-        try {
-          server_process.cancel()
-        } catch (e) {
-          // console.log('CANCELLED')
-        }
+        // server_process.kill('SIGKILL')
+        const { pid } = server_process
+        await shell(`kill -SIGTERM -${pid}`)
         server_process = null
       }
     }
 
     const createServer = async (port: number, args: string = '') => {
-      cancelServer()
+      await cancelServer()
 
       const auto_install = process.env.PUBLIC_PACKAGES ? '--auto-install' : ''
       server_process = cmd(`yarn fab:serve ${auto_install} --port=${port} ${args}`, {
         cwd,
+        detached: true,
       })
       // See if `server_process` explodes in the first 2 seconds (e.g. if the port is in use)
       await Promise.race([
@@ -105,6 +103,10 @@ describe('Create React App E2E Test', () => {
       const { stdout } = await shell(curl_cmd + path, { cwd })
       return stdout
     }
+    //
+    // beforeEach(async () => {
+    //   await shell(`cp backup.config.json5 fab.config.json5`, { cwd })
+    // })
 
     it('should return a 200 on / and /hello', async () => {
       // Test that global builds work too
@@ -265,8 +267,8 @@ describe('Create React App E2E Test', () => {
       expect(response_two).toContain('This page has been called 2 times.')
     })
 
-    afterAll(() => {
-      cancelServer()
+    afterAll(async () => {
+      await cancelServer()
     })
   })
 })
