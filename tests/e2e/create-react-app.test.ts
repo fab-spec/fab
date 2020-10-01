@@ -67,6 +67,10 @@ describe('Create React App E2E Test', () => {
   })
 
   describe('fab build tests', () => {
+    beforeEach(async () => {
+      await shell(`cp backup.config.json5 fab.config.json5 `, { cwd })
+    })
+
     it('should return a 200 on / and /hello', async () => {
       // Test that global builds work too
       if (process.env.PUBLIC_PACKAGES) {
