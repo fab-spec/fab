@@ -124,6 +124,8 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
     if (!valid_directive) {
       console.error("ERROR: Responder returned object that didn't match any FAB spec")
       console.log(response)
+      console.log(response.constructor)
+      console.log(response.constructor?.name)
       throw new Error("ERROR: Responder returned object that didn't match any FAB spec")
     }
   }
