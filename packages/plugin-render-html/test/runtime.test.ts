@@ -11,7 +11,7 @@ import { RenderHtmlArgs, RenderHtmlMetadata } from '../src/types'
 
 import runtime from '../src/runtime'
 // todo: must be a better way to define this for the test run
-import { Request, Response } from 'node-fetch'
+import { Request, Response } from 'cross-fetch'
 // @ts-ignore
 global.Request = Request
 // @ts-ignore
