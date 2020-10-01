@@ -3,15 +3,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import { ExecaChildProcess } from 'execa'
 
-export const CRA_PORTS = 10100
-export const NEXTJS_PORTS = 10200
-export const SERVER_SIDE_LOGIC_PORTS = 10300
 export const ONE_PORT_TO_TEST_THEM_ALL = 10400
-
-export const getPorts = (first_port: number) => {
-  let next_port = first_port
-  return () => next_port++
-}
 
 export const buildFab = async (cwd: string, global = false) => {
   await shell(`rm -f fab.zip`, { cwd })
