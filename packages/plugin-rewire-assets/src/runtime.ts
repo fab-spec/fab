@@ -31,21 +31,62 @@ export default function RewireAssetsRuntime({
 
     const renamed = matchPath(renamed_assets, pathname)
     if (renamed) {
-      if (renamed.immutable) {
-        return new Request(renamed.asset_path)
+      const { chunks_paths, immutable } = renamed
+      if (chunks_paths.length === 1) {
+        const asset_path = chunks_paths[0]
+        if (immutable) {
+          return new Request(asset_path)
+        } else {
+          const response = await fetch(asset_path)
+          Object.entries(NON_IMMUTABLE_HEADERS).forEach(([k, v]) =>
+            response.headers.set(k, v)
+          )
+          return response
+        }
       } else {
-        const response = await fetch(renamed.asset_path)
-        Object.entries(NON_IMMUTABLE_HEADERS).forEach(([k, v]) =>
-          response.headers.set(k, v)
+        // If there are many chunks, we might want to limit parallelism
+        const responses = await Promise.all(
+          chunks_paths.map(async (chunk_path) => {
+            return fetch(chunk_path)
+          })
         )
-        // The following lines ought to be removed, but something is causing a failure
-        // with NextJS and this. I have a feeling it is related to the recent node-fetch
-        // security update but haven't tracked it down yet.
-        const body = await response.body
-        return new Response(body, response)
+        const concatenated_body = concatenateReadableStreams(
+          responses.map((response) => response.body)
+        )
+        return new Response(concatenated_body, {
+          status: 200,
+          statusText: 'OK',
+          headers: getCacheHeaders(immutable),
+        })
       }
     }
 
     return undefined
   }, Priority.LAST)
+}
+
+function concatenateReadableStreams<T>(
+  streams: (ReadableStream<T> | null)[]
+): ReadableStream<T> {
+  return new ReadableStream({
+    async start(controller) {
+      for (const stream of streams) {
+        if (!stream) {
+          continue
+        }
+        const reader = stream.getReader()
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) {
+            break
+          }
+          if (value !== undefined) {
+            controller.enqueue(value)
+          }
+        }
+        reader.releaseLock()
+      }
+      controller.close()
+    },
+  })
 }

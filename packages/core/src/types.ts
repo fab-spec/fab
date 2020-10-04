@@ -241,7 +241,8 @@ export type BuildFn = (
   config_path: string,
   config: FabConfig,
   skip_cache: boolean,
-  skip_typecheck: boolean
+  skip_typecheck: boolean,
+  minify: boolean
 ) => Promise<void>
 
 export type FabActionsExports = {

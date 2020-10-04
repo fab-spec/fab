@@ -103,19 +103,28 @@ export const render: FabSpecRender = async (request: Request, settings: FabSetti
       return response_in_chain
     }
 
-    // Really want to throw a meaningful exception if you return something
-    // that isn't a "Directive", but that might be best done as a refactor
-    // of the whole "sync function returns async responder" API...
     const directive = response as Directive
+    // We don't 100% know if we're here, but if we find something that looks like
+    // a Directive then things are ok. If we haven't, by the end, we throw.
+    let valid_directive = false
+
     if (typeof directive.interceptResponse === 'function') {
+      valid_directive = true
       // Unshift rather than push, so the reduce runs in the right order above.
       // I suppose I could use a library with a foldRight but I haven't.
       response_interceptors.unshift(directive.interceptResponse)
     }
     if (directive.replaceRequest instanceof Request) {
+      valid_directive = true
       // Reevaluate the dependant values of the request
       chained_request = directive.replaceRequest
       cookies = parseCookies(chained_request)
+    }
+
+    if (!valid_directive) {
+      console.error("ERROR: Responder returned object that didn't match any FAB spec")
+      console.log(response)
+      throw new Error("ERROR: Responder returned object that didn't match any FAB spec")
     }
   }
 

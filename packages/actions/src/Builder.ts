@@ -1,4 +1,4 @@
-import { LoadedPlugin, RuntimePlugin, FabConfig, ProtoFab } from '@fab/core'
+import { LoadedPlugin, RuntimePlugin, FabConfig, ProtoFab, BuildFn } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { Typecheck } from './Typecheck'
@@ -33,8 +33,9 @@ export default class Builder {
   static async build(
     config_path: string,
     config: FabConfig,
-    skip_cache: boolean,
-    skip_typecheck: boolean
+    skip_cache: boolean = false,
+    skip_typecheck: boolean = false,
+    minify: boolean = false
   ) {
     log.announce(`fab build`)
     log(`Reading plugins from config.`)
@@ -90,7 +91,7 @@ export default class Builder {
       runtime_plugins,
       skip_typecheck
     )
-    await Compiler.compile(config, proto_fab, runtime_plugins)
+    await Compiler.compile(config, proto_fab, runtime_plugins, minify)
     await typecheck.waitForResults()
     await Generator.generate(proto_fab)
   }
