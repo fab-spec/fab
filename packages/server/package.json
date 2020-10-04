@@ -47,6 +47,7 @@
     "get-stream": "^5.1.0",
     "http-proxy": "^1.18.1",
     "node-cache": "^5.1.0",
+    "readable-stream-node-to-web": "^1.0.1",
     "yauzl": "^2.10.0"
   },
   "publishConfig": {
