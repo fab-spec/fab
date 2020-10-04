@@ -89,9 +89,14 @@ class Server implements ServerType {
         )
         return Object.create(response, {
           body: {
-            get() {
-              return nodeToWebStream(response.body)
-            },
+            value: Object.create(response.body, {
+              getReader: {
+                get() {
+                  const webStream = nodeToWebStream(response.body)
+                  return webStream.getReader.bind(webStream)
+                },
+              },
+            }),
           },
         })
       }
