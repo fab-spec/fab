@@ -248,6 +248,12 @@ describe('Create React App E2E Test', () => {
       expect(await request('-I', '/bigfile.a1b2c3d4e5.immutable')).toContain(
         `HTTP/1.1 200 OK`
       )
+
+      const response_one = await request('', '/bigfile.mutable')
+      expect(response_one).toEqual(big_file)
+
+      const response_two = await request('', '/bigfile.a1b2c3d4e5.immutable')
+      expect(response_two).toEqual(big_file)
     })
 
     afterAll(async () => {
