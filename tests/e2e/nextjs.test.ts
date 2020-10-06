@@ -177,6 +177,11 @@ describe('Nextjs E2E Test', () => {
     it('should hit an API endpoint', async () => {
       expect(await request('-I', '/api/hello', port)).toContain(`HTTP/1.1 200 OK`)
       expect(await request('-I', '/api/time', port)).toContain(`HTTP/1.1 200 OK`)
+      const time_response = JSON.parse(await request('', '/api/time', port))
+      expect(time_response).toMatchObject({
+        before: false,
+        after: true,
+      })
     })
 
     it('should render a page with a parameter in the url', async () => {
