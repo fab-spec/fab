@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@fab/*": ["node_modules/@fab/*/src"]
+      "@fab/*": ["../*/src"]
     }
   },
   "include": ["src"]
