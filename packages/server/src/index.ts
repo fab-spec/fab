@@ -24,6 +24,8 @@ import Stream from 'stream'
 import { watcher } from '@fab/cli'
 import httpProxy from 'http-proxy'
 import { ReadableStream as WebReadableStream } from 'web-streams-polyfill/ponyfill/es2018'
+// @ts-ignore
+import nodeToWebStream from 'readable-stream-node-to-web'
 
 function isRequest(fetch_res: Request | Response): fetch_res is Request {
   return (
@@ -79,12 +81,25 @@ class Server implements ServerType {
 
       const enhanced_fetch: FetchApi = async (url, init?) => {
         const request_url = typeof url === 'string' ? url : url.url
-        if (request_url.startsWith('/')) {
-          // Need a smarter wau to re-enter the FAB, eventually...
-          return fetch(`http://localhost:${this.port}${request_url}`, init)
-        }
-
-        return fetch(url, init)
+        const response = await fetch(
+          request_url.startsWith('/')
+            ? // Need a smarter wau to re-enter the FAB, eventually...
+              `http://localhost:${this.port}${request_url}`
+            : url,
+          init
+        )
+        return Object.create(response, {
+          body: {
+            value: Object.create(response.body, {
+              getReader: {
+                get() {
+                  const webStream = nodeToWebStream(response.body)
+                  return webStream.getReader.bind(webStream)
+                },
+              },
+            }),
+          },
+        })
       }
 
       const renderer =
