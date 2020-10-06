@@ -1,6 +1,6 @@
 {
   "name": "@fab/plugin-precompile",
-  "version": "1.0.0-rc.6",
+  "version": "1.0.0-rc.7",
   "description": "Module to render static HTML files with FAB injections",
   "keywords": [
     "fab"
@@ -30,8 +30,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/cli": "1.0.0-rc.6",
-    "@fab/core": "1.0.0-rc.6",
+    "@fab/cli": "1.0.0-rc.7",
+    "@fab/core": "1.0.0-rc.7",
     "@sucrase/webpack-loader": "^2.0.0",
     "@types/node": "^12.12.14",
     "@types/webpack-merge": "^4.1.5",

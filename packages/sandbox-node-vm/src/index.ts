@@ -25,6 +25,8 @@ export function HybridReadableStream(...args: any[]) {
     },
   })
 }
+// @ts-ignore ho boy I don't want to do this
+global.ReadableStream = WebReadableStream
 
 export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports> => {
   const sandbox = {

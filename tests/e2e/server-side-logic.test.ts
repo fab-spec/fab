@@ -1,11 +1,15 @@
-import path from 'pat\h'
-import { buildFab, SERVER_SIDE_LOGIC_PORTS, getPorts, getWorkingDir } from './helpers'
+import path from 'path'
+import {
+  buildFab,
+  cancelServer,
+  createServer,
+  getWorkingDir,
+  ONE_PORT_TO_TEST_THEM_ALL as port,
+  request,
+} from './helpers'
 import fs from 'fs-extra'
-import { cmd, _shell, shell } from '../utils'
-import { ExecaChildProcess } from 'execa'
+import { _shell } from '../utils'
 import { pathToSHA512 } from 'file-to-sha512'
-
-const getPort = getPorts(SERVER_SIDE_LOGIC_PORTS)
 
 describe('Server-side logic tests', () => {
   let cwd: string
@@ -27,45 +31,8 @@ describe('Server-side logic tests', () => {
   })
 
   describe('server responses', () => {
-    let server_process: ExecaChildProcess | null = null
-    let port: number
-
-    const cancelServer = () => {
-      // console.log('CANCELLING')
-      // console.log({ server_process: server_process?.constructor?.name })
-      if (server_process) {
-        try {
-          server_process.cancel()
-        } catch (e) {
-          // console.log('CANCELLED')
-        }
-        server_process = null
-      }
-    }
-
-    const createServer = async (port: number, args: string = '') => {
-      cancelServer()
-
-      const auto_install = process.env.PUBLIC_PACKAGES ? '--auto-install' : ''
-      server_process = cmd(`yarn fab:serve ${auto_install} --port=${port} ${args}`, {
-        cwd,
-      })
-      // See if `server_process` explodes in the first 2 seconds (e.g. if the port is in use)
-      await Promise.race([
-        server_process,
-        new Promise((resolve) => setTimeout(resolve, 2000)),
-      ])
-    }
-
-    const request = async (args: string, path: string, port: number) => {
-      const curl_cmd = `curl ${args} --retry 2 --retry-connrefused http://localhost:${port}`
-      const { stdout } = await shell(curl_cmd + path, { cwd })
-      return stdout
-    }
-
     beforeAll(async () => {
-      port = getPort()
-      await createServer(port)
+      await createServer(cwd)
     })
 
     afterAll(() => {
@@ -75,39 +42,39 @@ describe('Server-side logic tests', () => {
     it('should hit the Hello World plugin', async () => {
       const bundle_id = (await pathToSHA512(`${cwd}/fab.zip`)).slice(0, 32)
 
-      const homepage_headers = await request('-I', '/', port)
+      const homepage_headers = await request('-I', '/')
       expect(homepage_headers).toContain(`HTTP/1.1 200 OK`)
       expect(homepage_headers).toContain(`X-FAB-ID: ${bundle_id}`)
-      expect(await request('-I', '/hello', port)).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/hello')).toContain(`HTTP/1.1 200 OK`)
 
-      const homepage_response = await request('', '/', port)
+      const homepage_response = await request('', '/')
       expect(homepage_response).toContain(`<title>INDEX HTML</title>`)
       expect(homepage_response).toContain(`<h1>This is the default fallback.</h1>`)
       expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
 
-      const hello_response = await request('', '/hello', port)
+      const hello_response = await request('', '/hello')
       expect(hello_response).not.toEqual(homepage_response)
       expect(hello_response).toContain('HELLO WORLD!')
 
-      const hello_fab_response = await request('', '/hello/fab', port)
+      const hello_fab_response = await request('', '/hello/fab')
       expect(hello_fab_response).not.toEqual(homepage_response)
       expect(hello_fab_response).toContain('HELLO FAB!')
 
-      const alt_response = await request('', '/alt', port)
+      const alt_response = await request('', '/alt')
       expect(alt_response).not.toEqual(homepage_response)
       expect(alt_response).toContain(`<title>ALTERNATIVE HTML</title>`)
       expect(alt_response).toContain(`<h1>This should be served under /alt URLs.</h1>`)
       expect(alt_response).toContain(`window.FAB_SETTINGS={}`)
 
-      const alt_sub_response = await request('', '/alt/fab', port)
+      const alt_sub_response = await request('', '/alt/fab')
       expect(alt_sub_response).toEqual(alt_response)
 
-      const wrong_mutation_response = await request('', '/mutate-url-doesnt-work', port)
+      const wrong_mutation_response = await request('', '/mutate-url-doesnt-work')
       expect(wrong_mutation_response).toEqual(homepage_response)
     })
 
     it('should hit a complex plugin precompiled with Webpack', async () => {
-      const webpack_response = await request('', '/webpack-plugin-test', port)
+      const webpack_response = await request('', '/webpack-plugin-test')
       expect(webpack_response).toContain(
         `Testing 'fs' shim: FILESYSTEM LOOKS LIKE IT WORKS`
       )
