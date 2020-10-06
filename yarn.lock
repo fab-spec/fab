@@ -7504,6 +7504,11 @@ read@1, read@~1.0.1:
   dependencies:
     mute-stream "~0.0.4"
 
+readable-stream-node-to-web@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/readable-stream-node-to-web/-/readable-stream-node-to-web-1.0.1.tgz#8b7614faa1465ebfa0da9b9ca6303fa27073b7cf"
+  integrity sha1-i3YU+qFGXr+g2pucpjA/onBzt88=
+
 "readable-stream@1 || 2", readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.6, readable-stream@^2.1.5, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.6, readable-stream@~2.3.6:
   version "2.3.7"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.7.tgz#1eca1cf711aef814c04f62252a36a62f6cb23b57"

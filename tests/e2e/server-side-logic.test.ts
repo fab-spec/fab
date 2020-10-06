@@ -1,4 +1,4 @@
-import path from 'pat\h'
+import path from 'path'
 import {
   buildFab,
   cancelServer,
