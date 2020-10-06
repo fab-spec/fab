@@ -1,13 +1,10 @@
 import fs from 'fs-extra'
 import { cmd, shell } from '../utils'
-import { ExecaChildProcess } from 'execa'
 import globby from 'globby'
-import { buildFab, CRA_PORTS, getPorts, getWorkingDir } from './helpers'
+import { buildFab, cancelServer, createServer, getWorkingDir, request } from './helpers'
 import path from 'path'
 import jju from 'jju'
 import { pathToSHA512 } from 'file-to-sha512'
-
-const getPort = getPorts(CRA_PORTS)
 
 describe('Create React App E2E Test', () => {
   let cwd: string
@@ -51,12 +48,11 @@ describe('Create React App E2E Test', () => {
     await shell(`cat .env`, { cwd })
     await shell(
       process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
-      {
-        cwd,
-      }
+      { cwd }
     )
     const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
     expect(files_after_fab_init).toMatch('fab.config.json5')
+    await shell(`cp fab.config.json5 backup.config.json5`, { cwd })
 
     const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
     package_json.scripts = {
@@ -71,40 +67,9 @@ describe('Create React App E2E Test', () => {
   })
 
   describe('fab build tests', () => {
-    let server_process: ExecaChildProcess | null = null
-
-    const cancelServer = () => {
-      // console.log('CANCELLING')
-      // console.log({ server_process: server_process?.constructor?.name })
-      if (server_process) {
-        try {
-          server_process.cancel()
-        } catch (e) {
-          // console.log('CANCELLED')
-        }
-        server_process = null
-      }
-    }
-
-    const createServer = async (port: number, args: string = '') => {
-      cancelServer()
-
-      const auto_install = process.env.PUBLIC_PACKAGES ? '--auto-install' : ''
-      server_process = cmd(`yarn fab:serve ${auto_install} --port=${port} ${args}`, {
-        cwd,
-      })
-      // See if `server_process` explodes in the first 2 seconds (e.g. if the port is in use)
-      await Promise.race([
-        server_process,
-        new Promise((resolve) => setTimeout(resolve, 2000)),
-      ])
-    }
-
-    const request = async (args: string, path: string, port: number) => {
-      const curl_cmd = `curl ${args} --retry 5 --retry-connrefused http://localhost:${port}`
-      const { stdout } = await shell(curl_cmd + path, { cwd })
-      return stdout
-    }
+    beforeEach(async () => {
+      await shell(`cp backup.config.json5 fab.config.json5 `, { cwd })
+    })
 
     it('should return a 200 on / and /hello', async () => {
       // Test that global builds work too
@@ -112,23 +77,21 @@ describe('Create React App E2E Test', () => {
         await buildFab(cwd, true)
       }
       await buildFab(cwd)
-      const port = getPort()
-      await createServer(port)
-      expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
-      expect(await request('-I', '/hello', port)).toContain(`HTTP/1.1 200 OK`)
+      await createServer(cwd)
+      expect(await request('-I', '/')).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/hello')).toContain(`HTTP/1.1 200 OK`)
 
-      const homepage_response = await request('', '/', port)
+      const homepage_response = await request('', '/')
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
       expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
 
-      const hello_response = await request('', '/hello', port)
+      const hello_response = await request('', '/hello')
       expect(hello_response).toEqual(homepage_response)
     })
 
     it('should return a correct cache headers on assets', async () => {
       await buildFab(cwd)
-      const port = getPort()
-      await createServer(port)
+      await createServer(cwd)
 
       // await shell('tree build', { cwd })
 
@@ -139,13 +102,13 @@ describe('Create React App E2E Test', () => {
       console.log({ main_js })
       expect(main_js).toBeDefined()
 
-      const main_js_headers = await request('-I', `/${main_js}`, port)
+      const main_js_headers = await request('-I', `/${main_js}`)
       expect(main_js_headers).toContain(`HTTP/1.1 200 OK`)
       expect(main_js_headers).toMatch(/Cache-Control:.*immutable/i)
       expect(main_js_headers).toMatch(/Content-Type:.*application\/javascript/i)
       expect(main_js_headers).toContain(`ETag`)
 
-      const favicon_headers = await request('-I', `/favicon.ico`, port)
+      const favicon_headers = await request('-I', `/favicon.ico`)
       expect(favicon_headers).toContain(`HTTP/1.1 200 OK`)
       expect(favicon_headers).toMatch(/Cache-Control:.*no-cache/i)
       expect(favicon_headers).toMatch(/Content-Type:.*image\/vnd\.microsoft\.icon/i)
@@ -173,20 +136,19 @@ describe('Create React App E2E Test', () => {
       await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
 
       await buildFab(cwd)
-      const port = getPort()
-      await createServer(port)
-      expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
-      expect(await request('-I', '/hello', port)).toContain(`HTTP/1.1 200 OK`)
+      await createServer(cwd)
+      expect(await request('-I', '/')).toContain(`HTTP/1.1 200 OK`)
+      expect(await request('-I', '/hello')).toContain(`HTTP/1.1 200 OK`)
 
-      const homepage_response = await request('', '/', port)
+      const homepage_response = await request('', '/')
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
       expect(homepage_response).toContain(`window.FAB_SETTINGS={}`)
 
-      const hello_response = await request('', '/hello', port)
+      const hello_response = await request('', '/hello')
       expect(hello_response).not.toEqual(homepage_response)
       expect(hello_response).toContain('HELLO WORLD!')
 
-      const hello_fab_response = await request('', '/hello/fab', port)
+      const hello_fab_response = await request('', '/hello/fab')
       expect(hello_fab_response).not.toEqual(homepage_response)
       expect(hello_fab_response).toContain('HELLO FAB!')
     })
@@ -205,11 +167,10 @@ describe('Create React App E2E Test', () => {
       const second_fab_sha = (await pathToSHA512(`${cwd}/fab.zip`)).slice(0, 32)
       expect(second_fab_sha).not.toEqual(first_fab_sha)
 
-      const port = getPort()
-      await createServer(port)
-      expect(await request('-I', '/', port)).toContain(`HTTP/1.1 200 OK`)
+      await createServer(cwd)
+      expect(await request('-I', '/')).toContain(`HTTP/1.1 200 OK`)
 
-      const homepage_response = await request('', '/', port)
+      const homepage_response = await request('', '/')
       expect(homepage_response).toContain(`<!DOCTYPE html>`)
       expect(homepage_response).toContain(`"E2E_TEST":"extremely working!"`)
       expect(homepage_response).toContain(`"OTHER_SETTING":"production value"`)
@@ -224,11 +185,10 @@ describe('Create React App E2E Test', () => {
       // Changing non-production settings doesn't change the bundle id
       expect(third_fab_sha).toEqual(second_fab_sha)
 
-      const next_port = getPort()
-      await createServer(next_port, '--env=staging')
-      expect(await request('-I', '/', next_port)).toContain(`HTTP/1.1 200 OK`)
+      await createServer(cwd, '--env=staging')
+      expect(await request('-I', '/')).toContain(`HTTP/1.1 200 OK`)
 
-      const staging_response = await request('', '/', next_port)
+      const staging_response = await request('', '/')
       expect(staging_response).toContain(`<!DOCTYPE html>`)
       expect(staging_response).toContain(`"E2E_TEST":"totes overridden!"`)
       expect(staging_response).not.toContain(`"E2E_TEST":"extremely working!"`)
@@ -255,18 +215,17 @@ describe('Create React App E2E Test', () => {
       await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
 
       await buildFab(cwd)
-      const port = getPort()
-      await createServer(port)
+      await createServer(cwd)
 
-      const response_one = await request('', '/counter', port)
+      const response_one = await request('', '/counter')
       expect(response_one).toContain('This page has been called 1 times.')
 
-      const response_two = await request('', '/counter', port)
+      const response_two = await request('', '/counter')
       expect(response_two).toContain('This page has been called 2 times.')
     })
 
-    afterAll(() => {
-      cancelServer()
+    afterAll(async () => {
+      await cancelServer()
     })
   })
 })
