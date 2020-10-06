@@ -26,6 +26,7 @@
     "test": "lerna run test --stream --parallel",
     "test:watch": "lerna run test --stream --parallel -- --watch",
     "typecheck": "tsc --noEmit",
+    "version:manual": "lerna version --exact --force-publish --yes --no-push",
     "version:minor": "lerna version minor --exact --force-publish --yes --no-push",
     "version:patch": "lerna version patch --exact --force-publish --yes --no-push",
     "version:prerelease": "lerna version prerelease --exact --force-publish --yes --no-push"
