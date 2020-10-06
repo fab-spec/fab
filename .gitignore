@@ -18,3 +18,6 @@ lerna-debug.log
 # Handy to work on these in one workspace
 # but these are published separately
 /wip-plugins
+
+// Config for Webstorm
+webstorm.config.js

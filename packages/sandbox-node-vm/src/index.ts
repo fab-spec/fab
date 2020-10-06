@@ -34,5 +34,3 @@ export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports>
   const renderer = Object.assign({}, exp, retval)
   return { renderer, fetch: enhanced_fetch }
 }
-
-export { HybridReadableStream }
