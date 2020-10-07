@@ -6,5 +6,7 @@ export const build: FabBuildStep<TsExampleArgs, TsExampleMetadata> = async (
   proto_fab
 ) => {
   /* This line is fully typesafe! */
-  proto_fab.metadata.ts_test.what_time_is_it = args.the_time_is
+  proto_fab.metadata.ts_test = {
+    what_time_is_it: args.the_time_is,
+  }
 }
