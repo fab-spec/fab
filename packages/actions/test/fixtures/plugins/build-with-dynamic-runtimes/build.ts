@@ -1,4 +1,4 @@
-import { FabBuildStep } from '@fab/core/lib'
+import { FabBuildStep } from '@fab/core'
 
 export const build: FabBuildStep = async function build() {
   return [
