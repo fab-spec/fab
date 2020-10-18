@@ -863,6 +863,17 @@ MockExpressResponse.prototype.get = function(field) {
 }
 
 /**
+ * Check if header `field` is present.
+ *
+ * @param {String} field
+ * @return {Boolean}
+ * @api public
+ */
+MockExpressResponse.prototype.hasHeader = function(field) {
+  return !!this.getHeader(field)
+}
+
+/**
  * Clear cookie `name`.
  *
  * @param {String} name

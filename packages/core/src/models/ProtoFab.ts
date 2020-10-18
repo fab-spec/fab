@@ -62,7 +62,7 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   // For testing
 
   _getEntries() {
-    return [...this.files.entries()].map(([filename, contents]) => [
+    return [...this.files.entries()].map(([filename, contents]): [string, string] => [
       filename,
       contents.toString('utf8'),
     ])

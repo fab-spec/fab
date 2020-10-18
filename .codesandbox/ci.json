@@ -4,6 +4,7 @@
     "packages/cli",
     "packages/core",
     "packages/input-static",
+    "packages/input-nextjs",
     "packages/plugin-rewire-assets",
     "packages/plugin-render-html",
     "packages/deployer-aws-lambda",

@@ -1,5 +1,5 @@
 import vm from 'vm'
-import * as fetch from 'node-fetch'
+import * as fetch from 'cross-fetch'
 import { FabSpecExports } from '@fab/core'
 import Stream from 'stream'
 import { ReadableStream as WebReadableStream } from 'web-streams-polyfill/ponyfill/es2018'
@@ -25,6 +25,8 @@ export function HybridReadableStream(...args: any[]) {
     },
   })
 }
+// @ts-ignore ho boy I don't want to do this
+global.ReadableStream = WebReadableStream
 
 export default async (src: string, enhanced_fetch: any): Promise<FabSpecExports> => {
   const sandbox = {
