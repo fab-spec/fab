@@ -2,7 +2,6 @@ import fs from 'fs-extra'
 
 import {
   FabServerExports,
-  FetchApi,
   getContentType,
   SandboxType,
   ServerArgs,
@@ -23,14 +22,8 @@ import { pathToSHA512 } from 'file-to-sha512'
 import Stream from 'stream'
 import { watcher } from '@fab/cli'
 import httpProxy from 'http-proxy'
-// @ts-ignore
-import nodeToWebStream from 'readable-stream-node-to-web'
+import { ReadableStream as WebReadableStream } from 'web-streams-polyfill/ponyfill/es2018'
 
-function isRequest(fetch_res: Request | Response): fetch_res is Request {
-  return (
-    fetch_res instanceof NodeFetchRequest || fetch_res.constructor?.name === 'Request'
-  )
-}
 const log = _log(`Server`)
 
 class Server implements ServerType {
@@ -78,30 +71,7 @@ class Server implements ServerType {
       }
       const src = src_buffer.toString('utf8')
 
-      const enhanced_fetch: FetchApi = async (url, init?) => {
-        const request_url = typeof url === 'string' ? url : url.url
-        const response = await fetch(
-          request_url.startsWith('/')
-            ? // Need a smarter wau to re-enter the FAB, eventually...
-              `http://localhost:${this.port}${request_url}`
-            : url,
-          init
-        )
-        return Object.create(response, {
-          body: {
-            value: Object.create(response.body, {
-              getReader: {
-                get() {
-                  const webStream = nodeToWebStream(response.body)
-                  return webStream.getReader.bind(webStream)
-                },
-              },
-            }),
-          },
-        })
-      }
-
-      const renderer =
+      const { renderer } =
         (await runtimeType) === SandboxType.v8isolate
           ? await v8_sandbox(src)
           : await node_vm_sandbox(src, enhanced_fetch)
@@ -118,12 +88,16 @@ class Server implements ServerType {
         app = express()
 
         app.use((req, res, next) => {
-          req.pipe(
-            concat((data: any) => {
-              req.body = data.toString()
-              next()
-            })
-          )
+          // Convert the Reqest (extends <Stream.Readable>) into a
+          // WHATWG Web Standard ReadableStream
+          req.body = new WebReadableStream({
+            start: (controller) => {
+              req.on('data', controller.enqueue)
+              req.on('close', controller.close)
+              req.on('error', controller.error)
+            },
+          })
+          next()
         })
 
         app.all('*', async (req, res) => {
@@ -144,14 +118,32 @@ class Server implements ServerType {
               })
 
               const production_settings = renderer.metadata?.production_settings
-              // console.log({production_settings})
-              let fetch_res = await renderer.render(
-                // @ts-ignore
-                fetch_req as Request,
-                Object.assign({}, production_settings, settings_overrides)
-              )
-              if (isRequest(fetch_res)) {
-                fetch_res = await enhanced_fetch(fetch_res)
+              let fetch_res
+              try {
+                fetch_res = await renderer.render(
+                  // @ts-ignore
+                  fetch_req as Request,
+                  Object.assign({}, production_settings, settings_overrides)
+                )
+              } catch (err) {
+                const msg = `An error occurded calling the render method on the FAB: \nError: \n${err}`
+                console.error(msg)
+                return res.status(500).send(msg)
+              }
+              try {
+                if (fetch_res && isRequest(fetch_res)) {
+                  fetch_res = await enhanced_fetch(fetch_res)
+                }
+              } catch (err) {
+                const msg = `An error occurded proxying a request returned from the FAB: \nError:\n${err}\nRequest:\n${fetch_res}`
+                console.error(msg)
+                return res.status(500).send(msg)
+              }
+
+              if (!fetch_res) {
+                const msg = `Nothing was returned from the FAB renderer.`
+                console.error(msg)
+                return res.status(500).send(msg)
               }
               res.status(fetch_res.status)
               // This is a NodeFetch response, which has this method, but
