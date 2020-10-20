@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import {
   FabServerExports,
   FabSpecExports,
+  FetchApi,
   getContentType,
   SandboxType,
   ServerArgs,
@@ -87,37 +88,19 @@ async function streamResponse(fetch_res: Response, res: ExpressResponse) {
   }
 }
 
-class Server implements ServerType {
-  filename: string
-  private port: number
-  private config: string
-  private env: string | undefined
-
-  constructor(filename: string, args: ServerArgs) {
-    this.filename = filename
-    this.port = parseInt(args.port)
-    //  TODO: cert stuff
-
-    if (isNaN(this.port)) {
-      throw new InvalidConfigError(`Invalid port, expected a number, got '${args.port}'`)
-    }
-
-    this.config = args.config
-    this.env = args.env
-  }
-
-  private async enchanched_fetch(
+function createEnhancedFetch(port: number): FetchApi {
+  return async function enchanched_fetch(
     url: RequestInfo,
     init?: RequestInit
   ): Promise<Response> {
     const request_url = typeof url === 'string' ? url : url.url
-    const response = await fetch(
-      request_url.startsWith('/')
-        ? // Need a smarter way to re-enter the FAB, eventually...
-          `http://localhost:${this.port}${request_url}`
-        : url,
-      init
-    )
+    console.log({ request_url })
+    const fetch_url = request_url.startsWith('/')
+      ? // Need a smarter way to re-enter the FAB, eventually...
+        `http://localhost:${port}${request_url}`
+      : url
+    console.log({ fetch_url })
+    const response = await fetch(fetch_url, init)
     return Object.create(response, {
       body: {
         value: Object.create(response.body, {
@@ -130,6 +113,29 @@ class Server implements ServerType {
         }),
       },
     })
+  }
+}
+
+class Server implements ServerType {
+  filename: string
+  private port: number
+  private config: string
+  private env: string | undefined
+  private enchanched_fetch: FetchApi
+
+  constructor(filename: string, args: ServerArgs) {
+    this.filename = filename
+    console.log('HELLO!')
+    this.port = parseInt(args.port)
+    //  TODO: cert stuff
+
+    if (isNaN(this.port)) {
+      throw new InvalidConfigError(`Invalid port, expected a number, got '${args.port}'`)
+    }
+
+    this.config = args.config
+    this.env = args.env
+    this.enchanched_fetch = createEnhancedFetch(this.port)
   }
 
   private async createRenderer(
@@ -156,6 +162,7 @@ class Server implements ServerType {
     req: ExpressRequest,
     settings_overrides: any
   ): Promise<Response> {
+    console.log('RENDERING REQUEST!!')
     const method = req.method
     const headers: any = req.headers
     const url = `${req.protocol}://${req.headers.host}${req.url}`
