@@ -3,6 +3,19 @@ import path from 'path'
 import fs from 'fs-extra'
 import { log } from '../'
 
+const static_plugin_chain = (
+  dir: string,
+  fallback: string | boolean = '/index.html'
+) => ({
+  '@fab/input-static': {
+    dir,
+  },
+  '@fab/plugin-render-html': {
+    fallback,
+  },
+  '@fab/plugin-rewire-assets': {},
+})
+
 export type FrameworkInfo = {
   name: string
   plugins: BuildConfig
@@ -17,15 +30,7 @@ export const Frameworks = {
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',
     },
-    plugins: {
-      '@fab/input-static': {
-        dir: 'build',
-      },
-      '@fab/plugin-render-html': {
-        fallback: '/index.html',
-      },
-      '@fab/plugin-rewire-assets': {},
-    },
+    plugins: static_plugin_chain('build'),
   }),
   Gatsby: (): FrameworkInfo => ({
     name: 'Gatbsy JS',
@@ -34,15 +39,16 @@ export const Frameworks = {
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',
     },
-    plugins: {
-      '@fab/input-static': {
-        dir: 'public',
-      },
-      '@fab/plugin-render-html': {
-        fallback: false,
-      },
-      '@fab/plugin-rewire-assets': {},
+    plugins: static_plugin_chain('public', false),
+  }),
+  Expo: (): FrameworkInfo => ({
+    name: 'Expo Web',
+    scripts: {
+      'build:fab': 'expo build:web && npm run fab:build',
+      'fab:build': 'fab build',
+      'fab:serve': 'fab serve fab.zip',
     },
+    plugins: static_plugin_chain('web-build'),
   }),
   Next9: ({
     export_build,
@@ -57,26 +63,17 @@ export const Frameworks = {
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',
     },
-    plugins: {
-      ...(export_build
-        ? {
-            '@fab/input-static': {
-              dir: 'out',
-            },
-            '@fab/plugin-render-html': {
-              fallback: '/index.html',
-            },
-          }
-        : {
-            '@fab/input-nextjs': {
-              dir: '.next',
-            },
-            '@fab/plugin-render-html': {
-              fallback: false,
-            },
-          }),
-      '@fab/plugin-rewire-assets': {},
-    },
+    plugins: export_build
+      ? static_plugin_chain('out')
+      : {
+          '@fab/input-nextjs': {
+            dir: '.next',
+          },
+          '@fab/plugin-render-html': {
+            fallback: false,
+          },
+          '@fab/plugin-rewire-assets': {},
+        },
     async customConfig(root_dir: string) {
       if (export_build) return
       const config_path = path.join(root_dir, 'next.config.js')
@@ -107,21 +104,16 @@ export const Frameworks = {
 export const GenericStatic = (
   build_cmd: string,
   found_output_dir: string
-): FrameworkInfo => ({
-  name: 'Static Site',
-  scripts: {
-    'build:fab': `${build_cmd} && npm run fab:build`,
-    'fab:build': 'fab build',
-    'fab:serve': 'fab serve fab.zip',
-  },
-  plugins: {
-    '@fab/input-static': {
-      dir: found_output_dir,
+): FrameworkInfo => {
+  return {
+    name: 'Static Site',
+    scripts: {
+      'build:fab': `${build_cmd} && npm run fab:build`,
+      'fab:build': 'fab build',
+      'fab:serve': 'fab serve fab.zip',
     },
-    '@fab/plugin-render-html': {
-      fallback: '/index.html',
-    },
-    '@fab/plugin-rewire-assets': {},
-  },
-})
+    plugins: static_plugin_chain(found_output_dir),
+  }
+}
+
 export const FRAMEWORK_NAMES = Object.keys(Frameworks)
