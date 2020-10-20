@@ -231,6 +231,7 @@ export default class Initializer {
       (await this.isNext9(package_json)) ||
       (await this.isCreateReactApp(package_json)) ||
       (await this.isGatsby(package_json)) ||
+      (await this.isExpo(package_json)) ||
       null
     )
   }
@@ -313,6 +314,25 @@ export default class Initializer {
       )
     }
     return Frameworks.Gatsby()
+  }
+
+  static async isExpo(package_json: PackageJson) {
+    const expo_dep =
+      package_json.dependencies?.['expo'] || package_json.devDependencies?.['expo']
+    if (!expo_dep) return false
+
+    if (
+      package_json.scripts?.web?.match(/expo start/) ||
+      package_json.scripts?.start?.match(/expo start/)
+    ) {
+      return Frameworks.Expo()
+    } else {
+      log(
+        `❤️Warning:❤️ Detected a project with a dependency on 💛expo💛 but no 💛expo start💛 scripts in 💛package.json💛. Skipping.`
+      )
+    }
+
+    return false
   }
 
   private static async installDependencies(
