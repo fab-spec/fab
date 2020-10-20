@@ -94,12 +94,10 @@ function createEnhancedFetch(port: number): FetchApi {
     init?: RequestInit
   ): Promise<Response> {
     const request_url = typeof url === 'string' ? url : url.url
-    console.log({ request_url })
     const fetch_url = request_url.startsWith('/')
       ? // Need a smarter way to re-enter the FAB, eventually...
         `http://localhost:${port}${request_url}`
       : url
-    console.log({ fetch_url })
     const response = await fetch(fetch_url, init)
     return Object.create(response, {
       body: {
@@ -162,7 +160,6 @@ class Server implements ServerType {
     req: ExpressRequest,
     settings_overrides: any
   ): Promise<Response> {
-    console.log('RENDERING REQUEST!!')
     const method = req.method
     const headers: any = req.headers
     const url = `${req.protocol}://${req.headers.host}${req.url}`
@@ -249,10 +246,7 @@ class Server implements ServerType {
     return app
   }
 
-  private async bootServer(runtimeType: SandboxType, proxyWs: string | undefined) {
-    let proxy: any
-    let server: ReturnType<typeof http.createServer>
-
+  private async createHandler(runtimeType: SandboxType): Promise<Express> {
     log(`Reading 💛${this.filename}💛...`)
     const files = await readFilesFromZip(this.filename)
     const src_buffer = files['/server.js']
@@ -266,34 +260,7 @@ class Server implements ServerType {
     const renderer = await this.createRenderer(src, runtimeType)
 
     log.tick(`Done. Booting FAB server...`)
-
-    await new Promise((resolve, _reject) => {
-      const app = this.setupExpress(renderer, settings_overrides, files)
-      if (!server) {
-        server = http.createServer((req, res) => app(req, res))
-
-        if (proxyWs) {
-          if (!proxy) {
-            proxy = httpProxy.createProxyServer({
-              target: `ws://localhost:${proxyWs}`,
-              ws: true,
-            })
-          }
-          //   ? https.createServer({ key: this.key, cert: this.cert }, app)
-
-          server.on('upgrade', (req, socket, head) => {
-            proxy.ws(req, socket, head)
-          })
-        }
-
-        server.listen(this.port, resolve)
-      } else {
-        resolve()
-      }
-    })
-
-    log.tick(`Done.`)
-    log(`Listening on 💛http://localhost:${this.port}💛`)
+    return this.setupExpress(renderer, settings_overrides, files)
   }
 
   async serve(
@@ -305,16 +272,47 @@ class Server implements ServerType {
       throw new FabServerError(`Could not find file '${this.filename}'`)
     }
 
+    let app: Express
+    let proxy: any
+    let server: ReturnType<typeof http.createServer>
+
+    const bootServer = async () => {
+      app = await this.createHandler(runtimeType)
+      await new Promise((resolve, _reject) => {
+        if (!server) {
+          server = http.createServer((req, res) => app(req, res))
+
+          if (proxyWs) {
+            if (!proxy) {
+              proxy = httpProxy.createProxyServer({
+                target: `ws://localhost:${proxyWs}`,
+                ws: true,
+              })
+            }
+            //   ? https.createServer({ key: this.key, cert: this.cert }, app)
+
+            server.on('upgrade', (req, socket, head) => {
+              proxy.ws(req, socket, head)
+            })
+          }
+
+          server.listen(this.port, resolve)
+        } else {
+          resolve()
+        }
+      })
+    }
+
     if (watching) {
       log.note(`Watching 💛${this.filename}💛 for changes...`)
-      await watcher([this.filename], () => this.bootServer(runtimeType, proxyWs), {
+      await watcher([this.filename], bootServer, {
         awaitWriteFinish: {
           stabilityThreshold: 200,
           pollInterval: 50,
         },
       })
     } else {
-      await this.bootServer(runtimeType, proxyWs)
+      await bootServer()
     }
   }
 
