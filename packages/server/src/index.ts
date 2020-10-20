@@ -51,10 +51,12 @@ async function streamResponse(fetch_res: Response, res: ExpressResponse) {
     res.set(header, values.length === 1 ? values[0] : values)
   })
 
+  const shouldSetChunkedTransferEncoding =
+    !response_headers['content-length'] && !response_headers['transfer-encoding']
   const body = fetch_res.body
   if (body) {
     if (typeof body.getReader === 'function') {
-      if (!response_headers['transfer-encoding']) res.set('transfer-encoding', 'chunked')
+      if (shouldSetChunkedTransferEncoding) res.set('transfer-encoding', 'chunked')
 
       const reader = body.getReader()
       let x
