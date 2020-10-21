@@ -62,14 +62,16 @@ export const Frameworks = {
 
       try {
         await execa.command(`expo-cli -V`)
-        log(`Detected 💛expo-cli💛 installed locally, proceeding...`)
+        log(
+          `💚Note:💚 your project doesn't explicitly depend on 💛expo-cli💛, but it is installed globally. We will add it as a 💛devDependency💛 since it makes builing this project easier in other places...`
+        )
         return []
       } catch (e) {
         log(
-          `❤️WARNING:❤️ your project doesn't depend on 💛expo-cli💛, and it doesn't seem to be installed locally. Adding it as a 💛devDependency💛...`
+          `❤️WARNING:❤️ your project doesn't depend on 💛expo-cli💛, and it doesn't seem to be installed globally. Adding it as a 💛devDependency💛...`
         )
-        return ['expo-cli']
       }
+      return ['expo-cli']
     },
   }),
   Next9: ({
