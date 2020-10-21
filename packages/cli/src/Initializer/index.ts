@@ -3,14 +3,7 @@ import pkgUp from 'pkg-up'
 import path from 'path'
 import semver from 'semver'
 
-import {
-  _log,
-  FabInitError,
-  installDependencies,
-  JSON5Config,
-  prompt,
-  useYarn,
-} from '../'
+import { FabInitError, installDependencies, JSON5Config, prompt, useYarn } from '../'
 import {
   BASE_CONFIG,
   DEFAULT_DEPS,
@@ -21,10 +14,9 @@ import {
   PackageJson,
 } from './constants'
 import { FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic } from './frameworks'
-import { mergeScriptsAfterBuild } from './utils'
+import { log, mergeScriptsAfterBuild } from './utils'
 import { BuildConfig } from '@fab/core'
-
-const log = _log('Initializer')
+import execa from 'execa'
 
 const promptWithDefault = async (
   message: string,
@@ -120,10 +112,13 @@ export default class Initializer {
       /* Then, update the package.json to add a build:fab script */
       await this.addBuildFabScript(package_json_path, package_json, framework)
 
-      /* Add any framework-specific config required */
-      if (framework.customConfig) await framework.customConfig(root_dir)
-
       additional_dependencies.push(...Object.keys(framework.plugins))
+
+      /* Add any framework-specific config required */
+      if (framework.customConfig)
+        additional_dependencies.push(
+          ...(await framework.customConfig(root_dir, package_json))
+        )
     }
 
     /* Update the .gitignore file (if it exists) to add .fab and fab.zip */
@@ -132,6 +127,9 @@ export default class Initializer {
     /* Finally, install the dependencies */
     if (!skip_install) {
       await this.installDependencies(root_dir, version, use_yarn, additional_dependencies)
+    } else {
+      log(`Skipping dependency installation as 💛--skip-install💛 is set.
+      We would have installed: 🖤${additional_dependencies.join(' ')}🖤`)
     }
 
     await this.finalChecks(root_dir, package_json)
@@ -383,6 +381,11 @@ export default class Initializer {
     }
     config.data.plugins = plugins
     await config.write(config_filename)
+    try {
+      await execa.command(`git add ${config_filename}`)
+    } catch (e) {
+      log.warn(`Error adding ${config_filename} to git. Skipping...`)
+    }
   }
 
   private static async readExistingConfig(config_path: string) {

@@ -1,7 +1,9 @@
 import { BuildConfig } from '@fab/core'
 import path from 'path'
 import fs from 'fs-extra'
-import { log } from '../'
+import { log } from './utils'
+import { PackageJson } from './constants'
+import execa from 'execa'
 
 const static_plugin_chain = (
   dir: string,
@@ -20,7 +22,7 @@ export type FrameworkInfo = {
   name: string
   plugins: BuildConfig
   scripts: { [name: string]: string }
-  customConfig?: (root_dir: string) => void
+  customConfig?: (root_dir: string, package_json: PackageJson) => Promise<string[]>
 }
 export const Frameworks = {
   CreateReactApp: (): FrameworkInfo => ({
@@ -44,11 +46,31 @@ export const Frameworks = {
   Expo: (): FrameworkInfo => ({
     name: 'Expo Web',
     scripts: {
-      'build:fab': 'npx expo build:web && npm run fab:build',
+      'build:fab': 'expo build:web && npm run fab:build',
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',
     },
     plugins: static_plugin_chain('web-build'),
+    async customConfig(root_dir: string, package_json: PackageJson) {
+      const has_expo_cli =
+        package_json.dependencies?.['expo-cli'] ||
+        package_json.devDependencies?.['expo-cli']
+      if (has_expo_cli) {
+        log(`Detected 💛expo-cli💛 in package.json, proceeding...`)
+        return []
+      }
+
+      try {
+        await execa.command(`expo-cli -V`)
+        log(`Detected 💛expo-cli💛 installed locally, proceeding...`)
+        return []
+      } catch (e) {
+        log(
+          `❤️WARNING:❤️ your project doesn't depend on 💛expo-cli💛, and it doesn't seem to be installed locally. Adding it as a 💛devDependency💛...`
+        )
+        return ['expo-cli']
+      }
+    },
   }),
   Next9: ({
     export_build,
@@ -75,7 +97,7 @@ export const Frameworks = {
           '@fab/plugin-rewire-assets': {},
         },
     async customConfig(root_dir: string) {
-      if (export_build) return
+      if (export_build) return []
       const config_path = path.join(root_dir, 'next.config.js')
       if (await fs.pathExists(config_path)) {
         const next_config = require(config_path)
@@ -98,6 +120,7 @@ export const Frameworks = {
         log(`No 💛next.config.js💛 found, adding one to set 💛target: 'serverless'💛`)
         await fs.writeFile(config_path, `module.exports = {\n  target: 'serverless'\n}\n`)
       }
+      return []
     },
   }),
 }
