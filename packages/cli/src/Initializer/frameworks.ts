@@ -44,7 +44,7 @@ export const Frameworks = {
   Expo: (): FrameworkInfo => ({
     name: 'Expo Web',
     scripts: {
-      'build:fab': 'expo build:web && npm run fab:build',
+      'build:fab': 'npx expo build:web && npm run fab:build',
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',
     },
