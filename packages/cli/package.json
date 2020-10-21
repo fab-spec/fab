@@ -1,6 +1,6 @@
 {
   "name": "@fab/cli",
-  "version": "1.0.0-rc.7.p1",
+  "version": "1.0.0-rc.7.p2",
   "description": "The CLI entry-point for the FAB ecosystem",
   "keywords": [
     "fab",
