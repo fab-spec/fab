@@ -137,8 +137,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
     if ('routes' in config) {
       var promises = config['routes'].map(r => publishOnZoneRoute(api, zone_id,
                                                                   r, script_name))
-      var routesURLs = Promise.all(promises)
-      return await routeURLs
+      return await Promise.all(promises)
     }
     return await publishOnZoneRoute(api, zone_id, route, script_name)
   }
@@ -186,8 +185,7 @@ function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
     if (!Array.isArray(routes)) {
       throw new InvalidConfigError(`value for \`routes\` key of @fab/deploy-cf-workers config should be an Array`)
     }
-    var uniques = new Set(routes)
-    if ([...uniquies].length !== routes.length) {
+    if ([...new Set(routes)].length !== routes.length) {
       throw new InvalidConfigError(`Duplicate item in value for \`routes\` key of @fab/deploy-cf-workers config`)
     }
   }
