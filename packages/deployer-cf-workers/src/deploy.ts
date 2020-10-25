@@ -111,7 +111,15 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
     )
   }
 
-  const { account_id, zone_id, route, routes, api_token, workers_dev, script_name } = config
+  const {
+    account_id,
+    zone_id,
+    route,
+    routes,
+    api_token,
+    workers_dev,
+    script_name,
+  } = config
 
   if (workers_dev) {
     checkValidityForWorkersDev(config)
@@ -135,11 +143,11 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
     return await publishOnWorkersDev(api, account_id, script_name)
   } else {
     if ('routes' in config) {
-      var promises = config['routes'].map(r => publishOnZoneRoute(api, zone_id,
-                                                                  r, script_name))
+      let promises = routes.map((r) => publishOnZoneRoute(api, zone_id, r, script_name))
       return await Promise.all(promises)
+    } else {
+      return await publishOnZoneRoute(api, zone_id, route, script_name)
     }
-    return await publishOnZoneRoute(api, zone_id, route, script_name)
   }
 }
 
@@ -174,19 +182,32 @@ function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
   ]
   const missing_config = required_keys.filter((k) => !config[k])
   if (missing_config.length > 0) {
-    if (!(missing_config.length === 1 && (missing_config[0] === 'route' ||
-                                          missing_config[0] === 'routes'))) {
+    if (
+      !(
+        missing_config.length === 1 &&
+        (missing_config[0] === 'route' || missing_config[0] === 'routes')
+      )
+    ) {
       throw new InvalidConfigError(`Missing required keys for @fab/deploy-cf-workers (with 💛workers_dev: false💛):
         ${missing_config.map((k) => `💛• ${k}💛`).join('\n')}`)
     }
   }
+  if ('routes' in config && 'route' in config) {
+    throw new InvalidConfigError(
+      'You can have either `routes` or `route` in config for @fab/deploy-cf-workers'
+    )
+  }
   if ('routes' in config) {
-    let routes = config['routes']
+    let routes: string[] = config['routes']
     if (!Array.isArray(routes)) {
-      throw new InvalidConfigError(`value for \`routes\` key of @fab/deploy-cf-workers config should be an Array`)
+      throw new InvalidConfigError(
+        'value for `routes` key of @fab/deploy-cf-workers config should be an Array'
+      )
     }
     if ([...new Set(routes)].length !== routes.length) {
-      throw new InvalidConfigError(`Duplicate item in value for \`routes\` key of @fab/deploy-cf-workers config`)
+      throw new InvalidConfigError(
+        'Duplicate item in value for `routes` key of @fab/deploy-cf-workers config'
+      )
     }
   }
   log.tick(`Config valid.`)
