@@ -10,7 +10,7 @@ export interface BuildConfig {
 }
 
 export type FabSettings = {
-  [var_name: string]: string | boolean | []
+  [var_name: string]: string | boolean | string[]
 }
 
 export type DeployConfig = {
@@ -177,7 +177,7 @@ export type FabServerDeployer<T extends ConfigTypes.Union> = (
   config: T,
   env_overrides: FabSettings,
   assets_url: string
-) => Promise<string>
+) => Promise<string | string[]>
 
 export type FabAssetsDeployer<T extends ConfigTypes.Union> = (
   fab_path: string,
@@ -190,7 +190,7 @@ export type FabDeployer<T extends ConfigTypes.Union> = (
   working_dir: string,
   config: T,
   env_overrides: FabSettings
-) => Promise<string>
+) => Promise<string | string[]>
 
 export type FabDeployerExports<T extends ConfigTypes.Union> = {
   deployServer?: FabServerDeployer<T>
@@ -235,7 +235,7 @@ export type DeployFn = (
   assets_only: boolean,
   assets_already_deployed_at: string | undefined,
   auto_install: boolean
-) => Promise<string>
+) => Promise<string | string[]>
 
 export type BuildFn = (
   config_path: string,
