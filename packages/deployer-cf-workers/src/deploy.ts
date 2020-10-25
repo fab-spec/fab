@@ -111,7 +111,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
     )
   }
 
-  const { account_id, zone_id, route, api_token, workers_dev, script_name } = config
+  const { account_id, zone_id, route, routes, api_token, workers_dev, script_name } = config
 
   if (workers_dev) {
     checkValidityForWorkersDev(config)
@@ -134,6 +134,12 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
   if (workers_dev) {
     return await publishOnWorkersDev(api, account_id, script_name)
   } else {
+    if ('routes' in config) {
+      var promises = config['routes'].map(r => publishOnZoneRoute(api, zone_id,
+                                                                  r, script_name))
+      var routesURLs = Promise.all(promises)
+      return await routeURLs
+    }
     return await publishOnZoneRoute(api, zone_id, route, script_name)
   }
 }
@@ -165,11 +171,25 @@ function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
     'script_name',
     'zone_id',
     'route',
+    'routes',
   ]
   const missing_config = required_keys.filter((k) => !config[k])
   if (missing_config.length > 0) {
-    throw new InvalidConfigError(`Missing required keys for @fab/deploy-cf-workers (with 💛workers_dev: false💛):
-    ${missing_config.map((k) => `💛• ${k}💛`).join('\n')}`)
+    if (!(missing_config.length === 1 && (missing_config[0] === 'route' ||
+                                          missing_config[0] === 'routes'))) {
+      throw new InvalidConfigError(`Missing required keys for @fab/deploy-cf-workers (with 💛workers_dev: false💛):
+        ${missing_config.map((k) => `💛• ${k}💛`).join('\n')}`)
+    }
+  }
+  if ('routes' in config) {
+    let routes = config['routes']
+    if (!Array.isArray(routes)) {
+      throw new InvalidConfigError(`value for \`routes\` key of @fab/deploy-cf-workers config should be an Array`)
+    }
+    var uniques = new Set(routes)
+    if ([...uniquies].length !== routes.length) {
+      throw new InvalidConfigError(`Duplicate item in value for \`routes\` key of @fab/deploy-cf-workers config`)
+    }
   }
   log.tick(`Config valid.`)
 }
