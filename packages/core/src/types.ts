@@ -10,7 +10,7 @@ export interface BuildConfig {
 }
 
 export type FabSettings = {
-  [var_name: string]: string | boolean
+  [var_name: string]: string | boolean | []
 }
 
 export type DeployConfig = {
