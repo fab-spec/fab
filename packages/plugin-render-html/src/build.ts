@@ -4,7 +4,17 @@ import cheerio from 'cheerio'
 import { tokenize } from 'micromustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { addInjectionPoint } from './injections/env'
-import { InvalidConfigError, _log, getFingerprintedName } from '@fab/cli'
+import { InvalidConfigError, _log } from '@fab/cli'
+import hasha from 'hasha'
+import path from 'path'
+
+const getFingerprintedName = (contents: Buffer, filename: string) => {
+  const hash = hasha(contents, { algorithm: 'md5' }).slice(0, 9)
+  const extname = path.extname(filename)
+  return extname
+    ? `${filename.slice(0, -1 * extname.length)}.${hash}${extname}`
+    : `${filename}_${hash}`
+}
 
 const log = _log('@fab/plugin-render-html')
 
