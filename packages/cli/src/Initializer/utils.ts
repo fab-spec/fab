@@ -1,4 +1,5 @@
 import { StringMap } from './constants'
+import { _log } from '../helpers'
 
 const isBuildScript = (script_name: string) => script_name.match(/^build/)
 
@@ -24,3 +25,5 @@ export const mergeScriptsAfterBuild = (
   if (!merged) Object.assign(merged_scripts, framework_scripts)
   return merged_scripts
 }
+
+export const log = _log('Initializer')
