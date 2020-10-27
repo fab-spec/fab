@@ -1,13 +1,28 @@
 import { BuildConfig } from '@fab/core'
 import path from 'path'
 import fs from 'fs-extra'
-import { log } from '../'
+import { log } from './utils'
+import { PackageJson } from './constants'
+import execa from 'execa'
+
+const static_plugin_chain = (
+  dir: string,
+  fallback: string | boolean = '/index.html'
+) => ({
+  '@fab/input-static': {
+    dir,
+  },
+  '@fab/plugin-render-html': {
+    fallback,
+  },
+  '@fab/plugin-rewire-assets': {},
+})
 
 export type FrameworkInfo = {
   name: string
   plugins: BuildConfig
   scripts: { [name: string]: string }
-  customConfig?: (root_dir: string) => void
+  customConfig?: (root_dir: string, package_json: PackageJson) => Promise<string[]>
 }
 export const Frameworks = {
   CreateReactApp: (): FrameworkInfo => ({
@@ -17,15 +32,7 @@ export const Frameworks = {
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',
     },
-    plugins: {
-      '@fab/input-static': {
-        dir: 'build',
-      },
-      '@fab/plugin-render-html': {
-        fallback: '/index.html',
-      },
-      '@fab/plugin-rewire-assets': {},
-    },
+    plugins: static_plugin_chain('build'),
   }),
   Gatsby: (): FrameworkInfo => ({
     name: 'Gatbsy JS',
@@ -34,14 +41,37 @@ export const Frameworks = {
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',
     },
-    plugins: {
-      '@fab/input-static': {
-        dir: 'public',
-      },
-      '@fab/plugin-render-html': {
-        fallback: false,
-      },
-      '@fab/plugin-rewire-assets': {},
+    plugins: static_plugin_chain('public', false),
+  }),
+  Expo: (): FrameworkInfo => ({
+    name: 'Expo Web',
+    scripts: {
+      'build:fab': 'expo build:web && npm run fab:build',
+      'fab:build': 'fab build',
+      'fab:serve': 'fab serve fab.zip',
+    },
+    plugins: static_plugin_chain('web-build'),
+    async customConfig(root_dir: string, package_json: PackageJson) {
+      const has_expo_cli =
+        package_json.dependencies?.['expo-cli'] ||
+        package_json.devDependencies?.['expo-cli']
+      if (has_expo_cli) {
+        log(`Detected 💛expo-cli💛 in package.json, proceeding...`)
+        return []
+      }
+
+      try {
+        await execa.command(`expo-cli -V`)
+        log(
+          `💚Note:💚 your project doesn't explicitly depend on 💛expo-cli💛, but it is installed globally. We will add it as a 💛devDependency💛 since it makes this project more portable...`
+        )
+        return []
+      } catch (e) {
+        log(
+          `❤️WARNING:❤️ your project doesn't depend on 💛expo-cli💛, and it doesn't seem to be installed globally. Adding it as a 💛devDependency💛...`
+        )
+      }
+      return ['expo-cli']
     },
   }),
   Next9: ({
@@ -57,28 +87,19 @@ export const Frameworks = {
       'fab:build': 'fab build',
       'fab:serve': 'fab serve fab.zip',
     },
-    plugins: {
-      ...(export_build
-        ? {
-            '@fab/input-static': {
-              dir: 'out',
-            },
-            '@fab/plugin-render-html': {
-              fallback: '/index.html',
-            },
-          }
-        : {
-            '@fab/input-nextjs': {
-              dir: '.next',
-            },
-            '@fab/plugin-render-html': {
-              fallback: false,
-            },
-          }),
-      '@fab/plugin-rewire-assets': {},
-    },
+    plugins: export_build
+      ? static_plugin_chain('out')
+      : {
+          '@fab/input-nextjs': {
+            dir: '.next',
+          },
+          '@fab/plugin-render-html': {
+            fallback: false,
+          },
+          '@fab/plugin-rewire-assets': {},
+        },
     async customConfig(root_dir: string) {
-      if (export_build) return
+      if (export_build) return []
       const config_path = path.join(root_dir, 'next.config.js')
       if (await fs.pathExists(config_path)) {
         const next_config = require(config_path)
@@ -101,27 +122,23 @@ export const Frameworks = {
         log(`No 💛next.config.js💛 found, adding one to set 💛target: 'serverless'💛`)
         await fs.writeFile(config_path, `module.exports = {\n  target: 'serverless'\n}\n`)
       }
+      return []
     },
   }),
 }
 export const GenericStatic = (
   build_cmd: string,
   found_output_dir: string
-): FrameworkInfo => ({
-  name: 'Static Site',
-  scripts: {
-    'build:fab': `${build_cmd} && npm run fab:build`,
-    'fab:build': 'fab build',
-    'fab:serve': 'fab serve fab.zip',
-  },
-  plugins: {
-    '@fab/input-static': {
-      dir: found_output_dir,
+): FrameworkInfo => {
+  return {
+    name: 'Static Site',
+    scripts: {
+      'build:fab': `${build_cmd} && npm run fab:build`,
+      'fab:build': 'fab build',
+      'fab:serve': 'fab serve fab.zip',
     },
-    '@fab/plugin-render-html': {
-      fallback: '/index.html',
-    },
-    '@fab/plugin-rewire-assets': {},
-  },
-})
+    plugins: static_plugin_chain(found_output_dir),
+  }
+}
+
 export const FRAMEWORK_NAMES = Object.keys(Frameworks)

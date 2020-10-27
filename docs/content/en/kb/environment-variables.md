@@ -31,14 +31,77 @@ A FAB will default to passing in the **production** environment variables, plus 
 
 This defines a `STAGING` environment that will be available through Linc's environment-specific Preview URLs (like `https://example-repo-[FAB_ID]-staging.linc-preview.sh/`). For more information, see the Linc docs.
 
+## Accessing Environment Variables at Runtime
+
+Using the plugin **@fab/plugin-render-html** (which is included by default), any `*.html` files are served with a `<script>` tag injected into the response as it's being streamed to the client:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="text/javascript">
+      window.FAB_SETTINGS = {
+        "API_URL": "https://staging.api.example.com",
+        ...
+      }
+    </script>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <!-- ... -->
+  </head>
+  <body>
+    <!-- ... -->
+  </body>
+</html>
+```
+
+Then, inside your JS application those values will be available on the global `window.FAB_SETTINGS` object
+
+```js
+// Inside your application
+
+fetch(`${window.FAB_SETTINGS.API_URL}/endpoint`)
+  .then
+  // ...
+  ()
+```
+
+To use the same environment variables during development, it's recommended to add a layer of abstraction between `FAB_SETTINGS` (available once the FAB is built) and `process.env` (available during development). For example
+
+```js
+// src/config.js
+
+const lookupEnvVar = (name) => {
+  // Use FAB_SETTINGS if defined
+  if (typeof FAB_SETTINGS === 'object') {
+    return FAB_SETTINGS[name]
+
+    // Otherwise use process.env
+  } else {
+    // Note: some build systems (like Create React App) only expose
+    // process.env vars that start with a prefix (like REACT_APP_)
+    return process.env[`REACT_APP_${name}`]
+  }
+}
+
+export default {
+  API_URL: lookupEnvVar('API_URL'),
+  API_KEY: lookupEnvVar('API_KEY'),
+  // ...
+}
+```
+
+You can use the `config` throughout your app like so:
+
+```js
+import config from '../config'
+
+fetch(`${config.API_URL}/endpoint`)
+  .then
+  // ...
+  ()
+```
+
 ## Bundling Production Settings
 
-One of the most important things to remember about working with Environment Variables and FABs is that **production settings must be bundled into the FAB itself**. This is what enables a FAB to be truly _portable_—you can upload a FAB to any hosting platform (with the right adapter) and **it can serve production traffic**. That means that whether you want to host your own FAB, wrap it up in a [Lambda@Edge](https://github.com/fab-spec/lambda-edge-packager) or [Cloudflare Worker](https://github.com/fab-spec/cloudflare-workers-packager), it can always serve production traffic because it _has everything it needs in the bundle itself._
-
-In practice, that's done using a `production-settings.json` file that your FAB compiler (e.g. [**@fab/static**](/packages/fab-static#environment-variables)) will include into your bundle.
-
-## Exposing Settings to the Frontend
-
-The FAB specfication only defines one place that the `settings` object is injected: the server-side `render` method. It's up to the the particular bundler to pass that through to the client-side JavaScript, but its recommended to follow the example set by [**@fab/static**](/packages/fab-static#environment-variables) and provide a `FAB_SETTINGS` global variable in the HTML as it's sent to the client.
-
-[Read more about **@fab/static**'s approach here.](/packages/fab-static#accessing-environment-variables-at-runtime)
+One of the most important things to remember about working with Environment Variables and FABs is that **production settings must be bundled into the FAB itself**. This is what enables a FAB to be truly portable—you can upload a FAB to any hosting platform (with the right adapter) and **it can serve production traffic**. That means that wherever you want to host your FAB, it can always serve production traffic because it _has everything it needs in the bundle itself._
