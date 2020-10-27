@@ -32,7 +32,9 @@ describe('Build time', () => {
     }
     const proto_fab = new ProtoFab<RenderHtmlMetadata>(files)
     await build({ fallback: false }, proto_fab)
-    expect([...proto_fab.files.keys()]).to.deep.equal(['/_assets/_html/index.html.json'])
+    expect([...proto_fab.files.keys()]).to.deep.equal([
+      '/_assets/_html/index.html.9684b38c1.json',
+    ])
   })
 
   it('should inline everything if specified', async () => {
