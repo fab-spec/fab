@@ -5,9 +5,7 @@ import {
   RewireAssetsArgs,
   RewireAssetsMetadata,
 } from './types'
-import hasha from 'hasha'
-import path from 'path'
-import { InvalidConfigError, _log } from '@fab/cli'
+import { InvalidConfigError, _log, getFingerprintedName } from '@fab/cli'
 // @ts-ignore
 import { isBinaryPromise } from 'istextorbinary'
 import { DEFAULT_IMMUTABILITY_CHECK } from './constants'
@@ -101,14 +99,6 @@ export async function build(
   log.tick(`Done.`)
 
   proto_fab.metadata.rewire_assets = { inlined_assets, renamed_assets }
-}
-
-const getFingerprintedName = (contents: Buffer, filename: string) => {
-  const hash = hasha(contents, { algorithm: 'md5' }).slice(0, 9)
-  const extname = path.extname(filename)
-  return extname
-    ? `${filename.slice(0, -1 * extname.length)}.${hash}${extname}`
-    : `${filename}_${hash}`
 }
 
 interface Chunk {
