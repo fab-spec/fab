@@ -37,6 +37,7 @@
     "@types/istextorbinary": "^2.3.0",
     "@types/mime-types": "^2.1.0",
     "@types/node": "^12.12.14",
+    "hasha": "^5.1.0",
     "istextorbinary": "^3.3.0"
   },
   "publishConfig": {

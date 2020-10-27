@@ -4,8 +4,7 @@ import cheerio from 'cheerio'
 import { tokenize } from 'micromustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { addInjectionPoint } from './injections/env'
-import { InvalidConfigError, _log, getFingerprintedName } from '@fab/cli'
-
+import { _log, InvalidConfigError } from '@fab/cli'
 const log = _log('@fab/plugin-render-html')
 
 export async function build(
@@ -89,10 +88,9 @@ export async function build(
       if (should_be_inlined) {
         inlined_htmls[path] = tokens
       } else {
-        const buffer = Buffer.from(JSON.stringify(tokens))
-        const asset_path = getFingerprintedName(buffer, `/_assets/_html${path}.json`)
+        const asset_path = `/_assets/_html${path}.json`
         asset_html_paths[path] = asset_path
-        proto_fab.files.set(asset_path, buffer)
+        proto_fab.files.set(asset_path, Buffer.from(JSON.stringify(tokens)))
       }
     }
   }
