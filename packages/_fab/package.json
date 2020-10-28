@@ -1,6 +1,6 @@
 {
   "name": "fab",
-  "version": "1.0.0-rc.7",
+  "version": "1.0.0-rc.8",
   "description": "An alias for @fab/cli",
   "keywords": [
     "fab"
