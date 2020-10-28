@@ -72,9 +72,9 @@ To use the same environment variables during development, it's recommended to ad
 // src/config.js
 
 const lookupEnvVar = (name) => {
-  // Use FAB_SETTINGS if defined
-  if (typeof FAB_SETTINGS === 'object') {
-    return FAB_SETTINGS[name]
+  // Use window.FAB_SETTINGS if defined
+  if (typeof window.FAB_SETTINGS === 'object') {
+    return window.FAB_SETTINGS[name]
 
     // Otherwise use process.env
   } else {

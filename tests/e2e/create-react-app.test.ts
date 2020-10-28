@@ -153,6 +153,48 @@ describe('Create React App E2E Test', () => {
       expect(hello_fab_response).toContain('HELLO FAB!')
     })
 
+    it('should serve a HTML file on a pretty URL', async () => {
+      await fs.ensureDir(`${cwd}/public/blog`)
+      await fs.writeFile(
+        `${cwd}/public/blog/index.html`,
+        // language=HTML
+        `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Blog Home</title>
+          </head>
+          <body>
+            <h1>BLAWG</h1>
+          </body>
+        </html>
+        `
+      )
+
+      // Do a full rebuild this time since we need to copy the file from /public to /dist
+      await shell(`yarn build:fab`, { cwd })
+      await createServer(cwd)
+
+      const blog_response = await request('', '/blog')
+      expect(blog_response).toContain(`<!DOCTYPE html>`)
+      expect(blog_response).toContain(`<title>Blog Home</title>`)
+      expect(blog_response).toContain(`window.FAB_SETTINGS={}`)
+
+      const blog_slash_response = await request('', '/blog/')
+      expect(blog_slash_response).toEqual(blog_response)
+
+      const blog_slash_index_response = await request('', '/blog/index')
+      expect(blog_slash_index_response).toEqual(blog_response)
+
+      // Also check if the HTML template was output with a fingerprinted filename:
+      const globs = await globby('_html/blog/*', {
+        cwd: path.join(cwd, '.fab', 'build', '_assets'),
+      })
+      expect(globs).toHaveLength(1)
+      // Expect the file to be fingerprinted with at least 9 hex digits, and converted to JSON
+      expect(globs[0]).toMatch(/_html\/blog\/index.html.[a-f0-9]{9,}.json/)
+    })
+
     it('should reflect settings changes', async () => {
       await buildFab(cwd)
       const first_fab_sha = (await pathToSHA512(`${cwd}/fab.zip`)).slice(0, 32)

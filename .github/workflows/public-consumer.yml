@@ -45,7 +45,8 @@ jobs:
         PUBLIC_PACKAGES=true yarn test create-react-app
       env:
         CI: true
-    - name: "E2E: nextjs"
-      run: |
-        cd tests
-        PUBLIC_PACKAGES=true yarn test nextjs
+#    Waiting on https://github.com/fab-spec/fab/pull/283
+#    - name: "E2E: nextjs"
+#      run: |
+#        cd tests
+#        PUBLIC_PACKAGES=true yarn test nextjs
