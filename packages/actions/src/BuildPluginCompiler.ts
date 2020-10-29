@@ -32,7 +32,7 @@ export class BuildPluginCompiler {
 
 async function compile(config_path: string, proto_fab: ProtoFab, plugins: BuildPlugin[]) {
   const warnings: string[] = []
-  const indexFile = path.join(path.dirname(config_path), 'index.ts')
+  const indexFile = path.join(path.dirname(path.resolve(config_path)), 'index.ts')
   const {
     output: [output, ...chunks],
   } = await rollupCompile(indexFile, {
@@ -84,7 +84,7 @@ async function execute(
      * */
     const { dynamic_runtimes_promise } = nodeEval(
       code,
-      path.join(path.dirname(config_path), 'index.js'),
+      path.join(path.dirname(path.resolve(config_path)), 'index.js'),
       {
         proto_fab,
         config_path,
@@ -131,7 +131,7 @@ function generateBuildIndexScript(buildPlugins: BuildPlugin[]) {
 }
 
 function generateImportStatement(plugin: BuildPlugin, index: number) {
-  return `import { build as build_${index} } from '${plugin.builder}';`
+  return `const build_${index} = require('${plugin.builder}').build;`
 }
 
 function generateExectionStatement(plugin: BuildPlugin, index: number) {
