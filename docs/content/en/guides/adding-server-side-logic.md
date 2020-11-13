@@ -194,4 +194,4 @@ For example, proxying requests that come in on `/api/*` to `api.example.com/*` w
   force = true
 ```
 
-Compare that to the [Proxying an API](#proxying-an-api) section above. Now your server-side logic is self-contained, portable, and "just JavaScript".
+Compare that to the [Proxying a Simple API](#proxying-a-simple-api) section above. Now your server-side logic is self-contained, portable, and "just JavaScript".
