@@ -1,6 +1,6 @@
 ---
 title: 'Home'
-description: 'Frontend Application Bundles (💎 FABs) are a bundle format for frontend applications.'
+description: 'Frontend Application Bundles (💎 FABs) are a standard for packaging up and deploying all kinds of frontend apps, regardless of server-side technology or JS framework.'
 position: 1
 category: Home
 features:
