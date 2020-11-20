@@ -26,8 +26,6 @@ With that in mind, these are the currently-supported hosting platforms:
 
 AWS S3 is a perfect choice for your asset hosts, since it's virtually unlimited and extremely cost-effective, and can be set up for public, read-only access, with the FAB server sitting in front of it.
 
-> 👉 In fact, S3 is so well-suited to asset hosting it is currently the _only_ asset hosting option, until [this issue](https://github.com/fab-spec/fab/pull/113) is resolved to use Cloudflare KV store for assets.
-
 To configure S3 bucket creation & uploading, add the following section to your `fab.config.json5`:
 
 ```json5
