@@ -22,46 +22,6 @@ For instance, you typically only have one "version" of your FAB deployed at once
 
 With that in mind, these are the currently-supported hosting platforms:
 
-## AWS S3
-
-AWS S3 is a perfect choice for your asset hosts, since it's virtually unlimited and extremely cost-effective, and can be set up for public, read-only access, with the FAB server sitting in front of it.
-
-To configure S3 bucket creation & uploading, add the following section to your `fab.config.json5`:
-
-```json5
-{
-  //...
-  deploy: {
-    //...
-    'aws-s3': {
-      access_key: '@S3_ACCESS_KEY',
-      secret_key: '@S3_SECRET_KEY',
-      region: 'us-east-1',
-      bucket_name: 'fab-assets-your-project-name',
-    },
-    //...
-  },
-}
-```
-
-The two values that you'll need are an `ACCESS KEY` and `SECRET KEY` for your AWS account, with enough permissions to create, set permissions on, and upload to a bucket. You can [create an IAM User](https://console.aws.amazon.com/iam/home?region=us-east-1#/users) with the following policy to allow full access to S3 buckets on your account, but only those starting with the name `fab-assets-`:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "CreateFabAssetBuckets",
-      "Action": ["s3:*"],
-      "Effect": "Allow",
-      "Resource": ["arn:aws:s3:::fab-assets-*", "arn:aws:s3:::fab-assets-*/*"]
-    }
-  ]
-}
-```
-
-Either hard-code the access key & secret into the `fab.config.json5` file or store them in a `.env` file in the same directory, where the FAB deployer will automatically pick them up.
-
 ## Cloudflare Workers
 
 The best production FAB hosting environment right now is [Cloudflare Workers](https://workers.dev). To deploy a FAB server component to them, we need the following config:
@@ -111,6 +71,73 @@ The only additional requirement is the `zone_id` for your domain, and to specify
 ```
 
 Your `zone_id` and `route` must match. For more information about gathering this data, see https://linc.sh/docs/cloudflare-workers.
+
+### With custom bindings
+
+Cloudflare lets you attach additional storage (KV, Durable Objects) through the [`bindings` property](https://developers.cloudflare.com/workers/platform/scripts#resource-bindings) when you upload. You can attach your own using the `custom_bindings` config key:
+
+```json5
+{
+  //...
+  deploy: {
+    //...
+    'cf-workers': {
+      account_id: '@CF_WORKERS_ACCOUNT_ID',
+      api_token: '@CF_WORKERS_API_TOKEN',
+      workers_dev: true,
+      script_name: 'your-app-name',
+      custom_bindings: [
+        {
+          type: 'kv_namespace',
+          name: 'GLOBAL_VAR_NAME',
+          namespace_id: '...', // get from Cloudflare dashboard
+        },
+      ],
+    },
+    //...
+  },
+}
+```
+
+## AWS S3
+
+AWS S3 is a perfect choice for your asset hosts, since it's virtually unlimited and extremely cost-effective, and can be set up for public, read-only access, with the FAB server sitting in front of it.
+
+To configure S3 bucket creation & uploading, add the following section to your `fab.config.json5`:
+
+```json5
+{
+  //...
+  deploy: {
+    //...
+    'aws-s3': {
+      access_key: '@S3_ACCESS_KEY',
+      secret_key: '@S3_SECRET_KEY',
+      region: 'us-east-1',
+      bucket_name: 'fab-assets-your-project-name',
+    },
+    //...
+  },
+}
+```
+
+The two values that you'll need are an `ACCESS KEY` and `SECRET KEY` for your AWS account, with enough permissions to create, set permissions on, and upload to a bucket. You can [create an IAM User](https://console.aws.amazon.com/iam/home?region=us-east-1#/users) with the following policy to allow full access to S3 buckets on your account, but only those starting with the name `fab-assets-`:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CreateFabAssetBuckets",
+      "Action": ["s3:*"],
+      "Effect": "Allow",
+      "Resource": ["arn:aws:s3:::fab-assets-*", "arn:aws:s3:::fab-assets-*/*"]
+    }
+  ]
+}
+```
+
+Either hard-code the access key & secret into the `fab.config.json5` file or store them in a `.env` file in the same directory, where the FAB deployer will automatically pick them up.
 
 ## Lambda@Edge
 
