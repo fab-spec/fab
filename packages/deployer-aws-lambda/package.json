@@ -1,6 +1,6 @@
 {
   "name": "@fab/deployer-aws-lambda",
-  "version": "1.0.0-rc.8",
+  "version": "1.0.0-rc.8.p1",
   "description": "Packages and deploys FABs to AWS Lambda@Edge",
   "keywords": [
     "aws",

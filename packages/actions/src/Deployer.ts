@@ -44,8 +44,7 @@ export default class Deployer {
         `
       )
     }
-    if (env) throw new Error('Not implemented ENV support yet')
-    const env_overrides = {}
+    const env_overrides = await this.getSettingsOverrides(config, env)
 
     const { server_provider, assets_provider } = this.getProviders(
       deploy,
@@ -90,6 +89,18 @@ export default class Deployer {
       log(`💚SUCCESS💚: Deployed to 💛${deployed_url}💛`)
       return deployed_url
     }
+  }
+
+  // TODO: this should be common somewhere
+  private static async getSettingsOverrides(config: JSON5Config, env?: string) {
+    if (!env) {
+      return {}
+    }
+    const overrides = config.data.settings?.[env]
+    if (!overrides) {
+      throw new InvalidConfigError(`No environment '${env}' found in ${config}!`)
+    }
+    return overrides
   }
 
   private static async deployAssetsAndServer(

@@ -224,7 +224,7 @@ async function packageAndUpload(
   script_name: string
 ) {
   await createPackage(fab_path, package_path, config, env_overrides, assets_url)
-  const bindings = []
+  const bindings = config.custom_bindings || []
 
   if (api.account_supports_kv) {
     const cache_namespace = `FAB cache (${script_name})`
