@@ -18,6 +18,7 @@ const CF_WORKERS_CONFIG = {
   api_token: '',
   workers_dev: false,
   script_name: '',
+  custom_bindings: [] as any[],
 }
 const AWS_LAMBDA_CONFIG = {
   access_key: '',

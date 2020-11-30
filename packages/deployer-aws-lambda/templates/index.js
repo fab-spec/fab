@@ -93,7 +93,6 @@ const transformBodyToFetch = (body) => {
 }
 
 const excludedHeaders = new Set([
-  'cache-control',
   'content-encoding',
   'content-length',
   'connection',
