@@ -1,6 +1,6 @@
 {
   "name": "@fab/actions",
-  "version": "1.0.0-rc.8",
+  "version": "1.0.0-rc.8.p1",
   "private": false,
   "description": "The guts of the FAB cli code, keeping the 'fab' package lean",
   "keywords": [
