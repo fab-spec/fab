@@ -1,8 +1,17 @@
 import fs from 'fs-extra'
 import { cmd, shell } from '../utils'
-import { buildFab, cancelServer, createServer, getWorkingDir, request } from './helpers'
+import { getWorkingDir } from './helpers'
 import path from 'path'
-import globby from 'globby'
+
+type ShellDaddyInterpolations =
+  | string
+  | boolean
+  | undefined
+  | null
+  | ((a: string) => void)
+  | (() => Promise<void>)
+
+const shellac = async (s: TemplateStringsArray, ...i: ShellDaddyInterpolations[]) => {}
 
 describe('Nextjs E2E Test', () => {
   let cwd: string
@@ -37,37 +46,82 @@ describe('Nextjs E2E Test', () => {
     )
   })
 
-  it('should configure the NextJS project to produce FABs', async () => {
-    await shell(
-      process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
-      {
-        cwd,
+  it('should configure the NextJS project to produce FABs', () => shellac`
+    in ${cwd} {
+      if ${process.env.PUBLIC_PACKAGES} {
+        $ npx fab init -y
+      } else {
+        $ fab init -y --skip-install
       }
-    )
-    const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
-    expect(files_after_fab_init).toMatch('fab.config.json5')
-    expect(files_after_fab_init).toMatch('next.config.js')
 
-    await shell(`cp -R ${__dirname}/fixtures/nextjs/pages ${cwd}`)
+      $ ls -l
+      stdout => ${(files_after_fab_init) => {
+        expect(files_after_fab_init).toMatch('fab.config.json5')
+        expect(files_after_fab_init).toMatch('next.config.js')
+      }}
 
-    const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
-    package_json.scripts = {
-      ...package_json.scripts,
-      'fab:serve': 'fab serve fab.zip',
+      $ cp -R ${__dirname}/fixtures/nextjs/pages .
+
+      await ${async () => {
+        const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
+        package_json.scripts['fab:serve'] = 'fab serve fab.zip'
+        await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
+      }}
+
+      $ yarn build
+      $ ls -l .next/serverless/page
+
+      stdout => ${(built_pages) => {
+        expect(built_pages).toMatch('index.html')
+        expect(built_pages).toMatch('dynamic.js')
+        expect(built_pages).toMatch('_error.js')
+        expect(built_pages).toMatch('background')
+      }}
+
+      $ yarn fab:build
+      $ ls -l
+
+      stdout => ${(files_after_fab_build) => {
+        expect(files_after_fab_build).toMatch('fab.zip')
+      }}
     }
-    await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
-    await shell(`yarn build`, { cwd })
-    await shell(`yarn fab:build`, { cwd })
+  `)
 
-    const { stdout: built_pages } = await cmd(`ls -l ${cwd}/.next/serverless/pages`)
-    expect(built_pages).toMatch('index.html')
-    expect(built_pages).toMatch('dynamic.js')
-    expect(built_pages).toMatch('_error.js')
-    expect(built_pages).toMatch('background')
+  // await shell(
+  //   process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
+  //   {
+  //     cwd,
+  //   }
+  // )
+  // const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
+  // expect(files_after_fab_init).toMatch('fab.config.json5')
+  // expect(files_after_fab_init).toMatch('next.config.js')
+  //
+  // await shell(`cp -R ${__dirname}/fixtures/nextjs/pages ${cwd}`)
+  //
+  // const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
+  // package_json.scripts = {
+  //   ...package_json.scripts,
+  //   'fab:serve': 'fab serve fab.zip',
+  // }
+  // await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
 
-    const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
-    expect(files_after_fab_build).toMatch('fab.zip')
-  })
+  //   await fs.writeFile(
+  //     path.join(cwd, 'next.config.js'),
+  //     `module.exports = {\n  target: 'serverless'\n}\n`
+  //   )
+  //   await shell(`yarn build`, { cwd, shell: true })
+  //   // await shell(`yarn fab:build`, { cwd })
+  //
+  //   const { stdout: built_pages } = await cmd(`ls -l ${cwd}/.next/serverless/pages`)
+  //   expect(built_pages).toMatch('index.html')
+  //   expect(built_pages).toMatch('dynamic.js')
+  //   expect(built_pages).toMatch('_error.js')
+  //   expect(built_pages).toMatch('background')
+  //
+  //   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
+  //   expect(files_after_fab_build).toMatch('fab.zip')
+  // })
 
   // describe('fab build tests', () => {
   //   beforeAll(async () => {
