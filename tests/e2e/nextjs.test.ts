@@ -3,19 +3,22 @@ import { cmd, shell } from '../utils'
 import { buildFab, cancelServer, createServer, getWorkingDir, request } from './helpers'
 import path from 'path'
 import globby from 'globby'
+import shellac from 'shellac'
 
 describe('Nextjs E2E Test', () => {
   let cwd: string
 
   it('should create a new Next project', async () => {
     cwd = await getWorkingDir('nextjs-test', Boolean(process.env.FAB_E2E_CLEAN))
-    const { stdout: current_sha } = await cmd(`git rev-parse --short HEAD`, {
-      cwd: __dirname,
-    })
-    const { stdout: current_branch } = await cmd(`git rev-parse --abbrev-ref HEAD`, {
-      cwd: __dirname,
-    })
-    console.log({ cwd, current_sha, current_branch })
+
+    const { fab_sha, fab_branch } = await shellac.in(__dirname)`
+      $ git rev-parse --short HEAD
+      stdout >> fab_sha
+
+      $ git rev-parse --abbrev-ref HEAD
+      stdout >> fab_branch
+    `
+    console.log({ cwd, fab_sha, fab_branch })
     // if (process.env.FAB_E2E_SKIP_CREATE) {
     //   console.log({ cwd })
     //   await shell(`git reset --hard`, { cwd })
