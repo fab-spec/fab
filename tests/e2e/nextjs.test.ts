@@ -24,6 +24,7 @@ describe('Nextjs E2E Test', () => {
         $$ echo "Reusing existing NextJS app in ${cwd}. Use FAB_E2E_CLEAN=true to skip."
         $ git reset --hard
         $ git clean -df
+        $ rm -rf .next out build
       } else {
         $ rm -rf *
         $$ yarn create next-app .
@@ -56,7 +57,7 @@ describe('Nextjs E2E Test', () => {
 
       $ cp -R ${__dirname}/fixtures/nextjs/pages .
 
-      $$ yarn build
+      $$ ./node_modules/.bin/next build
 
       $ ls -l .next/serverless/pages
       stdout >> ${(built_pages) => {
