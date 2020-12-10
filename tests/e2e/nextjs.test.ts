@@ -26,6 +26,7 @@ describe('Nextjs E2E Test', () => {
         $ git clean -df
         $ rm -rf .next out build
       } else {
+        $$ echo "Creating new NextJS app in ${cwd}."
         $ rm -rf *
         $$ yarn create next-app .
 
@@ -46,8 +47,13 @@ describe('Nextjs E2E Test', () => {
       if ${process.env.PUBLIC_PACKAGES} {
         $ npx --ignore-existing fab init -y
       } else {
-        $ yarn link @fab/cli
-        $ npx fab init -y --skip-install
+        // install the packages that include deps for this test
+        $$ yarn add --dev @fab/input-nextjs
+
+        // Hacking node_modules in favour of widespread yarn link-ing.
+        $$ ln -s ${path.resolve(__dirname, '../../packages')} node_modules/@fab
+        $$ ln -f ../@fab/_fab/fab.js node_modules/.bin/fab
+        $$ yarn fab init -y --skip-install
       }
 
       $ ls -l
