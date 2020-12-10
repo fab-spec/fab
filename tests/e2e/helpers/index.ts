@@ -29,8 +29,10 @@ export const getWorkingDir = async (dirname: string, clean: boolean) => {
   }
 
   const dir = await tmp.dir()
-  await fs.symlink(dir.path, symlink)
-  return dir.path
+  const cwd = path.join(dir.path, dirname)
+  await fs.ensureDir(cwd)
+  await fs.symlink(cwd, symlink)
+  return cwd
 }
 
 let server_process: ExecaChildProcess | null = null

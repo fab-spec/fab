@@ -18,6 +18,25 @@ describe('Nextjs E2E Test', () => {
       $ git rev-parse --abbrev-ref HEAD
       stdout >> fab_branch
     `
+
+    await shellac.in(cwd)`
+      if ${await fs.pathExists(path.join(cwd, '.git'))} {
+        $ git reset --hard
+        $ git clean -df
+      } else {
+        $ rm -rf *
+        $$ yarn create next-app .
+        $ git add .
+
+        $ GIT_COMMITTER_NAME=FAB GIT_COMMITTER_EMAIL=ci@fab.dev git commit -m 'post create' --author "FAB CI <>" --allow-empty
+      }
+
+      $ ls -l
+      stdout >> ${(files) => expect(files).toMatch('package.json')}
+
+      echo "\\\\nconsole.log('[FAB CI] NextJS — Branch ${fab_sha} (${fab_branch})')" >> pages/index.js
+    `
+
     console.log({ cwd, fab_sha, fab_branch })
     // if (process.env.FAB_E2E_SKIP_CREATE) {
     //   console.log({ cwd })
