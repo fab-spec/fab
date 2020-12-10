@@ -21,13 +21,14 @@ describe('Nextjs E2E Test', () => {
 
     await shellac.in(cwd)`
       if ${await fs.pathExists(path.join(cwd, '.git'))} {
+        $$ echo "Reusing existing NextJS app in ${cwd}. Use FAB_E2E_CLEAN=true to skip."
         $ git reset --hard
         $ git clean -df
       } else {
         $ rm -rf *
         $$ yarn create next-app .
-        
-        $ git init
+
+        $$ git init
         $ git add .
         $ GIT_COMMITTER_NAME=FAB GIT_COMMITTER_EMAIL=ci@fab.dev git commit -m 'post create' --author "FAB CI <>" --allow-empty
       }
@@ -38,7 +39,6 @@ describe('Nextjs E2E Test', () => {
       $ echo "\\\\nconsole.log('[FAB CI] NextJS — Branch ${fab_sha} (${fab_branch})')" >> pages/index.js
     `
 
-    console.log({ cwd, fab_sha, fab_branch })
     // if (process.env.FAB_E2E_SKIP_CREATE) {
     //   console.log({ cwd })
     //   await shell(`git reset --hard`, { cwd })
