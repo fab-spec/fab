@@ -37,16 +37,17 @@ describe('Nextjs E2E Test', () => {
       $ ls -l
       stdout >> ${(files) => expect(files).toMatch('package.json')}
 
-      $ echo "\\\\nconsole.log('[FAB CI] NextJS — Branch ${fab_sha} (${fab_branch})')" >> pages/index.js
+      $ echo -e "\\nconsole.log('[FAB CI] NextJS — Branch ${fab_sha} (${fab_branch})')" >> pages/index.js
     `
   })
 
   it('should configure the NextJS project to produce FABs', async () => {
     await shellac.in(cwd)`
       if ${process.env.PUBLIC_PACKAGES} {
-        $ npx fab init -y
+        $ npx --ignore-existing fab init -y
       } else {
-        $ fab init -y --skip-install
+        $ yarn link @fab/cli
+        $ npx fab init -y --skip-install
       }
 
       $ ls -l
