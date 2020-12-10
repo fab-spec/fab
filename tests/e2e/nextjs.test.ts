@@ -47,7 +47,7 @@ describe('Nextjs E2E Test', () => {
       if ${process.env.PUBLIC_PACKAGES} {
         $ npx --ignore-existing fab init -y
       } else {
-        $$ npx fab init -y
+        $$ npx fab init -y --skip-install
         $$ yarn link @fab/actions @fab/input-nextjs
       }
 
