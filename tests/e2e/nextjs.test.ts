@@ -26,8 +26,9 @@ describe('Nextjs E2E Test', () => {
       } else {
         $ rm -rf *
         $$ yarn create next-app .
+        
+        $ git init
         $ git add .
-
         $ GIT_COMMITTER_NAME=FAB GIT_COMMITTER_EMAIL=ci@fab.dev git commit -m 'post create' --author "FAB CI <>" --allow-empty
       }
 
