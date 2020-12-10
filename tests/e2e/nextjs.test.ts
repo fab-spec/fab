@@ -9,11 +9,13 @@ describe('Nextjs E2E Test', () => {
 
   it('should create a new Next project', async () => {
     cwd = await getWorkingDir('nextjs-test', Boolean(process.env.FAB_E2E_CLEAN))
-    // const { stdout: current_sha } = await cmd(`git rev-parse --short HEAD`, { cwd })
-    // const { stdout: current_branch } = await cmd(`git rev-parse --abbrev-ref HEAD`, {
-    //   cwd,
-    // })
-    console.log({ cwd })
+    const { stdout: current_sha } = await cmd(`git rev-parse --short HEAD`, {
+      cwd: __dirname,
+    })
+    const { stdout: current_branch } = await cmd(`git rev-parse --abbrev-ref HEAD`, {
+      cwd: __dirname,
+    })
+    console.log({ cwd, current_sha, current_branch })
     // if (process.env.FAB_E2E_SKIP_CREATE) {
     //   console.log({ cwd })
     //   await shell(`git reset --hard`, { cwd })
