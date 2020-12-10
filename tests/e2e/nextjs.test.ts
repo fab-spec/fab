@@ -8,66 +8,67 @@ describe('Nextjs E2E Test', () => {
   let cwd: string
 
   it('should create a new Next project', async () => {
-    cwd = await getWorkingDir('nextjs-test', !process.env.FAB_E2E_SKIP_CREATE)
-    const { stdout: current_sha } = await cmd(`git rev-parse --short HEAD`, { cwd })
-    const { stdout: current_branch } = await cmd(`git rev-parse --abbrev-ref HEAD`, {
-      cwd,
-    })
-    if (process.env.FAB_E2E_SKIP_CREATE) {
-      console.log({ cwd })
-      await shell(`git reset --hard`, { cwd })
-      await shell(`git clean -df`, { cwd })
-    } else {
-      // Create a new NEXT project inside
-      await shell(`yarn create next-app .`, { cwd })
-      // Skip git stuff on Github, it's only for rerunning locally
-      if (!process.env.GITHUB_WORKSPACE) {
-        await shell(`git init`, { cwd })
-        await shell(`git add .`, { cwd })
-        await shell(`git commit -m CREATED`, { cwd })
-      }
-    }
-    // Expect that {cwd} has a package.json
-    const { stdout: files } = await cmd(`ls -l`, { cwd })
-    expect(files).toMatch('package.json')
-    // Add the FAB project's current commit SHA to index.js for debugging
-    await shell(
-      `echo "\\nconsole.log('[FAB CI] NextJS — Branch ${current_branch} (${current_sha})')" >> pages/index.js`,
-      { cwd, shell: true }
-    )
+    cwd = await getWorkingDir('nextjs-test', Boolean(process.env.FAB_E2E_CLEAN))
+    // const { stdout: current_sha } = await cmd(`git rev-parse --short HEAD`, { cwd })
+    // const { stdout: current_branch } = await cmd(`git rev-parse --abbrev-ref HEAD`, {
+    //   cwd,
+    // })
+    console.log({ cwd })
+    // if (process.env.FAB_E2E_SKIP_CREATE) {
+    //   console.log({ cwd })
+    //   await shell(`git reset --hard`, { cwd })
+    //   await shell(`git clean -df`, { cwd })
+    // } else {
+    //   // Create a new NEXT project inside
+    //   await shell(`yarn create next-app .`, { cwd })
+    //   // Skip git stuff on Github, it's only for rerunning locally
+    //   if (!process.env.GITHUB_WORKSPACE) {
+    //     await shell(`git init`, { cwd })
+    //     await shell(`git add .`, { cwd })
+    //     await shell(`git commit -m CREATED`, { cwd })
+    //   }
+    // }
+    // // Expect that {cwd} has a package.json
+    // const { stdout: files } = await cmd(`ls -l`, { cwd })
+    // expect(files).toMatch('package.json')
+    // // Add the FAB project's current commit SHA to index.js for debugging
+    // await shell(
+    //   `echo "\\nconsole.log('[FAB CI] NextJS — Branch ${current_branch} (${current_sha})')" >> pages/index.js`,
+    //   { cwd, shell: true }
+    // )
   })
 
-  it('should configure the NextJS project to produce FABs', async () => {
-    await shell(
-      process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
-      {
-        cwd,
-      }
-    )
-    const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
-    expect(files_after_fab_init).toMatch('fab.config.json5')
-    expect(files_after_fab_init).toMatch('next.config.js')
-
-    await shell(`cp -R ${__dirname}/fixtures/nextjs/pages ${cwd}`)
-
-    const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
-    package_json.scripts = {
-      ...package_json.scripts,
-      'fab:serve': 'fab serve fab.zip',
-    }
-    await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
-    await shell(`yarn build`, { cwd })
-    await shell(`yarn fab:build`, { cwd })
-
-    const { stdout: built_pages } = await cmd(`ls -l ${cwd}/.next/serverless/pages`)
-    expect(built_pages).toMatch('index.html')
-    expect(built_pages).toMatch('dynamic.js')
-    expect(built_pages).toMatch('_error.js')
-    expect(built_pages).toMatch('background')
-
-    const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
-    expect(files_after_fab_build).toMatch('fab.zip')
-  })
+  // it('should configure the NextJS project to produce FABs', async () => {
+  //   await shell(
+  //     process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
+  //     {
+  //       cwd,
+  //     }
+  //   )
+  //   const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
+  //   expect(files_after_fab_init).toMatch('fab.config.json5')
+  //   expect(files_after_fab_init).toMatch('next.config.js')
+  //
+  //   await shell(`cp -R ${__dirname}/fixtures/nextjs/pages ${cwd}`)
+  //
+  //   const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
+  //   package_json.scripts = {
+  //     ...package_json.scripts,
+  //     'fab:serve': 'fab serve fab.zip',
+  //   }
+  //   await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
+  //   await shell(`yarn build`, { cwd })
+  //   await shell(`yarn fab:build`, { cwd })
+  //
+  //   const { stdout: built_pages } = await cmd(`ls -l ${cwd}/.next/serverless/pages`)
+  //   expect(built_pages).toMatch('index.html')
+  //   expect(built_pages).toMatch('dynamic.js')
+  //   expect(built_pages).toMatch('_error.js')
+  //   expect(built_pages).toMatch('background')
+  //
+  //   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
+  //   expect(files_after_fab_build).toMatch('fab.zip')
+  // })
 
   // describe('fab build tests', () => {
   //   beforeAll(async () => {

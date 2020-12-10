@@ -2,6 +2,7 @@ import { cmd, shell } from '../../utils'
 import fs from 'fs-extra'
 import path from 'path'
 import { ExecaChildProcess } from 'execa'
+import tmp from 'tmp-promise'
 
 export const ONE_PORT_TO_TEST_THEM_ALL = 10400
 
@@ -15,14 +16,21 @@ export const buildFab = async (cwd: string, global = false) => {
 
 const workspace_dir = path.resolve(__dirname, '../workspace')
 export const getWorkingDir = async (dirname: string, clean: boolean) => {
-  const cwd = path.join(workspace_dir, dirname)
+  const symlink = path.join(workspace_dir, dirname)
 
-  if (clean && (await fs.pathExists(cwd))) {
-    await fs.remove(cwd)
+  if (await fs.pathExists(symlink)) {
+    const realDir = await fs.realpath(symlink)
+    // Handle the case where the FAB checkout already has stuff in e2e/workspace
+    const is_symlink = realDir !== symlink
+    if (!clean && is_symlink && (await fs.pathExists(realDir))) {
+      return realDir
+    }
+    await fs.remove(symlink)
   }
 
-  await fs.ensureDir(cwd)
-  return cwd
+  const dir = await tmp.dir()
+  await fs.symlink(dir.path, symlink)
+  return dir.path
 }
 
 let server_process: ExecaChildProcess | null = null
