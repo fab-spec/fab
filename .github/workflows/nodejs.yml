@@ -78,13 +78,13 @@ jobs:
           yarn test nextjs
         env:
           CI: true
-      - name: 'E2E: Deploying to CF Workers, AWS Lambda & S3'
-        run: |
-          cd tests
-          yarn test deploys
-        env:
-          CI: true
-          CF_WORKERS_API_TOKEN: ${{ secrets.CF_WORKERS_API_TOKEN }}
-          AWS_S3_SECRET_KEY: ${{ secrets.AWS_S3_SECRET_KEY }}
-          AWS_CRA_SECRET: ${{ secrets.AWS_CRA_SECRET }}
-          AWS_NEXTJS_SECRET: ${{ secrets.AWS_NEXTJS_SECRET }}
+#      - name: 'E2E: Deploying to CF Workers, AWS Lambda & S3'
+#        run: |
+#          cd tests
+#          yarn test deploys
+#        env:
+#          CI: true
+#          CF_WORKERS_API_TOKEN: ${{ secrets.CF_WORKERS_API_TOKEN }}
+#          AWS_S3_SECRET_KEY: ${{ secrets.AWS_S3_SECRET_KEY }}
+#          AWS_CRA_SECRET: ${{ secrets.AWS_CRA_SECRET }}
+#          AWS_NEXTJS_SECRET: ${{ secrets.AWS_NEXTJS_SECRET }}
