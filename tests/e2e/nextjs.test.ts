@@ -34,7 +34,7 @@ describe('Nextjs E2E Test', () => {
       $ ls -l
       stdout >> ${(files) => expect(files).toMatch('package.json')}
 
-      echo "\\\\nconsole.log('[FAB CI] NextJS — Branch ${fab_sha} (${fab_branch})')" >> pages/index.js
+      $ echo "\\\\nconsole.log('[FAB CI] NextJS — Branch ${fab_sha} (${fab_branch})')" >> pages/index.js
     `
 
     console.log({ cwd, fab_sha, fab_branch })
