@@ -6,6 +6,7 @@ import {
   getCurrentCommitInfo,
   getWorkingDir,
   request,
+  FAB_PACKAGE_NAMES,
 } from './helpers'
 import path from 'path'
 import globby from 'globby'
@@ -42,41 +43,39 @@ describe('Nextjs E2E Test', () => {
     `
   })
 
-  it('should configure the NextJS project to produce FABs', async () => {
-    await shellac.in(cwd)`
-      if ${process.env.PUBLIC_PACKAGES} {
-        $ npx --ignore-existing fab init -y
-      } else {
-        $$ npx fab init -y
-        $$ yarn link @fab/actions @fab/input-nextjs
-      }
+  it('should configure the NextJS project to produce FABs', async () => shellac.in(cwd)`
+    if ${process.env.PUBLIC_PACKAGES} {
+      $ npx --ignore-existing fab init -y
+    } else {
+      $$ npx fab init -y
+      $$ yarn link ${FAB_PACKAGE_NAMES}
+    }
 
-      $ ls -l
-      stdout >> ${(files) => {
-        expect(files).toMatch('fab.config.json5')
-        expect(files).toMatch('next.config.js')
-      }}
+    $ ls -l
+    stdout >> ${(files) => {
+      expect(files).toMatch('fab.config.json5')
+      expect(files).toMatch('next.config.js')
+    }}
 
-      $ cp -R ${__dirname}/fixtures/nextjs/pages .
+    $ cp -R ${__dirname}/fixtures/nextjs/pages .
 
-      $$ ./node_modules/.bin/next build
+    $$ yarn build
 
-      $ ls -l .next/serverless/pages
-      stdout >> ${(built_pages) => {
-        expect(built_pages).toMatch('index.html')
-        expect(built_pages).toMatch('dynamic.js')
-        expect(built_pages).toMatch('_error.js')
-        expect(built_pages).toMatch('background')
-      }}
+    $ ls -l .next/serverless/pages
+    stdout >> ${(built_pages) => {
+      expect(built_pages).toMatch('index.html')
+      expect(built_pages).toMatch('dynamic.js')
+      expect(built_pages).toMatch('_error.js')
+      expect(built_pages).toMatch('background')
+    }}
 
-      $$ yarn fab:build
+    $$ yarn fab:build
 
-      $ ls -l
-      stdout >> ${(files) => {
-        expect(files).toMatch('fab.zip')
-      }}
-    `
-  })
+    $ ls -l
+    stdout >> ${(files) => {
+      expect(files).toMatch('fab.zip')
+    }}
+  `)
 
   describe('fab build tests', () => {
     beforeAll(async () => {

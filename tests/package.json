@@ -21,7 +21,7 @@
     "globby": "^11.0.0",
     "jasmine-fail-fast": "^2.0.1",
     "jju": "^1.4.0",
-    "shellac": "^0.3.1",
+    "shellac": "^0.3.2",
     "tslib": "^1.11.1"
   },
   "resolutions": {

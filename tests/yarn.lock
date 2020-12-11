@@ -4230,10 +4230,10 @@ shebang-regex@^3.0.0:
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-shellac@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/shellac/-/shellac-0.3.1.tgz#83d6ce93dba80458083b054f592e10fda3b573f0"
-  integrity sha512-7vx4PKO2AU6wyPjsks7UJdiH2712chgcTjA4Fqv2ufwq8BgJ5C+Q2aAhzruPlI4JUEHSBVt7YFLG6W6QqzE9lA==
+shellac@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/shellac/-/shellac-0.3.2.tgz#25be602cdf1e1ad88a8abd9a22ee46ca341b75e7"
+  integrity sha512-mhLaDTYP2Ik3HGhU7nPNG4xdcQVqsp/My/qQIq/rBLZ5M/Kx6+0kr9jj3uz+tuUkH8QkSffaITarEl1p/UytpA==
   dependencies:
     reghex "^1.0.2"
 

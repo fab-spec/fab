@@ -5,6 +5,7 @@ import {
   buildFab,
   cancelServer,
   createServer,
+  FAB_PACKAGE_NAMES,
   getCurrentCommitInfo,
   getWorkingDir,
   request,
@@ -44,30 +45,28 @@ describe('Create React App E2E Test', () => {
     `
   })
 
-  // it('should configure the CRA project to produce FABs', async () => {
-  //   // CRA doesn't like running in a directory with a package.json higher up
-  //   // with a different version of Webpack.
-  //   await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
-  //   await shell(`cat .env`, { cwd })
-  //   await shell(
-  //     process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
-  //     { cwd }
-  //   )
-  //   const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
-  //   expect(files_after_fab_init).toMatch('fab.config.json5')
-  //   await shell(`cp fab.config.json5 backup.config.json5`, { cwd })
-  //
-  //   const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
-  //   package_json.scripts = {
-  //     ...package_json.scripts,
-  //     'fab:serve': 'fab serve fab.zip',
-  //   }
-  //   await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
-  //   await shell(`yarn build:fab`, { cwd })
-  //
-  //   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
-  //   expect(files_after_fab_build).toMatch('fab.zip')
-  // })
+  it('should configure the CRA project to produce FABs', async () => shellac.in(cwd)`
+    if ${process.env.PUBLIC_PACKAGES} {
+      $ npx --ignore-existing fab init -y
+    } else {
+      $$ npx fab init -y
+      $$ yarn link ${FAB_PACKAGE_NAMES}
+    }
+
+    $ ls -l
+    stdout >> ${(files) => {
+      expect(files).toMatch('fab.config.json5')
+    }}
+
+    $ cp fab.config.json5 backup.config.json5
+    $$ yarn build:fab
+
+    $ ls -l
+    stdout >> ${(files) => {
+      expect(files).toMatch('fab.zip')
+    }}
+  `)
+
   //
   // describe('fab build tests', () => {
   //   beforeEach(async () => {

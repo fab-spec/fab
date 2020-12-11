@@ -4,6 +4,7 @@ import path from 'path'
 import { ExecaChildProcess } from 'execa'
 import tmp from 'tmp-promise'
 import shellac from 'shellac'
+import globby from 'globby'
 
 export const ONE_PORT_TO_TEST_THEM_ALL = 10400
 
@@ -82,3 +83,8 @@ export async function getCurrentCommitInfo() {
     `
   return { fab_sha, fab_branch }
 }
+
+export const FAB_PACKAGE_NAMES = globby(['*', '!_fab'], {
+  cwd: path.resolve(__dirname, '../../../packages'),
+  onlyFiles: false,
+}).then((files) => files.map((x) => `@fab/${x}`).join(' '))
