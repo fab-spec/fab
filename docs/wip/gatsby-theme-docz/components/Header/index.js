@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
 
 const TopBar = styled.div`

@@ -1,74 +1,75 @@
 import fs from 'fs-extra'
-import { cmd, shell } from '../utils'
+import { shell } from '../utils'
 import globby from 'globby'
-import { buildFab, cancelServer, createServer, getWorkingDir, request } from './helpers'
+import {
+  buildFab,
+  cancelServer,
+  createServer,
+  FAB_PACKAGE_NAMES,
+  getCurrentCommitInfo,
+  getWorkingDir,
+  request,
+} from './helpers'
 import path from 'path'
 import jju from 'jju'
 import { pathToSHA512 } from 'file-to-sha512'
+import shellac from 'shellac'
 
 describe('Create React App E2E Test', () => {
   let cwd: string
 
   it('should create a new CRA project', async () => {
-    cwd = await getWorkingDir('cra-test', !process.env.FAB_E2E_SKIP_CREATE)
-    const { stdout: current_sha } = await cmd(`git rev-parse --short HEAD`, {
-      cwd,
-    })
-    const { stdout: current_branch } = await cmd(`git rev-parse --abbrev-ref HEAD`, {
-      cwd,
-    })
-    if (process.env.FAB_E2E_SKIP_CREATE) {
-      console.log({ cwd })
-      await shell(`git reset --hard`, { cwd })
-      await shell(`git clean -df`, { cwd })
-    } else {
-      // Create a new CRA project inside
-      await shell(`yarn create react-app .`, { cwd })
-      // Skip git stuff on Github, it's only for rerunning locally
-      if (!process.env.GITHUB_WORKSPACE) {
-        await shell(`git init`, { cwd })
-        await shell(`git add .`, { cwd })
-        await shell(`git commit -m CREATED`, { cwd })
+    cwd = await getWorkingDir('cra-test', Boolean(process.env.FAB_E2E_CLEAN))
+    const { fab_sha, fab_branch } = await getCurrentCommitInfo()
+
+    await shellac.in(cwd)`
+      if ${await fs.pathExists(path.join(cwd, '.git'))} {
+        $$ echo "Reusing existing CRA app in ${cwd}. Use FAB_E2E_CLEAN=true to skip."
+        $ git reset --hard
+        $ git clean -df
+        $ rm -rf .next out build
+      } else {
+        $$ echo "Creating new CRA app in ${cwd}."
+        $ rm -rf *
+        $$ yarn create react-app .
+
+        $$ git init
+        $ git add .
+        $ GIT_COMMITTER_NAME=FAB GIT_COMMITTER_EMAIL=ci@fab.dev git commit -m 'post create' --author "FAB CI <>" --allow-empty
       }
-    }
-    // Expect that {cwd} has a package.json
-    const { stdout: files } = await cmd(`ls -l`, { cwd })
-    expect(files).toMatch('package.json')
-    // Add the FAB project's current commit SHA to index.js for debugging
-    await shell(
-      `echo "\\nconsole.log('[FAB CI] Create React App — Branch ${current_branch} (${current_sha})')" >> src/index.js`,
-      { cwd, shell: true }
-    )
+
+      $ ls -l
+      stdout >> ${(files) => expect(files).toMatch('package.json')}
+
+      $ echo -e "\\nconsole.log('[FAB CI] Create React App — Branch ${fab_sha} (${fab_branch})')" >> src/index.js
+    `
   })
 
-  it('should configure the CRA project to produce FABs', async () => {
-    // CRA doesn't like running in a directory with a package.json higher up
-    // with a different version of Webpack.
-    await fs.writeFile(`${cwd}/.env`, `SKIP_PREFLIGHT_CHECK=true`)
-    await shell(`cat .env`, { cwd })
-    await shell(
-      process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
-      { cwd }
-    )
-    const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
-    expect(files_after_fab_init).toMatch('fab.config.json5')
-    await shell(`cp fab.config.json5 backup.config.json5`, { cwd })
-
-    const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
-    package_json.scripts = {
-      ...package_json.scripts,
-      'fab:serve': 'fab serve fab.zip',
+  it('should configure the CRA project to produce FABs', async () => shellac.in(cwd)`
+    if ${process.env.PUBLIC_PACKAGES} {
+      $ npx --ignore-existing fab init -y
+    } else {
+      $$ npx fab init -y
+      $$ yarn link ${FAB_PACKAGE_NAMES}
     }
-    await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
-    await shell(`yarn build:fab`, { cwd })
 
-    const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
-    expect(files_after_fab_build).toMatch('fab.zip')
-  })
+    $ ls -l
+    stdout >> ${(files) => {
+      expect(files).toMatch('fab.config.json5')
+    }}
+
+    $ cp fab.config.json5 backup.config.json5
+    $$ yarn build:fab
+
+    $ ls -l
+    stdout >> ${(files) => expect(files).toMatch('fab.zip')}
+  `)
 
   describe('fab build tests', () => {
     beforeEach(async () => {
-      await shell(`cp backup.config.json5 fab.config.json5 `, { cwd })
+      await shellac.in(cwd)`
+        $ cp backup.config.json5 fab.config.json5
+      `
     })
 
     it('should return a 200 on / and /hello', async () => {

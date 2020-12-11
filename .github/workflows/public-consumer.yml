@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - prerelease
+      - nextjs-test-why-u-wanna-treat-me-so-bad
 
 jobs:
   public_package_build:
@@ -13,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [12.x,14.x]
 
     steps:
     - uses: actions/checkout@v1
@@ -45,8 +46,7 @@ jobs:
         PUBLIC_PACKAGES=true yarn test create-react-app
       env:
         CI: true
-#    Waiting on https://github.com/fab-spec/fab/pull/283
-#    - name: "E2E: nextjs"
-#      run: |
-#        cd tests
-#        PUBLIC_PACKAGES=true yarn test nextjs
+    - name: "E2E: nextjs"
+      run: |
+        cd tests
+        PUBLIC_PACKAGES=true yarn test nextjs

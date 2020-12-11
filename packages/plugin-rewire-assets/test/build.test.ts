@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { PluginMetadata, ProtoFab } from '@fab/core'
+import { ProtoFab } from '@fab/core'
 import hasha from 'hasha'
 import { RewireAssetsMetadata } from '../src/types'
 import { build } from '../src/build'
@@ -20,9 +20,9 @@ const EXAMPLES = {
     Mauris at nisi et leo mollis dapibus vel vestibulum ipsum. Donec placerat nec ante eget mollis. Donec maximus quis ex ac porttitor. Cras nec quam sed libero hendrerit mollis. Nam vitae lacinia ante. Etiam tempor quis enim a tempus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent fermentum semper purus at ultrices. Nullam convallis magna sed eros consectetur egestas. In hac habitasse platea dictumst. Mauris condimentum nisl nisl, nec tincidunt dui elementum a. Donec malesuada imperdiet maximus. Vivamus aliquet nisl non ex egestas tincidunt. Suspendisse eget mi maximus, volutpat justo interdum, porttitor ipsum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Proin sagittis condimentum porta.
     Vestibulum non iaculis tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent mollis eros non quam tincidunt, vitae fringilla massa venenatis. Integer quam dolor, tristique in congue sed, tristique in velit. Vestibulum nec aliquet mauris. Etiam efficitur pretium mi volutpat fringilla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam nisi turpis, eleifend elementum volutpat vitae, volutpat quis nibh. Aenean congue molestie tortor. Nulla volutpat ante arcu, ut sagittis ipsum venenatis non. Suspendisse fringilla odio quis velit dignissim, id ultricies quam accumsan. Curabitur et sagittis mi. Phasellus eget dolor congue, rhoncus libero non, dictum orci. Quisque condimentum mollis nibh, a ultrices orci semper a. Morbi eget metus felis.
     Nulla magna ex, pellentesque in varius vel, fermentum quis nibh. Curabitur blandit est imperdiet dictum efficitur. Duis ac nisl id eros eleifend euismod. Cras tincidunt leo ex, vel pulvinar diam sagittis vel. Etiam facilisis arcu et facilisis imperdiet. Donec ligula nibh, euismod quis suscipit non, laoreet eget odio. Phasellus congue nulla neque, et semper risus ullamcorper vel. Aliquam erat volutpat. Nunc erat quam, porttitor vitae cursus ac, porttitor eu velit. Curabitur ac faucibus erat. Nulla eu pellentesque magna. Proin laoreet vestibulum aliquet. Duis accumsan condimentum dui, non mollis ipsum sagittis ac. Praesent at magna tincidunt, commodo justo placerat, tempus diam. Proin a magna bibendum velit fermentum commodo.
-  </p> 
+  </p>
 </body>
-</html> 
+</html>
 `,
 }
 const css_hash = hasha(EXAMPLES.CSS, { algorithm: 'md5' }).slice(0, 9)
