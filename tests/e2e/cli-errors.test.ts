@@ -1,6 +1,5 @@
 import { expectError, shell } from '../utils'
 import { FAB_PACKAGE_NAMES, getWorkingDir } from './helpers'
-import * as path from 'path'
 import shellac from 'shellac'
 
 describe('dir of static assets', () => {

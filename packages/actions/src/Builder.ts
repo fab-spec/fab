@@ -1,4 +1,4 @@
-import { LoadedPlugin, RuntimePlugin, FabConfig, ProtoFab, BuildFn } from '@fab/core'
+import { LoadedPlugin, RuntimePlugin, FabConfig, ProtoFab } from '@fab/core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { Typecheck } from './Typecheck'

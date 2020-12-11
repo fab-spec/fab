@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import { cmd, shell } from '../utils'
+import { shell } from '../utils'
 import globby from 'globby'
 import {
   buildFab,
