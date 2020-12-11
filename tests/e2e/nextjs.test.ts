@@ -1,6 +1,12 @@
 import fs from 'fs-extra'
-import { cmd, shell } from '../utils'
-import { buildFab, cancelServer, createServer, getWorkingDir, request } from './helpers'
+import {
+  buildFab,
+  cancelServer,
+  createServer,
+  getCurrentCommitInfo,
+  getWorkingDir,
+  request,
+} from './helpers'
 import path from 'path'
 import globby from 'globby'
 import shellac from 'shellac'
@@ -11,13 +17,7 @@ describe('Nextjs E2E Test', () => {
   it('should create a new Next project', async () => {
     cwd = await getWorkingDir('nextjs-test', Boolean(process.env.FAB_E2E_CLEAN))
 
-    const { fab_sha, fab_branch } = await shellac.in(__dirname)`
-      $ git rev-parse --short HEAD
-      stdout >> fab_sha
-
-      $ git rev-parse --abbrev-ref HEAD
-      stdout >> fab_branch
-    `
+    const { fab_sha, fab_branch } = await getCurrentCommitInfo()
 
     await shellac.in(cwd)`
       if ${await fs.pathExists(path.join(cwd, '.git'))} {

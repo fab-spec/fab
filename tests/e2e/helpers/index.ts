@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import { ExecaChildProcess } from 'execa'
 import tmp from 'tmp-promise'
+import shellac from 'shellac'
 
 export const ONE_PORT_TO_TEST_THEM_ALL = 10400
 
@@ -69,4 +70,15 @@ export const request = async (args: string, path: string) => {
   const curl_cmd = `curl ${args} --retry 5 --retry-connrefused http://localhost:${ONE_PORT_TO_TEST_THEM_ALL}`
   const { stdout } = await shell(curl_cmd + path)
   return stdout
+}
+
+export async function getCurrentCommitInfo() {
+  const { fab_sha, fab_branch } = await shellac.in(__dirname)`
+      $ git rev-parse --short HEAD
+      stdout >> fab_sha
+
+      $ git rev-parse --abbrev-ref HEAD
+      stdout >> fab_branch
+    `
+  return { fab_sha, fab_branch }
 }
