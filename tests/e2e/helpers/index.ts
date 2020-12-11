@@ -8,22 +8,6 @@ import globby from 'globby'
 
 export const ONE_PORT_TO_TEST_THEM_ALL = 10400
 
-export const buildFab = async (cwd: string, global = false) => {
-  await shellac.in(cwd)`
-    $ rm -f fab.zip
-    if ${global} {
-      $ npx fab build
-    } else {
-      $ yarn fab:build
-    }
-
-    $ ls -l
-    stdout >> ${(files) => expect(files).toMatch('fab.zip')}
-  `
-  const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
-  expect(files_after_fab_build).toMatch('fab.zip')
-}
-
 const workspace_dir = path.resolve(__dirname, '../workspace')
 export const getWorkingDir = async (dirname: string, clean: boolean) => {
   const symlink = path.join(workspace_dir, dirname)
@@ -43,6 +27,20 @@ export const getWorkingDir = async (dirname: string, clean: boolean) => {
   await fs.ensureDir(cwd)
   await fs.symlink(cwd, symlink)
   return cwd
+}
+
+export const buildFab = async (cwd: string, global = false) => {
+  await shellac.in(cwd)`
+    $ rm -f fab.zip
+    if ${global} {
+      $ npx fab build
+    } else {
+      $ yarn fab:build
+    }
+
+    $ ls -l
+    stdout >> ${(files) => expect(files).toMatch('fab.zip')}
+  `
 }
 
 let server_process: ExecaChildProcess | null = null
@@ -83,12 +81,12 @@ export const request = async (args: string, path: string) => {
 
 export async function getCurrentCommitInfo() {
   const { fab_sha, fab_branch } = await shellac.in(__dirname)`
-      $ git rev-parse --short HEAD
-      stdout >> fab_sha
+    $ git rev-parse --short HEAD
+    stdout >> fab_sha
 
-      $ git rev-parse --abbrev-ref HEAD
-      stdout >> fab_branch
-    `
+    $ git rev-parse --abbrev-ref HEAD
+    stdout >> fab_branch
+  `
   return { fab_sha, fab_branch }
 }
 
