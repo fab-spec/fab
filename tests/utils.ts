@@ -18,7 +18,7 @@ export const _shell = (cwd: string) => (command: string, opts?: any) =>
 
 const SHOULD_HAVE_THROWN = `Shouldn't get here, expected to have already thrown`
 
-export const expectError = async (command: string, ...opts: any) => {
+export const expectError = async (command: string, opts: any) => {
   try {
     await (process.env.DEBUG ? shell : cmd)(command, opts)
     throw SHOULD_HAVE_THROWN

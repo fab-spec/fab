@@ -1,17 +1,24 @@
 import { expectError, shell } from '../utils'
-import { getWorkingDir } from './helpers'
+import { FAB_PACKAGE_NAMES, getWorkingDir } from './helpers'
 import * as path from 'path'
+import shellac from 'shellac'
 
 describe('dir of static assets', () => {
   let cwd: string
   beforeAll(async () => {
-    cwd = await getWorkingDir('static', true)
-    await shell(`cp -R ${__dirname}/fixtures/static ${path.resolve(cwd, '..')}`)
+    cwd = await getWorkingDir('static', false)
+    await shellac.in(cwd)`
+      $ rm -rf *
+      $$ echo Resetting ${cwd}
+      $ cp -R ${__dirname}/fixtures/static/* .
+      $ npm init -y
+      $$ yarn link ${FAB_PACKAGE_NAMES}
+    `
   })
 
   describe('failure cases', () => {
     it('should handle a missing config file', async () => {
-      const { stderr, stdout } = await expectError(`fab build`, { cwd })
+      const { stderr, stdout } = await expectError(`npx fab build`, { cwd })
       expect(stderr).toContain(`Error: Missing config file`)
       expect(stderr).toContain(`fab.config.json5`)
       expect(stdout).toContain(
@@ -21,10 +28,10 @@ describe('dir of static assets', () => {
     })
 
     it('should handle an empty config file', async () => {
-      const { stderr, stdout } = await expectError(
-        `fab build -c fab.empty-config.json5`,
-        { cwd }
-      )
+      const {
+        stderr,
+        stdout,
+      } = await expectError(`npx fab build -c fab.empty-config.json5`, { cwd })
       expect(stdout).toContain(`The FAB config file is missing a 'plugins' property.`)
       expect(stderr).toContain(`Config file contains errors!`)
     })
@@ -43,7 +50,7 @@ describe('dir of static assets', () => {
       const {
         stderr,
         stdout,
-      } = await expectError(`fab build -c fab.missing-rewire.json5`, { cwd })
+      } = await expectError(`npx fab build -c fab.missing-rewire.json5`, { cwd })
       expect(stdout).toContain(`Build failed!`)
       expect(stdout).toContain(
         `Build config leaves files outside of _assets dir: /index.html`
