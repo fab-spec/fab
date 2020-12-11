@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - prerelease
+      - nextjs-test-why-u-wanna-treat-me-so-bad
 
 jobs:
   public_package_build:
