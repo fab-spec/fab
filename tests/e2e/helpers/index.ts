@@ -9,9 +9,17 @@ import globby from 'globby'
 export const ONE_PORT_TO_TEST_THEM_ALL = 10400
 
 export const buildFab = async (cwd: string, global = false) => {
-  await shell(`rm -f fab.zip`, { cwd })
-  await shell(global ? `npx fab build` : `yarn fab:build`, { cwd })
+  await shellac.in(cwd)`
+    $ rm -f fab.zip
+    if ${global} {
+      $ npx fab build
+    } else {
+      $ yarn fab:build
+    }
 
+    $ ls -l
+    stdout >> ${(files) => expect(files).toMatch('fab.zip')}
+  `
   const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
   expect(files_after_fab_build).toMatch('fab.zip')
 }
