@@ -11,6 +11,7 @@
     "@fab/input-static": "latest",
     "@fab/plugin-render-html": "latest",
     "@fab/plugin-rewire-assets": "latest",
+    "@fab/plugin-precompile": "latest",
     "@fab/server": "latest"
   }
 }

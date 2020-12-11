@@ -60,12 +60,12 @@ jobs:
           yarn test cli-errors
         env:
           CI: true
-#      - name: 'E2E: Server-Side Logic'
-#        run: |
-#          cd tests
-#          yarn test server-side-logic
-#        env:
-#          CI: true
+      - name: 'E2E: Server-Side Logic'
+        run: |
+          cd tests
+          yarn test server-side-logic
+        env:
+          CI: true
       - name: 'E2E: Create React App'
         run: |
           cd tests
