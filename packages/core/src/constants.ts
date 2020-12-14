@@ -26,6 +26,7 @@ const AWS_LAMBDA_CONFIG = {
   region: '',
   cf_distribution_id: '',
   lambda_arn: '',
+  routes_for_invalidation: ['/'],
 }
 const AWS_S3_CONFIG = {
   access_key: '',
