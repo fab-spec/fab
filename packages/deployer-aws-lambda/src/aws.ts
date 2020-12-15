@@ -95,7 +95,6 @@ export const updateCloudFront = async (
   log.tick(`Done.`)
   log(`Got response status: 💛${update_response.Distribution?.Status}💛
     🖤(CloudFront can take a few minutes to update)🖤`)
-  // todo: make this a config option
   const num_invalidations = routes_for_invalidation.length
   log(
     `Invalidating ${num_invalidations} route${
