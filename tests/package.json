@@ -2,14 +2,17 @@
   "name": "fab-spec-tests",
   "private": true,
   "devDependencies": {
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-typescript": "^7.12.1",
     "execa": "^3.3.0",
     "fs-extra": "^8.1.0",
     "jest": "^24.9.0",
+    "tmp-promise": "^3.0.2",
     "ts-jest": "^24.1.0",
     "typescript": "^3.7.2"
   },
   "scripts": {
-    "test": "jest --maxWorkers=10"
+    "test": "jest"
   },
   "dependencies": {
     "@types/jest": "^24.0.23",
@@ -19,6 +22,7 @@
     "globby": "^11.0.0",
     "jasmine-fail-fast": "^2.0.1",
     "jju": "^1.4.0",
+    "shellac": "^0.4.0",
     "tslib": "^1.11.1"
   },
   "resolutions": {

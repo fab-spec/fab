@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useRef, useState } from 'react'
-import { jsx, Layout as BaseLayout, Main, Container } from 'theme-ui'
+import { jsx, Layout as BaseLayout, Main } from 'theme-ui'
 import { Global, css } from '@emotion/core'
 import styled from '@emotion/styled'
 

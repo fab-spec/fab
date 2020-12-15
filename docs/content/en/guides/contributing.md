@@ -46,27 +46,44 @@ In a second terminal:
 # from the FAB project root
 cd tests
 yarn
-yarn test
+yarn test create-react-app
+yarn test nextjs
 ```
 
-This will run a `create-react-app` and a `nextjs` test suite, where it creates a new project (using CRA or `create-next-app`), then runs `fab init`, then runs `fab build`, then runs `fab serve fab.zip`. It should pass on your machine, if doesn't raise an issue!
+This will run a `create-react-app` and a `nextjs` test suite, where it creates a new project (using CRA or `create-next-app`), then runs `fab init`, then runs `fab build`, then runs `fab serve fab.zip`. It should pass on your machine, if doesn't then raise an issue!
 
-This test takes a long time, so to _rerun_ the tests use the following command:
+This test is fairly slow, so repeated runs will try to reuse the project directory. For example, the first step in the `yarn test create-react-app` is to run `yarn create react-app` which takes a while. Rerunning the E2E tests will `git reset --hard` to the original state, which is much faster than creating a new app.
 
 ### Rerunning tests
+
+Note, run these in the `fab/tests` dir.
 
 For `create-react-app`:
 
 ```sh
-# in the fab/tests dir
-FAB_E2E_SKIP_CREATE=true yarn test create-react-app
+# Reuse the previous CRA if present
+yarn test create-react-app
+
+# Full E2E test including new CRA from scratch
+FAB_E2E_CLEAN=true yarn test create-react-app
+
+# Or you can do:
+rm e2e/workspace/create-react-app
+yarn test create-react-app
 ```
 
 For `nextjs`:
 
 ```sh
-# in the fab/tests dir
-FAB_E2E_SKIP_CREATE=true yarn test nextjs
+# Reuse the previous NextJS project if present
+yarn test nextjs
+
+# Full E2E test including new NextJS from the base template
+FAB_E2E_CLEAN=true yarn test nextjs
+
+# Or you can do:
+rm e2e/workspace/nextjs-test
+yarn test nextjs
 ```
 
 ### Tweaking tests & source code

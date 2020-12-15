@@ -1,8 +1,5 @@
 import { expect } from 'chai'
-import { ProtoFab } from '@fab/core'
 import { build } from '../src/build'
-import { PrecompileMetadata } from '../src/types'
-import path from 'path'
 
 describe('Build time', () => {
   it('should be a function', () => {

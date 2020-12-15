@@ -1,72 +1,81 @@
 import fs from 'fs-extra'
-import { cmd, shell } from '../utils'
-import { buildFab, cancelServer, createServer, getWorkingDir, request } from './helpers'
+import {
+  buildFab,
+  cancelServer,
+  createServer,
+  getCurrentCommitInfo,
+  getWorkingDir,
+  request,
+  FAB_PACKAGE_NAMES,
+} from './helpers'
 import path from 'path'
 import globby from 'globby'
+import shellac from 'shellac'
 
 describe('Nextjs E2E Test', () => {
   let cwd: string
 
   it('should create a new Next project', async () => {
-    cwd = await getWorkingDir('nextjs-test', !process.env.FAB_E2E_SKIP_CREATE)
-    const { stdout: current_sha } = await cmd(`git rev-parse --short HEAD`, { cwd })
-    const { stdout: current_branch } = await cmd(`git rev-parse --abbrev-ref HEAD`, {
-      cwd,
-    })
-    if (process.env.FAB_E2E_SKIP_CREATE) {
-      console.log({ cwd })
-      await shell(`git reset --hard`, { cwd })
-      await shell(`git clean -df`, { cwd })
+    cwd = await getWorkingDir('nextjs-test', Boolean(process.env.FAB_E2E_CLEAN))
+
+    const { fab_sha, fab_branch } = await getCurrentCommitInfo()
+
+    await shellac.in(cwd)`
+      if ${await fs.pathExists(path.join(cwd, '.git'))} {
+        $$ echo "Reusing existing NextJS app in ${cwd}. Use FAB_E2E_CLEAN=true to skip."
+        $ git reset --hard
+        $ git clean -df
+        $ rm -rf .next out build
+      } else {
+        $$ echo "Creating new NextJS app in ${cwd}."
+        $ rm -rf *
+        $$ yarn create next-app .
+
+        $$ git init
+        $ git add .
+        $ GIT_COMMITTER_NAME=FAB GIT_COMMITTER_EMAIL=ci@fab.dev git commit -m 'post create' --author "FAB CI <>" --allow-empty
+      }
+
+      $ ls -l
+      stdout >> ${(files) => expect(files).toMatch('package.json')}
+
+      $ echo -e "\\nconsole.log('[FAB CI] NextJS — Branch ${fab_sha} (${fab_branch})')" >> pages/index.js
+    `
+  })
+
+  it('should configure the NextJS project to produce FABs', async () => shellac.in(cwd)`
+    if ${process.env.PUBLIC_PACKAGES} {
+      $ npx --ignore-existing fab init -y
     } else {
-      // Create a new NEXT project inside
-      await shell(`yarn create next-app .`, { cwd })
-      // Skip git stuff on Github, it's only for rerunning locally
-      if (!process.env.GITHUB_WORKSPACE) {
-        await shell(`git init`, { cwd })
-        await shell(`git add .`, { cwd })
-        await shell(`git commit -m CREATED`, { cwd })
-      }
+      $$ npx fab init -y
+      $$ yarn link ${FAB_PACKAGE_NAMES}
     }
-    // Expect that {cwd} has a package.json
-    const { stdout: files } = await cmd(`ls -l`, { cwd })
-    expect(files).toMatch('package.json')
-    // Add the FAB project's current commit SHA to index.js for debugging
-    await shell(
-      `echo "\\nconsole.log('[FAB CI] NextJS — Branch ${current_branch} (${current_sha})')" >> pages/index.js`,
-      { cwd, shell: true }
-    )
-  })
 
-  it('should configure the NextJS project to produce FABs', async () => {
-    await shell(
-      process.env.PUBLIC_PACKAGES ? 'npx fab init -y' : 'fab init -y --skip-install',
-      {
-        cwd,
-      }
-    )
-    const { stdout: files_after_fab_init } = await cmd(`ls -l ${cwd}`)
-    expect(files_after_fab_init).toMatch('fab.config.json5')
-    expect(files_after_fab_init).toMatch('next.config.js')
+    $ ls -l
+    stdout >> ${(files) => {
+      expect(files).toMatch('fab.config.json5')
+      expect(files).toMatch('next.config.js')
+    }}
 
-    await shell(`cp -R ${__dirname}/fixtures/nextjs/pages ${cwd}`)
+    $ cp -R ${__dirname}/fixtures/nextjs/pages .
 
-    const package_json = JSON.parse(await fs.readFile(`${cwd}/package.json`, 'utf8'))
-    package_json.scripts = {
-      ...package_json.scripts,
-      'fab:serve': 'fab serve fab.zip',
-    }
-    await fs.writeFile(`${cwd}/package.json`, JSON.stringify(package_json, null, 2))
-    await shell(`yarn build:fab`, { cwd })
+    $$ yarn build
 
-    const { stdout: built_pages } = await cmd(`ls -l ${cwd}/.next/serverless/pages`)
-    expect(built_pages).toMatch('index.html')
-    expect(built_pages).toMatch('dynamic.js')
-    expect(built_pages).toMatch('_error.js')
-    expect(built_pages).toMatch('background')
+    $ ls -l .next/serverless/pages
+    stdout >> ${(built_pages) => {
+      expect(built_pages).toMatch('index.html')
+      expect(built_pages).toMatch('dynamic.js')
+      expect(built_pages).toMatch('_error.js')
+      expect(built_pages).toMatch('background')
+    }}
 
-    const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
-    expect(files_after_fab_build).toMatch('fab.zip')
-  })
+    $$ yarn fab:build
+
+    $ ls -l
+    stdout >> ${(files) => {
+      expect(files).toMatch('fab.zip')
+    }}
+  `)
 
   describe('fab build tests', () => {
     beforeAll(async () => {

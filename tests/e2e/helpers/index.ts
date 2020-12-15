@@ -2,27 +2,45 @@ import { cmd, shell } from '../../utils'
 import fs from 'fs-extra'
 import path from 'path'
 import { ExecaChildProcess } from 'execa'
+import tmp from 'tmp-promise'
+import shellac from 'shellac'
+import globby from 'globby'
 
 export const ONE_PORT_TO_TEST_THEM_ALL = 10400
 
-export const buildFab = async (cwd: string, global = false) => {
-  await shell(`rm -f fab.zip`, { cwd })
-  await shell(global ? `npx fab build` : `yarn fab:build`, { cwd })
-
-  const { stdout: files_after_fab_build } = await cmd(`ls -l ${cwd}`)
-  expect(files_after_fab_build).toMatch('fab.zip')
-}
-
 const workspace_dir = path.resolve(__dirname, '../workspace')
 export const getWorkingDir = async (dirname: string, clean: boolean) => {
-  const cwd = path.join(workspace_dir, dirname)
+  const symlink = path.join(workspace_dir, dirname)
 
-  if (clean && (await fs.pathExists(cwd))) {
-    await fs.remove(cwd)
+  if (await fs.pathExists(symlink)) {
+    const realDir = await fs.realpath(symlink)
+    // Handle the case where the FAB checkout already has stuff in e2e/workspace
+    const is_symlink = realDir !== symlink
+    if (!clean && is_symlink && (await fs.pathExists(realDir))) {
+      return realDir
+    }
+    await fs.remove(symlink)
   }
 
+  const dir = await tmp.dir()
+  const cwd = path.join(dir.path, dirname)
   await fs.ensureDir(cwd)
+  await fs.symlink(cwd, symlink)
   return cwd
+}
+
+export const buildFab = async (cwd: string, global = false) => {
+  await shellac.in(cwd)`
+    $ rm -f fab.zip
+    if ${global} {
+      $ npx fab build
+    } else {
+      $ yarn fab:build
+    }
+
+    $ ls -l
+    stdout >> ${(files) => expect(files).toMatch('fab.zip')}
+  `
 }
 
 let server_process: ExecaChildProcess | null = null
@@ -60,3 +78,19 @@ export const request = async (args: string, path: string) => {
   const { stdout } = await shell(curl_cmd + path)
   return stdout
 }
+
+export async function getCurrentCommitInfo() {
+  const { fab_sha, fab_branch } = await shellac.in(__dirname)`
+    $ git rev-parse --short HEAD
+    stdout >> fab_sha
+
+    $ git rev-parse --abbrev-ref HEAD
+    stdout >> fab_branch
+  `
+  return { fab_sha, fab_branch }
+}
+
+export const FAB_PACKAGE_NAMES = globby(['*', '!_fab'], {
+  cwd: path.resolve(__dirname, '../../../packages'),
+  onlyFiles: false,
+}).then((files) => files.map((x) => `@fab/${x}`).join(' '))

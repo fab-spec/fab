@@ -1,32 +1,36 @@
-import path from 'path'
 import {
   buildFab,
   cancelServer,
   createServer,
+  FAB_PACKAGE_NAMES,
   getWorkingDir,
   ONE_PORT_TO_TEST_THEM_ALL as port,
   request,
 } from './helpers'
-import fs from 'fs-extra'
-import { _shell } from '../utils'
 import { pathToSHA512 } from 'file-to-sha512'
+import shellac from 'shellac'
+import { shell } from '../utils'
 
 describe('Server-side logic tests', () => {
   let cwd: string
-  let cwd_shell: ReturnType<typeof _shell>
-
   beforeAll(async () => {
-    cwd = await getWorkingDir('server-side-logic', true)
-    cwd_shell = _shell(cwd)
+    cwd = await getWorkingDir('server-side-logic', false)
+    await shellac.in(cwd)`
+      $ rm -rf *
+      $$ echo Resetting ${cwd}
+    `
   })
 
   it('should set up a simple FAB with a complex server chain', async () => {
-    const src_dir = path.join(cwd, 'public')
-    await fs.ensureDir(src_dir)
-    await fs.copy(`${__dirname}/fixtures/server-side-logic`, cwd)
-    if (process.env.PUBLIC_PACKAGES) {
-      await cwd_shell(`yarn`)
-    }
+    await shellac.in(cwd)`
+      $ cp -R ${__dirname}/fixtures/server-side-logic/* .
+      $$ yarn
+
+      if ${!process.env.PUBLIC_PACKAGES} {
+        $$ yarn link ${FAB_PACKAGE_NAMES}
+      }
+    `
+
     await buildFab(cwd)
   })
 
@@ -88,7 +92,7 @@ describe('Server-side logic tests', () => {
     })
 
     it('should hit a streaming endpoint', async () => {
-      const promise = cwd_shell(`curl -sN http://localhost:${port}/slowly`)
+      const promise = shell(`curl -sN http://localhost:${port}/slowly`)
 
       const lines_with_timestamps: { [line: string]: Date } = {}
       promise.stdout!.on('data', (data) => {
@@ -131,7 +135,7 @@ describe('Server-side logic tests', () => {
         it(`should observe the correct timings on ${endpoint}`, async () => {
           const starting_time = new Date().getTime()
 
-          const promise = cwd_shell(`curl -sN http://localhost:${port}${endpoint}`)
+          const promise = shell(`curl -sN http://localhost:${port}${endpoint}`)
           let stdout = ''
 
           const lines_with_timestamps: { [line: string]: Date } = {}

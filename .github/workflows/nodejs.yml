@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [12.x,14.x]
 
     steps:
       - uses: actions/checkout@v1
@@ -72,13 +72,12 @@ jobs:
           yarn test create-react-app
         env:
           CI: true
-#     Waiting on https://github.com/fab-spec/fab/pull/283
-#      - name: 'E2E: NextJS'
-#        run: |
-#          cd tests
-#          yarn test nextjs
-#        env:
-#          CI: true
+      - name: 'E2E: NextJS'
+        run: |
+          cd tests
+          yarn test nextjs
+        env:
+          CI: true
       - name: 'E2E: Deploying to CF Workers, AWS Lambda & S3'
         run: |
           cd tests
