@@ -40,7 +40,7 @@ export default class Deployer {
     if (!deploy) {
       throw new FabDeployError(
         `For the moment, you need to have your fab.config.json5 "deploy" section configured.
-        See https://fab.dev/kb/deploying for more information.
+        See https://fab.dev/guides/deploying for more information.
         `
       )
     }
@@ -331,7 +331,7 @@ export default class Deployer {
 
     throw new InvalidConfigError(
       `Your fab.config.json5 deploy config has no entries for hosts capable of hosting your ${type}.
-      See https://fab.dev/kb/deploying for more information.`
+      See https://fab.dev/guides/deploying for more information.`
     )
   }
 
