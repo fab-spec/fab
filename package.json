@@ -45,7 +45,7 @@
     "@types/node": "^12.12.14",
     "chai": "^4.2.0",
     "chokidar": "^3.3.1",
-    "cross-fetch": "^3.0.4",
+    "cross-fetch": "^3.0.6",
     "husky": "^3.1.0",
     "lerna": "^3.19.0",
     "lint-staged": "^9.5.0",
