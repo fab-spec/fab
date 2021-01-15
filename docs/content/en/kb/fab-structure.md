@@ -53,7 +53,7 @@ module.exports = { render, getProdSettings }
 
 ### `_assets` directory
 
-Extracted from the FAB and hosted separately on a static file server like S3 at deploy time, then routed there by a CDN or load balancer using the URL path `/_assets/*`. This happens _before your request even reaches your FAB_, which means that the name "_assets" cannot be changed. More importantly, and assets are recommended to be served with `cache-control: immutable` headers. As such, files in this directory \_must_ be fingerprinted so they do not clash from release to release.
+Extracted from the FAB and hosted separately on a static file server like S3 at deploy time, then routed there by a CDN or load balancer using the URL path `/_assets/*`. This happens _before your request even reaches your FAB_, which means that the name "\_assets" cannot be changed. More importantly, and assets are recommended to be served with `cache-control: immutable` headers. As such, files in this directory _must_ be fingerprinted so they do not clash from release to release.
 
 Since there can be no static assets _outside_ the `/_assets` directory, and all assets must be fingerprinted, we provide `@fab/compile` which takes a more user-friendly format and generates a spec-compliant FAB.
 

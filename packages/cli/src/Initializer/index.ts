@@ -17,6 +17,7 @@ import { FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic } from './fra
 import { log, mergeScriptsAfterBuild } from './utils'
 import { BuildConfig } from '@fab/core'
 import execa from 'execa'
+import fetch from 'cross-fetch'
 
 const promptWithDefault = async (
   message: string,
@@ -36,6 +37,47 @@ const promptWithDefault = async (
   return await (def ? prompt('> ', { default: def }) : prompt(examples))
 }
 
+const getLatestFabCli = async () => {
+  const response = await fetch('https://registry.npmjs.org/@fab/cli/latest')
+  const data = await response.json()
+  if (data && data.version) {
+    const installed = JSON.parse(
+      await fs.readFile(path.resolve(__dirname, '../../package.json'), 'utf8')
+    )
+    if (installed.version !== data.version) {
+      log(
+        `💚NOTE💚: You have 🖤@fab/cli🖤 💛${installed.version}💛, latest available on NPM is 💛${data.version}💛.`
+      )
+    }
+  }
+  return data
+}
+
+const getLatestSupportedFrameworks = async () => {
+  const response = await fetch(
+    'https://raw.githubusercontent.com/fab-spec/fab/master/tests/latest-supported-version/package.json'
+  )
+  return await response.json()
+}
+
+let version_info: Promise<{
+  latest_cli: unknown | { version: string }
+  latest_frameworks: undefined | { dependencies: { next: string } }
+}>
+const getLatestVersionInfo = () => {
+  if (!version_info) {
+    const timeout = new Promise((res) => setTimeout(res, 4000))
+    version_info = Promise.all([
+      Promise.race([timeout, getLatestFabCli()]).catch(() => null),
+      Promise.race([timeout, getLatestSupportedFrameworks()]).catch(() => null),
+    ]).then(([latest_cli, latest_frameworks]) => ({
+      latest_cli,
+      latest_frameworks,
+    }))
+  }
+  return version_info
+}
+
 export default class Initializer {
   static description = `Auto-configure a repo for generating FABs`
   static yes: boolean
@@ -50,6 +92,8 @@ export default class Initializer {
   ) {
     this.yes = yes || empty
     log.announce(`fab init — ${this.description}`)
+    // Kick off the version check early but don't await it here7
+    getLatestVersionInfo()
 
     /* First, figure out the nearest package.json */
     const package_json_path = await pkgUp()
@@ -134,7 +178,10 @@ export default class Initializer {
 
     await this.finalChecks(root_dir, package_json)
 
-    log(`💎 All good 💎`)
+    // Should already be finished or awaited elsewhere, but just to clean things up:
+    await getLatestVersionInfo()
+
+    log(`💎 All good 💎`) /**/
   }
 
   private static async getFramework(
@@ -248,13 +295,23 @@ export default class Initializer {
         `Detected NextJS as a dependency but no .next directory found & npm run build doesn't contain 'next build'!`
       )
     }
-    if (
-      semver.valid(nextjs_version) &&
-      semver.lt(semver.coerce(nextjs_version)!, '9.0.0')
-    ) {
-      throw new FabInitError(
-        `Detected a NextJS project but using an older version (${nextjs_version}). FABs currently only support NextJS v9 or later.`
-      )
+    if (semver.valid(nextjs_version)) {
+      const current_version = semver.coerce(nextjs_version)!
+      if (semver.lt(current_version, '9.0.0')) {
+        throw new FabInitError(
+          `Detected a NextJS project but using an older version (${nextjs_version}). FABs currently only support NextJS v9 or later.`
+        )
+      }
+      const { latest_frameworks } = await getLatestVersionInfo()
+      if (latest_frameworks) {
+        const latest_supported = latest_frameworks.dependencies.next
+        if (semver.lt(semver.coerce(latest_supported)!, current_version)) {
+          log.warn(
+            `WARNING: NextJS on FABs only tested up until ${latest_supported}. You have ${current_version}.`
+          )
+          log(`If you have trouble, consider rolling back your local NextJS version.`)
+        }
+      }
     }
     if (next_build_export) {
       return Frameworks.Next9({ export_build: true, build_cmd: 'npm run build' })
