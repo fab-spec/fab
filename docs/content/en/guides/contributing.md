@@ -46,13 +46,15 @@ In a second terminal:
 # from the FAB project root
 cd tests
 yarn
+yarn test paths-exist
+yarn test server-side-logic
 yarn test create-react-app
 yarn test nextjs
 ```
 
-This will run a `create-react-app` and a `nextjs` test suite, where it creates a new project (using CRA or `create-next-app`), then runs `fab init`, then runs `fab build`, then runs `fab serve fab.zip`. It should pass on your machine, if doesn't then raise an issue!
+This will first establish whether the local set up is correct, then do some end-to-end tests on FAB server logic (both of which run fairly quickly). But the real tests are running a `create-react-app` and a `nextjs` test suite, where it creates a new project (using CRA or `create-next-app`), then runs `fab init`, then runs `fab build`, then runs `fab serve fab.zip`. It should pass on your machine, if doesn't then raise an issue!
 
-This test is fairly slow, so repeated runs will try to reuse the project directory. For example, the first step in the `yarn test create-react-app` is to run `yarn create react-app` which takes a while. Rerunning the E2E tests will `git reset --hard` to the original state, which is much faster than creating a new app.
+This test is fairly slow, so repeated runs will try to reuse the tmp directory. For example, the first step in the `yarn test create-react-app` is to run `yarn create react-app` which takes a while. Rerunning the E2E tests will `git reset --hard` to the original state, which is much faster than creating a new app.
 
 ### Rerunning tests
 

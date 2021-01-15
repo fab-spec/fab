@@ -48,6 +48,7 @@
     "chalk": "^3.0.0",
     "chokidar": "^3.4.0",
     "cli-ux": "^5.4.5",
+    "cross-fetch": "^3.0.6",
     "dotenv": "^8.2.0",
     "execa": "^4.0.0",
     "fs-extra": "^8.1.0",
