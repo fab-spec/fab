@@ -1,6 +1,6 @@
 {
   "name": "@fab/input-nextjs",
-  "version": "1.0.0-rc.8",
+  "version": "1.0.0-rc.8.p1",
   "description": "Module to kick off a FAB build from a NextJS project",
   "keywords": [
     "aws",
