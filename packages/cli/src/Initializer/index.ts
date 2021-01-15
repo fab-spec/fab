@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import pkgUp from 'pkg-up'
 import path from 'path'
 import semver from 'semver'
+import findYarnWorkspaceRoot from 'find-yarn-workspace-root'
 
 import { FabInitError, installDependencies, JSON5Config, prompt, useYarn } from '../'
 import {
@@ -122,7 +123,12 @@ export default class Initializer {
 
     /* Then, figure out what kind of project we are */
     const package_json = await this.getPackageJson(package_json_path)
-    const use_yarn = await useYarn(root_dir)
+
+    // if our current directory is managed as a yarn workspace, the yarn.lock file will
+    // be located in the project root instead of the current package directory - so
+    // useYarn should check there to see if this project uses yarn
+    const yarn_root = findYarnWorkspaceRoot(root_dir) || root_dir
+    const use_yarn = await useYarn(yarn_root)
     const additional_dependencies = []
 
     if (empty) {

@@ -51,6 +51,7 @@
     "cross-fetch": "^3.0.6",
     "dotenv": "^8.2.0",
     "execa": "^4.0.0",
+    "find-yarn-workspace-root": "^2.0.0",
     "fs-extra": "^8.1.0",
     "jju": "^1.4.0",
     "json-keys-sort": "^2.0.0",
