@@ -33,10 +33,10 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/cli": "1.0.0-rc.7",
+    "@fab/cli": "1.0.0-rc.8",
     "@fab/core": "1.0.0-rc.8",
     "@types/node": "^12.12.14",
-    "cross-fetch": "^3.0.4",
+    "cross-fetch": "^3.0.6",
     "file-to-sha512": "^0.0.1",
     "form-data": "^3.0.0",
     "fs-extra": "^9.0.0",

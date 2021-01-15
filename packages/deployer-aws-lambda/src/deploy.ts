@@ -16,7 +16,14 @@ export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
   const package_path = path.join(working_dir, 'aws-lambda.zip')
   log(`Starting 💛server💛 deploy...`)
 
-  const { access_key, secret_key, region, cf_distribution_id, lambda_arn } = config
+  const {
+    access_key,
+    secret_key,
+    region,
+    cf_distribution_id,
+    lambda_arn,
+    routes_for_invalidation,
+  } = config
 
   const required_keys: Array<keyof ConfigTypes.AwsLambda> = [
     'region',
@@ -49,7 +56,8 @@ export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
     lambda_arn,
     cf_distribution_id,
     region,
-    version!
+    version!,
+    routes_for_invalidation
   )
   log.time((d) => `Deployed in ${d}.`)
   return url
