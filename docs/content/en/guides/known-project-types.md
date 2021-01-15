@@ -39,6 +39,10 @@ In recent releases, NextJS has put more emphasis on `Static HTML Exports`(https:
 
 This checks for `gatsby build` in the your `npm run build` command, but is then just a `GenericStatic` with the input directory hard-coded to `public`.
 
+## Expo Web (React Native for Web)
+
+Very similarly to a Gatsby project, this checks for `expo start` in either of the `npm run start` or `npm run web` commands, and then uses `GenericStatic` with the `web-build` directory as its input.
+
 ## GenericStatic
 
 Anything that's not one of the above is considered a "Generic Static site", which covers the following cases:
