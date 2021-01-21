@@ -68,6 +68,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
           // http: path.join(shims_dir, 'http'),
           // https: path.join(shims_dir, 'empty-object'),
         }),
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs'],
       },
       module: {
         rules: [

@@ -125,7 +125,6 @@ class Server implements ServerType {
 
   constructor(filename: string, args: ServerArgs) {
     this.filename = filename
-    console.log('HELLO!')
     this.port = parseInt(args.port)
     //  TODO: cert stuff
 

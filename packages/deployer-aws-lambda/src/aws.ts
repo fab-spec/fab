@@ -36,7 +36,8 @@ export const updateCloudFront = async (
   lambda_arn: string,
   cf_distribution_id: string,
   region: string,
-  version: string
+  version: string,
+  routes_for_invalidation: string[] = ['/']
 ) => {
   const cloudfront = new aws.CloudFront({
     accessKeyId,
@@ -94,8 +95,6 @@ export const updateCloudFront = async (
   log.tick(`Done.`)
   log(`Got response status: 💛${update_response.Distribution?.Status}💛
     🖤(CloudFront can take a few minutes to update)🖤`)
-  // todo: make this a config option
-  const routes_for_invalidation = ['/']
   const num_invalidations = routes_for_invalidation.length
   log(
     `Invalidating ${num_invalidations} route${
@@ -115,8 +114,8 @@ export const updateCloudFront = async (
         InvalidationBatch: {
           CallerReference: '' + new Date(),
           Paths: {
-            Quantity: 1,
-            Items: ['/'],
+            Quantity: num_invalidations,
+            Items: routes_for_invalidation,
           },
         },
       })

@@ -1,6 +1,6 @@
 ---
 title: 'Home'
-description: 'Empower your NuxtJS application with @nuxt/content module: write in a content/ directory and fetch your Markdown, JSON, YAML and CSV files through a MongoDB like API, acting as Git-based Headless CMS.'
+description: 'Frontend Application Bundles (💎 FABs) are a standard for packaging up and deploying all kinds of frontend apps, regardless of server-side technology or JS framework.'
 position: 1
 category: Home
 features:
