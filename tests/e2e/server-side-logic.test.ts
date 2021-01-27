@@ -155,11 +155,17 @@ describe('Server-side logic tests', () => {
           const pa_time = lines_with_timestamps['pa'].getTime()
           const cito_time = lines_with_timestamps['cito.'].getTime()
 
-          // Assert that the response takes a while to arrive, but then arrives all at once.
-          expect(des_time - starting_time).toBeCloseTo(initial_delay, -2)
-          expect(pa_time - des_time).toBeCloseTo(line_delay, -2)
-          expect(cito_time - pa_time).toBeCloseTo(line_delay, -2)
-          expect(cito_time - des_time).toBeCloseTo(line_delay * 2, -2)
+          expect(des_time - starting_time).toBeGreaterThan(initial_delay - 100)
+          expect(des_time - starting_time).toBeLessThan(initial_delay + 100)
+
+          expect(pa_time - des_time).toBeGreaterThan(line_delay - 100)
+          expect(pa_time - des_time).toBeLessThan(line_delay + 100)
+
+          expect(cito_time - pa_time).toBeGreaterThan(line_delay - 100)
+          expect(cito_time - pa_time).toBeLessThan(line_delay + 100)
+
+          expect(cito_time - des_time).toBeGreaterThan(line_delay * 2 - 100)
+          expect(cito_time - des_time).toBeLessThan(line_delay * 2 + 100)
         })
       })
     })
