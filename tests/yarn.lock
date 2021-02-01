@@ -4238,9 +4238,9 @@ shebang-regex@^3.0.0:
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
 shellac@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/shellac/-/shellac-0.4.0.tgz#06f4358f85de86aa0b475ff30f8dfc4e752bf51b"
-  integrity sha512-AoYC3mu2j7iuOU1EpkkZsbuwVDYwUZ9DPBTJYGhS7KWFT0Sq7SYIY8LgDJkQxAzZ4mHexnP8UB7jcjk+P8ZnGg==
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/shellac/-/shellac-0.4.1.tgz#1376a097575c1aa324074263fb872e4937785f54"
+  integrity sha512-jmEjwWg1ue+Zx1htSj1oCXqsWAS9FHaxtVKSTEvcyUEymbe6W5aZ1lEzJSRCNvlatLzbarL8EBhO02QDVSX5tw==
   dependencies:
     reghex "^1.0.2"
 
