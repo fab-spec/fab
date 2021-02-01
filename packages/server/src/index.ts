@@ -167,7 +167,7 @@ class Server implements ServerType {
     const fetch_req = new NodeFetchRequest(url, {
       method,
       headers,
-      ...(method === 'POST' ? { body: req.body } : {}),
+      ...((method === 'POST' || method === 'PUT' || method === 'PATCH') ? { body: req.body } : {}),
     })
 
     const production_settings = renderer.metadata?.production_settings
