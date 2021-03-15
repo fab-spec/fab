@@ -1,5 +1,4 @@
 import { DEFAULT_MIME_TYPE, IMMUTABLE_HEADERS, NON_IMMUTABLE_HEADERS } from './constants'
-import mime from 'mime-types'
 
 export async function a_sume<T>(fn: () => Promise<T>, throws: (e: Error) => Error) {
   try {
@@ -22,6 +21,9 @@ export function filenameOutsideFabLocations(filename: string) {
 }
 
 export function getContentType(pathname: string) {
+  // Dynamic require because this code bloats FABs if it's a static import.
+  // TODO: figure out a better solution
+  const mime = require('mime-types')
   const mimeType = mime.lookup(pathname)
   return (mimeType && mime.contentType(mimeType)) || DEFAULT_MIME_TYPE
 }
