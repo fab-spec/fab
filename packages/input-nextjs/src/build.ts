@@ -1,17 +1,15 @@
 import { InputNextJSArgs, InputNextJSMetadata } from './types'
 import { FabBuildStep } from '@fab/core'
 import path from 'path'
-import { InvalidConfigError, _log } from '@fab/cli'
+import { _log, InvalidConfigError } from '@fab/cli'
 import { preflightChecks } from './preflightChecks'
 import globby from 'globby'
 import fs from 'fs-extra'
 import generateRenderer from './generateRenderer'
-import webpack from 'webpack'
-
-const log = _log(`@fab/input-nextjs`)
-
 // @ts-ignore
 import md5dir from 'md5-dir/promise'
+
+const log = _log(`@fab/input-nextjs`)
 
 const RENDERER = `generated-nextjs-renderers`
 
@@ -92,78 +90,53 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     `rollup-plugin-node-builtins/src/es6/stream`
   )
 
-  const shimz = {
-    events: true,
-    stream: path.join(shims_dir, 'stream.js'),
+  const shimz: { [name: string]: string | boolean } = {
+    events: 'builtins',
+    stream: 'builtins',
+    buffer: 'shim',
+    isArray: 'resolve:buffer-es6/isArray',
+    util: 'shim',
+    inherits: 'builtins',
+    string_decoder: 'builtins:string-decoder',
+    path: 'shim:path-with-posix',
+    process: 'resolve:process-es6',
+    tty: 'builtins',
+    http: 'shim',
+    url: 'builtins',
+    querystring: 'builtins:qs',
+    punycode: 'builtins',
+    crypto: 'shim',
+    net: false,
+    https: false,
+    zlib: false,
+    fs: false,
+    'next/dist/compiled/@ampproject/toolbox-optimizer': false,
+    critters: false,
+    os: false,
   }
 
-  const shims: { [name: string]: string } = {
-    events: await fs.readFile(
-      require.resolve(`rollup-plugin-node-builtins/src/es6/events`),
-      'utf8'
-    ),
-    // stream: await fs.readFile(path.join(shims_dir, 'stream.js'), 'utf8'),
-    buffer: await fs.readFile(path.join(shims_dir, 'buffer.js'), 'utf8'),
-    isArray: await fs.readFile(require.resolve('buffer-es6/isArray'), 'utf8'),
-    util: await fs.readFile(path.join(shims_dir, 'util.js'), 'utf8'),
-    inherits: await fs.readFile(
-      require.resolve(`rollup-plugin-node-builtins/src/es6/inherits.js`),
-      'utf8'
-    ),
-    string_decoder: await fs.readFile(
-      require.resolve('rollup-plugin-node-builtins/src/es6/string-decoder'),
-      'utf8'
-    ),
-    path: await fs.readFile(path.join(shims_dir, 'path-with-posix.js'), 'utf8'),
-    process: await fs.readFile(require.resolve('process-es6'), 'utf8'),
-    tty: await fs.readFile(
-      require.resolve('rollup-plugin-node-builtins/src/es6/tty'),
-      'utf8'
-    ),
-    http: await fs.readFile(path.join(shims_dir, 'http.js'), 'utf8'),
-    url: await fs.readFile(
-      require.resolve('rollup-plugin-node-builtins/src/es6/url'),
-      'utf8'
-    ),
-    querystring: await fs.readFile(
-      require.resolve('rollup-plugin-node-builtins/src/es6/qs'),
-      'utf8'
-    ),
-    punycode: await fs.readFile(
-      require.resolve('rollup-plugin-node-builtins/src/es6/punycode'),
-      'utf8'
-    ),
-    crypto: await fs.readFile(path.join(shims_dir, 'crypto.js'), 'utf8'),
+  // const needs_shims = [
+  //   // utils
+  //   // needed by mock express req/res
+  //   'tty',
+  //   // needed by url
+  //   'punycode',
+  // ]
+  for (const [name, instr] of Object.entries(shimz)) {
+    if (typeof instr === 'string') {
+      const [where, alias = name] = instr.split(':')
+      proto_fab._rollup.aliases[name] =
+        where === 'builtins'
+          ? require.resolve(`rollup-plugin-node-builtins/src/es6/${alias}`)
+          : where === 'shim'
+          ? path.join(shims_dir, alias + '.js')
+          : require.resolve(alias)
+    } else if (!instr) {
+      proto_fab._rollup.hypotheticals[name] = `module.exports = {}`
+    } else {
+      throw new Error(`shim: true has no meaning yet. For '${name}'`)
+    }
   }
-  const needs_shims = [
-    'net',
-    'events',
-    'https',
-    'querystring',
-    'zlib',
-    'http',
-    'buffer',
-    'crypto',
-    'url',
-    'util',
-    // 'stream',
-    'fs',
-    'path',
-    'string_decoder',
-    'next/dist/compiled/@ampproject/toolbox-optimizer',
-    'critters',
-    'os',
-    'process',
-    // utils
-    'inherits',
-    // needed by mock express req/res
-    'tty',
-    // needed by url
-    'punycode',
-  ]
-  needs_shims.forEach((gtfo) => {
-    proto_fab._rollup.hypotheticals[gtfo] = shims[gtfo] || `module.exports = {}`
-  })
 
   log(`Finding all static assets`)
   const asset_files = await globby([`**/*`], { cwd: static_dir })

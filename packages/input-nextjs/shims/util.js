@@ -530,7 +530,7 @@ export function log() {
  *     prototype.
  * @param {function} superCtor Constructor function to inherit prototype from.
  */
-import inherits from './inherits'
+import inherits from 'inherits'
 export { inherits }
 
 export function _extend(origin, add) {
