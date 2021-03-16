@@ -14,7 +14,6 @@ const log = _log(`@fab/input-nextjs`)
 import md5dir from 'md5-dir/promise'
 
 const RENDERER = `generated-nextjs-renderers`
-const WEBPACKED = `webpacked-nextjs-renderers`
 
 export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   args,
@@ -66,13 +65,6 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     cache_dir,
     skip_cache
   )
-  // todo: hash & cache render_code
-
-  // Webpack this file to inject all the required shims, before rolling it up,
-  // since Webpack is way better at that job. Potentially this logic should be
-  // moved out into a separate module or into the core compiler.
-  const webpacked_output = path.join(cache_dir, `${WEBPACKED}.js`)
-
   const shims_dir = path.resolve(__dirname, '../shims')
 
   const mock_express_response_path = path.join(shims_dir, 'mock-express-response')
@@ -157,13 +149,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   // const webpacked_src = await fs.readFile(webpacked_output, 'utf8')
   // proto_fab.hypotheticals[`${RENDERER}.js`] = `module.exports = {}`
 
-  // if there's globals that we're going to shim out anyway:
-  const preamble = `
-    globalThis.Buffer = require('buffer').Buffer;
-    globalThis.process = require('process');
-  `
-
-  proto_fab.hypotheticals[`${RENDERER}.js`] = preamble + render_code_src
+  proto_fab.hypotheticals[`${RENDERER}.js`] = entry_point
   const shims: { [name: string]: string } = {
     events: await fs.readFile(
       require.resolve(`rollup-plugin-node-builtins/src/es6/events`),
@@ -222,6 +208,10 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
       'utf8'
     ),
     process: await fs.readFile(require.resolve('process-es6'), 'utf8'),
+    tty: await fs.readFile(
+      require.resolve('rollup-plugin-node-builtins/src/es6/tty'),
+      'utf8'
+    ),
   }
   const needs_shims = [
     'net',
@@ -251,6 +241,8 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     'readable-stream/buffer-list.js',
     // utils
     'inherits',
+    // needed by mock express req/res
+    'tty',
   ]
   needs_shims.forEach((gtfo) => {
     proto_fab.hypotheticals[gtfo] = shims[gtfo] || `module.exports = {}`
