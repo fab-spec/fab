@@ -18,7 +18,12 @@ export class Compiler {
       output: [output, ...chunks],
     } = await rollupCompile(require.resolve('@fab/actions/esm/runtime'), {
       minify,
-      output: { format: 'umd', exports: 'named', name: '__fab' },
+      output: {
+        format: 'umd',
+        exports: 'named',
+        name: '__fab',
+        intro: 'const global = globalThis;',
+      },
       hypotheticals: {
         ...proto_fab.hypotheticals,
         'fab-runtime-imports': generateRuntimeImports(plugins),

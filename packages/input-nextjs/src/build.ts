@@ -85,60 +85,176 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   `
   const entry_file = path.join(cache_dir, 'entry-point.js')
   await fs.writeFile(entry_file, entry_point)
+  //
+  // await new Promise((resolve, reject) =>
+  //   webpack(
+  //     {
+  //       stats: 'verbose',
+  //       mode: 'production',
+  //       target: 'webworker',
+  //       entry: entry_file,
+  //       optimization: {
+  //         minimize: false,
+  //       },
+  //       output: {
+  //         path: path.dirname(webpacked_output),
+  //         filename: path.basename(webpacked_output),
+  //         library: 'server',
+  //         libraryTarget: 'commonjs2',
+  //       },
+  //       resolve: {
+  //         alias: {
+  //           // fs: require.resolve('memfs'),
+  //           // path: path.join(shims_dir, 'path-with-posix'),
+  //           // '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
+  //           // critters: path.join(shims_dir, 'empty-object'),
+  //           // http: path.join(shims_dir, 'http'),
+  //           // https: path.join(shims_dir, 'empty-object'),
+  //           net: path.join(shims_dir, 'net'),
+  //           events: path.join(shims_dir, 'empty-object'),
+  //           https: path.join(shims_dir, 'empty-object'),
+  //           querystring: path.join(shims_dir, 'empty-object'),
+  //           zlib: path.join(shims_dir, 'empty-object'),
+  //           http: path.join(shims_dir, 'empty-object'),
+  //           buffer: path.join(shims_dir, 'empty-object'),
+  //           crypto: path.join(shims_dir, 'empty-object'),
+  //           url: path.join(shims_dir, 'empty-object'),
+  //           util: path.join(shims_dir, 'empty-object'),
+  //           stream: path.join(shims_dir, 'empty-object'),
+  //           fs: path.join(shims_dir, 'empty-object'),
+  //           path: path.join(shims_dir, 'empty-object'),
+  //           string_decoder: path.join(shims_dir, 'empty-object'),
+  //           'next/dist/compiled/@ampproject/toolbox-optimizer': path.join(
+  //             shims_dir,
+  //             'empty-object'
+  //           ),
+  //           critters: path.join(shims_dir, 'empty-object'),
+  //           os: path.join(shims_dir, 'empty-object'),
+  //         },
+  //       },
+  //       node: false,
+  //       plugins: [
+  //         /* Cloudflare Workers will explode if it even _sees_ `eval` in a file,
+  //          * even if it's never called. Replacing it with this will bypasses that.
+  //          * (It'll still explode if it's called, nothing we can do about that.) */
+  //         new webpack.DefinePlugin({
+  //           eval: 'HERE_NO_EVAL',
+  //         }),
+  //       ],
+  //     },
+  //     (err, stats) => {
+  //       if (err || stats.hasErrors()) {
+  //         console.log('Build failed.')
+  //         console.log(err)
+  //         console.log(stats && stats.toJson().errors.toString())
+  //         reject()
+  //       }
+  //       resolve()
+  //     }
+  //   )
+  // )
+  //
+  // const webpacked_src = await fs.readFile(webpacked_output, 'utf8')
+  // proto_fab.hypotheticals[`${RENDERER}.js`] = `module.exports = {}`
 
-  await new Promise((resolve, reject) =>
-    webpack(
-      {
-        stats: 'verbose',
-        mode: 'production',
-        target: 'webworker',
-        entry: entry_file,
-        optimization: {
-          minimize: false,
-        },
-        output: {
-          path: path.dirname(webpacked_output),
-          filename: path.basename(webpacked_output),
-          library: 'server',
-          libraryTarget: 'commonjs2',
-        },
-        resolve: {
-          alias: {
-            fs: require.resolve('memfs'),
-            path: path.join(shims_dir, 'path-with-posix'),
-            '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
-            critters: path.join(shims_dir, 'empty-object'),
-            http: path.join(shims_dir, 'http'),
-            net: path.join(shims_dir, 'net'),
-            https: path.join(shims_dir, 'empty-object'),
-          },
-        },
-        node: {
-          global: false,
-        },
-        plugins: [
-          /* Cloudflare Workers will explode if it even _sees_ `eval` in a file,
-           * even if it's never called. Replacing it with this will bypasses that.
-           * (It'll still explode if it's called, nothing we can do about that.) */
-          new webpack.DefinePlugin({
-            eval: 'HERE_NO_EVAL',
-          }),
-        ],
-      },
-      (err, stats) => {
-        if (err || stats.hasErrors()) {
-          console.log('Build failed.')
-          console.log(err)
-          console.log(stats && stats.toJson().errors.toString())
-          reject()
-        }
-        resolve()
-      }
-    )
-  )
+  // if there's globals that we're going to shim out anyway:
+  const preamble = `
+    globalThis.Buffer = require('buffer').Buffer;
+    globalThis.process = require('process');
+  `
 
-  const webpacked_src = await fs.readFile(webpacked_output, 'utf8')
-  proto_fab.hypotheticals[`${RENDERER}.js`] = webpacked_src
+  proto_fab.hypotheticals[`${RENDERER}.js`] = preamble + render_code_src
+  const shims: { [name: string]: string } = {
+    events: await fs.readFile(
+      require.resolve(`rollup-plugin-node-builtins/src/es6/events`),
+      'utf8'
+    ),
+    stream: await fs.readFile(
+      require.resolve(`rollup-plugin-node-builtins/src/es6/stream`),
+      'utf8'
+    ),
+    'readable-stream/duplex.js': await fs.readFile(
+      require.resolve(`rollup-plugin-node-builtins/src/es6/readable-stream/duplex.js`),
+      'utf8'
+    ),
+    'readable-stream/readable.js': await fs.readFile(
+      require.resolve(`rollup-plugin-node-builtins/src/es6/readable-stream/readable.js`),
+      'utf8'
+    ),
+    'readable-stream/writable.js': await fs.readFile(
+      require.resolve(`rollup-plugin-node-builtins/src/es6/readable-stream/writable.js`),
+      'utf8'
+    ),
+    'readable-stream/transform.js': await fs.readFile(
+      require.resolve(`rollup-plugin-node-builtins/src/es6/readable-stream/transform.js`),
+      'utf8'
+    ),
+    'readable-stream/passthrough.js': await fs.readFile(
+      require.resolve(
+        `rollup-plugin-node-builtins/src/es6/readable-stream/passthrough.js`
+      ),
+      'utf8'
+    ),
+    'readable-stream/buffer-list.js': await fs.readFile(
+      require.resolve(
+        `rollup-plugin-node-builtins/src/es6/readable-stream/buffer-list.js`
+      ),
+      'utf8'
+    ),
+    buffer: await fs.readFile(path.resolve(__dirname, '../shims/buffer.js'), 'utf8'),
+    isArray: await fs.readFile(require.resolve('buffer-es6/isArray'), 'utf8'),
+    util: `
+      export function debuglog() {};
+      import inherits from 'inherits';
+      export {inherits}
+      export function deprecate(fn) { return fn; }
+    `,
+    inherits: await fs.readFile(
+      require.resolve(`rollup-plugin-node-builtins/src/es6/inherits.js`),
+      'utf8'
+    ),
+    string_decoder: await fs.readFile(
+      require.resolve('rollup-plugin-node-builtins/src/es6/string-decoder'),
+      'utf8'
+    ),
+    path: await fs.readFile(
+      require.resolve('rollup-plugin-node-builtins/src/es6/path'),
+      'utf8'
+    ),
+    process: await fs.readFile(require.resolve('process-es6'), 'utf8'),
+  }
+  const needs_shims = [
+    'net',
+    'events',
+    'https',
+    'querystring',
+    'zlib',
+    'http',
+    'buffer',
+    'crypto',
+    'url',
+    'util',
+    'stream',
+    'fs',
+    'path',
+    'string_decoder',
+    'next/dist/compiled/@ampproject/toolbox-optimizer',
+    'critters',
+    'os',
+    'process',
+    // stream needs these
+    'readable-stream/duplex.js',
+    'readable-stream/readable.js',
+    'readable-stream/writable.js',
+    'readable-stream/transform.js',
+    'readable-stream/passthrough.js',
+    'readable-stream/buffer-list.js',
+    // utils
+    'inherits',
+  ]
+  needs_shims.forEach((gtfo) => {
+    proto_fab.hypotheticals[gtfo] = shims[gtfo] || `module.exports = {}`
+  })
 
   log(`Finding all static assets`)
   const asset_files = await globby([`**/*`], { cwd: static_dir })
@@ -153,6 +269,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   log.tick(`Found ${asset_files.length} assets.`)
 
   log(`Finding all public files`)
+  console.log('OMFG WAT')
   const public_files = await globby([`**/*`], { cwd: public_dir })
   if (public_files.length > 0) {
     for (const public_file of public_files) {
