@@ -88,43 +88,18 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   //         }),
 
   proto_fab.hypotheticals[`${RENDERER}.js`] = entry_point
+
+  const shimz = {
+    events: true,
+    stream: path.join(shims_dir, 'stream.js'),
+  }
+
   const shims: { [name: string]: string } = {
     events: await fs.readFile(
       require.resolve(`rollup-plugin-node-builtins/src/es6/events`),
       'utf8'
     ),
-    stream: await fs.readFile(
-      require.resolve(`rollup-plugin-node-builtins/src/es6/stream`),
-      'utf8'
-    ),
-    'readable-stream/duplex.js': await fs.readFile(
-      require.resolve(`rollup-plugin-node-builtins/src/es6/readable-stream/duplex.js`),
-      'utf8'
-    ),
-    'readable-stream/readable.js': await fs.readFile(
-      require.resolve(`rollup-plugin-node-builtins/src/es6/readable-stream/readable.js`),
-      'utf8'
-    ),
-    'readable-stream/writable.js': await fs.readFile(
-      require.resolve(`rollup-plugin-node-builtins/src/es6/readable-stream/writable.js`),
-      'utf8'
-    ),
-    'readable-stream/transform.js': await fs.readFile(
-      require.resolve(`rollup-plugin-node-builtins/src/es6/readable-stream/transform.js`),
-      'utf8'
-    ),
-    'readable-stream/passthrough.js': await fs.readFile(
-      require.resolve(
-        `rollup-plugin-node-builtins/src/es6/readable-stream/passthrough.js`
-      ),
-      'utf8'
-    ),
-    'readable-stream/buffer-list.js': await fs.readFile(
-      require.resolve(
-        `rollup-plugin-node-builtins/src/es6/readable-stream/buffer-list.js`
-      ),
-      'utf8'
-    ),
+    stream: await fs.readFile(path.join(shims_dir, 'stream.js'), 'utf8'),
     buffer: await fs.readFile(path.join(shims_dir, 'buffer.js'), 'utf8'),
     isArray: await fs.readFile(require.resolve('buffer-es6/isArray'), 'utf8'),
     util: await fs.readFile(path.join(shims_dir, 'util.js'), 'utf8'),
@@ -176,13 +151,6 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     'critters',
     'os',
     'process',
-    // stream needs these
-    'readable-stream/duplex.js',
-    'readable-stream/readable.js',
-    'readable-stream/writable.js',
-    'readable-stream/transform.js',
-    'readable-stream/passthrough.js',
-    'readable-stream/buffer-list.js',
     // utils
     'inherits',
     // needed by mock express req/res
