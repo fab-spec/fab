@@ -155,6 +155,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
       require.resolve('rollup-plugin-node-builtins/src/es6/punycode'),
       'utf8'
     ),
+    crypto: await fs.readFile(path.join(shims_dir, 'crypto.js'), 'utf8'),
   }
   const needs_shims = [
     'net',
