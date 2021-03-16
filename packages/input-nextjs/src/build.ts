@@ -125,14 +125,9 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
       ),
       'utf8'
     ),
-    buffer: await fs.readFile(path.resolve(__dirname, '../shims/buffer.js'), 'utf8'),
+    buffer: await fs.readFile(path.join(shims_dir, 'buffer.js'), 'utf8'),
     isArray: await fs.readFile(require.resolve('buffer-es6/isArray'), 'utf8'),
-    util: `
-      export function debuglog() {};
-      import inherits from 'inherits';
-      export {inherits}
-      export function deprecate(fn) { return fn; }
-    `,
+    util: await fs.readFile(path.join(shims_dir, 'util.js'), 'utf8'),
     inherits: await fs.readFile(
       require.resolve(`rollup-plugin-node-builtins/src/es6/inherits.js`),
       'utf8'
@@ -141,13 +136,23 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
       require.resolve('rollup-plugin-node-builtins/src/es6/string-decoder'),
       'utf8'
     ),
-    path: await fs.readFile(
-      require.resolve('rollup-plugin-node-builtins/src/es6/path'),
-      'utf8'
-    ),
+    path: await fs.readFile(path.join(shims_dir, 'path-with-posix.js'), 'utf8'),
     process: await fs.readFile(require.resolve('process-es6'), 'utf8'),
     tty: await fs.readFile(
       require.resolve('rollup-plugin-node-builtins/src/es6/tty'),
+      'utf8'
+    ),
+    http: await fs.readFile(path.join(shims_dir, 'http.js'), 'utf8'),
+    url: await fs.readFile(
+      require.resolve('rollup-plugin-node-builtins/src/es6/url'),
+      'utf8'
+    ),
+    querystring: await fs.readFile(
+      require.resolve('rollup-plugin-node-builtins/src/es6/qs'),
+      'utf8'
+    ),
+    punycode: await fs.readFile(
+      require.resolve('rollup-plugin-node-builtins/src/es6/punycode'),
       'utf8'
     ),
   }
@@ -181,6 +186,8 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     'inherits',
     // needed by mock express req/res
     'tty',
+    // needed by url
+    'punycode',
   ]
   needs_shims.forEach((gtfo) => {
     proto_fab.hypotheticals[gtfo] = shims[gtfo] || `module.exports = {}`
