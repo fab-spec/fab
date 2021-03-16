@@ -67,87 +67,25 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   )
   const shims_dir = path.resolve(__dirname, '../shims')
 
-  const mock_express_response_path = path.join(shims_dir, 'mock-express-response')
+  const mock_express_response_path = path.join(
+    shims_dir,
+    'mock-req-res/mock-express-response'
+  )
+  const mock_req_path = path.join(shims_dir, 'mock-req-res/mock-req')
   const entry_point = `
     const renderers = require(${JSON.stringify(renderer_path)});
     const MockExpressResponse = require(${JSON.stringify(mock_express_response_path)});
-    const MockReq = require('mock-express-request');
+    const MockReq = require(${JSON.stringify(mock_req_path)});
 
     module.exports = { renderers, MockExpressResponse, MockReq }
   `
   const entry_file = path.join(cache_dir, 'entry-point.js')
   await fs.writeFile(entry_file, entry_point)
-  //
-  // await new Promise((resolve, reject) =>
-  //   webpack(
-  //     {
-  //       stats: 'verbose',
-  //       mode: 'production',
-  //       target: 'webworker',
-  //       entry: entry_file,
-  //       optimization: {
-  //         minimize: false,
-  //       },
-  //       output: {
-  //         path: path.dirname(webpacked_output),
-  //         filename: path.basename(webpacked_output),
-  //         library: 'server',
-  //         libraryTarget: 'commonjs2',
-  //       },
-  //       resolve: {
-  //         alias: {
-  //           // fs: require.resolve('memfs'),
-  //           // path: path.join(shims_dir, 'path-with-posix'),
-  //           // '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
-  //           // critters: path.join(shims_dir, 'empty-object'),
-  //           // http: path.join(shims_dir, 'http'),
-  //           // https: path.join(shims_dir, 'empty-object'),
-  //           net: path.join(shims_dir, 'net'),
-  //           events: path.join(shims_dir, 'empty-object'),
-  //           https: path.join(shims_dir, 'empty-object'),
-  //           querystring: path.join(shims_dir, 'empty-object'),
-  //           zlib: path.join(shims_dir, 'empty-object'),
-  //           http: path.join(shims_dir, 'empty-object'),
-  //           buffer: path.join(shims_dir, 'empty-object'),
-  //           crypto: path.join(shims_dir, 'empty-object'),
-  //           url: path.join(shims_dir, 'empty-object'),
-  //           util: path.join(shims_dir, 'empty-object'),
-  //           stream: path.join(shims_dir, 'empty-object'),
-  //           fs: path.join(shims_dir, 'empty-object'),
-  //           path: path.join(shims_dir, 'empty-object'),
-  //           string_decoder: path.join(shims_dir, 'empty-object'),
-  //           'next/dist/compiled/@ampproject/toolbox-optimizer': path.join(
-  //             shims_dir,
-  //             'empty-object'
-  //           ),
-  //           critters: path.join(shims_dir, 'empty-object'),
-  //           os: path.join(shims_dir, 'empty-object'),
-  //         },
-  //       },
-  //       node: false,
-  //       plugins: [
-  //         /* Cloudflare Workers will explode if it even _sees_ `eval` in a file,
-  //          * even if it's never called. Replacing it with this will bypasses that.
-  //          * (It'll still explode if it's called, nothing we can do about that.) */
+
+  // TODO: this
   //         new webpack.DefinePlugin({
   //           eval: 'HERE_NO_EVAL',
   //         }),
-  //       ],
-  //     },
-  //     (err, stats) => {
-  //       if (err || stats.hasErrors()) {
-  //         console.log('Build failed.')
-  //         console.log(err)
-  //         console.log(stats && stats.toJson().errors.toString())
-  //         reject()
-  //       }
-  //       resolve()
-  //     }
-  //   )
-  // )
-  //
-  // const webpacked_src = await fs.readFile(webpacked_output, 'utf8')
-  // proto_fab.hypotheticals[`${RENDERER}.js`] = `module.exports = {}`
 
   proto_fab.hypotheticals[`${RENDERER}.js`] = entry_point
   const shims: { [name: string]: string } = {
