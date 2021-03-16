@@ -87,7 +87,10 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   //           eval: 'HERE_NO_EVAL',
   //         }),
 
-  proto_fab.hypotheticals[`${RENDERER}.js`] = entry_point
+  proto_fab._rollup.hypotheticals[`${RENDERER}.js`] = entry_point
+  proto_fab._rollup.aliases.stream = require.resolve(
+    `rollup-plugin-node-builtins/src/es6/stream`
+  )
 
   const shimz = {
     events: true,
@@ -99,7 +102,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
       require.resolve(`rollup-plugin-node-builtins/src/es6/events`),
       'utf8'
     ),
-    stream: await fs.readFile(path.join(shims_dir, 'stream.js'), 'utf8'),
+    // stream: await fs.readFile(path.join(shims_dir, 'stream.js'), 'utf8'),
     buffer: await fs.readFile(path.join(shims_dir, 'buffer.js'), 'utf8'),
     isArray: await fs.readFile(require.resolve('buffer-es6/isArray'), 'utf8'),
     util: await fs.readFile(path.join(shims_dir, 'util.js'), 'utf8'),
@@ -143,7 +146,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     'crypto',
     'url',
     'util',
-    'stream',
+    // 'stream',
     'fs',
     'path',
     'string_decoder',
@@ -159,7 +162,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     'punycode',
   ]
   needs_shims.forEach((gtfo) => {
-    proto_fab.hypotheticals[gtfo] = shims[gtfo] || `module.exports = {}`
+    proto_fab._rollup.hypotheticals[gtfo] = shims[gtfo] || `module.exports = {}`
   })
 
   log(`Finding all static assets`)

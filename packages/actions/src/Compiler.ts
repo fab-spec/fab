@@ -25,10 +25,15 @@ export class Compiler {
         intro: 'const global = globalThis;',
       },
       hypotheticals: {
-        ...proto_fab.hypotheticals,
+        ...proto_fab._rollup.hypotheticals,
         'fab-runtime-imports': generateRuntimeImports(plugins),
         'fab-metadata': generateFabMetadataJs(proto_fab),
         'production-settings': generateProductionSettings(config),
+      },
+      aliases: {
+        path: require.resolve('path-browserify'),
+        'node-fetch': require.resolve(__dirname + '/empty'),
+        ...proto_fab._rollup.aliases,
       },
       additional: {
         onwarn(warning, handler) {
