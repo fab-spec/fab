@@ -38,7 +38,6 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
-    "@oclif/test": "^1",
     "@ts-tools/node": "^1.1.2",
     "@types/chai": "^4.2.5",
     "@types/mocha": "^5.2.7",
