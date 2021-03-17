@@ -1,5 +1,5 @@
 import { InputNextJSArgs, InputNextJSMetadata } from './types'
-import { FabBuildStep } from '@fab/core'
+import { BuildShims, FabBuildStep } from '@fab/core'
 import path from 'path'
 import { _log, InvalidConfigError } from '@fab/cli'
 import { preflightChecks } from './preflightChecks'
@@ -25,6 +25,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
       `@fab/input-nextjs must be the first 'input' plugin in the chain.`
     )
   }
+  const { shims: user_specified_shims = {} } = args
 
   const config_dir = path.dirname(path.resolve(config_path))
   const { next_dir_name, next_dir, asset_prefix } = await preflightChecks(config_dir)
@@ -90,7 +91,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     `rollup-plugin-node-builtins/src/es6/stream`
   )
 
-  const shimz: { [name: string]: string | boolean } = {
+  const nextjs_shims: BuildShims = {
     events: 'builtins',
     stream: 'builtins',
     buffer: 'shim',
@@ -113,16 +114,10 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     'next/dist/compiled/@ampproject/toolbox-optimizer': false,
     critters: false,
     os: false,
+    ...user_specified_shims,
   }
 
-  // const needs_shims = [
-  //   // utils
-  //   // needed by mock express req/res
-  //   'tty',
-  //   // needed by url
-  //   'punycode',
-  // ]
-  for (const [name, instr] of Object.entries(shimz)) {
+  for (const [name, instr] of Object.entries(nextjs_shims)) {
     if (typeof instr === 'string') {
       const [where, alias = name] = instr.split(':')
       proto_fab._rollup.aliases[name] =
