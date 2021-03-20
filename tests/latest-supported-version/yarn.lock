@@ -3940,6 +3940,11 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+create-next-app@10.1.1:
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/create-next-app/-/create-next-app-10.1.1.tgz#b1718fcbd69c8c4521ca32e249e79c343ee1ece0"
+  integrity sha512-uVmgj11RLIYNmKno1xQtrxtx+4k76e7hyGbzNt1bkoXm3GsEAoxWkgKV/2EXL66Y8KPWzYDcbvPxTiS3GLX8iw==
+
 cross-spawn@7.0.3, cross-spawn@^7.0.0, cross-spawn@^7.0.2:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
