@@ -76,6 +76,10 @@ jobs:
         run: |
           cd tests
           yarn test nextjs
+      - name: 'E2E: NextJS Example Apps'
+        run: |
+          cd tests
+          yarn test nextjs-example-apps
         env:
           CI: true
       - name: 'E2E: Deploying to CF Workers, AWS Lambda & S3'
