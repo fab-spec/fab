@@ -114,6 +114,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     'next/dist/compiled/@ampproject/toolbox-optimizer': false,
     critters: false,
     os: false,
+    depd: 'shim',
     ...user_specified_shims,
   }
 
@@ -146,7 +147,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   log.tick(`Found ${asset_files.length} assets.`)
 
   log(`Finding all public files`)
-  console.log('OMFG WAT')
+  console.log('OMFG WAT1111222')
   const public_files = await globby([`**/*`], { cwd: public_dir })
   if (public_files.length > 0) {
     for (const public_file of public_files) {
