@@ -5,6 +5,7 @@
     "packages/core",
     "packages/input-static",
     "packages/input-nextjs",
+    "packages/input-flareact",
     "packages/plugin-rewire-assets",
     "packages/plugin-render-html",
     "packages/deployer-aws-lambda",
