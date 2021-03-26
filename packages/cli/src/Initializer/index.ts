@@ -283,6 +283,7 @@ export default class Initializer {
       (await this.isCreateReactApp(package_json)) ||
       (await this.isGatsby(package_json)) ||
       (await this.isExpo(package_json)) ||
+      (await this.isFlareact(package_json)) ||
       null
     )
   }
