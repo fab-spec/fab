@@ -398,10 +398,10 @@ export default class Initializer {
   }
 
   static async isFlareact(package_json: PackageJson) {
-    const expo_dep =
+    const flareact_dep =
       package_json.dependencies?.['flareact'] ||
-      package_json.devDependencies?.['static_dir']
-    if (!expo_dep) return false
+      package_json.devDependencies?.['flareact']
+    if (flareact_dep) return false
 
     if (package_json.scripts?.build?.match(/flareact/)) {
       return Frameworks.Flareact()

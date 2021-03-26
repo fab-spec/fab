@@ -39,10 +39,12 @@ describe('Flareact E2E Test', () => {
     `
   })
 
-  it('should configure the Flareact project to produce FABs', async () => shellac.in(cwd)`
+  it('should configure the Flareact project to produce FABs', async () => {
+    shellac.in(cwd)`
      $$ echo "TODO - RESTORE fab init STEPS"
      $$ yarn link ${FAB_PACKAGE_NAMES}
-  `)
+  `
+  })
 
   describe('fab build tests', () => {
     beforeAll(async () => {
