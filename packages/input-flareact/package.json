@@ -1,6 +1,6 @@
 {
   "name": "@fab/input-flareact",
-  "version": "1.0.0-rc.9",
+  "version": "0.0.1",
   "description": "Module to kick off a FAB build from a NextJS project",
   "keywords": [
     "cloudflare",
