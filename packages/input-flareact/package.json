@@ -35,6 +35,7 @@
     "@fab/cli": "1.0.0-rc.9",
     "@fab/core": "1.0.0-rc.9",
     "@types/node": "^12.12.14",
+    "flareact": "^1.1.0",
     "fs-extra": "^8.1.0",
     "globby": "^11.0.0"
   },

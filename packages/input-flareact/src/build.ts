@@ -36,9 +36,5 @@ export const build: FabBuildStep<InputFlareactArgs, InputFlareactMetadata> = asy
   //     })
   //   )
 
-  /* IF YOU NEED TO CHANGE SERVER.JS AT ALL YOU CAN DO IT HERE */
-  proto_fab.hypotheticals[`FLAREACT_RENDERER.js`] = await fs.readFile(
-    abs_worker_path,
-    'utf8'
-  )
+  /* OK SO WORKER PATH ISN'T HERE, LET'S USE RUNTIME INSTEAD */
 }
