@@ -44,9 +44,11 @@ describe('Flareact E2E Test', () => {
       if ${process.env.PUBLIC_PACKAGES} {
         $ npx --ignore-existing fab init -y
       } else {
-        $$ yarn add ${FAB_PACKAGE_NAMES}
+        $$ echo "TODO — REMOVE THESE TWO LINES ONCE THE PUBLISHED @fab/cli INCLUDES FLAREACT"
+        $$ yarn add @fab/cli @fab/core
+        $$ yarn link @fab/cli @fab/core
+        $$ yarn fab init -y --skip-install
         $$ yarn link ${FAB_PACKAGE_NAMES}
-        $$ npx fab init -y --skip-install
       }
 
       $ ls -l
