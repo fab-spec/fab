@@ -47,7 +47,7 @@ describe('Flareact E2E Test', () => {
         $$ echo "TODO — REMOVE THESE TWO LINES ONCE THE PUBLISHED @fab/cli INCLUDES FLAREACT"
         $$ yarn add @fab/cli @fab/core
         $$ yarn link @fab/cli @fab/core
-        $$ yarn fab init -y --skip-install
+        $$ yarn fab init -y
         $$ yarn link ${FAB_PACKAGE_NAMES}
       }
 
