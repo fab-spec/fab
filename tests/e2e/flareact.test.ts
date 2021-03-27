@@ -40,15 +40,28 @@ describe('Flareact E2E Test', () => {
   })
 
   it('should configure the Flareact project to produce FABs', async () => {
-    shellac.in(cwd)`
-     $$ echo "TODO - RESTORE fab init STEPS"
-     $$ yarn link ${FAB_PACKAGE_NAMES}
-  `
+    await shellac.in(cwd)`
+      if ${process.env.PUBLIC_PACKAGES} {
+        $ npx --ignore-existing fab init -y
+      } else {
+        $$ yarn add ${FAB_PACKAGE_NAMES}
+        $$ yarn link ${FAB_PACKAGE_NAMES}
+        $$ npx fab init -y --skip-install
+      }
+
+      $ ls -l
+      stdout >> ${(files) => {
+        expect(files).toMatch('fab.config.json5')
+      }}
+    `
+  })
+
+  it('should build a fab before we run any tests', async () => {
+    await buildFab(cwd)
   })
 
   describe('fab build tests', () => {
     beforeAll(async () => {
-      await buildFab(cwd)
       await createServer(cwd)
     })
 
