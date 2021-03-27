@@ -401,7 +401,8 @@ export default class Initializer {
     const flareact_dep =
       package_json.dependencies?.['flareact'] ||
       package_json.devDependencies?.['flareact']
-    if (flareact_dep) return false
+
+    if (!flareact_dep) return false
 
     if (package_json.scripts?.build?.match(/flareact/)) {
       return Frameworks.Flareact()
