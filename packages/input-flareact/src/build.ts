@@ -1,7 +1,7 @@
 import { FabBuildStep } from '@fab/core'
 import { InputFlareactMetadata, InputFlareactArgs } from './types'
 import fs from 'fs-extra'
-import { relativeToConfig } from '@fab/cli/src'
+import { relativeToConfig } from '@fab/cli'
 
 export const build: FabBuildStep<InputFlareactArgs, InputFlareactMetadata> = async (
   args,
