@@ -5,24 +5,25 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
     "execa": "^3.3.0",
-    "fs-extra": "^8.1.0",
-    "jest": "^24.9.0",
+    "fs-extra": "^9.1.0",
+    "jest": "^26.6.3",
     "tmp-promise": "^3.0.2",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.7.2"
+    "ts-jest": "^26.5.4",
+    "typescript": "^3.9.9"
   },
   "scripts": {
     "test": "jest"
   },
   "dependencies": {
-    "@types/jest": "^24.0.23",
+    "@types/jest": "^26.0.21",
     "concurrently": "^5.2.0",
+    "create-next-app": "^10.0.9",
     "dotenv": "^8.2.0",
     "file-to-sha512": "^0.0.1",
     "globby": "^11.0.0",
     "jasmine-fail-fast": "^2.0.1",
     "jju": "^1.4.0",
-    "shellac": "^0.4.0",
+    "shellac": "^0.5.0",
     "tslib": "^1.11.1"
   },
   "resolutions": {
