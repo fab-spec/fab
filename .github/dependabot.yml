@@ -1,0 +1,21 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/tests/latest-supported-version"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  target-branch: master
+  versioning-strategy: increase
+  ignore:
+  - dependency-name: ssri
+    versions:
+    - 6.0.2
+  - dependency-name: y18n
+    versions:
+    - 4.0.1
+    - 4.0.2
+  - dependency-name: next
+    versions:
+    - 10.0.9
+    - 10.1.2
