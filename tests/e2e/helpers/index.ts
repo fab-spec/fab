@@ -25,7 +25,12 @@ export const getWorkingDir = async (dirname: string, clean: boolean) => {
   const dir = await tmp.dir()
   const cwd = path.join(dir.path, dirname)
   await fs.ensureDir(cwd)
-  await fs.symlink(cwd, symlink)
+  try {
+    await fs.symlink(cwd, symlink)
+  } catch (e) {
+    await fs.remove(symlink)
+    await fs.symlink(cwd, symlink)
+  }
   return cwd
 }
 

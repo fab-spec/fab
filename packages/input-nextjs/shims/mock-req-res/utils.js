@@ -12,9 +12,7 @@
 
 var contentDisposition = require('content-disposition')
 var contentType = require('content-type')
-var deprecate = require('depd')('express')
 var mime = require('send').mime
-var basename = require('path').basename
 var etag = require('etag')
 var proxyaddr = require('proxy-addr')
 var qs = require('qs')
@@ -126,10 +124,9 @@ exports.normalizeTypes = function(types) {
  * @api private
  */
 
-exports.contentDisposition = deprecate.function(
-  contentDisposition,
+exports.contentDisposition /*deprecate.function(*/ = contentDisposition /*,
   'utils.contentDisposition: use content-disposition npm module instead'
-)
+)*/
 
 /**
  * Parse accept params `str` returning an

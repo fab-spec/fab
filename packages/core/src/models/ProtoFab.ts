@@ -11,9 +11,12 @@ import jsonKeysSort from 'json-keys-sort'
 export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
   files: FabFiles
   metadata: U
-  hypotheticals: FabFilesObject
+  _rollup: {
+    hypotheticals: FabFilesObject
+    aliases: FabFilesObject
+  }
 
-  constructor(init_files: FabFilesObject = {}, init_hypotheticals: FabFilesObject = {}) {
+  constructor(init_files: FabFilesObject = {}) {
     this.files = new Map(
       Object.entries(init_files).map(([filename, contents]) => [
         filename,
@@ -21,7 +24,10 @@ export class ProtoFab<U extends PluginMetadata = PluginMetadata> {
       ])
     )
     this.metadata = {} as U
-    this.hypotheticals = init_hypotheticals
+    this._rollup = {
+      hypotheticals: {},
+      aliases: {},
+    }
   }
 
   errorsPreventingCompilation(): string | undefined {

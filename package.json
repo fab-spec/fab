@@ -38,7 +38,6 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
-    "@oclif/test": "^1",
     "@ts-tools/node": "^1.1.2",
     "@types/chai": "^4.2.5",
     "@types/mocha": "^5.2.7",
@@ -53,10 +52,10 @@
     "nock": "^12.0.3",
     "npm-run-all": "^4.1.5",
     "nyc": "^13",
-    "prettier": "^1.19.1",
+    "prettier": "^2.2.1",
     "rimraf": "^3.0.0",
     "ts-node": "^8",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "~3.7.2"
+    "typescript": "^4.2.3"
   }
 }

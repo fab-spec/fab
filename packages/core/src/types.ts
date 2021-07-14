@@ -46,6 +46,10 @@ export type RuntimePlugin = {
   plugin_args: PluginArgs
   runtime: string
 }
+export type ShimTypes = 'resolve' | 'shim' | 'builtins'
+export type BuildShims = {
+  [name: string]: false | ShimTypes | `${ShimTypes}:${string}`
+}
 
 /*
  * A FabBuildStep is an async function that takes a ProtoFab

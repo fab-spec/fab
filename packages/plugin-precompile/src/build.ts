@@ -97,7 +97,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
       ],
     })
 
-    await new Promise((resolve, reject) =>
+    await new Promise<void>((resolve, reject) =>
       webpack(options, (err, stats) => {
         if (err || stats.hasErrors()) {
           console.log('Build failed.')

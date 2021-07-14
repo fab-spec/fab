@@ -112,6 +112,7 @@ export const mergeWebpacks = (files: FabFilesObject) => {
 function sanitise(module: any) {
   const str_contents = generate(module.value.body)
   if (removeNodeFetch(str_contents, module)) return
+  if (removeDepd(str_contents, module)) return
   if (removeEval(str_contents, module)) return
 }
 
@@ -122,6 +123,25 @@ function sanitise(module: any) {
 function removeNodeFetch(str_contents: string, module: any) {
   if (str_contents.match(/module.exports = exports = fetch;/)) {
     const replacement_str = `module.exports = exports = globalThis.fetch`
+    const replacement_ast = acorn.parse(replacement_str)
+    // @ts-ignore
+    module.value.body.body = [replacement_ast.body[0]]
+    return true
+  }
+  return false
+}
+
+/* Depd does some pretty gross stuff, including needing process.cwd and eval.
+ * Get rid */
+function removeDepd(str_contents: string, module: any) {
+  if (str_contents.match(/module.exports = depd;/)) {
+    const replacement_str = `
+      module.exports = function () {
+        const depd_shim = function() {};
+        depd_shim.function = function(fn) { return fn };
+        return depd_shim
+      }
+    `
     const replacement_ast = acorn.parse(replacement_str)
     // @ts-ignore
     module.value.body.body = [replacement_ast.body[0]]

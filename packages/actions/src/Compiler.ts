@@ -18,12 +18,22 @@ export class Compiler {
       output: [output, ...chunks],
     } = await rollupCompile(require.resolve('@fab/actions/esm/runtime'), {
       minify,
-      output: { format: 'umd', exports: 'named', name: '__fab' },
+      output: {
+        format: 'umd',
+        exports: 'named',
+        name: '__fab',
+        intro: 'const global = globalThis;',
+      },
       hypotheticals: {
-        ...proto_fab.hypotheticals,
+        ...proto_fab._rollup.hypotheticals,
         'fab-runtime-imports': generateRuntimeImports(plugins),
         'fab-metadata': generateFabMetadataJs(proto_fab),
         'production-settings': generateProductionSettings(config),
+      },
+      aliases: {
+        path: require.resolve('path-browserify'),
+        'node-fetch': require.resolve(__dirname + '/empty'),
+        ...proto_fab._rollup.aliases,
       },
       additional: {
         onwarn(warning, handler) {
