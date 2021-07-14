@@ -15,5 +15,8 @@
     './plugins/typescript-example': {
       the_time_is: 'NOW!',
     },
+    './plugins/build-with-dynamic-runtimes': {
+      no_args: 'necessary'
+    },
   },
 }

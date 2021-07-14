@@ -39,9 +39,21 @@ export interface PluginMetadata {
 export type LoadedPlugin = {
   plugin_name: string
   plugin_args: PluginArgs
-  builder: FabBuildStep | undefined
+  builder: string | undefined
   runtime: string | undefined
 }
+
+export type PluginLoadResult = {
+  plugins: LoadedPlugin[]
+  build_plugins: LoadedPlugin[]
+  runtime_plugins: LoadedPlugin[]
+}
+
+export type BuildPlugin = {
+  plugin_args: PluginArgs
+  builder: string
+}
+
 export type RuntimePlugin = {
   plugin_args: PluginArgs
   runtime: string
