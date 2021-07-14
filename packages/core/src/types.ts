@@ -68,9 +68,9 @@ export type FabResponderMutableContext = {
 export type Cookies = {
   [key: string]: string
 }
-export type FabResponderArgs = {
+export type FabResponderArgs<Settings extends FabSettings = FabSettings> = {
   request: Request
-  settings: FabSettings
+  settings: Settings
   url: URL
   context: FabResponderMutableContext
   cookies: Cookies
@@ -80,15 +80,15 @@ export type FabResponderArgs = {
  * a Response. If this responder should not handle this request, it
  * returns undefined and the next renderer is invoked.
  * */
-export type FabRequestResponder = (
-  context: FabResponderArgs
+export type FabRequestResponder<Settings extends FabSettings = FabSettings> = (
+  context: FabResponderArgs<Settings>
 ) => Promise<undefined | Request | Response | Directive>
 
 export type MatchParams = { [match_name: string]: string }
 
-export type FabRequestResponderWithParams = (
-  contextWithParams: FabResponderArgs & { params: MatchParams }
-) => ReturnType<FabRequestResponder>
+export type FabRequestResponderWithParams<Settings extends FabSettings = FabSettings> = (
+  contextWithParams: FabResponderArgs<Settings> & { params: MatchParams }
+) => ReturnType<FabRequestResponder<Settings>>
 
 export type ResponseInterceptor = (response: Response) => Promise<Response>
 
