@@ -5,8 +5,9 @@ module.exports = {
     // instead of '@fab/core'. This causes really weird TypeScript output.
     (files) =>
       `bash -c "${[
-        "echo '=== Change @fab/core/src to @fab/core in the following files: ==='",
+        "echo '=== Change @fab/{core,cli}/src to @fab/{core,cli} in the following files: ==='",
         `grep -l @fab/core/src ${files.join(' ')}; test $? -eq 1`,
+        `grep -l @fab/cli/src ${files.join(' ')}; test $? -eq 1`,
       ].join(' && ')}"`,
   ],
 }

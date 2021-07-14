@@ -97,3 +97,33 @@ Because you ran `yarn link-all` back in the first terminal window, and because `
 Once you have recreated the bug/situation you're interested in, update the tests to automatically change the blank project to your desired state as a separate step after all the others (see the existing tests there, that's how things work already). Then rerun your `FAB_E2E_... yarn test ...` and it should reset your test project and then configure it back to the state you're interested in.
 
 Now you've got your setup, you can add expectations of what should happen to the tests, plus any FAB core code to fix them! Once it passes, fire up a PR and make sure it passes on Github CI as well, then you're done!
+
+## Adding a new plugin
+
+- Pick the closest existing plugin in `packages` and copy it across.
+- Find/replace the new name.
+- Remove any files/dir not needed (i.e. shims)
+- Check package.json that `files` and `dependencies` is right
+- Strip back to simple `build.ts`, `render.ts`, `types.ts`
+- Run `yarn` in the FAB root.
+- Run `yarn build` in the plugin dir. Make sure it works.
+- Run `yarn link-all` in the FAB root.
+- Restart `yarn build:watch` in FAB root.
+- Add the package to `.codesandbox/ci.json` once it's working to test it externally.
+
+## Adding a new framework
+
+- If it needs a new `input-` plugin, do the above first.
+- Then add the default `fab.config.json5` config needed to `cli/Initializer/frameworks.ts`
+- Then add a `isFrameworkX` function to `cli/Initializer/index.ts` (and remember to call it like the others)
+- Add a new E2E test, copy one of the others, just enough to get a repeatable bootstrap of a simple project.
+- Skip any kind of `fab init` for the moment, just make sure `yarn link` is run
+- Run `yarn test framework-x` in `tests` dir, let it fail.
+- Then jump into `tests/e2e/workspaces/framework-x` and start work.
+
+Now (assuming you have `build:watch` running in the background) you should be able:
+
+- Iterate on your `fab init` stuff `npx fab init` should pick up your changes to `@fab/cli` and do the right autodetection. You may need to use `npx fab init -y --skip-install` if you are using unpublished plugins.
+- Iterate on your plugins. `npx fab build` should try to compile.
+- As things start working, start fleshing out the E2E test to look more like the others (re: `fab init` and `fab build`)
+- You can always rerun `fab test framework-x` to reset that workspace dir back to its original state and rerun the tests, or `FAB_E2E_CLEAN=true yarn test framework-x` to create a new tmp dir and create a project from scratch first.

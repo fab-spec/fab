@@ -283,6 +283,7 @@ export default class Initializer {
       (await this.isCreateReactApp(package_json)) ||
       (await this.isGatsby(package_json)) ||
       (await this.isExpo(package_json)) ||
+      (await this.isFlareact(package_json)) ||
       null
     )
   }
@@ -390,6 +391,24 @@ export default class Initializer {
     } else {
       log(
         `❤️Warning:❤️ Detected a project with a dependency on 💛expo💛 but no 💛expo start💛 scripts in 💛package.json💛. Skipping.`
+      )
+    }
+
+    return false
+  }
+
+  static async isFlareact(package_json: PackageJson) {
+    const flareact_dep =
+      package_json.dependencies?.['flareact'] ||
+      package_json.devDependencies?.['flareact']
+
+    if (!flareact_dep) return false
+
+    if (package_json.scripts?.build?.match(/flareact/)) {
+      return Frameworks.Flareact()
+    } else {
+      log(
+        `❤️Warning:❤️ Detected a project with a dependency on 💛flareact💛 but no mention of 💛flareact💛 in 💛npm run build💛. Skipping.`
       )
     }
 

@@ -125,6 +125,18 @@ export const Frameworks = {
       return []
     },
   }),
+  Flareact: (): FrameworkInfo => ({
+    name: 'Flareact',
+    scripts: {
+      'build:fab': 'npm run build && npm run fab:build',
+      'fab:build': 'fab build',
+      'fab:serve': 'fab serve fab.zip',
+    },
+    plugins: {
+      '@fab/input-flareact': {},
+      '@fab/plugin-rewire-assets': {},
+    },
+  }),
 }
 export const GenericStatic = (
   build_cmd: string,
