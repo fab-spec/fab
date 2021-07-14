@@ -32,14 +32,16 @@ export const createPackage: FabPackager<ConfigTypes.CFWorkers> = async (
   const bundle_id = (await pathToSHA512(fab_path)).slice(0, 32)
 
   const fab_server_src = await fs.readFile(path.join(work_dir, 'server.js'), 'utf8')
-  const injections = templateInjections(fab_server_src, assets_url, { bundle_id })
+  const injections = templateInjections(fab_server_src, assets_url, env_overrides, {
+    bundle_id,
+  })
   const template = await fs.readFile(
     path.join(__dirname, '../templates/index.js'),
     'utf8'
   )
 
   const worker_js = `
-    ${injections};
+    ${injections}
     ${template};
   `
   log.tick(`Generated worker file.`)
