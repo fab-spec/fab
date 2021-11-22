@@ -7,8 +7,10 @@
     "dev": "nuxt --port=2999",
     "build": "nuxt build",
     "build:fab": "npm run build && npm run export && npm run fab:build",
+    "build:pages": "npm run build:fab && npm run fab:unpack",
     "fab:build": "fab build",
     "fab:serve": "fab serve fab.zip",
+    "fab:unpack": "tsm scripts/fab-to-pages.ts",
     "deploy": "fab deploy fab.zip",
     "start": "nuxt start",
     "export": "nuxt export",
@@ -25,6 +27,7 @@
     "prettier": "https://github.com/adamJLev/prettier#a0cd45b4cbea2039941f5cea0dccacf506b0fd2e",
     "prism-themes": "^1.4.0",
     "tailwindcss": "^1.4.6",
+    "tsm": "^2.1.4",
     "vue-scrollactive": "^0.9.3"
   },
   "devDependencies": {
