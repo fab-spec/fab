@@ -28,7 +28,8 @@
     "prism-themes": "^1.4.0",
     "tailwindcss": "^1.4.6",
     "tsm": "^2.1.4",
-    "vue-scrollactive": "^0.9.3"
+    "vue-scrollactive": "^0.9.3",
+    "wrangler": "^0.0.0-fsw-beta.5"
   },
   "devDependencies": {
     "@fab/actions": "^1.0.0-rc.3",
