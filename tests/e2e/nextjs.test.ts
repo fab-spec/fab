@@ -30,6 +30,7 @@ describe('Nextjs E2E Test', () => {
         $$ echo "Creating new NextJS app in ${cwd}."
         $ rm -rf *
         $$ yarn create next-app .
+        $$ yarn add next@^9.0.0
 
         $$ git init
         $ git add .
