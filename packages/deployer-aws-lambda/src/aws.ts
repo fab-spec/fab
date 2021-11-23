@@ -39,6 +39,7 @@ export const updateLambda = async (
     )
     state = functionResponse.Configuration?.State
   }
+  log.tick(`Lambda is Active`)
   return response.Version
 }
 
