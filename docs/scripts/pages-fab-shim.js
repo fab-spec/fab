@@ -1,6 +1,6 @@
 import FAB from '../.fab/build/server.js'
-const ASSETS_URL = globalThis.__assets_url // inlined in packager
 const server_context = { bundle_id: 'nobeuno' }
+const LOOPBACK_URL = 'https://127.0.0.1'
 
 const mutableResponse = (response) => new Response(response.body, response)
 
@@ -32,7 +32,7 @@ globalThis.orig_fetch = globalThis.fetch
 const assetFetch = async (pathname, init) => {
   //console.log(pathname, init)
   return await __ASSETS.fetch(
-    pathname.startsWith('/') ? `http://127.0.0.1${pathname}` : pathname,
+    pathname.startsWith('/') ? `${LOOPBACK_URL}${pathname}` : pathname,
     init
   )
 }
@@ -42,7 +42,7 @@ globalThis.fetch = (request, init) => {
 
   if (request_url.startsWith('/')) {
     if (!request_url.startsWith('/_assets/')) {
-      const loopback_url = new Request(`http://127.0.0.1${request_url}`, init)
+      const loopback_url = new Request(`${LOOPBACK_URL}${request_url}`, init)
       return handleRequest(loopback_url).then(mutableResponse)
     } else {
       return assetFetch(request_url).then(mutableResponse)
@@ -56,7 +56,7 @@ globalThis.Request = class extends Request {
   constructor(url, init) {
     //console.log({ url, init })
     if (typeof url === 'string' && url.startsWith('/')) {
-      super(`http://127.0.0.1${url}`, init)
+      super(`${LOOPBACK_URL}${url}`, init)
     } else {
       super(url, init)
     }
@@ -78,8 +78,8 @@ const handleRequest = async (request, within_loop = false) => {
     const result = await FAB.render(request, settings)
     if (result instanceof Request) {
       //console.log({ request: result.url })
-      if (result.url.startsWith('http://127.0.0.1/')) {
-        if (!result.url.startsWith('http://127.0.0.1/_assets/')) {
+      if (result.url.startsWith(`${LOOPBACK_URL}/`)) {
+        if (!result.url.startsWith(`${LOOPBACK_URL}/_assets/`)) {
           if (within_loop) throw new Error('Loop detected!')
           return await handleRequest(result, true)
         } else {
