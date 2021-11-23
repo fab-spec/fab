@@ -30,7 +30,11 @@ function ReadableStream({ start, cancel }) {
 globalThis.orig_fetch = globalThis.fetch
 
 const assetFetch = async (pathname, init) => {
-  return await __ASSETS.fetch(`https://no.existo/${pathname}`, init)
+  //console.log(pathname, init)
+  return await __ASSETS.fetch(
+    pathname.startsWith('/') ? `http://127.0.0.1${pathname}` : pathname,
+    init
+  )
 }
 
 globalThis.fetch = (request, init) => {
@@ -38,13 +42,24 @@ globalThis.fetch = (request, init) => {
 
   if (request_url.startsWith('/')) {
     if (!request_url.startsWith('/_assets/')) {
-      const loopback_url = new Request(`https://loopback${request_url}`, init)
+      const loopback_url = new Request(`http://127.0.0.1${request_url}`, init)
       return handleRequest(loopback_url).then(mutableResponse)
     } else {
       return assetFetch(request_url).then(mutableResponse)
     }
   } else {
     return orig_fetch(request, init).then(mutableResponse)
+  }
+}
+globalThis._Request = globalThis.Request
+globalThis.Request = class extends Request {
+  constructor(url, init) {
+    //console.log({ url, init })
+    if (typeof url === 'string' && url.startsWith('/')) {
+      super(`http://127.0.0.1${url}`, init)
+    } else {
+      super(url, init)
+    }
   }
 }
 
@@ -62,8 +77,9 @@ const handleRequest = async (request, within_loop = false) => {
 
     const result = await FAB.render(request, settings)
     if (result instanceof Request) {
-      if (result.url.startsWith('/')) {
-        if (!result.url.startsWith('/_assets/')) {
+      //console.log({ request: result.url })
+      if (result.url.startsWith('http://127.0.0.1/')) {
+        if (!result.url.startsWith('http://127.0.0.1/_assets/')) {
           if (within_loop) throw new Error('Loop detected!')
           return await handleRequest(result, true)
         } else {
