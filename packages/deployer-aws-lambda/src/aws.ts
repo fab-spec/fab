@@ -27,6 +27,19 @@ export const updateLambda = async (
   log(
     `💚✔💚 Updated lambda 💛${response.FunctionName}💛 🖤(version ${response.Version})🖤`
   )
+
+  let state = undefined
+  while (state !== 'Active') {
+    await new Promise((resolve) => setTimeout(resolve, 5000))
+    const functionResponse = await lambda
+      .getFunction({ FunctionName: `${lambda_arn}:${response.Version}` })
+      .promise()
+    log(
+      `Waiting on lambda 💛${response.FunctionName}💛 status to be Active 🖤currently ${state}🖤`
+    )
+    state = functionResponse.Configuration?.State
+  }
+  log.tick(`Lambda is Active`)
   return response.Version
 }
 
