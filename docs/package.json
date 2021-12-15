@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nuxt --port=2999",
-    "prebuild": "[[ $CF_PAGES = 1 ]] && npx pnpm install",
+    "prebuild": "[ ! -z $CF_PAGES ] && npx pnpm install",
     "build": "nuxt build",
     "build:fab": "npm run build && npm run export && npm run fab:build",
     "build:pages": "npm run build:fab && npm run fab:unpack",
