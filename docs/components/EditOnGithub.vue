@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     link () {
-      return `https://github.com/fab-spec/fab/edit/master/docs/content${this.document.path}${this.document.extension}`
+      return `https://github.com/fab-spec/fab/edit/main/docs/content${this.document.path}${this.document.extension}`
     }
   }
 }
