@@ -17,7 +17,7 @@ describe('Builder', () => {
     )
 
     expect(
-      result.map(({ plugin_name, builder, plugin_args, runtime }) => [
+      result.plugins.map(({ plugin_name, builder, plugin_args, runtime }) => [
         plugin_name,
         plugin_args,
         !!builder,
@@ -29,8 +29,9 @@ describe('Builder', () => {
       ['./plugins/runtime-only', { thirdly: 'this' }, false, true],
       ['./plugins/empty', { set: 'it up' }, false, false],
       ['./plugins/typescript-example', { the_time_is: 'NOW!' }, true, true],
+      ['./plugins/build-with-dynamic-runtimes', { no_args: 'necessary' }, true, false],
     ])
-    expect(result.flatMap((p) => p.runtime || [])).to.deep.equal([
+    expect(result.plugins.flatMap((p) => p.runtime || [])).to.deep.equal([
       path.resolve(`${__dirname}/../fixtures/plugins/build-and-render/runtime.js`),
       path.resolve(`${__dirname}/../fixtures/plugins/runtime-only.js`),
       path.resolve(`${__dirname}/../fixtures/plugins/typescript-example/runtime.ts`),
