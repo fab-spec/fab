@@ -28,7 +28,7 @@ The best production FAB hosting environment right now is [Cloudflare Workers](ht
 
 ### For a `.workers.dev` subdomain
 
-When you sign up for a Cloudflare account, you can reserve a namespace on the `.workers.dev` subdomain. This gives you a place to test Cloudflare deployments as you develop your app, before choosing and releasing to a production domain. In order to dpeloy to a workers.dev subdomain, add the following config:
+When you sign up for a Cloudflare account, you can reserve a namespace on the `.workers.dev` subdomain. This gives you a place to test Cloudflare deployments as you develop your app, before choosing and releasing to a production domain. In order to deploy to a workers.dev subdomain, add the following config:
 
 ```json5
 {
