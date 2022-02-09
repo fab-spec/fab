@@ -38,7 +38,11 @@ function ReadableStream({ start, cancel }) {
 
 class Cache {
   async set(key, value, ttl_seconds) {
-    KV_FAB_CACHE.put(key, value, ttl_seconds ? { expirationTtl: ttl_seconds } : undefined)
+    return KV_FAB_CACHE.put(
+      key,
+      value,
+      ttl_seconds ? { expirationTtl: ttl_seconds } : undefined
+    )
   }
   async setJSON(key, value, ttl_seconds) {
     await this.set(key, JSON.stringify(value), ttl_seconds)
