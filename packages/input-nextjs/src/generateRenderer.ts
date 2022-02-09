@@ -22,8 +22,12 @@ export default async function generateRenderer(
         )
       })
     )
-
-    return mergeWebpacks(renderer_files)
+    // Skipping Webpack requires a few hacks here
+    return `
+      globalThis.Buffer = require('buffer').Buffer;
+      globalThis.process = require('process');
+      ${mergeWebpacks(renderer_files)};
+    `
   } else {
     return `export default {}`
   }

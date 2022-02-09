@@ -51,6 +51,9 @@ describe('Nextjs E2E Test', () => {
       $$ yarn link ${FAB_PACKAGE_NAMES}
     }
 
+    $$ echo "new deps don't come across yet"
+    $$ yarn add rollup-plugin-node-builtins
+
     $ ls -l
     stdout >> ${(files) => {
       expect(files).toMatch('fab.config.json5')

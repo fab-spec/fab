@@ -84,7 +84,7 @@ export const Frameworks = {
     name: `NextJS v9+ (${export_build ? 'static' : 'dynamic'})`,
     scripts: {
       'build:fab': `${build_cmd} && npm run fab:build`,
-      'fab:build': 'fab build',
+      'fab:build': 'fab build --minify',
       'fab:serve': 'fab serve fab.zip',
     },
     plugins: export_build

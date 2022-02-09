@@ -167,7 +167,9 @@ class Server implements ServerType {
     const fetch_req = new NodeFetchRequest(url, {
       method,
       headers,
-      ...((method === 'POST' || method === 'PUT' || method === 'PATCH') ? { body: req.body } : {}),
+      ...(method === 'POST' || method === 'PUT' || method === 'PATCH'
+        ? { body: req.body }
+        : {}),
     })
 
     const production_settings = renderer.metadata?.production_settings
@@ -279,7 +281,7 @@ class Server implements ServerType {
 
     const bootServer = async () => {
       app = await this.createHandler(runtimeType)
-      await new Promise((resolve, _reject) => {
+      await new Promise<void>((resolve, _reject) => {
         if (!server) {
           server = http.createServer((req, res) => app(req, res))
 

@@ -1,20 +1,17 @@
 import { InputNextJSArgs, InputNextJSMetadata } from './types'
-import { FabBuildStep } from '@fab/core'
+import { BuildShims, FabBuildStep } from '@fab/core'
 import path from 'path'
-import { InvalidConfigError, _log } from '@fab/cli'
+import { _log, InvalidConfigError } from '@fab/cli'
 import { preflightChecks } from './preflightChecks'
 import globby from 'globby'
 import fs from 'fs-extra'
 import generateRenderer from './generateRenderer'
-import webpack from 'webpack'
-
-const log = _log(`@fab/input-nextjs`)
-
 // @ts-ignore
 import md5dir from 'md5-dir/promise'
 
+const log = _log(`@fab/input-nextjs`)
+
 const RENDERER = `generated-nextjs-renderers`
-const WEBPACKED = `webpacked-nextjs-renderers`
 
 export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   args,
@@ -28,6 +25,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
       `@fab/input-nextjs must be the first 'input' plugin in the chain.`
     )
   }
+  const { shims: user_specified_shims = {} } = args
 
   const config_dir = path.dirname(path.resolve(config_path))
   const { next_dir_name, next_dir, asset_prefix } = await preflightChecks(config_dir)
@@ -66,79 +64,75 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
     cache_dir,
     skip_cache
   )
-  // todo: hash & cache render_code
-
-  // Webpack this file to inject all the required shims, before rolling it up,
-  // since Webpack is way better at that job. Potentially this logic should be
-  // moved out into a separate module or into the core compiler.
-  const webpacked_output = path.join(cache_dir, `${WEBPACKED}.js`)
-
   const shims_dir = path.resolve(__dirname, '../shims')
 
-  const mock_express_response_path = path.join(shims_dir, 'mock-express-response')
+  const mock_express_response_path = path.join(
+    shims_dir,
+    'mock-req-res/mock-express-response'
+  )
+  const mock_req_path = path.join(shims_dir, 'mock-req-res/mock-req')
   const entry_point = `
     const renderers = require(${JSON.stringify(renderer_path)});
     const MockExpressResponse = require(${JSON.stringify(mock_express_response_path)});
-    const MockReq = require('mock-express-request');
+    const MockReq = require(${JSON.stringify(mock_req_path)});
 
     module.exports = { renderers, MockExpressResponse, MockReq }
   `
   const entry_file = path.join(cache_dir, 'entry-point.js')
   await fs.writeFile(entry_file, entry_point)
 
-  await new Promise((resolve, reject) =>
-    webpack(
-      {
-        stats: 'verbose',
-        mode: 'production',
-        target: 'webworker',
-        entry: entry_file,
-        optimization: {
-          minimize: false,
-        },
-        output: {
-          path: path.dirname(webpacked_output),
-          filename: path.basename(webpacked_output),
-          library: 'server',
-          libraryTarget: 'commonjs2',
-        },
-        resolve: {
-          alias: {
-            fs: require.resolve('memfs'),
-            path: path.join(shims_dir, 'path-with-posix'),
-            '@ampproject/toolbox-optimizer': path.join(shims_dir, 'empty-object'),
-            critters: path.join(shims_dir, 'empty-object'),
-            http: path.join(shims_dir, 'http'),
-            net: path.join(shims_dir, 'net'),
-            https: path.join(shims_dir, 'empty-object'),
-          },
-        },
-        node: {
-          global: false,
-        },
-        plugins: [
-          /* Cloudflare Workers will explode if it even _sees_ `eval` in a file,
-           * even if it's never called. Replacing it with this will bypasses that.
-           * (It'll still explode if it's called, nothing we can do about that.) */
-          new webpack.DefinePlugin({
-            eval: 'HERE_NO_EVAL',
-          }),
-        ],
-      },
-      (err, stats) => {
-        if (err || stats.hasErrors()) {
-          console.log('Build failed.')
-          console.log(err)
-          console.log(stats && stats.toJson().errors.toString())
-          reject()
-        }
-        resolve()
-      }
-    )
+  // TODO: this
+  //         new webpack.DefinePlugin({
+  //           eval: 'HERE_NO_EVAL',
+  //         }),
+
+  proto_fab._rollup.hypotheticals[`${RENDERER}.js`] = entry_point
+  proto_fab._rollup.aliases.stream = require.resolve(
+    `rollup-plugin-node-builtins/src/es6/stream`
   )
 
-  const webpacked_src = await fs.readFile(webpacked_output, 'utf8')
-  proto_fab.hypotheticals[`${RENDERER}.js`] = webpacked_src
+  const nextjs_shims: BuildShims = {
+    events: 'builtins',
+    stream: 'builtins',
+    buffer: 'shim',
+    isArray: 'resolve:buffer-es6/isArray',
+    util: 'shim',
+    inherits: 'builtins',
+    string_decoder: 'builtins:string-decoder',
+    path: 'shim:path-with-posix',
+    process: 'resolve:process-es6',
+    tty: 'builtins',
+    http: 'shim',
+    url: 'builtins',
+    querystring: 'builtins:qs',
+    punycode: 'builtins',
+    crypto: 'shim',
+    net: false,
+    https: false,
+    zlib: false,
+    fs: false,
+    'next/dist/compiled/@ampproject/toolbox-optimizer': false,
+    critters: false,
+    os: false,
+    depd: 'shim',
+    ...user_specified_shims,
+  }
+
+  for (const [name, instr] of Object.entries(nextjs_shims)) {
+    if (typeof instr === 'string') {
+      const [where, alias = name] = instr.split(':')
+      proto_fab._rollup.aliases[name] =
+        where === 'builtins'
+          ? require.resolve(`rollup-plugin-node-builtins/src/es6/${alias}`)
+          : where === 'shim'
+          ? path.join(shims_dir, alias + '.js')
+          : require.resolve(alias)
+    } else if (!instr) {
+      proto_fab._rollup.hypotheticals[name] = `module.exports = {}`
+    } else {
+      throw new Error(`shim: true has no meaning yet. For '${name}'`)
+    }
+  }
 
   log(`Finding all static assets`)
   const asset_files = await globby([`**/*`], { cwd: static_dir })
@@ -153,6 +147,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   log.tick(`Found ${asset_files.length} assets.`)
 
   log(`Finding all public files`)
+  console.log('OMFG WAT1111222')
   const public_files = await globby([`**/*`], { cwd: public_dir })
   if (public_files.length > 0) {
     for (const public_file of public_files) {

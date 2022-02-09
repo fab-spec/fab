@@ -13,22 +13,25 @@ import hypothetical from 'rollup-plugin-hypothetical'
 import { _log } from '@fab/cli'
 const log = _log(`rollup`)
 
+type StringMap = { [key: string]: string }
+
 export async function rollupCompile(
   input: string,
   options: {
     output?: OutputOptions
-    hypotheticals?: {}
+    hypotheticals?: StringMap
     minify?: boolean
     additional?: RollupOptions
+    aliases?: StringMap
   } = {}
 ) {
-  const { output = {}, hypotheticals = {}, minify = false, additional = {} } = options
-
-  const empty = require.resolve(__dirname + '/empty')
-  const entries = {
-    path: require.resolve('path-browserify'),
-    'node-fetch': empty,
-  }
+  const {
+    output = {},
+    aliases = {},
+    hypotheticals = {},
+    minify = false,
+    additional = {},
+  } = options
 
   try {
     const bundle = await rollup({
@@ -38,7 +41,7 @@ export async function rollupCompile(
           files: hypotheticals,
           allowFallthrough: true,
         }),
-        alias({ entries }),
+        alias({ entries: aliases }),
         resolve({
           preferBuiltins: true,
         }),
@@ -49,6 +52,7 @@ export async function rollupCompile(
         }),
         json(),
         ...[minify ? terser() : []],
+        ...(additional?.plugins || []),
       ],
       ...additional,
     })

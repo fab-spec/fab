@@ -9,7 +9,7 @@
     "jest": "^24.9.0",
     "tmp-promise": "^3.0.2",
     "ts-jest": "^24.1.0",
-    "typescript": "^3.7.2"
+    "typescript": "^4.2.3"
   },
   "scripts": {
     "test": "jest"
