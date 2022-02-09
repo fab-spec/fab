@@ -12,6 +12,7 @@ import {
   ResponseInterceptor,
 } from '@fab/core'
 import { Key, pathToRegexp } from 'path-to-regexp'
+import { FabSettings } from './types'
 
 export enum Priority {
   LAST,
@@ -29,8 +30,8 @@ export type RuntimeImports = Array<{
   args: PluginArgs
 }>
 
-export class FABRouter {
-  private pipeline: { [order in Priority]: FabRequestResponder[] }
+export class FABRouter<Settings extends FabSettings = FabSettings> {
+  private pipeline: { [order in Priority]: FabRequestResponder<Settings>[] }
 
   constructor() {
     this.pipeline = {
@@ -52,11 +53,18 @@ export class FABRouter {
     ]
   }
 
-  addToPipeline(responder: FabRequestResponder, priority: Priority = Priority.MIDDLE) {
+  addToPipeline(
+    responder: FabRequestResponder<Settings>,
+    priority: Priority = Priority.MIDDLE
+  ) {
     this.pipeline[priority].push(responder)
   }
 
-  on(route: string, responder: FabRequestResponderWithParams, priority?: Priority) {
+  on(
+    route: string,
+    responder: FabRequestResponderWithParams<Settings>,
+    priority?: Priority
+  ) {
     if (route === '*') {
       // Make this an alias for .onAll, with an empty params object
       this.onAll((context) => responder({ ...context, params: {} }), priority)
@@ -64,7 +72,7 @@ export class FABRouter {
       // Otherwise compile the route and generate a responder
       const groups: Key[] = []
       const regexp = pathToRegexp(route, groups)
-      this.addToPipeline(async (context: FabResponderArgs) => {
+      this.addToPipeline(async (context: FabResponderArgs<Settings>) => {
         const { pathname } = context.url
         // Only execute if this request matches our route
         const match = regexp.exec(pathname)
@@ -80,7 +88,7 @@ export class FABRouter {
     }
   }
 
-  onAll(responder: FabRequestResponder, priority?: Priority) {
+  onAll(responder: FabRequestResponder<Settings>, priority?: Priority) {
     this.addToPipeline(responder, priority)
   }
 
@@ -106,10 +114,13 @@ class NoopCache implements FabCache {
   getStream = async () => undefined
 }
 
-export class FABRuntime<T extends PluginMetadata = PluginMetadata> {
+export class FABRuntime<
+  T extends PluginMetadata = PluginMetadata,
+  Settings extends FabSettings = FabSettings
+> {
   Metadata: T
   FileMetadata: FabFileMetadata
-  Router: FABRouter
+  Router: FABRouter<Settings>
   Cache: FabCache
   ServerContext: FABServerContext
 
