@@ -1,16 +1,16 @@
 {
   "name": "@fab/server",
-  "version": "1.0.0-rc.9.p1",
+  "version": "1.0.0-rc.9",
   "description": "NodeJS FAB Server",
   "keywords": [
     "fab",
     "server"
   ],
-  "homepage": "https://github.com/fab-spec/fab#readme",
+  "homepage": "https://github.com/spendesk/fab#readme",
   "bugs": {
-    "url": "https://github.com/fab-spec/fab/issues"
+    "url": "https://github.com/spendesk/fab/issues"
   },
-  "repository": "fab-spec/fab",
+  "repository": "spendesk/fab",
   "license": "MIT",
   "author": "Glen Maddern",
   "files": [

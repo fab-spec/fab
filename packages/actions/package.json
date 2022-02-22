@@ -10,8 +10,8 @@
     "deploy",
     "fab"
   ],
-  "homepage": "https://github.com/fab-spec/fab",
-  "repository": "fab-spec/fab",
+  "homepage": "https://github.com/spendesk/fab",
+  "repository": "spendesk/fab",
   "license": "MIT",
   "author": "Glen Maddern",
   "files": [

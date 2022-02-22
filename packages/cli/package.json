@@ -6,9 +6,9 @@
     "fab",
     "oclif"
   ],
-  "homepage": "https://github.com/fab-spec/fab",
-  "bugs": "https://github.com/fab-spec/fab/issues",
-  "repository": "fab-spec/fab",
+  "homepage": "https://github.com/spendesk/fab",
+  "bugs": "https://github.com/spendesk/fab/issues",
+  "repository": "spendesk/fab",
   "license": "MIT",
   "author": "Glen Maddern @geelen",
   "files": [

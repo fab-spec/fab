@@ -8,11 +8,11 @@
     "fab",
     "s3"
   ],
-  "homepage": "https://github.com/fab-spec/fab#readme",
+  "homepage": "https://github.com/spendesk/fab#readme",
   "bugs": {
-    "url": "https://github.com/fab-spec/fab/issues"
+    "url": "https://github.com/spendesk/fab/issues"
   },
-  "repository": "fab-spec/fab",
+  "repository": "spendesk/fab",
   "license": "MIT",
   "author": "Glen Maddern",
   "files": [
