@@ -175,7 +175,7 @@ export type FabServerDeployer<T extends ConfigTypes.Union> = (
   fab_path: string,
   working_dir: string,
   config: T,
-  env_overrides: FabSettings,
+  env_overrides: Map<string, FabSettings>,
   assets_url: string
 ) => Promise<string | string[]>
 
@@ -189,7 +189,7 @@ export type FabDeployer<T extends ConfigTypes.Union> = (
   fab_path: string,
   working_dir: string,
   config: T,
-  env_overrides: FabSettings
+  env_overrides: Map<string, FabSettings>
 ) => Promise<string | string[]>
 
 export type FabDeployerExports<T extends ConfigTypes.Union> = {
@@ -202,7 +202,7 @@ export type FabPackager<T extends ConfigTypes.Union> = (
   fab_path: string,
   package_path: string,
   config: T,
-  env_overrides: FabSettings,
+  env_overrides: Map<string, FabSettings>,
   assets_url: string
 ) => Promise<void>
 
@@ -231,7 +231,7 @@ export type DeployFn = (
   package_dir: string,
   server_host: DeployProviders | undefined,
   assets_host: DeployProviders | undefined,
-  env: string | undefined,
+  env: string[] | undefined,
   assets_only: boolean,
   assets_already_deployed_at: string | undefined,
   auto_install: boolean

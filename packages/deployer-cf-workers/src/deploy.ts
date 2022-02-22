@@ -21,7 +21,7 @@ export const deployBoth: FabDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
   package_dir: string,
   config: ConfigTypes.CFWorkers,
-  env_overrides: FabSettings
+  env_overrides: Map<string, FabSettings>
 ) => {
   const assets_url = await deployAssets(fab_path, package_dir, config)
   return await deployServer(fab_path, package_dir, config, env_overrides, assets_url)
@@ -87,9 +87,9 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
     log.continue(`🖤  ${file} (${pretty(body_stream.bytesRead)})🖤`)
   })
 
-  log.tick(`Done.`)
-
   await Promise.all(uploads)
+
+  log.tick(`Done.`)
 
   return `kv://${namespace.id}`
 }
@@ -98,7 +98,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
   fab_path: string,
   package_dir: string,
   config: ConfigTypes.CFWorkers,
-  env_overrides: FabSettings,
+  env_overrides: Map<string, FabSettings>,
   assets_url: string
 ) => {
   const package_path = path.join(package_dir, 'cf-workers.js')
@@ -124,7 +124,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
   if (workers_dev) {
     checkValidityForWorkersDev(config)
   } else {
-    checkValidityForZoneRoutes(config)
+    checkValidityForZoneRoutes(config, env_overrides)
   }
   const api = await getCloudflareApi(api_token, account_id)
 
@@ -140,7 +140,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.CFWorkers> = async (
   )
 
   if (workers_dev) {
-    return await publishOnWorkersDev(api, account_id, script_name)
+    return await publishOnWorkersDev(api, account_id, script_name, env_overrides)
   } else {
     if ('routes' in config) {
       let promises = routes.map((r) => publishOnZoneRoute(api, zone_id, r, script_name))
@@ -171,7 +171,10 @@ function checkValidityForWorkersDev(config: ConfigTypes.CFWorkers) {
   log.tick(`Config valid.`)
 }
 
-function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
+function checkValidityForZoneRoutes(
+  config: ConfigTypes.CFWorkers,
+  env_overrides: Map<string, FabSettings>
+) {
   const required_keys: Array<keyof ConfigTypes.CFWorkers> = [
     'account_id',
     'api_token',
@@ -210,6 +213,9 @@ function checkValidityForZoneRoutes(config: ConfigTypes.CFWorkers) {
       )
     }
   }
+  if (Array.from(env_overrides.keys()).length > 1) {
+    throw new InvalidConfigError(`Deploy with multiple env on route not supported yet`)
+  }
   log.tick(`Config valid.`)
 }
 
@@ -217,7 +223,7 @@ async function packageAndUpload(
   fab_path: string,
   package_path: string,
   config: ConfigTypes.CFWorkers,
-  env_overrides: FabSettings,
+  env_overrides: Map<string, FabSettings>,
   assets_url: string,
   api: CloudflareApi,
   account_id: string,
@@ -252,36 +258,89 @@ async function packageAndUpload(
     })
   }
 
-  const metadata = {
-    body_part: 'script',
-    bindings,
-  }
-
-  const body = new Multipart()
-  body.append('metadata', JSON.stringify(metadata))
-  body.append('script', await fs.readFile(package_path, 'utf8'), {
-    contentType: 'application/javascript',
-  })
-
-  const upload_response = await api.put(
-    `/accounts/${account_id}/workers/scripts/${script_name}`,
-    {
-      body: (body as unknown) as FormData,
-      headers: body.getHeaders(),
-    }
+  let service_response = await api.get(
+    `/accounts/${account_id}/workers/services/${script_name}`
   )
 
-  if (!upload_response.success) {
-    throw new FabDeployError(`Error uploading the script, got response:
-    ❤️${JSON.stringify(upload_response)}❤️`)
+  if (!service_response.success) {
+    const body = new Multipart()
+    body.append('metadata', JSON.stringify({ body_part: 'script', bindings }))
+    body.append('script', await fs.readFile(package_path, 'utf8'), {
+      contentType: 'application/javascript',
+    })
+
+    const upload_response = await api.put(
+      `/accounts/${account_id}/workers/scripts/${script_name}`,
+      {
+        body: (body as unknown) as FormData,
+        headers: body.getHeaders(),
+      }
+    )
+
+    if (!upload_response.success) {
+      throw new FabDeployError(`Error uploading the script, got response:
+      ❤️${JSON.stringify(upload_response)}❤️`)
+    }
+
+    service_response = await api.get(
+      `/accounts/${account_id}/workers/services/${script_name}`
+    )
+
+    if (!service_response.success) {
+      throw new FabDeployError(`Error getting the service, got response:
+      ❤️${JSON.stringify(upload_response)}❤️`)
+    }
   }
+
+  const environments = service_response.result.environments.map(
+    ({ environment }: any) => environment
+  )
+  for (const [env] of env_overrides) {
+    if (!environments.includes(env)) {
+      const create_environement_response = await api.post(
+        `/accounts/${account_id}/workers/services/${script_name}/environments/production/copy/${env}`
+      )
+
+      if (!create_environement_response.success) {
+        throw new FabDeployError(`Error creating the environment, got response:
+          ❤️${JSON.stringify(create_environement_response)}❤️`)
+      }
+    }
+
+    const body = new Multipart()
+    body.append(
+      'metadata',
+      JSON.stringify({
+        body_part: 'script',
+        bindings: [...bindings, { type: 'plain_text', name: 'ENVIRONMENT', text: env }],
+      })
+    )
+    body.append('script', await fs.readFile(package_path, 'utf8'), {
+      contentType: 'application/javascript',
+    })
+
+    const upload_response = await api.put(
+      `/accounts/${account_id}/workers/services/${script_name}/environments/${env}`,
+      {
+        body: (body as unknown) as FormData,
+        headers: body.getHeaders(),
+      }
+    )
+
+    if (!upload_response) {
+      throw new FabDeployError(`Error uploading the service, got response:
+        ❤️${JSON.stringify(upload_response)}❤️`)
+    }
+  }
+
   log.tick(`Uploaded, publishing...`)
 }
 
 async function publishOnWorkersDev(
   api: CloudflareApi,
   account_id: string,
-  script_name: string
+  script_name: string,
+  env_overrides: Map<string, FabSettings>
 ) {
   const subdomain_response = await api.get(`/accounts/${account_id}/workers/subdomain`)
   if (!subdomain_response.success) {
@@ -290,20 +349,27 @@ async function publishOnWorkersDev(
   }
   const { subdomain } = subdomain_response.result
 
-  const publish_response = await api.post(
-    `/accounts/${account_id}/workers/scripts/${script_name}/subdomain`,
-    {
-      body: JSON.stringify({ enabled: true }),
+  const urls = []
+
+  for (const [env] of env_overrides) {
+    const publish_response = await api.post(
+      `/accounts/${account_id}/workers/services/${script_name}/environments/${env}/subdomain`,
+      {
+        body: JSON.stringify({ enabled: true }),
+      }
+    )
+    if (!publish_response.success) {
+      throw new FabDeployError(`Error publishing the script on a workers.dev subdomain, got response:
+        ❤️${JSON.stringify(publish_response)}❤️`)
     }
-  )
-  if (!publish_response.success) {
-    throw new FabDeployError(`Error publishing the script on a workers.dev subdomain, got response:
-      ❤️${JSON.stringify(publish_response)}❤️`)
+
+    urls.push(`https://${env}.${script_name}.${subdomain}.workers.dev`)
   }
+
   log.tick(`Done.`)
   log.time((d) => `Deployed in ${d}.`)
 
-  return `https://${script_name}.${subdomain}.workers.dev`
+  return urls
 }
 
 async function publishOnZoneRoute(

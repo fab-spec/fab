@@ -27,7 +27,7 @@ export default class Deployer {
     package_dir: string,
     server_host: DeployProviders | undefined,
     assets_host: DeployProviders | undefined,
-    env: string | undefined,
+    envs: string[] | undefined,
     assets_only: boolean,
     assets_already_deployed_at: string | undefined,
     auto_install: boolean
@@ -44,7 +44,7 @@ export default class Deployer {
         `
       )
     }
-    const env_overrides = await this.getSettingsOverrides(config, env)
+    const env_overrides = await this.getSettingsOverrides(config, envs)
 
     const { server_provider, assets_provider } = this.getProviders(
       deploy,
@@ -92,22 +92,32 @@ export default class Deployer {
   }
 
   // TODO: this should be common somewhere
-  private static async getSettingsOverrides(config: JSON5Config, env?: string) {
-    if (!env) {
-      return {}
+  private static async getSettingsOverrides(
+    config: JSON5Config,
+    envs?: string[]
+  ): Promise<Map<string, FabSettings>> {
+    const env_overrides = new Map()
+
+    if (!envs) {
+      return new Map([['production', {}]])
     }
-    const overrides = config.data.settings?.[env]
-    if (!overrides) {
-      throw new InvalidConfigError(`No environment '${env}' found in ${config}!`)
+
+    for (const env of envs) {
+      const overrides = config.data.settings?.[env]
+      if (!overrides) {
+        throw new InvalidConfigError(`No environment '${env}' found in ${config}!`)
+      }
+      env_overrides.set(env, overrides)
     }
-    return overrides
+
+    return env_overrides
   }
 
   private static async deployAssetsAndServer(
     file_path: string,
     package_dir: string,
     deploy: DeployConfig,
-    env_overrides: FabSettings,
+    env_overrides: Map<string, FabSettings>,
     assets_provider: DeployProviders,
     server_provider: DeployProviders,
     assets_only: boolean
@@ -191,7 +201,7 @@ export default class Deployer {
     file_path: string,
     package_dir: string,
     config: FabSettings,
-    env_overrides: FabSettings,
+    env_overrides: Map<string, FabSettings>,
     assets_url: string
   ) {
     return await server_deployer.deployServer!(

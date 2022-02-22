@@ -36,6 +36,7 @@ export default class Deploy extends Command {
     env: flags.string({
       description:
         'Override production settings with a different environment defined in your FAB config file.',
+      multiple: true,
     }),
     'assets-already-deployed-at': flags.string({
       description:
