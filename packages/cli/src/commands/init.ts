@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command'
-import { DEFAULT_CONFIG_FILENAME } from '@dev-spendesk/core'
+import { DEFAULT_CONFIG_FILENAME } from '@dev-spendesk/fab-core'
 import Initializer from '../Initializer'
 
 export default class Init extends Command {

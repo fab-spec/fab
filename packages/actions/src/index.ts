@@ -1,4 +1,4 @@
-import { FabActionsExports } from '@dev-spendesk/core'
+import { FabActionsExports } from '@dev-spendesk/fab-core'
 import Packager from './Packager'
 import Deployer from './Deployer'
 import Builder from './Builder'

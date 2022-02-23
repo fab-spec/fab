@@ -4,7 +4,7 @@ import {
   DeployProviders,
   FabActionsExports,
   HOSTING_PROVIDERS,
-} from '@dev-spendesk/core'
+} from '@dev-spendesk/fab-core'
 import { JSON5Config } from '../'
 import fs from 'fs-extra'
 

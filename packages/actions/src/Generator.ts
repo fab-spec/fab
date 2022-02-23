@@ -1,4 +1,4 @@
-import { ProtoFab } from '@dev-spendesk/core'
+import { ProtoFab } from '@dev-spendesk/fab-core'
 import fs from 'fs-extra'
 import path from 'path'
 import util from 'util'
@@ -17,7 +17,7 @@ export class Generator {
     if (invalid_reason) {
       throw new BuildFailedError(`FAB is not ready for compilation.
         ${invalid_reason}
-        You might need to add @dev-spendesk/plugin-rewire-assets to your 'build' config. See https://fab.dev/packages/rewire-assets for more information about what this module is and why it's needed.
+        You might need to add @dev-spendesk/fab-plugin-rewire-assets to your 'build' config. See https://fab.dev/packages/rewire-assets for more information about what this module is and why it's needed.
       `)
     }
 

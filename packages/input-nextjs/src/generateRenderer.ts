@@ -1,7 +1,7 @@
 import { mergeWebpacks } from './mergeWebpacks'
 import path from 'path'
 import fs from 'fs-extra'
-import { FabFilesObject } from '@dev-spendesk/core'
+import { FabFilesObject } from '@dev-spendesk/fab-core'
 
 export default async function generateRenderer(
   js_renderers: string[],

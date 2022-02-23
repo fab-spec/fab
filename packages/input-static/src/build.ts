@@ -1,11 +1,11 @@
 import { InputStaticArgs, InputStaticMetadata } from './types'
-import { FabBuildStep } from '@dev-spendesk/core'
+import { FabBuildStep } from '@dev-spendesk/fab-core'
 import fs from 'fs-extra'
 import globby from 'globby'
 import path from 'path'
 import { InvalidConfigError, relativeToConfig } from '@dev-spendesk/fab-cli'
 import { _log } from '@dev-spendesk/fab-cli'
-const log = _log(`@dev-spendesk/input-static`)
+const log = _log(`@dev-spendesk/fab-input-static`)
 
 export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
   args,
@@ -17,7 +17,7 @@ export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
 
   if (!dir) {
     throw new InvalidConfigError(
-      `@dev-spendesk/input-static requires an argument of 'dir'.`
+      `@dev-spendesk/fab-input-static requires an argument of 'dir'.`
     )
   }
 
@@ -25,12 +25,12 @@ export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (
 
   if (!(await fs.pathExists(abs_dir))) {
     throw new InvalidConfigError(
-      `@dev-spendesk/input-static specifies a 'dir' of '${dir}', which doesn't exist.`
+      `@dev-spendesk/fab-input-static specifies a 'dir' of '${dir}', which doesn't exist.`
     )
   }
   if (proto_fab.files!.size > 0) {
     throw new InvalidConfigError(
-      `@dev-spendesk/input-static must be the first 'input' plugin in the chain.`
+      `@dev-spendesk/fab-input-static must be the first 'input' plugin in the chain.`
     )
   }
 

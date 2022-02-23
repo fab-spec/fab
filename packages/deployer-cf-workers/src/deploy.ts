@@ -5,7 +5,7 @@ import {
   FabServerDeployer,
   FabSettings,
   getContentType,
-} from '@dev-spendesk/core'
+} from '@dev-spendesk/fab-core'
 import { CloudflareApi, getCloudflareApi, log } from './utils'
 import { FabDeployError, InvalidConfigError } from '@dev-spendesk/fab-cli'
 import { createPackage } from './createPackage'

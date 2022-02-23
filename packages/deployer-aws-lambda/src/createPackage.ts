@@ -3,7 +3,7 @@ import {
   FabPackager,
   FabSettings,
   stripTrailingSlash,
-} from '@dev-spendesk/core'
+} from '@dev-spendesk/fab-core'
 import fs from 'fs-extra'
 import path from 'path'
 import nanoid from 'nanoid'

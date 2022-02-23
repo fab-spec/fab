@@ -1,4 +1,4 @@
-import { BuildConfig } from '@dev-spendesk/core'
+import { BuildConfig } from '@dev-spendesk/fab-core'
 import path from 'path'
 import fs from 'fs-extra'
 import { log } from './utils'
@@ -9,13 +9,13 @@ const static_plugin_chain = (
   dir: string,
   fallback: string | boolean = '/index.html'
 ) => ({
-  '@dev-spendesk/input-static': {
+  '@dev-spendesk/fab-input-static': {
     dir,
   },
-  '@dev-spendesk/plugin-render-html': {
+  '@dev-spendesk/fab-plugin-render-html': {
     fallback,
   },
-  '@dev-spendesk/plugin-rewire-assets': {},
+  '@dev-spendesk/fab-plugin-rewire-assets': {},
 })
 
 export type FrameworkInfo = {
@@ -90,13 +90,13 @@ export const Frameworks = {
     plugins: export_build
       ? static_plugin_chain('out')
       : {
-          '@dev-spendesk/input-nextjs': {
+          '@dev-spendesk/fab-input-nextjs': {
             dir: '.next',
           },
-          '@dev-spendesk/plugin-render-html': {
+          '@dev-spendesk/fab-plugin-render-html': {
             fallback: false,
           },
-          '@dev-spendesk/plugin-rewire-assets': {},
+          '@dev-spendesk/fab-plugin-rewire-assets': {},
         },
     async customConfig(root_dir: string) {
       if (export_build) return []

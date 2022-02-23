@@ -1,5 +1,5 @@
 {
-  "name": "@dev-spendesk/core",
+  "name": "@dev-spendesk/fab-core",
   "version": "1.0.0-rc.10",
   "private": false,
   "description": "Common code for all FAB projects",

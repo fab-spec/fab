@@ -1,5 +1,5 @@
 {
-  "name": "@dev-spendesk/input-static",
+  "name": "@dev-spendesk/fab-input-static",
   "version": "1.0.0-rc.10",
   "description": "Module to handle a directory of HTML & assets",
   "keywords": [
@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@dev-spendesk/fab-cli": "1.0.0-rc.10",
-    "@dev-spendesk/core": "1.0.0-rc.10",
+    "@dev-spendesk/fab-core": "1.0.0-rc.10",
     "@types/node": "^12.12.14",
     "fs-extra": "^8.1.0",
     "globby": "^10"

@@ -16,7 +16,7 @@ import {
 } from './constants'
 import { FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic } from './frameworks'
 import { log, mergeScriptsAfterBuild } from './utils'
-import { BuildConfig } from '@dev-spendesk/core'
+import { BuildConfig } from '@dev-spendesk/fab-core'
 import execa from 'execa'
 import fetch from 'cross-fetch'
 

@@ -1,6 +1,6 @@
 import aws from 'aws-sdk'
 import { ReadStream } from 'fs'
-import { IMMUTABLE_HEADERS } from '@dev-spendesk/core'
+import { IMMUTABLE_HEADERS } from '@dev-spendesk/fab-core'
 
 export function authenticate(
   region: string,

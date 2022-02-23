@@ -1,5 +1,5 @@
 {
-  "name": "@dev-spendesk/deployer-cf-workers",
+  "name": "@dev-spendesk/fab-deployer-cf-workers",
   "version": "1.0.0-rc.10",
   "description": "Packages and deploys FABs to AWS Lambda@Edge",
   "keywords": [
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@dev-spendesk/fab-cli": "1.0.0-rc.10",
-    "@dev-spendesk/core": "1.0.0-rc.10",
+    "@dev-spendesk/fab-core": "1.0.0-rc.10",
     "@types/node": "^12.12.14",
     "cross-fetch": "^3.0.6",
     "file-to-sha512": "^0.0.1",

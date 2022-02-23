@@ -3,7 +3,7 @@ import {
   DeployProviders,
   FabActionsExports,
   HOSTING_PROVIDERS,
-} from '@dev-spendesk/core'
+} from '@dev-spendesk/fab-core'
 import { Command, flags } from '@oclif/command'
 import { JSON5Config } from '../'
 

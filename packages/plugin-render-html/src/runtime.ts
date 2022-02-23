@@ -5,7 +5,7 @@ import {
   matchPath,
   NO_RESPONSE_STATUS_CODE,
   Priority,
-} from '@dev-spendesk/core'
+} from '@dev-spendesk/fab-core'
 import { DEFAULT_INJECTIONS } from './constants'
 import { generateReplacements } from './injections/env'
 import { ITokens } from 'micromustache'

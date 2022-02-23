@@ -1,4 +1,4 @@
-import { ConfigTypes, FabServerDeployer, FabSettings } from '@dev-spendesk/core'
+import { ConfigTypes, FabServerDeployer, FabSettings } from '@dev-spendesk/fab-core'
 import { createPackage } from './createPackage'
 import path from 'path'
 import { InvalidConfigError } from '@dev-spendesk/fab-cli'

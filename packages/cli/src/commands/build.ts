@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command'
-import { DEFAULT_CONFIG_FILENAME, FabActionsExports } from '@dev-spendesk/core'
+import { DEFAULT_CONFIG_FILENAME, FabActionsExports } from '@dev-spendesk/fab-core'
 import { JSON5Config } from '../'
 import { watcher } from '../helpers/watcher'
 

@@ -1,4 +1,4 @@
-import { FABRuntime } from '@fab/core'
+import { FABRuntime } from '@dev-spendesk/fab-core'
 
 const redirects = {
   '/kb/plugins': '/plugins/introduction',

@@ -8,10 +8,10 @@
   "dependencies": {
     "@dev-spendesk/fab-actions": "latest",
     "@dev-spendesk/fab-cli": "latest",
-    "@dev-spendesk/input-static": "latest",
-    "@dev-spendesk/plugin-render-html": "latest",
-    "@dev-spendesk/plugin-rewire-assets": "latest",
-    "@dev-spendesk/plugin-precompile": "latest",
+    "@dev-spendesk/fab-input-static": "latest",
+    "@dev-spendesk/fab-plugin-render-html": "latest",
+    "@dev-spendesk/fab-plugin-rewire-assets": "latest",
+    "@dev-spendesk/fab-plugin-precompile": "latest",
     "@dev-spendesk/fab-server": "latest"
   }
 }

@@ -5,7 +5,7 @@ import {
   REGEXP_VALUE_PATTERN,
   s_sume,
   JSON5ConfigI,
-} from '@dev-spendesk/core'
+} from '@dev-spendesk/fab-core'
 import jju from 'jju'
 import regexParser from 'regex-parser'
 import { InvalidConfigError, MissingConfig } from '../errors'

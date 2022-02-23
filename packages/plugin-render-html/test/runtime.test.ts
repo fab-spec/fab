@@ -5,7 +5,7 @@ import {
   FABRuntime,
   FabSettings,
   ProtoFab,
-} from '@dev-spendesk/core'
+} from '@dev-spendesk/fab-core'
 import { build } from '../src/build'
 import { RenderHtmlArgs, RenderHtmlMetadata } from '../src/types'
 

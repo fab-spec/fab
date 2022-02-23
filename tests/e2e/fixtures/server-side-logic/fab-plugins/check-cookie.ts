@@ -1,4 +1,4 @@
-import { FABRuntime, Priority } from '@dev-spendesk/core'
+import { FABRuntime, Priority } from '@dev-spendesk/fab-core'
 // import { checkValidity } from 'somewhere'
 const checkValidity = (str: string) => str.startsWith('AUTHED')
 

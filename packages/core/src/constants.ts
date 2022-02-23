@@ -54,7 +54,7 @@ export const HOSTING_PROVIDERS: {
   [key: string]: HostingProvider
 } = {
   'cf-workers': {
-    package_name: '@dev-spendesk/deployer-cf-workers',
+    package_name: '@dev-spendesk/fab-deployer-cf-workers',
     capabilities: {
       server: true,
       assets: true,
@@ -72,7 +72,7 @@ export const HOSTING_PROVIDERS: {
     extension: 'zip',
   },
   'aws-s3': {
-    package_name: '@dev-spendesk/deployer-aws-s3',
+    package_name: '@dev-spendesk/fab-deployer-aws-s3',
     capabilities: {
       server: false,
       assets: true,

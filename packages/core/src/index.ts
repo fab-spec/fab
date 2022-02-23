@@ -1,5 +1,5 @@
 /*
- * @dev-spendesk/core: Type definitions and helper methods
+ * @dev-spendesk/fab-core: Type definitions and helper methods
  *
  * Be careful what you import in this project, everything needs to be Rollup-compatible
  * and runnable inside a FAB, since FAB runtime components will import this.

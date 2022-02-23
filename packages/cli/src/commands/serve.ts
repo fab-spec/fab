@@ -4,7 +4,7 @@ import {
   SandboxType,
   ServerArgs,
   FabServerExports,
-} from '@dev-spendesk/core'
+} from '@dev-spendesk/fab-core'
 import { loadOrInstallModule, _log } from '../helpers'
 import fs from 'fs-extra'
 const log = _log(`Server`)

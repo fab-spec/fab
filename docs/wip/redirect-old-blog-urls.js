@@ -1,6 +1,6 @@
 // server/redirect-old-blog-urls/runtime.js
 
-import { Runtime } from '@fab/core/runtime'
+import { Runtime } from '@dev-spendesk/fab-core/runtime'
 
 // We register a handler to match the old posts
 Runtime.on('/posts/:id', async (matches, { request, settings, url }) => {

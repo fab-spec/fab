@@ -1,5 +1,5 @@
 import { _log, InvalidConfigError, FabDeployError } from '@dev-spendesk/fab-cli'
-export const log = _log(`@dev-spendesk/deployer-cf-workers`)
+export const log = _log(`@dev-spendesk/fab-deployer-cf-workers`)
 
 import fetch from 'cross-fetch'
 

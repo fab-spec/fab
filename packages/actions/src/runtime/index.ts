@@ -12,7 +12,7 @@ import {
   NO_RESPONSE_STATUS_CODE,
   ResponseInterceptor,
   RuntimeImports,
-} from '@dev-spendesk/core'
+} from '@dev-spendesk/fab-core'
 
 import final_responder from './final_responder'
 // @ts-ignore

@@ -1,4 +1,4 @@
-import { FabConfig, ProtoFab, RuntimePlugin } from '@dev-spendesk/core'
+import { FabConfig, ProtoFab, RuntimePlugin } from '@dev-spendesk/fab-core'
 import { _log, BuildFailedError } from '@dev-spendesk/fab-cli'
 import { rollupCompile } from './rollup'
 

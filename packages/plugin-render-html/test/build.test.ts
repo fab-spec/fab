@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { ProtoFab } from '@dev-spendesk/core'
+import { ProtoFab } from '@dev-spendesk/fab-core'
 import { build } from '../src/build'
 import { RenderHtmlMetadata } from '../src/types'
 

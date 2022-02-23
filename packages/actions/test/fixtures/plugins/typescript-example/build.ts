@@ -1,4 +1,4 @@
-import { FabBuildStep } from '@dev-spendesk/core'
+import { FabBuildStep } from '@dev-spendesk/fab-core'
 import { TsExampleMetadata, TsExampleArgs } from './types'
 
 export const build: FabBuildStep<TsExampleArgs, TsExampleMetadata> = async (

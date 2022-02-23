@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { Compiler } from '../../src/Compiler'
 import { JSON5Config } from '@dev-spendesk/fab-cli'
 import { captureStdout } from '../helpers'
-import { ProtoFab } from '@dev-spendesk/core'
+import { ProtoFab } from '@dev-spendesk/fab-core'
 
 describe('Compiler', function() {
   this.timeout(10000)

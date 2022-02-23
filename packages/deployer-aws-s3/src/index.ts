@@ -1,4 +1,4 @@
-import { ConfigTypes, FabAssetsDeployer, getContentType } from '@dev-spendesk/core'
+import { ConfigTypes, FabAssetsDeployer, getContentType } from '@dev-spendesk/fab-core'
 import { nanoid } from 'nanoid'
 import path from 'path'
 import fs from 'fs-extra'

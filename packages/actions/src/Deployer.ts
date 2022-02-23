@@ -6,7 +6,7 @@ import {
   FabDeployerExports,
   FabSettings,
   HOSTING_PROVIDERS,
-} from '@dev-spendesk/core'
+} from '@dev-spendesk/fab-core'
 import {
   _log,
   FabDeployError,

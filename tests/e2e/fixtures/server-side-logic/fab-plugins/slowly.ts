@@ -1,4 +1,4 @@
-import { FABRuntime } from '@dev-spendesk/core'
+import { FABRuntime } from '@dev-spendesk/fab-core'
 
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms))
 

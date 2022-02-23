@@ -35,7 +35,7 @@
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
-    "@dev-spendesk/core": "1.0.0-rc.10",
+    "@dev-spendesk/fab-core": "1.0.0-rc.10",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/errors": "^1",

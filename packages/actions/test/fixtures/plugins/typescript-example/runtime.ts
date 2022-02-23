@@ -1,4 +1,4 @@
-import { FABRuntime } from '@dev-spendesk/core'
+import { FABRuntime } from '@dev-spendesk/fab-core'
 import { TsExampleArgs, TsExampleMetadata } from './types'
 
 export default function TypescriptExampleRuntime(
