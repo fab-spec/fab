@@ -28,6 +28,5 @@
   },
   "dependencies": {
     "@dev-spendesk/cli": "1.0.0-rc.9"
-  },
-  "gitHead": "e0232b0579fb886d567c62ad793a128ff4ea34de"
+  }
 }
