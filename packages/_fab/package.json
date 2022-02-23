@@ -1,5 +1,5 @@
 {
-  "name": "fab",
+  "name": "@dev-spendesk/fab",
   "version": "1.0.0-rc.9",
   "description": "An alias for @dev-spendesk/cli",
   "keywords": [
