@@ -1,9 +1,9 @@
 {
   plugins: {
-    '@fab/input-static': {
+    '@dev-spendesk/input-static': {
       dir: 'src',
     },
-    '@fab/no-existo': {
+    '@dev-spendesk/no-existo': {
       other: 'ag',
     },
   },

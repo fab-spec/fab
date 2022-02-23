@@ -9,12 +9,12 @@ import {
   ServerArgs,
   ServerConstructor,
   ServerType,
-} from '@fab/core'
-import { _log, InvalidConfigError, FabServerError, JSON5Config } from '@fab/cli'
+} from '@dev-spendesk/core'
+import { _log, InvalidConfigError, FabServerError, JSON5Config } from '@dev-spendesk/cli'
 import { readFilesFromZip } from './utils'
 import v8_sandbox from './sandboxes/v8-isolate'
 import { Cache } from './cache'
-import node_vm_sandbox from '@fab/sandbox-node-vm'
+import node_vm_sandbox from '@dev-spendesk/sandbox-node-vm'
 import url from 'url'
 import http from 'http'
 import express, {
@@ -26,7 +26,7 @@ import concat from 'concat-stream'
 import fetch, { Request as NodeFetchRequest } from 'cross-fetch'
 import { pathToSHA512 } from 'file-to-sha512'
 import Stream from 'stream'
-import { watcher } from '@fab/cli'
+import { watcher } from '@dev-spendesk/cli'
 import httpProxy from 'http-proxy'
 // @ts-ignore
 import nodeToWebStream from 'readable-stream-node-to-web'
@@ -41,7 +41,7 @@ const log = _log(`Server`)
 async function streamResponse(fetch_res: Response, res: ExpressResponse) {
   res.status(fetch_res.status)
   // This is a NodeFetch response, which has this method, but
-  // the @fab/core types are from dom.ts, which doesn't. This
+  // the @dev-spendesk/core types are from dom.ts, which doesn't. This
   // was the easiest workaround for now.
   // @ts-ignore
   const response_headers = fetch_res.headers.raw()
@@ -167,7 +167,9 @@ class Server implements ServerType {
     const fetch_req = new NodeFetchRequest(url, {
       method,
       headers,
-      ...((method === 'POST' || method === 'PUT' || method === 'PATCH') ? { body: req.body } : {}),
+      ...(method === 'POST' || method === 'PUT' || method === 'PATCH'
+        ? { body: req.body }
+        : {}),
     })
 
     const production_settings = renderer.metadata?.production_settings

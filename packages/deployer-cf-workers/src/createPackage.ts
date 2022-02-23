@@ -1,5 +1,5 @@
-import { ConfigTypes, FabPackager, FabSettings } from '@fab/core'
-import { FabPackageError } from '@fab/cli'
+import { ConfigTypes, FabPackager, FabSettings } from '@dev-spendesk/core'
+import { FabPackageError } from '@dev-spendesk/cli'
 
 import { log } from './utils'
 import path from 'path'

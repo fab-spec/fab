@@ -1,4 +1,4 @@
-import { FABRuntime } from '@fab/core'
+import { FABRuntime } from '@dev-spendesk/core'
 
 export default ({ Router }: FABRuntime) => {
   Router.on('/geolocate', async () => {

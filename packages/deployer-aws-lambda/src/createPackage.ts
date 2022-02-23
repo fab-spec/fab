@@ -1,4 +1,9 @@
-import { ConfigTypes, FabPackager, FabSettings, stripTrailingSlash } from '@fab/core'
+import {
+  ConfigTypes,
+  FabPackager,
+  FabSettings,
+  stripTrailingSlash,
+} from '@dev-spendesk/core'
 import fs from 'fs-extra'
 import path from 'path'
 import nanoid from 'nanoid'

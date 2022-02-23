@@ -1,4 +1,4 @@
-import { FABServerContext, FabSettings } from '@fab/core'
+import { FABServerContext, FabSettings } from '@dev-spendesk/core'
 
 // language=JavaScript
 export default (

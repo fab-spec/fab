@@ -1,14 +1,14 @@
-import { PluginMetadata, ProtoFab } from '@fab/core'
+import { PluginMetadata, ProtoFab } from '@dev-spendesk/core'
 import { build } from '../src/build'
-import { shouldThrow } from '@fab/core/test/helpers'
+import { shouldThrow } from '@dev-spendesk/core/test/helpers'
 const dir = __dirname + '/fixtures'
 
-describe('@fab/input-static', () => {
+describe('@dev-spendesk/input-static', () => {
   it('should require a dir argument', async () => {
     await shouldThrow(
       // @ts-ignore
       () => build({}, new ProtoFab()),
-      `@fab/input-static requires an argument of 'dir'.`
+      `@dev-spendesk/input-static requires an argument of 'dir'.`
     )
   })
 
@@ -22,7 +22,7 @@ describe('@fab/input-static', () => {
           new ProtoFab(),
           dir
         ),
-      `@fab/input-static specifies a 'dir' of './no-existo', which doesn't exist.`
+      `@dev-spendesk/input-static specifies a 'dir' of './no-existo', which doesn't exist.`
     )
   })
 
@@ -38,7 +38,7 @@ describe('@fab/input-static', () => {
           proto_fab,
           dir
         ),
-      `@fab/input-static must be the first 'input' plugin in the chain.`
+      `@dev-spendesk/input-static must be the first 'input' plugin in the chain.`
     )
   })
 })

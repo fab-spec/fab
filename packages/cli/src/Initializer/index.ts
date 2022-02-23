@@ -16,7 +16,7 @@ import {
 } from './constants'
 import { FRAMEWORK_NAMES, FrameworkInfo, Frameworks, GenericStatic } from './frameworks'
 import { log, mergeScriptsAfterBuild } from './utils'
-import { BuildConfig } from '@fab/core'
+import { BuildConfig } from '@dev-spendesk/core'
 import execa from 'execa'
 import fetch from 'cross-fetch'
 
@@ -39,7 +39,7 @@ const promptWithDefault = async (
 }
 
 const getLatestFabCli = async () => {
-  const response = await fetch('https://registry.npmjs.org/@fab/cli/latest')
+  const response = await fetch('https://registry.npmjs.org/@dev-spendesk/cli/latest')
   const data = await response.json()
   if (data && data.version) {
     const installed = JSON.parse(
@@ -47,7 +47,7 @@ const getLatestFabCli = async () => {
     )
     if (installed.version !== data.version) {
       log(
-        `💚NOTE💚: You have 🖤@fab/cli🖤 💛${installed.version}💛, latest available on NPM is 💛${data.version}💛.`
+        `💚NOTE💚: You have 🖤@dev-spendesk/cli🖤 💛${installed.version}💛, latest available on NPM is 💛${data.version}💛.`
       )
     }
   }
@@ -149,7 +149,7 @@ export default class Initializer {
         • Generate a 💛fab.config.json5💛 file for your project
         • Add 💛build:fab💛 and related scripts to your 💛package.json💛
         • Add 💛.fab💛 and 💛fab.zip💛 to your 💛.gitignore💛
-        • Install 💛@fab/cli💛 and related dependencies using 💛${
+        • Install 💛@dev-spendesk/cli💛 and related dependencies using 💛${
           use_yarn ? 'yarn' : 'npm'
         }💛`)
         const confirmed = await log.confirmAndRespond(`Good to go? [y/N]`)

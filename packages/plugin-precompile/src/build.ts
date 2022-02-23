@@ -1,17 +1,17 @@
-import { FabBuildStep, ProtoFab, RuntimePlugin } from '@fab/core'
+import { FabBuildStep, ProtoFab, RuntimePlugin } from '@dev-spendesk/core'
 import {
   PrecompileArgs,
   PrecompileMetadata,
   ConfigOverrides,
   PluginOverrides,
 } from './types'
-import { _log } from '@fab/cli'
+import { _log } from '@dev-spendesk/cli'
 import webpack from 'webpack'
 import fs from 'fs-extra'
 import path from 'path'
 import filenamify from 'filenamify'
 
-const log = _log('@fab/plugin-precompile')
+const log = _log('@dev-spendesk/plugin-precompile')
 
 export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
   args: PrecompileArgs,
@@ -22,7 +22,7 @@ export const build: FabBuildStep<PrecompileArgs, PrecompileMetadata> = async (
   /*
    * TODO
    *
-   * Port the @fab/input-nextjs stuff across, shimming out pieces as needed.
+   * Port the @dev-spendesk/input-nextjs stuff across, shimming out pieces as needed.
    * Make each file a new "runtime", that's compiled using webpack, with a bunch
    * of good defaults but the args for each section are all the overrides.
    *

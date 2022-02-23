@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { ProtoFab } from '@fab/core'
+import { ProtoFab } from '@dev-spendesk/core'
 import hasha from 'hasha'
 import { RewireAssetsMetadata } from '../src/types'
 import { build } from '../src/build'

@@ -1,14 +1,14 @@
 import { InputNextJSArgs, InputNextJSMetadata } from './types'
-import { FabBuildStep } from '@fab/core'
+import { FabBuildStep } from '@dev-spendesk/core'
 import path from 'path'
-import { InvalidConfigError, _log } from '@fab/cli'
+import { InvalidConfigError, _log } from '@dev-spendesk/cli'
 import { preflightChecks } from './preflightChecks'
 import globby from 'globby'
 import fs from 'fs-extra'
 import generateRenderer from './generateRenderer'
 import webpack from 'webpack'
 
-const log = _log(`@fab/input-nextjs`)
+const log = _log(`@dev-spendesk/input-nextjs`)
 
 // @ts-ignore
 import md5dir from 'md5-dir/promise'
@@ -25,7 +25,7 @@ export const build: FabBuildStep<InputNextJSArgs, InputNextJSMetadata> = async (
   // const { dir } = args
   if (proto_fab.files!.size > 0) {
     throw new InvalidConfigError(
-      `@fab/input-nextjs must be the first 'input' plugin in the chain.`
+      `@dev-spendesk/input-nextjs must be the first 'input' plugin in the chain.`
     )
   }
 

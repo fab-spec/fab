@@ -1,13 +1,13 @@
 {
   plugins: {
-    '@fab/input-static': { dir: 'public' },
-    '@fab/plugin-render-html': { fallback: '/index.html' },
-    '@fab/plugin-rewire-assets': {},
+    '@dev-spendesk/input-static': { dir: 'public' },
+    '@dev-spendesk/plugin-render-html': { fallback: '/index.html' },
+    '@dev-spendesk/plugin-rewire-assets': {},
     './fab-plugins/hello-world': {},
     './fab-plugins/add-bundle-id': {},
     './fab-plugins/slowly': {},
     './fab-plugins/cache': {},
-    '@fab/plugin-precompile': {
+    '@dev-spendesk/plugin-precompile': {
       './fab-plugins/needs-webpack.js': {
         _config: './modify-plugin-config.js',
         other_data: 'passed through as normal',

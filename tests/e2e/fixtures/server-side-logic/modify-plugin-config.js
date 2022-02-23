@@ -11,6 +11,6 @@ module.exports = {
   },
   alias: (alias) => ({
     ...alias,
-    'no-existo': require.resolve('@fab/plugin-precompile/shims/empty-object'),
+    'no-existo': require.resolve('@dev-spendesk/plugin-precompile/shims/empty-object'),
   }),
 }

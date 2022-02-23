@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import Builder from '../../src/Builder'
-import { JSON5Config } from '@fab/cli'
+import { JSON5Config } from '@dev-spendesk/cli'
 import path from 'path'
 import { captureStdout } from '../helpers'
 

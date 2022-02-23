@@ -1,5 +1,5 @@
 {
-  "name": "@fab/cli",
+  "name": "@dev-spendesk/cli",
   "version": "1.0.0-rc.9",
   "description": "The CLI entry-point for the FAB ecosystem",
   "keywords": [
@@ -35,7 +35,7 @@
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
-    "@fab/core": "1.0.0-rc.9",
+    "@dev-spendesk/core": "1.0.0-rc.9",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/errors": "^1",

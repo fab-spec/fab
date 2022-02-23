@@ -1,4 +1,4 @@
-import { PluginArgs, PluginMetadata } from '@fab/core'
+import { PluginArgs, PluginMetadata } from '@dev-spendesk/core'
 
 export interface TsExampleArgs extends PluginArgs {
   the_time_is: string

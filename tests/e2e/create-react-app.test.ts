@@ -279,9 +279,9 @@ describe('Create React App E2E Test', () => {
       await fs.writeFile(`${cwd}/build/bigfile.a1b2c3d4e5.immutable`, big_file)
 
       const config = jju.parse(await fs.readFile(`${cwd}/fab.config.json5`, 'utf8'))
-      config.plugins['@fab/plugin-rewire-assets']['chunk-threshold'] = Math.floor(
-        big_file.length / 2.5
-      )
+      config.plugins['@dev-spendesk/plugin-rewire-assets'][
+        'chunk-threshold'
+      ] = Math.floor(big_file.length / 2.5)
       await fs.writeFile(`${cwd}/fab.config.json5`, jju.stringify(config))
 
       await buildFab(cwd)

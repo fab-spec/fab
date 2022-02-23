@@ -1,4 +1,4 @@
-import { ProtoFab, filenameOutsideFabLocations, getContentType } from '@fab/core'
+import { ProtoFab, filenameOutsideFabLocations, getContentType } from '@dev-spendesk/core'
 import {
   InlineAssets,
   RenamedAssets,
@@ -7,11 +7,11 @@ import {
 } from './types'
 import hasha from 'hasha'
 import path from 'path'
-import { InvalidConfigError, _log } from '@fab/cli'
+import { InvalidConfigError, _log } from '@dev-spendesk/cli'
 // @ts-ignore
 import { isBinaryPromise } from 'istextorbinary'
 import { DEFAULT_IMMUTABILITY_CHECK } from './constants'
-const log = _log('@fab/plugin-rewire-assets')
+const log = _log('@dev-spendesk/plugin-rewire-assets')
 
 export async function build(
   args: RewireAssetsArgs,

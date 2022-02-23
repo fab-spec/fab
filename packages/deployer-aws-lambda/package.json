@@ -1,5 +1,5 @@
 {
-  "name": "@fab/deployer-aws-lambda",
+  "name": "@dev-spendesk/deployer-aws-lambda",
   "version": "1.0.0-rc.9",
   "description": "Packages and deploys FABs to AWS Lambda@Edge",
   "keywords": [
@@ -33,8 +33,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/cli": "1.0.0-rc.9",
-    "@fab/core": "1.0.0-rc.9",
+    "@dev-spendesk/cli": "1.0.0-rc.9",
+    "@dev-spendesk/core": "1.0.0-rc.9",
     "@types/nanoid": "^2.1.0",
     "@types/node": "^12.12.14",
     "deterministic-zip": "^1.1.0",

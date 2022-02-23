@@ -1,4 +1,4 @@
-import { FABRuntime } from '@fab/core'
+import { FABRuntime } from '@dev-spendesk/core'
 
 export default ({ Router, ServerContext }: FABRuntime) => {
   Router.interceptResponse(async (response) => {

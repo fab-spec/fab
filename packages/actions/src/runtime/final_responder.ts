@@ -3,7 +3,7 @@ import {
   FabPluginRuntime,
   NO_RESPONSE_STATUS_CODE,
   Priority,
-} from '@fab/core'
+} from '@dev-spendesk/core'
 
 const FinalResponder: FabPluginRuntime = ({ Router }: FABRuntime) => {
   Router.onAll(async ({ url }) => {

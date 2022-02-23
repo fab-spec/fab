@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
+import { DEFAULT_CONFIG_FILENAME } from '@dev-spendesk/core'
 import { log } from '../helpers'
 
 export class MissingConfig extends Error {

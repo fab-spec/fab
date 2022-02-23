@@ -4,7 +4,7 @@ import {
   SandboxType,
   ServerArgs,
   FabServerExports,
-} from '@fab/core'
+} from '@dev-spendesk/core'
 import { loadOrInstallModule, _log } from '../helpers'
 import fs from 'fs-extra'
 const log = _log(`Server`)
@@ -49,7 +49,7 @@ export default class Serve extends Command {
     }),
     'auto-install': flags.boolean({
       description:
-        'If you need dependent packages (e.g. @fab/serve), install them without prompting',
+        'If you need dependent packages (e.g. @dev-spendesk/serve), install them without prompting',
     }),
     watch: flags.boolean({
       description:
@@ -84,7 +84,7 @@ export default class Serve extends Command {
 
     log.announce(`fab serve`)
     const server_pkg = (
-      await loadOrInstallModule(log, '@fab/server', flags['auto-install'])
+      await loadOrInstallModule(log, '@dev-spendesk/server', flags['auto-install'])
     ).default as FabServerExports
     const server = server_pkg.createServer(file, flags as ServerArgs)
     await server.serve(

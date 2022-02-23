@@ -6,7 +6,7 @@ import {
   FabDeployerExports,
   FabSettings,
   HOSTING_PROVIDERS,
-} from '@fab/core'
+} from '@dev-spendesk/core'
 import {
   _log,
   FabDeployError,
@@ -14,7 +14,7 @@ import {
   JSON5Config,
   loadOrInstallModule,
   loadOrInstallModules,
-} from '@fab/cli'
+} from '@dev-spendesk/cli'
 
 const log = _log('Deployer')
 

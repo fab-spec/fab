@@ -5,9 +5,9 @@ import {
   FabServerDeployer,
   FabSettings,
   getContentType,
-} from '@fab/core'
+} from '@dev-spendesk/core'
 import { CloudflareApi, getCloudflareApi, log } from './utils'
-import { FabDeployError, InvalidConfigError } from '@fab/cli'
+import { FabDeployError, InvalidConfigError } from '@dev-spendesk/cli'
 import { createPackage } from './createPackage'
 import path from 'path'
 import fs from 'fs-extra'
@@ -159,7 +159,7 @@ function checkValidityForWorkersDev(config: ConfigTypes.CFWorkers) {
   ]
   const missing_config = required_keys.filter((k) => !config[k])
   if (missing_config.length > 0) {
-    throw new InvalidConfigError(`Missing required keys for @fab/deploy-cf-workers (with 💛workers_dev: true💛):
+    throw new InvalidConfigError(`Missing required keys for @dev-spendesk/deploy-cf-workers (with 💛workers_dev: true💛):
     ${missing_config.map((k) => `💛• ${k}💛`).join('\n')}`)
   }
   const ignored_keys: Array<keyof ConfigTypes.CFWorkers> = ['zone_id', 'route']
@@ -191,25 +191,25 @@ function checkValidityForZoneRoutes(
         (missing_config[0] === 'route' || missing_config[0] === 'routes')
       )
     ) {
-      throw new InvalidConfigError(`Missing required keys for @fab/deploy-cf-workers (with 💛workers_dev: false💛):
+      throw new InvalidConfigError(`Missing required keys for @dev-spendesk/deploy-cf-workers (with 💛workers_dev: false💛):
         ${missing_config.map((k) => `💛• ${k}💛`).join('\n')}`)
     }
   }
   if ('routes' in config && 'route' in config) {
     throw new InvalidConfigError(
-      'You can have either `routes` or `route` in config for @fab/deploy-cf-workers'
+      'You can have either `routes` or `route` in config for @dev-spendesk/deploy-cf-workers'
     )
   }
   if ('routes' in config) {
     let routes: string[] = config['routes']
     if (!Array.isArray(routes)) {
       throw new InvalidConfigError(
-        'value for `routes` key of @fab/deploy-cf-workers config should be an Array'
+        'value for `routes` key of @dev-spendesk/deploy-cf-workers config should be an Array'
       )
     }
     if ([...new Set(routes)].length !== routes.length) {
       throw new InvalidConfigError(
-        'Duplicate item in value for `routes` key of @fab/deploy-cf-workers config'
+        'Duplicate item in value for `routes` key of @dev-spendesk/deploy-cf-workers config'
       )
     }
   }

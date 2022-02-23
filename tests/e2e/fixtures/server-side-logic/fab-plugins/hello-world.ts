@@ -1,4 +1,4 @@
-import { FABRuntime, Priority } from '@fab/core'
+import { FABRuntime, Priority } from '@dev-spendesk/core'
 
 export default ({ Router }: FABRuntime) => {
   Router.on('/hello/:whom?', async ({ params }) => {

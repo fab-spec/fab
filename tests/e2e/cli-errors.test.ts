@@ -40,12 +40,12 @@ describe('dir of static assets', () => {
         stderr,
         stdout,
       } = await expectError(`fab build -c fab.unknown-module.json5`, { cwd })
-      expect(stdout).toContain(`Cannot find module '@fab/no-existo'`)
+      expect(stdout).toContain(`Cannot find module '@dev-spendesk/no-existo'`)
       expect(stdout).toContain(`Are you sure it's installed?`)
       expect(stderr).toContain(`Config file contains errors!`)
     })
 
-    it(`should tell you you've forgotten @fab/plugin-rewire-assets`, async () => {
+    it(`should tell you you've forgotten @dev-spendesk/plugin-rewire-assets`, async () => {
       const {
         stderr,
         stdout,
@@ -54,7 +54,7 @@ describe('dir of static assets', () => {
       expect(stdout).toContain(
         `Build config leaves files outside of _assets dir: /index.html`
       )
-      expect(stdout).toContain(`You might need to add @fab/plugin-rewire-assets`)
+      expect(stdout).toContain(`You might need to add @dev-spendesk/plugin-rewire-assets`)
       expect(stdout).toContain(`See https://fab.dev/packages/rewire-assets`)
       expect(stderr).toContain(`Build failed!`)
     })

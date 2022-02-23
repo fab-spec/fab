@@ -1,3 +1,3 @@
-import { _log } from '@fab/cli'
+import { _log } from '@dev-spendesk/cli'
 
-export const log = _log('@fab/deployer-aws-s3')
+export const log = _log('@dev-spendesk/deployer-aws-s3')

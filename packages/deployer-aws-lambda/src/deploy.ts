@@ -1,7 +1,7 @@
-import { ConfigTypes, FabServerDeployer, FabSettings } from '@fab/core'
+import { ConfigTypes, FabServerDeployer, FabSettings } from '@dev-spendesk/core'
 import { createPackage } from './createPackage'
 import path from 'path'
-import { InvalidConfigError } from '@fab/cli'
+import { InvalidConfigError } from '@dev-spendesk/cli'
 import { updateCloudFront, updateLambda } from './aws'
 import { log } from './utils'
 
@@ -32,7 +32,7 @@ export const deployServer: FabServerDeployer<ConfigTypes.AwsLambda> = async (
   ]
   const missing_config = required_keys.filter((k) => !config[k])
   if (missing_config.length > 0) {
-    throw new InvalidConfigError(`Missing required keys for @fab/deploy-aws-lambda:
+    throw new InvalidConfigError(`Missing required keys for @dev-spendesk/deploy-aws-lambda:
     ${missing_config.map((k) => `💛• ${k}💛`).join('\n')}`)
   }
 

@@ -4,7 +4,7 @@ import {
   DeployProviders,
   FabActionsExports,
   HOSTING_PROVIDERS,
-} from '@fab/core'
+} from '@dev-spendesk/core'
 import { JSON5Config } from '../'
 import fs from 'fs-extra'
 
@@ -47,7 +47,7 @@ export default class Deploy extends Command {
     }),
     'auto-install': flags.boolean({
       description:
-        'If you need dependent packages (e.g. @fab/deploy-*), install them without prompting',
+        'If you need dependent packages (e.g. @dev-spendesk/deploy-*), install them without prompting',
     }),
   }
 
@@ -74,7 +74,7 @@ export default class Deploy extends Command {
     const file = specified_file || default_file
 
     const config = await JSON5Config.readFrom(flags.config!)
-    const { Deployer } = require('@fab/actions').default as FabActionsExports
+    const { Deployer } = require('@dev-spendesk/actions').default as FabActionsExports
     await Deployer.deploy(
       config,
       file,

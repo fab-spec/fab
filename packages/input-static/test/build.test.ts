@@ -1,8 +1,8 @@
 import { expect } from 'chai'
-import { PluginMetadata, ProtoFab } from '@fab/core'
+import { PluginMetadata, ProtoFab } from '@dev-spendesk/core'
 import { build } from '../src/build'
 
-describe('@fab/input-static', () => {
+describe('@dev-spendesk/input-static', () => {
   it('should be a function', () => {
     expect(build).to.be.a('function')
   })
