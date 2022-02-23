@@ -1,7 +1,7 @@
 import { InputNextJSArgs, InputNextJSMetadata } from './types'
 import { FabBuildStep } from '@dev-spendesk/core'
 import path from 'path'
-import { InvalidConfigError, _log } from '@dev-spendesk/cli'
+import { InvalidConfigError, _log } from '@dev-spendesk/fab-cli'
 import { preflightChecks } from './preflightChecks'
 import globby from 'globby'
 import fs from 'fs-extra'

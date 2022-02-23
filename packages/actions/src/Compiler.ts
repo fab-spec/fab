@@ -1,5 +1,5 @@
 import { FabConfig, ProtoFab, RuntimePlugin } from '@dev-spendesk/core'
-import { _log, BuildFailedError } from '@dev-spendesk/cli'
+import { _log, BuildFailedError } from '@dev-spendesk/fab-cli'
 import { rollupCompile } from './rollup'
 
 const log = _log(`Compiler`)
@@ -16,7 +16,7 @@ export class Compiler {
     const warnings: string[] = []
     const {
       output: [output, ...chunks],
-    } = await rollupCompile(require.resolve('@dev-spendesk/actions/esm/runtime'), {
+    } = await rollupCompile(require.resolve('@dev-spendesk/fab-actions/esm/runtime'), {
       minify,
       output: { format: 'umd', exports: 'named', name: '__fab' },
       hypotheticals: {

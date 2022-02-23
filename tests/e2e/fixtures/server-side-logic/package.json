@@ -6,12 +6,12 @@
     "fab:serve": "fab serve fab.zip"
   },
   "dependencies": {
-    "@dev-spendesk/actions": "latest",
-    "@dev-spendesk/cli": "latest",
+    "@dev-spendesk/fab-actions": "latest",
+    "@dev-spendesk/fab-cli": "latest",
     "@dev-spendesk/input-static": "latest",
     "@dev-spendesk/plugin-render-html": "latest",
     "@dev-spendesk/plugin-rewire-assets": "latest",
     "@dev-spendesk/plugin-precompile": "latest",
-    "@dev-spendesk/server": "latest"
+    "@dev-spendesk/fab-server": "latest"
   }
 }

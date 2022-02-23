@@ -74,7 +74,7 @@ export default class Deploy extends Command {
     const file = specified_file || default_file
 
     const config = await JSON5Config.readFrom(flags.config!)
-    const { Deployer } = require('@dev-spendesk/actions').default as FabActionsExports
+    const { Deployer } = require('@dev-spendesk/fab-actions').default as FabActionsExports
     await Deployer.deploy(
       config,
       file,

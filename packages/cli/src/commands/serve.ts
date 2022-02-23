@@ -84,7 +84,7 @@ export default class Serve extends Command {
 
     log.announce(`fab serve`)
     const server_pkg = (
-      await loadOrInstallModule(log, '@dev-spendesk/server', flags['auto-install'])
+      await loadOrInstallModule(log, '@dev-spendesk/fab-server', flags['auto-install'])
     ).default as FabServerExports
     const server = server_pkg.createServer(file, flags as ServerArgs)
     await server.serve(

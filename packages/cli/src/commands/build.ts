@@ -40,7 +40,7 @@ export default class Build extends Command {
 
   async run() {
     const { args, flags } = this.parse(Build)
-    const { Builder } = require('@dev-spendesk/actions').default as FabActionsExports
+    const { Builder } = require('@dev-spendesk/fab-actions').default as FabActionsExports
 
     await watcher(flags.watch, async () => {
       const config = await JSON5Config.readFrom(flags.config!)

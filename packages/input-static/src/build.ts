@@ -3,8 +3,8 @@ import { FabBuildStep } from '@dev-spendesk/core'
 import fs from 'fs-extra'
 import globby from 'globby'
 import path from 'path'
-import { InvalidConfigError, relativeToConfig } from '@dev-spendesk/cli'
-import { _log } from '@dev-spendesk/cli'
+import { InvalidConfigError, relativeToConfig } from '@dev-spendesk/fab-cli'
+import { _log } from '@dev-spendesk/fab-cli'
 const log = _log(`@dev-spendesk/input-static`)
 
 export const build: FabBuildStep<InputStaticArgs, InputStaticMetadata> = async (

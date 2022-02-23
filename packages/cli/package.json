@@ -1,5 +1,5 @@
 {
-  "name": "@dev-spendesk/cli",
+  "name": "@dev-spendesk/fab-cli",
   "version": "1.0.0-rc.10",
   "description": "The CLI entry-point for the FAB ecosystem",
   "keywords": [

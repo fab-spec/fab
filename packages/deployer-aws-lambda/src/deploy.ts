@@ -1,7 +1,7 @@
 import { ConfigTypes, FabServerDeployer, FabSettings } from '@dev-spendesk/core'
 import { createPackage } from './createPackage'
 import path from 'path'
-import { InvalidConfigError } from '@dev-spendesk/cli'
+import { InvalidConfigError } from '@dev-spendesk/fab-cli'
 import { updateCloudFront, updateLambda } from './aws'
 import { log } from './utils'
 

@@ -7,7 +7,7 @@ import {
 } from './types'
 import hasha from 'hasha'
 import path from 'path'
-import { InvalidConfigError, _log } from '@dev-spendesk/cli'
+import { InvalidConfigError, _log } from '@dev-spendesk/fab-cli'
 // @ts-ignore
 import { isBinaryPromise } from 'istextorbinary'
 import { DEFAULT_IMMUTABILITY_CHECK } from './constants'

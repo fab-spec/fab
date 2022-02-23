@@ -10,7 +10,12 @@ import {
   ServerConstructor,
   ServerType,
 } from '@dev-spendesk/core'
-import { _log, InvalidConfigError, FabServerError, JSON5Config } from '@dev-spendesk/cli'
+import {
+  _log,
+  InvalidConfigError,
+  FabServerError,
+  JSON5Config,
+} from '@dev-spendesk/fab-cli'
 import { readFilesFromZip } from './utils'
 import v8_sandbox from './sandboxes/v8-isolate'
 import { Cache } from './cache'
@@ -26,7 +31,7 @@ import concat from 'concat-stream'
 import fetch, { Request as NodeFetchRequest } from 'cross-fetch'
 import { pathToSHA512 } from 'file-to-sha512'
 import Stream from 'stream'
-import { watcher } from '@dev-spendesk/cli'
+import { watcher } from '@dev-spendesk/fab-cli'
 import httpProxy from 'http-proxy'
 // @ts-ignore
 import nodeToWebStream from 'readable-stream-node-to-web'

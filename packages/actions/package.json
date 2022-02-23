@@ -1,5 +1,5 @@
 {
-  "name": "@dev-spendesk/actions",
+  "name": "@dev-spendesk/fab-actions",
   "version": "1.0.0-rc.10",
   "private": false,
   "description": "The guts of the FAB cli code, keeping the 'fab' package lean",
@@ -31,7 +31,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@dev-spendesk/cli": "1.0.0-rc.10",
+    "@dev-spendesk/fab-cli": "1.0.0-rc.10",
     "@dev-spendesk/core": "1.0.0-rc.10",
     "@rollup/plugin-alias": "^2.2.0",
     "@rollup/plugin-commonjs": "^11.0.2",

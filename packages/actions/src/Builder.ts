@@ -8,7 +8,7 @@ import {
   InvalidConfigError,
   isRelative,
   relativeToConfig,
-} from '@dev-spendesk/cli'
+} from '@dev-spendesk/fab-cli'
 import * as path from 'path'
 
 const log = _log('Builder')

@@ -1,5 +1,5 @@
 {
-  "name": "@dev-spendesk/server",
+  "name": "@dev-spendesk/fab-server",
   "version": "1.0.0-rc.10",
   "description": "NodeJS FAB Server",
   "keywords": [
@@ -30,7 +30,7 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@dev-spendesk/cli": "1.0.0-rc.10",
+    "@dev-spendesk/fab-cli": "1.0.0-rc.10",
     "@dev-spendesk/core": "1.0.0-rc.10",
     "@dev-spendesk/sandbox-node-vm": "1.0.0-rc.10",
     "@fly/v8env": "^0.54.0",

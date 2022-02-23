@@ -5,7 +5,7 @@ import {
   ConfigOverrides,
   PluginOverrides,
 } from './types'
-import { _log } from '@dev-spendesk/cli'
+import { _log } from '@dev-spendesk/fab-cli'
 import webpack from 'webpack'
 import fs from 'fs-extra'
 import path from 'path'

@@ -50,7 +50,7 @@ export default class Deploy extends Command {
       this.error(`You must provide a target. Available options: ${hosts.join(', ')}`)
     }
     const config = await JSON5Config.readFrom(flags.config!)
-    const { Packager } = require('@dev-spendesk/actions').default as FabActionsExports
+    const { Packager } = require('@dev-spendesk/fab-actions').default as FabActionsExports
     await Packager.package(
       file,
       config.data,

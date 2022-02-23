@@ -1,4 +1,4 @@
-import { _log } from '@dev-spendesk/cli'
+import { _log } from '@dev-spendesk/fab-cli'
 import execa from 'execa'
 import path from 'path'
 import tmp from 'tmp-promise'

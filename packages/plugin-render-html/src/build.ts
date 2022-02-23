@@ -4,7 +4,7 @@ import cheerio from 'cheerio'
 import { tokenize } from 'micromustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { addInjectionPoint } from './injections/env'
-import { InvalidConfigError, _log } from '@dev-spendesk/cli'
+import { InvalidConfigError, _log } from '@dev-spendesk/fab-cli'
 import hasha from 'hasha'
 import path from 'path'
 

@@ -7,7 +7,7 @@ import {
   getContentType,
 } from '@dev-spendesk/core'
 import { CloudflareApi, getCloudflareApi, log } from './utils'
-import { FabDeployError, InvalidConfigError } from '@dev-spendesk/cli'
+import { FabDeployError, InvalidConfigError } from '@dev-spendesk/fab-cli'
 import { createPackage } from './createPackage'
 import path from 'path'
 import fs from 'fs-extra'

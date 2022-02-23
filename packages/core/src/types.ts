@@ -151,7 +151,7 @@ export enum SandboxType {
 
 /*
  * The outermost FAB exported functions, that cross the boundary
- * between the platform-specific runtimes (@dev-spendesk/server,
+ * between the platform-specific runtimes (@dev-spendesk/fab-server,
  * @dev-spendesk/cf-workers-wrapper, Linc.sh etc) and the FAB itself.
  * */
 export type FabSpecRender = (

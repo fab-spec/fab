@@ -14,7 +14,7 @@ import {
   JSON5Config,
   loadOrInstallModule,
   loadOrInstallModules,
-} from '@dev-spendesk/cli'
+} from '@dev-spendesk/fab-cli'
 
 const log = _log('Deployer')
 

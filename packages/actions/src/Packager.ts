@@ -6,7 +6,7 @@ import {
   HOSTING_PROVIDERS,
   PackageFn,
 } from '@dev-spendesk/core'
-import { _log, FabPackageError, loadModule } from '@dev-spendesk/cli'
+import { _log, FabPackageError, loadModule } from '@dev-spendesk/fab-cli'
 
 const log = _log(`Packager`)
 

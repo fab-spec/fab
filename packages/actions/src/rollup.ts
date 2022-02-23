@@ -10,7 +10,7 @@ import alias from '@rollup/plugin-alias'
 // @ts-ignore
 import hypothetical from 'rollup-plugin-hypothetical'
 
-import { _log } from '@dev-spendesk/cli'
+import { _log } from '@dev-spendesk/fab-cli'
 const log = _log(`rollup`)
 
 export async function rollupCompile(

@@ -1,7 +1,7 @@
 export const DEFAULT_DEPS = [
-  '@dev-spendesk/cli',
-  '@dev-spendesk/server',
-  '@dev-spendesk/actions',
+  '@dev-spendesk/fab-cli',
+  '@dev-spendesk/fab-server',
+  '@dev-spendesk/fab-actions',
 ]
 export const DEPRECATED_PACKAGES = [
   '@dev-spendesk/static',

@@ -23,7 +23,7 @@ const enhanced_fetch = (url, init) => {
   return node_fetch(url, init)
 }
 
-// Currently copied from @dev-spendesk/server. In the future, if the caching layer becomes
+// Currently copied from @dev-spendesk/fab-server. In the future, if the caching layer becomes
 // configurable for a deploy (e.g. ElastiCache), then this should be moved to a
 // @dev-spendesk/cache-node-inmemory package alongside a @dev-spendesk/cache-aws-elasticache one.
 
