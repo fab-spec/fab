@@ -1,6 +1,6 @@
 {
   "name": "@dev-spendesk/deployer-aws-s3",
-  "version": "1.0.0-rc.9",
+  "version": "1.0.0-rc.10",
   "description": "Uploads FAB assets to AWS S3",
   "keywords": [
     "aws",
@@ -32,8 +32,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@dev-spendesk/cli": "1.0.0-rc.9",
-    "@dev-spendesk/core": "1.0.0-rc.9",
+    "@dev-spendesk/cli": "1.0.0-rc.10",
+    "@dev-spendesk/core": "1.0.0-rc.10",
     "@types/node": "^12.12.14",
     "aws-sdk": "^2.655.0",
     "fs-extra": "^9.0.0",

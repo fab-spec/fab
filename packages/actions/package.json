@@ -1,6 +1,6 @@
 {
   "name": "@dev-spendesk/actions",
-  "version": "1.0.0-rc.9",
+  "version": "1.0.0-rc.10",
   "private": false,
   "description": "The guts of the FAB cli code, keeping the 'fab' package lean",
   "keywords": [
@@ -31,8 +31,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@dev-spendesk/cli": "1.0.0-rc.9",
-    "@dev-spendesk/core": "1.0.0-rc.9",
+    "@dev-spendesk/cli": "1.0.0-rc.10",
+    "@dev-spendesk/core": "1.0.0-rc.10",
     "@rollup/plugin-alias": "^2.2.0",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-inject": "^4.0.1",

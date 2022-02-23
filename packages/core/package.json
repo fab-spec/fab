@@ -1,6 +1,6 @@
 {
   "name": "@dev-spendesk/core",
-  "version": "1.0.0-rc.9",
+  "version": "1.0.0-rc.10",
   "private": false,
   "description": "Common code for all FAB projects",
   "keywords": [

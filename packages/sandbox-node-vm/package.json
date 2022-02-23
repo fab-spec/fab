@@ -1,6 +1,6 @@
 {
   "name": "@dev-spendesk/sandbox-node-vm",
-  "version": "1.0.0-rc.9",
+  "version": "1.0.0-rc.10",
   "description": "FAB runtime sandbox using Node's 'vm'",
   "keywords": [
     "fab",
@@ -29,7 +29,7 @@
     "prepack": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@dev-spendesk/core": "1.0.0-rc.9",
+    "@dev-spendesk/core": "1.0.0-rc.10",
     "cross-fetch": "^3.0.6",
     "web-streams-polyfill": "^2.1.1"
   },
