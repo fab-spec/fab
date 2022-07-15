@@ -14,6 +14,7 @@ type Namespace = {
 export type CloudflareApi = {
   post: CloudflareApiCall
   get: CloudflareApiCall
+  getText: CloudflareApiCall
   put: CloudflareApiCall
   account_supports_kv: boolean
   getOrCreateNamespace: (title: string) => Promise<Namespace>
@@ -27,7 +28,7 @@ export const getCloudflareApi = async (
 ): Promise<CloudflareApi> => {
   if (ApiInstance) return ApiInstance
 
-  const go = (method: string, content_type: string) => async (
+  const go = (method: string, content_type: string, parseJson = true) => async (
     url: string,
     init: RequestInit = {}
   ) => {
@@ -40,9 +41,10 @@ export const getCloudflareApi = async (
         ...init?.headers,
       },
     })
-    return await response.json()
+    return parseJson ? response.json() : response.text()
   }
   const get = go('get', 'application/json')
+  const getText = go('get', 'text/html', false)
   const put = go('put', 'application/json')
   const post = go('post', 'application/json')
 
@@ -103,6 +105,7 @@ export const getCloudflareApi = async (
 
   ApiInstance = {
     get,
+    getText,
     put,
     post,
     account_supports_kv,
@@ -118,7 +121,7 @@ export const getAssetManifest = async (
   account_id: string,
   namespace_id: string
 ): Promise<Set<string>> => {
-  const response = await api.get(
+  const response = await api.getText(
     `/accounts/${account_id}/storage/kv/namespaces/${namespace_id}/values/${ASSET_MANIFEST}`
   )
 
