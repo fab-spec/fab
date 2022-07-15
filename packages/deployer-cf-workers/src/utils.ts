@@ -140,7 +140,7 @@ export const createManifest = async (
 ): Promise<Set<string>> => {
   const newManifest = new Set([...manifest, ...files])
 
-  const body = new FormData()
+  const body = new URLSearchParams()
   body.append('value', JSON.stringify(newManifest))
 
   const response = await api.put(
