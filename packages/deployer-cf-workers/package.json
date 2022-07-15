@@ -1,6 +1,6 @@
 {
   "name": "@dev-spendesk/fab-deployer-cf-workers",
-  "version": "1.0.0-rc.12",
+  "version": "1.0.0-rc.11",
   "description": "Packages and deploys FABs to AWS Lambda@Edge",
   "keywords": [
     "cloudflare",
@@ -33,8 +33,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@dev-spendesk/fab-cli": "1.0.0-rc.12",
-    "@dev-spendesk/fab-core": "1.0.0-rc.12",
+    "@dev-spendesk/fab-cli": "1.0.0-rc.11",
+    "@dev-spendesk/fab-core": "1.0.0-rc.11",
     "@types/node": "^12.12.14",
     "cross-fetch": "^3.0.6",
     "file-to-sha512": "^0.0.1",

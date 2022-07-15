@@ -1,6 +1,6 @@
 {
   "name": "@dev-spendesk/fab",
-  "version": "1.0.0-rc.12",
+  "version": "1.0.0-rc.11",
   "description": "An alias for @dev-spendesk/fab-cli",
   "keywords": [
     "fab"
@@ -27,6 +27,6 @@
     "prepack": "cat PREAMBLE.md > README.md && cat ../cli/README.md >> README.md"
   },
   "dependencies": {
-    "@dev-spendesk/fab-cli": "1.0.0-rc.12"
+    "@dev-spendesk/fab-cli": "1.0.0-rc.11"
   }
 }
