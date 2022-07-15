@@ -110,3 +110,55 @@ export const getCloudflareApi = async (
   }
   return ApiInstance
 }
+
+const ASSET_MANIFEST = '_fab_deploy_asset_manifest'
+
+export const getAssetManifest = async (
+  api: CloudflareApi,
+  account_id: string,
+  namespace_id: string
+): Promise<Set<string>> => {
+  const response = await api.get(
+    `/accounts/${account_id}/storage/kv/namespaces/${namespace_id}/values/${ASSET_MANIFEST}`
+  )
+
+  try {
+    return new Set(JSON.parse(response))
+  } catch (error) {
+    // Do nothing
+  }
+
+  return new Set()
+}
+
+export const createManifest = async (
+  api: CloudflareApi,
+  account_id: string,
+  namespace_id: string,
+  manifest: Set<string>,
+  files: string[]
+): Promise<Set<string>> => {
+  const newManifest = new Set([...manifest, ...files])
+
+  const body = new FormData()
+  body.append('value', JSON.stringify(newManifest))
+
+  const response = await api.put(
+    `/accounts/${account_id}/storage/kv/namespaces/${namespace_id}/values/${ASSET_MANIFEST}`,
+    { body }
+  )
+
+  if (!response.success) {
+    log(`Error uploading fab asset manifest:
+      ${response.errors
+        .map((err: any) => `🖤[error ${err.code}]🖤 ❤️${err.message}❤️`)
+        .join('\n')}
+    `)
+  }
+
+  return newManifest
+}
+
+export const getChangedFiles = (manifest: Set<string>, files: string[]): string[] => {
+  return files.filter((file) => !manifest.has(file))
+}

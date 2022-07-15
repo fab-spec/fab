@@ -6,7 +6,14 @@ import {
   FabSettings,
   getContentType,
 } from '@dev-spendesk/fab-core'
-import { CloudflareApi, getCloudflareApi, log } from './utils'
+import {
+  CloudflareApi,
+  createManifest,
+  getAssetManifest,
+  getChangedFiles,
+  getCloudflareApi,
+  log,
+} from './utils'
 import { FabDeployError, InvalidConfigError } from '@dev-spendesk/fab-cli'
 import { createPackage } from './createPackage'
 import path from 'path'
@@ -57,7 +64,10 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
 
   log(`Uploading files...`)
   const files = await globby(['_assets/**/*'], { cwd: extracted_dir })
-  const uploads = files.map(async (file) => {
+  const assetManifest = await getAssetManifest(api, account_id, namespace.id)
+  const changedFiles = getChangedFiles(assetManifest, files)
+
+  const uploads = changedFiles.map(async (file) => {
     const content_type = getContentType(file)
     const body_stream = fs.createReadStream(path.join(extracted_dir, file))
 
@@ -88,6 +98,7 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   })
 
   await Promise.all(uploads)
+  await createManifest(api, account_id, namespace.id, assetManifest, files)
 
   log.tick(`Done.`)
 
