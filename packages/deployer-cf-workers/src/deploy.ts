@@ -62,7 +62,6 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
 
   const namespace = await api.getOrCreateNamespace(asset_namespace)
 
-  log(`Uploading files...`)
   const files = await globby(['_assets/**/*'], { cwd: extracted_dir })
   const assetManifest = await getAssetManifest(api, account_id, namespace.id)
   const changedFiles = getChangedFiles(assetManifest, files)
@@ -70,6 +69,10 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
 
   if (skippedFilesCount) {
     log(`Found manifest. Skipping ${skippedFilesCount} file(s)`)
+  }
+
+  if (changedFiles.length) {
+    log(`Uploading files...`)
   }
 
   const uploads = changedFiles.map(async (file) => {
