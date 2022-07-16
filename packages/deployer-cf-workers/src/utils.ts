@@ -144,9 +144,10 @@ export const createManifest = async (
   const newManifest = new Set([...manifest, ...files])
 
   const body = JSON.stringify(Array.from(newManifest))
+  const expiration_ttl = 604800 // Expires after one week
 
   const response = await api.put(
-    `/accounts/${account_id}/storage/kv/namespaces/${namespace_id}/values/${ASSET_MANIFEST}`,
+    `/accounts/${account_id}/storage/kv/namespaces/${namespace_id}/values/${ASSET_MANIFEST}?expiration_ttl=${expiration_ttl}`,
     { body }
   )
 
