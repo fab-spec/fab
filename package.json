@@ -57,6 +57,6 @@
     "rimraf": "^3.0.0",
     "ts-node": "^8",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "~3.7.2"
+    "typescript": "3.8.2"
   }
 }
