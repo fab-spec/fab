@@ -128,7 +128,7 @@ export const getAssetManifest = async (
   try {
     return new Set(JSON.parse(response))
   } catch (error) {
-    // Do nothing
+    log(`Error while parsing manifest: ${error}`)
   }
 
   return new Set()
@@ -143,8 +143,7 @@ export const createManifest = async (
 ): Promise<Set<string>> => {
   const newManifest = new Set([...manifest, ...files])
 
-  const body = new URLSearchParams()
-  body.append('value', JSON.stringify(newManifest))
+  const body = JSON.stringify(Array.from(newManifest))
 
   const response = await api.put(
     `/accounts/${account_id}/storage/kv/namespaces/${namespace_id}/values/${ASSET_MANIFEST}`,

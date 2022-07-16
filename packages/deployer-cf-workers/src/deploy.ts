@@ -95,10 +95,31 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
     }
 
     log.continue(`🖤  ${file} (${pretty(body_stream.bytesRead)})🖤`)
+
+    return file
   })
 
-  await Promise.all(uploads)
-  await createManifest(api, account_id, namespace.id, assetManifest, files)
+  const results = await Promise.allSettled(uploads)
+
+  const newFiles: string[] = []
+  const errors: any[] = []
+  results.forEach((result) => {
+    if (result.status === 'fulfilled') {
+      newFiles.push(result.value)
+    } else {
+      errors.push(result.reason)
+    }
+  })
+
+  if (newFiles.length) {
+    log(`Creating manifest with ${newFiles.length} new file(s)`)
+    await createManifest(api, account_id, namespace.id, assetManifest, newFiles)
+  }
+
+  if (errors.length) {
+    throw new FabDeployError(`Error uploading assets:
+    ${JSON.stringify(errors)}`)
+  }
 
   log.tick(`Done.`)
 
