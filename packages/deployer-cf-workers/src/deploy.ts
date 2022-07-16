@@ -68,7 +68,7 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   const skippedFilesCount = files.length - changedFiles.length
 
   if (skippedFilesCount) {
-    log(`Found manifest. Skipping ${skippedFilesCount} file(s)`)
+    log(`Found manifest. Skipping ${skippedFilesCount} file(s).`)
   }
 
   if (changedFiles.length) {
@@ -120,7 +120,7 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
   })
 
   if (newFiles.length) {
-    log(`Creating manifest with ${newFiles.length} new file(s)`)
+    log(`Creating manifest with ${newFiles.length} new file(s).`)
     await createManifest(api, account_id, namespace.id, assetManifest, newFiles)
   }
 
