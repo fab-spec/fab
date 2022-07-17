@@ -109,6 +109,10 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
 
   const results = await Promise.allSettled(uploads)
 
+  if (changedFiles.length) {
+    log.tick(`Done.`)
+  }
+
   const newFiles: string[] = []
   const errors: any[] = []
   results.forEach((result) => {
@@ -128,8 +132,6 @@ export const deployAssets: FabAssetsDeployer<ConfigTypes.CFWorkers> = async (
     throw new FabDeployError(`Error uploading assets:
     ${JSON.stringify(errors)}`)
   }
-
-  log.tick(`Done.`)
 
   return `kv://${namespace.id}`
 }
