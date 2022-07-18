@@ -93,4 +93,4 @@ export async function getCurrentCommitInfo() {
 export const FAB_PACKAGE_NAMES = globby(['*', '!_fab'], {
   cwd: path.resolve(__dirname, '../../../packages'),
   onlyFiles: false,
-}).then((files) => files.map((x) => `@fab/${x}`).join(' '))
+}).then((files) => files.map((x) => `@dev-spendesk/${x}`).join(' '))

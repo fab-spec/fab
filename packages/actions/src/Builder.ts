@@ -1,4 +1,4 @@
-import { LoadedPlugin, RuntimePlugin, FabConfig, ProtoFab } from '@fab/core'
+import { LoadedPlugin, RuntimePlugin, FabConfig, ProtoFab } from '@dev-spendesk/fab-core'
 import { Compiler } from './Compiler'
 import { Generator } from './Generator'
 import { Typecheck } from './Typecheck'
@@ -8,7 +8,7 @@ import {
   InvalidConfigError,
   isRelative,
   relativeToConfig,
-} from '@fab/cli'
+} from '@dev-spendesk/fab-cli'
 import * as path from 'path'
 
 const log = _log('Builder')

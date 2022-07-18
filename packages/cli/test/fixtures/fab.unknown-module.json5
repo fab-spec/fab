@@ -1,6 +1,6 @@
 {
   plugins: {
-    '@fab/no-existo': {
+    '@dev-spendesk/no-existo': {
       other: 'ag',
     },
   },

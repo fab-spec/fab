@@ -1,8 +1,8 @@
-import { FabCache, FabCacheValue } from '@fab/core'
+import { FabCache, FabCacheValue } from '@dev-spendesk/fab-core'
 import NodeCache from 'node-cache'
 import Stream from 'stream'
 /* We need something that node-fetch Response treats as a stream */
-import { HybridReadableStream as _HRS } from '@fab/sandbox-node-vm'
+import { HybridReadableStream as _HRS } from '@dev-spendesk/fab-sandbox-node-vm'
 // @ts-ignore
 const HybridReadableStream: typeof ReadableStream = _HRS
 

@@ -1,4 +1,9 @@
-import { ConfigTypes, FabPackager, FabSettings, stripTrailingSlash } from '@fab/core'
+import {
+  ConfigTypes,
+  FabPackager,
+  FabSettings,
+  stripTrailingSlash,
+} from '@dev-spendesk/fab-core'
 import fs from 'fs-extra'
 import path from 'path'
 import nanoid from 'nanoid'
@@ -10,7 +15,7 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
   fab_path: string,
   package_path: string,
   config: ConfigTypes.AwsLambda,
-  env_overrides: FabSettings,
+  env_overrides: Map<string, FabSettings>,
   assets_url: string
 ) => {
   log.time(`Compiling package to: 💛${package_path}💛:`)
@@ -28,7 +33,7 @@ export const createPackage: FabPackager<ConfigTypes.AwsLambda> = async (
 
   const parsed = new URL(assets_url)
   const packaged_config = {
-    env_overrides,
+    env_overrides: {}, // Not implemented ENV support yet
     assets_url: stripTrailingSlash(assets_url),
     assets_domain: parsed.hostname,
     assets_path_prefix: stripTrailingSlash(parsed.pathname),

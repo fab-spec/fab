@@ -10,7 +10,7 @@ import {
   FABServerContext,
   PluginArgs,
   ResponseInterceptor,
-} from '@fab/core'
+} from '@dev-spendesk/fab-core'
 import { Key, pathToRegexp } from 'path-to-regexp'
 
 export enum Priority {

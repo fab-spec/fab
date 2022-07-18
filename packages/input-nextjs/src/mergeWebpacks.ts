@@ -9,7 +9,7 @@
  * where 'Cq4J' and 'C7Cc' are the default exports of those two files respectively.
  * */
 
-import { FabFilesObject } from '@fab/core'
+import { FabFilesObject } from '@dev-spendesk/fab-core'
 import * as acorn from 'acorn'
 import assert from 'assert'
 // @ts-ignore

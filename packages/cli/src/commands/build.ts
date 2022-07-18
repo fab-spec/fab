@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command'
-import { DEFAULT_CONFIG_FILENAME, FabActionsExports } from '@fab/core'
+import { DEFAULT_CONFIG_FILENAME, FabActionsExports } from '@dev-spendesk/fab-core'
 import { JSON5Config } from '../'
 import { watcher } from '../helpers/watcher'
 
@@ -40,7 +40,7 @@ export default class Build extends Command {
 
   async run() {
     const { args, flags } = this.parse(Build)
-    const { Builder } = require('@fab/actions').default as FabActionsExports
+    const { Builder } = require('@dev-spendesk/fab-actions').default as FabActionsExports
 
     await watcher(flags.watch, async () => {
       const config = await JSON5Config.readFrom(flags.config!)

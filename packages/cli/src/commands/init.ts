@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command'
-import { DEFAULT_CONFIG_FILENAME } from '@fab/core'
+import { DEFAULT_CONFIG_FILENAME } from '@dev-spendesk/fab-core'
 import Initializer from '../Initializer'
 
 export default class Init extends Command {
@@ -28,9 +28,10 @@ export default class Init extends Command {
     'skip-framework-detection': flags.boolean({
       description: "Don't try to auto-detect framework, set up manually.",
     }),
-    'empty': flags.boolean({
-      description: "Install the packages and create an empty fab.config.json5 (implies -y)"
-    })
+    empty: flags.boolean({
+      description:
+        'Install the packages and create an empty fab.config.json5 (implies -y)',
+    }),
   }
 
   static args = []

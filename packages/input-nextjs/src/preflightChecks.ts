@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import chalk from 'chalk'
 import path from 'path'
-import { BuildFailedError } from '@fab/cli'
+import { BuildFailedError } from '@dev-spendesk/fab-cli'
 
 export async function preflightChecks(
   dir: string

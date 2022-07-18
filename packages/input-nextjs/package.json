@@ -1,6 +1,6 @@
 {
-  "name": "@fab/input-nextjs",
-  "version": "1.0.0-rc.9",
+  "name": "@dev-spendesk/fab-input-nextjs",
+  "version": "1.0.0-rc.11",
   "description": "Module to kick off a FAB build from a NextJS project",
   "keywords": [
     "aws",
@@ -8,11 +8,11 @@
     "fab",
     "s3"
   ],
-  "homepage": "https://github.com/fab-spec/fab#readme",
+  "homepage": "https://github.com/spendesk/fab#readme",
   "bugs": {
-    "url": "https://github.com/fab-spec/fab/issues"
+    "url": "https://github.com/spendesk/fab/issues"
   },
-  "repository": "fab-spec/fab",
+  "repository": "spendesk/fab",
   "license": "MIT",
   "author": "Glen Maddern",
   "files": [
@@ -34,8 +34,8 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "dependencies": {
-    "@fab/cli": "1.0.0-rc.9",
-    "@fab/core": "1.0.0-rc.9",
+    "@dev-spendesk/fab-cli": "1.0.0-rc.11",
+    "@dev-spendesk/fab-core": "1.0.0-rc.11",
     "@types/node": "^12.12.14",
     "@types/path-to-regexp": "^1.7.0",
     "acorn": "^7.1.0",
@@ -52,6 +52,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "e0232b0579fb886d567c62ad793a128ff4ea34de"
+  }
 }

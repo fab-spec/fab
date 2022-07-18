@@ -1,4 +1,4 @@
-import { PluginArgs, PluginMetadata } from '@fab/core'
+import { PluginArgs, PluginMetadata } from '@dev-spendesk/fab-core'
 import webpack from 'webpack'
 
 export interface PrecompileArgs extends PluginArgs {

@@ -1,4 +1,4 @@
-import { PluginArgs, PluginMetadata } from '@fab/core'
+import { PluginArgs, PluginMetadata } from '@dev-spendesk/fab-core'
 
 export interface RewireAssetsArgs extends PluginArgs {
   'inline-threshold'?: number

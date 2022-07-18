@@ -1,17 +1,17 @@
 {
-  "name": "fab",
-  "version": "1.0.0-rc.9",
-  "description": "An alias for @fab/cli",
+  "name": "@dev-spendesk/fab",
+  "version": "1.0.0-rc.11",
+  "description": "An alias for @dev-spendesk/fab-cli",
   "keywords": [
     "fab"
   ],
-  "homepage": "https://github.com/fab-spec/fab#readme",
+  "homepage": "https://github.com/spendesk/fab#readme",
   "bugs": {
-    "url": "https://github.com/fab-spec/fab/issues"
+    "url": "https://github.com/spendesk/fab/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fab-spec/fab.git"
+    "url": "git+https://github.com/spendesk/fab.git"
   },
   "license": "MIT",
   "author": "Glen Maddern",
@@ -27,7 +27,6 @@
     "prepack": "cat PREAMBLE.md > README.md && cat ../cli/README.md >> README.md"
   },
   "dependencies": {
-    "@fab/cli": "1.0.0-rc.9"
-  },
-  "gitHead": "e0232b0579fb886d567c62ad793a128ff4ea34de"
+    "@dev-spendesk/fab-cli": "1.0.0-rc.11"
+  }
 }

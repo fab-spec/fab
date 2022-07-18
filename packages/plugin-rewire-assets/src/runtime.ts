@@ -5,7 +5,7 @@ import {
   matchPath,
   NON_IMMUTABLE_HEADERS,
   Priority,
-} from '@fab/core'
+} from '@dev-spendesk/fab-core'
 
 export default function RewireAssetsRuntime({
   Router,

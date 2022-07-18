@@ -1,10 +1,10 @@
-import { ProtoFab } from '@fab/core'
+import { ProtoFab } from '@dev-spendesk/fab-core'
 import { RenderHtmlArgs, RenderHtmlMetadata, CompiledHTMLs, AssetHTMLs } from './types'
 import cheerio from 'cheerio'
 import { tokenize } from 'micromustache'
 import { DEFAULT_INJECTIONS } from './constants'
 import { addInjectionPoint } from './injections/env'
-import { InvalidConfigError, _log } from '@fab/cli'
+import { InvalidConfigError, _log } from '@dev-spendesk/fab-cli'
 import hasha from 'hasha'
 import path from 'path'
 
@@ -16,7 +16,7 @@ const getFingerprintedName = (contents: Buffer, filename: string) => {
     : `${filename}_${hash}`
 }
 
-const log = _log('@fab/plugin-render-html')
+const log = _log('@dev-spendesk/fab-plugin-render-html')
 
 export async function build(
   args: RenderHtmlArgs,
@@ -73,11 +73,11 @@ export async function build(
     if (!htmls[resolved_fallback]) {
       if (typeof fallback === 'string') {
         throw new InvalidConfigError(
-          `@fab/plugin-render-html specifies a fallback of '${fallback}', which doesn't exist.`
+          `@dev-spendesk/fab-plugin-render-html specifies a fallback of '${fallback}', which doesn't exist.`
         )
       } else {
         log.warn(
-          `@fab/plugin-render-html has 'fallback: true', but '${resolved_fallback}' doesn't exist! Skipping.`
+          `@dev-spendesk/fab-plugin-render-html has 'fallback: true', but '${resolved_fallback}' doesn't exist! Skipping.`
         )
       }
     }

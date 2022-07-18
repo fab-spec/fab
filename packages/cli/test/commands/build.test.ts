@@ -64,7 +64,7 @@ describe('build', () => {
       expect(err.message).to.contain('Config file contains errors!')
     })
     .it('should report that the module cannot be found', (ctx) => {
-      expect(ctx.stdout).to.contain(`Cannot find module '@fab/no-existo'`)
+      expect(ctx.stdout).to.contain(`Cannot find module '@dev-spendesk/no-existo'`)
       expect(ctx.stdout).to.contain(`Are you sure it's installed?`)
     })
 

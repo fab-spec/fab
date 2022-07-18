@@ -1,6 +1,7 @@
 const FAB = globalThis.__fab // injected by UMD
 const ASSETS_URL = globalThis.__assets_url // inlined in packager
 const cache = caches.default
+const env_overrides = globalThis.__env_overrides[globalThis.ENVIRONMENT] // inlined in packager
 const server_context = globalThis.__server_context // inlined in packager
 
 const USES_KV_STORE = ASSETS_URL.startsWith('kv://')
@@ -102,10 +103,11 @@ const handleRequest = async (request, within_loop = false) => {
   if (url.pathname.startsWith('/_assets/')) {
     return await assetFetch(url.pathname)
   } else {
-    let settings = FAB.getProdSettings ? FAB.getProdSettings() : {}
-    if (settings.then && typeof settings.then == 'function') {
-      settings = await settings
+    let prodSettings = FAB.getProdSettings ? FAB.getProdSettings() : {}
+    if (prodSettings.then && typeof prodSettings.then == 'function') {
+      prodSettings = await prodSettings
     }
+    const settings = Object.assign({}, prodSettings, env_overrides)
 
     const result = await FAB.render(request, settings)
     if (result instanceof Request) {

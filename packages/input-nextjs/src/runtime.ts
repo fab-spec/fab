@@ -1,7 +1,7 @@
 // @ts-ignore
 import __generated from 'generated-nextjs-renderers.js'
 import { pathToRegexp } from 'path-to-regexp'
-import { FABRuntime, NO_RESPONSE_STATUS_CODE, Priority } from '@fab/core'
+import { FABRuntime, NO_RESPONSE_STATUS_CODE, Priority } from '@dev-spendesk/fab-core'
 
 const { renderers, MockExpressResponse, MockReq } = __generated
 

@@ -5,8 +5,8 @@ import {
   FabPackagerExports,
   HOSTING_PROVIDERS,
   PackageFn,
-} from '@fab/core'
-import { _log, FabPackageError, loadModule } from '@fab/cli'
+} from '@dev-spendesk/fab-core'
+import { _log, FabPackageError, loadModule } from '@dev-spendesk/fab-cli'
 
 const log = _log(`Packager`)
 
@@ -48,7 +48,7 @@ export default class Packager {
     }
 
     if (env) throw new Error('Not implemented ENV support yet')
-    const env_overrides = {}
+    const env_overrides = new Map()
 
     const deploy_config = config.deploy![target] as ConfigTypes.Union
     await packager.createPackage(

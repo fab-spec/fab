@@ -6,7 +6,7 @@ import {
   FabPluginRuntime,
   PluginMetadata,
   FabSettings,
-} from '@fab/core'
+} from '@dev-spendesk/fab-core'
 
 export const build: FabBuildStep = async (args: PluginArgs, proto_fab: ProtoFab) => {
   const plugin_metadata: PluginMetadataContent = {}

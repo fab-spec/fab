@@ -1,5 +1,5 @@
-import { _log, InvalidConfigError, FabDeployError } from '@fab/cli'
-export const log = _log(`@fab/deployer-cf-workers`)
+import { _log, InvalidConfigError, FabDeployError } from '@dev-spendesk/fab-cli'
+export const log = _log(`@dev-spendesk/fab-deployer-cf-workers`)
 
 import fetch from 'cross-fetch'
 
@@ -14,6 +14,7 @@ type Namespace = {
 export type CloudflareApi = {
   post: CloudflareApiCall
   get: CloudflareApiCall
+  getText: CloudflareApiCall
   put: CloudflareApiCall
   account_supports_kv: boolean
   getOrCreateNamespace: (title: string) => Promise<Namespace>
@@ -27,7 +28,7 @@ export const getCloudflareApi = async (
 ): Promise<CloudflareApi> => {
   if (ApiInstance) return ApiInstance
 
-  const go = (method: string, content_type: string) => async (
+  const go = (method: string, content_type: string, parseJson = true) => async (
     url: string,
     init: RequestInit = {}
   ) => {
@@ -40,9 +41,10 @@ export const getCloudflareApi = async (
         ...init?.headers,
       },
     })
-    return await response.json()
+    return parseJson ? response.json() : response.text()
   }
   const get = go('get', 'application/json')
+  const getText = go('get', 'text/html', false)
   const put = go('put', 'application/json')
   const post = go('post', 'application/json')
 
@@ -103,10 +105,63 @@ export const getCloudflareApi = async (
 
   ApiInstance = {
     get,
+    getText,
     put,
     post,
     account_supports_kv,
     getOrCreateNamespace,
   }
   return ApiInstance
+}
+
+const ASSET_MANIFEST = '_fab_deploy_asset_manifest'
+
+export const getAssetManifest = async (
+  api: CloudflareApi,
+  account_id: string,
+  namespace_id: string
+): Promise<Set<string>> => {
+  const response = await api.getText(
+    `/accounts/${account_id}/storage/kv/namespaces/${namespace_id}/values/${ASSET_MANIFEST}`
+  )
+
+  try {
+    return new Set(JSON.parse(response))
+  } catch (error) {
+    log(`Error while parsing manifest: ${error}`)
+  }
+
+  return new Set()
+}
+
+export const createManifest = async (
+  api: CloudflareApi,
+  account_id: string,
+  namespace_id: string,
+  manifest: Set<string>,
+  files: string[]
+): Promise<Set<string>> => {
+  const newManifest = new Set([...manifest, ...files])
+
+  const body = JSON.stringify(Array.from(newManifest))
+  const expiration_ttl = 604800 // Expires after one week
+
+  const response = await api.put(
+    `/accounts/${account_id}/storage/kv/namespaces/${namespace_id}/values/${ASSET_MANIFEST}?expiration_ttl=${expiration_ttl}`,
+    { body }
+  )
+
+  if (!response.success) {
+    log(`Error uploading fab asset manifest:
+      ${response.errors
+        .map((err: any) => `🖤[error ${err.code}]🖤 ❤️${err.message}❤️`)
+        .join('\n')}
+    `)
+  }
+
+  return newManifest
+}
+
+export const getChangedFiles = (manifest: Set<string>, files: string[]): string[] => {
+  return files.filter((file) => !manifest.has(file))
 }

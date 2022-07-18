@@ -1,14 +1,14 @@
 {
-  "name": "@fab/core",
-  "version": "1.0.0-rc.9",
+  "name": "@dev-spendesk/fab-core",
+  "version": "1.0.0-rc.11",
   "private": false,
   "description": "Common code for all FAB projects",
   "keywords": [
     "fab",
     "types"
   ],
-  "homepage": "https://github.com/fab-spec/fab",
-  "repository": "fab-spec/fab",
+  "homepage": "https://github.com/spendesk/fab",
+  "repository": "spendesk/fab",
   "license": "MIT",
   "author": "Glen Maddern",
   "files": [
@@ -34,6 +34,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "e0232b0579fb886d567c62ad793a128ff4ea34de"
+  }
 }

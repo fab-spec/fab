@@ -1,9 +1,9 @@
-import { _log } from '@fab/cli'
+import { _log } from '@dev-spendesk/fab-cli'
 import execa from 'execa'
 import path from 'path'
 import tmp from 'tmp-promise'
 import fs from 'fs-extra'
-import { RuntimePlugin } from '@fab/core'
+import { RuntimePlugin } from '@dev-spendesk/fab-core'
 
 const log = _log('Typecheck')
 

@@ -1,6 +1,6 @@
 import vm from 'vm'
 import * as fetch from 'cross-fetch'
-import { FabSpecExports } from '@fab/core'
+import { FabSpecExports } from '@dev-spendesk/fab-core'
 import Stream from 'stream'
 import { ReadableStream as WebReadableStream } from 'web-streams-polyfill/ponyfill/es2018'
 

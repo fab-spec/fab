@@ -1,10 +1,10 @@
 {
-  "name": "fab-spec",
+  "name": "spendesk",
   "version": "1.0.0-rc1",
   "private": true,
-  "homepage": "https://github.com/fab-spec/fab",
-  "bugs": "https://github.com/fab-spec/fab/issues",
-  "repository": "fab-spec/fab",
+  "homepage": "https://github.com/spendesk/fab",
+  "bugs": "https://github.com/spendesk/fab/issues",
+  "repository": "spendesk/fab",
   "workspaces": [
     "packages/*"
   ],
@@ -57,6 +57,6 @@
     "rimraf": "^3.0.0",
     "ts-node": "^8",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "~3.7.2"
+    "typescript": "3.8.2"
   }
 }

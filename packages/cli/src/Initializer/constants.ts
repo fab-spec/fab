@@ -1,11 +1,15 @@
-export const DEFAULT_DEPS = ['@fab/cli', '@fab/server', '@fab/actions']
+export const DEFAULT_DEPS = [
+  '@dev-spendesk/fab-cli',
+  '@dev-spendesk/fab-server',
+  '@dev-spendesk/fab-actions',
+]
 export const DEPRECATED_PACKAGES = [
-  '@fab/static',
-  '@fab/compile',
-  '@fab/nextjs',
-  '@fab/serve',
-  '@fab/serve-html',
-  '@fab/rewire-assets',
+  '@dev-spendesk/static',
+  '@dev-spendesk/compile',
+  '@dev-spendesk/nextjs',
+  '@dev-spendesk/serve',
+  '@dev-spendesk/serve-html',
+  '@dev-spendesk/rewire-assets',
 ]
 
 export const GITIGNORE_LINES = ['/.fab', '/fab.zip']

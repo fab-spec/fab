@@ -1,5 +1,11 @@
 import fs from 'fs-extra'
-import { a_sume, FabConfig, REGEXP_VALUE_PATTERN, s_sume, JSON5ConfigI } from '@fab/core'
+import {
+  a_sume,
+  FabConfig,
+  REGEXP_VALUE_PATTERN,
+  s_sume,
+  JSON5ConfigI,
+} from '@dev-spendesk/fab-core'
 import jju from 'jju'
 import regexParser from 'regex-parser'
 import { InvalidConfigError, MissingConfig } from '../errors'
